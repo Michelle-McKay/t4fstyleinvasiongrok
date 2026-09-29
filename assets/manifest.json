@@ -99,7 +99,8 @@
   "troop_inf_t2": "assets/troops/troop_inf_t2.webp",
   "troop_inf_t3": "assets/troops/troop_inf_t3.webp",
   "troop_inf_t4": "assets/troops/troop_inf_t4.webp",
-  "troop_siege_t1": "assets/troops/troop_siege_t1.webp"
+  "troop_siege_t1": "assets/troops/troop_siege_t1.webp",
+  "troop_siege_t2": "assets/troops/troop_siege_t2.webp"
  },
  "clean": [
   "bld_alloy_t1",
@@ -199,6 +200,7 @@
   "troop_inf_t2",
   "troop_inf_t3",
   "troop_inf_t4",
-  "troop_siege_t1"
+  "troop_siege_t1",
+  "troop_siege_t2"
  ]
 }
