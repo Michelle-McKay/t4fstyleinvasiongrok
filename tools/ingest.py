@@ -26,7 +26,7 @@ def key_of(path):
     s = re.sub(r'\s*\(\d+\)$', '', s).replace('-', '_').replace(' ', '_')
     return s if s in CAT else None
 
-def flat_bg(im, tol=48):
+def flat_bg(im, tol=80):
     """Return (r,g,b) if the four corners share one flat colour, else None."""
     w, h = im.size; px = im.convert('RGB').load(); pts = [(2, 2), (w - 3, 2), (2, h - 3), (w - 3, h - 3)]
     cs = [px[p] for p in pts]
