@@ -83,7 +83,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .rb:active{filter:brightness(1.3)}
 @keyframes pop{from{scale:.2;opacity:0}to{scale:1;opacity:1}}
 /* dock */
-#dock{position:relative;z-index:12;display:grid;grid-template-columns:repeat(6,1fr);padding-bottom:env(safe-area-inset-bottom);border-width:1px 0 0}
+#dock{position:relative;z-index:12;display:grid;grid-template-columns:repeat(5,1fr);padding-bottom:env(safe-area-inset-bottom);border-width:1px 0 0}
 #dock button{position:relative;background:none;border:0;min-height:54px;min-width:44px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--mute);border-top:2px solid transparent;padding:4px 0;transition:color .15s,background .15s}
 #dock button svg{width:23px;height:23px;transition:transform .25s var(--spring)}
 #dock button span{font-family:var(--head);font-size:10px;letter-spacing:.1em;text-transform:uppercase;line-height:1}

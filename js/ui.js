@@ -118,10 +118,14 @@ function renderQueues() {
   const html = `<button class="tips ${hot ? 'hot' : ''}" ${act}><i>TIPS</i><span>${t}</span></button><div class="chat"><svg viewBox="0 0 24 24" class="cico"><path d="M4 5h16v11H9l-5 4z" fill="#5ec4d4" stroke="#0e1113" stroke-width="1.4"/></svg><div>${log.length ? log.map(l => `<p><b>SYSTEM:</b> ${l.m}</p>`).join('') : '<p><b>SYSTEM:</b> All quiet.</p>'}</div><button class="btn sm pri2" data-a="dock" data-k="alliance" aria-label="Alliance">${svg('alliance').replace(/stroke="[^"]+"/, 'stroke="currentColor"')}</button></div>`;
   if (html !== UI.qbar) { UI.qbar = html; $('#qbar').innerHTML = html; }
 }
-const TABS = [['map', 'World Map'], ['base', 'Base'], ['hero', 'Hero'], ['alliance', 'Alliance'], ['mail', 'Mail'], ['more', 'More']];
+const TABS = [['toggle', ''], ['hero', 'Hero'], ['alliance', 'Alliance'], ['mail', 'Mail'], ['more', 'More']];
 function renderDock() {
-  const cur = ['hero', 'alliance', 'mail', 'more'].includes(UI.drawer) ? UI.drawer : UI.page, unread = S.reports.filter(r => r.id > (S.readTo || 0)).length;
-  $('#dock').innerHTML = TABS.map(([k, n]) => `<button data-a="dock" data-k="${k}" class="${cur === k ? 'on' : ''}">${svg(k).replace(/stroke="[^"]+"/, 'stroke="currentColor"')}${k === 'mail' && unread ? `<em class="bdg">${Math.min(unread, 9)}</em>` : ''}${k === 'base' && Object.keys(UI.ready).length ? `<em class="bdg ok">${Math.min(Object.keys(UI.ready).length, 9)}</em>` : ''}${k === 'hero' && S.hero.captured ? `<em class="bdg">!</em>` : ''}${k === 'alliance' && S.incoming.some(i => i.rally) ? `<em class="bdg">!</em>` : ''}<span>${n}</span></button>`).join('');
+  const over = ['hero', 'alliance', 'mail', 'more'].includes(UI.drawer) ? UI.drawer : null, unread = S.reports.filter(r => r.id > (S.readTo || 0)).length;
+  const dest = UI.page === 'map' ? 'base' : 'map'; // one button flips between the map and the base; it shows where a tap takes you
+  $('#dock').innerHTML = TABS.map(([k, n]) => {
+    const kk = k === 'toggle' ? dest : k, label = k === 'toggle' ? (dest === 'base' ? 'Base' : 'World Map') : n, on = k === 'toggle' ? !over && !UI.drawer : over === k;
+    return `<button data-a="dock" data-k="${k}" class="${on ? 'on' : ''}">${svg(kk).replace(/stroke="[^"]+"/, 'stroke="currentColor"')}${k === 'mail' && unread ? `<em class="bdg">${Math.min(unread, 9)}</em>` : ''}${k === 'toggle' && Object.keys(UI.ready).length ? `<em class="bdg ok">${Math.min(Object.keys(UI.ready).length, 9)}</em>` : ''}${k === 'hero' && S.hero.captured ? `<em class="bdg">!</em>` : ''}${k === 'alliance' && S.incoming.some(i => i.rally) ? `<em class="bdg">!</em>` : ''}<span>${label}</span></button>`;
+  }).join('');
   $('#mapchips').innerHTML = `<button class="btn sm glass" data-a="jump" data-k="b">Base</button><button class="btn sm glass" data-a="jump" data-k="t">Throne</button>`;
 }
 
@@ -449,6 +453,7 @@ function marketHTML() {
 const A = {
   dock(d) {
     const k = d.k; closeRadial();
+    if (k === 'toggle') { if (UI.drawer || UI.sheet) { UI.drawer = null; UI.sheet = null; } else { UI.page = UI.page === 'map' ? 'base' : 'map'; if (UI.page !== 'map') UI.sel = null; } D(); return; }
     if (k === 'hero' || k === 'alliance' || k === 'mail' || k === 'more') { UI.drawer = UI.drawer === k ? null : k; UI.sheet = null; }
     else { UI.drawer = null; UI.page = k; UI.sheet = null; if (k !== 'map') UI.sel = null; }
     D();
