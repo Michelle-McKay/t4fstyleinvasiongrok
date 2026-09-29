@@ -11,9 +11,9 @@
 </head>
 <body>
 <div id="app">
-  <header id="top">
-    <div class="row1"><span class="mark">Iron March</span><span class="watch" id="watch"></span><span class="cc" id="cc"></span><span class="dia num" id="dia"></span></div>
-    <div class="res num" id="res"></div>
+  <header id="top" class="glass">
+    <div class="row1"><span class="mark">Iron March</span><span class="watch" id="watch"></span><span class="cc" id="cc"></span></div>
+    <div class="chips num" id="chips"></div>
     <div id="ticker"></div>
   </header>
   <main id="main">
@@ -21,21 +21,24 @@
       <canvas id="map"></canvas>
       <div class="mapui" id="compass"></div>
       <canvas class="mapui" id="mini" width="66" height="130"></canvas>
+      <div class="mapui" id="mapchips"></div>
       <div class="mapui" id="coord"></div>
+      <div id="radial"></div>
     </section>
     <section class="page" id="pg-base"></section>
-    <section class="page" id="pg-march"></section>
-    <section class="page" id="pg-vault"></section>
+    <div id="scrim"></div>
     <div class="sheet glass" id="sheet"></div>
-    <div class="glass" id="desk"><div class="tabs" id="desktabs"></div><div id="deskbody"></div></div>
+    <div id="drawer" class="glass"><div class="grab"><i></i></div><div id="dtabs"></div><div id="dbody"></div></div>
     <div id="toasts"></div>
   </main>
-  <nav id="dock"></nav>
+  <nav id="dock" class="glass"></nav>
 </div>
 <div id="alarm"></div>
 <div id="aura"></div>
 <script src="js/data.js"></script>
 <script src="js/engine.js"></script>
+<script src="js/art.js"></script>
+<script src="js/map.js"></script>
 <script src="js/ui.js"></script>
 </body>
 </html>

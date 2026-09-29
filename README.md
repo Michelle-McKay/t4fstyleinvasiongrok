@@ -8,7 +8,9 @@ Open `index.html` (or serve the folder statically). Barlow Condensed and Source 
 ## Layout
 - `js/data.js` — constants and pure rules (troops, walls, buildings, research, titles, forge curves, clocks)
 - `js/engine.js` — state, world function, job list, marches, combat, rallies, threats, bots, forge, market, 4Hz `tick()`
-- `js/ui.js` — map canvas, dock, bottom sheets, Train/Lab/Med glass desk, Base / March / Vault pages
+- `js/art.js` — original procedural art: canvas terrain and feature sprites, SVG buildings with five level tiers
+- `js/map.js` — map canvas: inertial pan, pinch and wheel zoom, territory washes with edge lines, citadel beacon, radial tap menu
+- `js/ui.js` — frosted HUD, five-tab dock, spring slide-up drawers (Desk, Hero/Forge, Alliance, Mail, Columns), base scene with progress rings and reward bubbles, haptics and audio cues
 - `style.css` — the locked palette and instrument-panel look
 
 ## Clocks

@@ -1,5 +1,5 @@
 'use strict';
-/* IRON MARCH — UI: map canvas, dock, sheets, desk, pages. */
+/* IRON MARCH — UI: HUD, dock, drawers, sheets, base scene. Map lives in map.js, art in art.js. */
 const $ = s => document.querySelector(s);
 const ICON = {
   map: '<path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z"/><path d="M9 4v14M15 6v14"/>',
@@ -9,6 +9,9 @@ const ICON = {
   med: '<path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z"/>',
   march: '<path d="M5 21V4M5 5h13l-3 4 3 4H5"/>',
   vault: '<rect x="3" y="4" width="18" height="16"/><circle cx="12" cy="12" r="4"/><path d="M12 8v2M12 14v2M8 12h2M14 12h2"/>',
+  hero: '<path d="M4 9h13l3-3v5h-4l-2 3v3h3v3H7v-3h3v-3L7 12H4z"/>',
+  alliance: '<path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/><path d="M12 8l1.4 2.8 3.1.4-2.3 2.1.6 3.1-2.8-1.5-2.8 1.5.6-3.1-2.3-2.1 3.1-.4z"/>',
+  mail: '<rect x="3" y="5" width="18" height="14"/><path d="M3 7l9 7 9-7"/>',
   rations: '<path d="M12 3v18M12 8c-3 0-4-2-4-4 3 0 4 2 4 4zm0 0c3 0 4-2 4-4-3 0-4 2-4 4zM12 14c-3 0-4-2-4-4 3 0 4 2 4 4zm0 0c3 0 4-2 4-4-3 0-4 2-4 4z"/>',
   fuel: '<path d="M12 3c4 5 6 8 6 11a6 6 0 0 1-12 0c0-3 2-6 6-11z"/>',
   power: '<path d="M13 2L5 14h6l-1 8 8-12h-6z"/>',
@@ -19,18 +22,30 @@ const ICON = {
 const ICOL = { rations: '#8ea36a', fuel: '#e07a2f', power: '#5ec4d4', alloy: '#9aa4a8', cash: '#e0a44a', dia: '#5ec4d4' };
 const svg = (n, cls) => `<svg viewBox="0 0 24 24" fill="none" stroke="${ICOL[n] || 'currentColor'}" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" ${cls ? 'class="' + cls + '"' : ''}>${ICON[n]}</svg>`;
 const UI = {
-  page: 'map', desk: null, sheet: null, comp: { inf: 0, arm: 0, air: 0, siege: 0, hero: false }, rcomp: { inf: 0, arm: 0, air: 0, siege: 0, hero: false },
-  tr: { cls: 'inf', tier: 1, n: 0 }, wl: { cls: 'sent', tier: 1, n: 0 }, lab: 'combat', med: 'depot', mt: 'cols', vt: 'forge', fg: 3,
-  cr: { slot: 'weapon', sel: {}, shard: '', stat: 'training' }, rl: { target: 'citadel', wait: 0, slots: 0 }, sel: null, dirty: true, cover: false
+  page: 'map', drawer: null, dt: { desk: 'train', hero: 'forge', alliance: 'throne', mail: 'rep', march: 'cols' }, sheet: null,
+  comp: { inf: 0, arm: 0, air: 0, siege: 0, hero: false }, rcomp: { inf: 0, arm: 0, air: 0, siege: 0, hero: false },
+  tr: { cls: 'inf', tier: 1, n: 0 }, wl: { cls: 'sent', tier: 1, n: 0 }, lab: 'combat', med: 'depot', fg: 3,
+  cr: { slot: 'weapon', sel: {}, shard: '', stat: 'training' }, rl: { target: 'citadel', wait: 0, slots: 0 }, sel: null, dirty: true, ready: {}, flyAt: 0, chips: ''
 };
 
-/* ---------------- helpers ---------------- */
-function toast(m, k) { const t = document.createElement('div'); t.className = 'toast ' + (k || ''); t.textContent = m; const box = $('#toasts'); box.appendChild(t); while (box.children.length > 4) box.firstChild.remove(); setTimeout(() => t.remove(), 3800); }
+/* ---------------- feedback: toast, tone, haptics ---------------- */
 let actx = null;
-function tone() { try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); const o = actx.createOscillator(), g = actx.createGain(); o.type = 'square'; o.frequency.value = 880; g.gain.value = 0.05; o.connect(g); g.connect(actx.destination); o.start(); o.stop(actx.currentTime + 0.14); } catch (e) { } }
-UIH.toast = toast; UIH.tone = tone; UIH.dirty = () => { UI.dirty = true; };
+const setOn = k => !(S && S.set) || S.set[k] !== false;
+function toast(m, k) { const t = document.createElement('div'); t.className = 'toast ' + (k || ''); t.textContent = m; const box = $('#toasts'); box.appendChild(t); while (box.children.length > 4) box.firstChild.remove(); setTimeout(() => { t.classList.add('out'); setTimeout(() => t.remove(), 260); }, 3400); }
+function beep(f, d, v, type) { if (!setOn('snd')) return; try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); const o = actx.createOscillator(), g = actx.createGain(); o.type = type || 'sine'; o.frequency.value = f; g.gain.value = v; g.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + d); o.connect(g); g.connect(actx.destination); o.start(); o.stop(actx.currentTime + d); } catch (e) { } }
+function tone() { beep(880, 0.14, 0.05, 'square'); }
+function snd() { beep(1500, 0.035, 0.03); }
+function hap(p) { if (!setOn('hap')) return; try { if (navigator.vibrate) navigator.vibrate(p); } catch (e) { } }
+function flash(kind) { const a = $('#alarm'); a.classList.remove('flash'); void a.offsetWidth; a.classList.add('flash'); hap([70, 50, 70, 50, 90]); tone(); setTimeout(() => a.classList.remove('flash'), 2800); }
+UIH.toast = toast; UIH.tone = tone; UIH.flash = flash; UIH.dirty = () => { UI.dirty = true; };
+UIH.done = j => {
+  const first = b => { for (const ar of ['in', 'out']) { const i = S.plots[ar].findIndex(p => p && p.b === b && p.l > 0); if (i >= 0) return ar + i; } return null; };
+  let k = null, txt = '✓';
+  if (j.kind === 'build') { k = j.area + j.idx; txt = 'L' + j.to; } else if (j.kind === 'train') { k = first('mil'); txt = '+' + j.n; } else if (j.kind === 'res') { k = first('tech'); txt = 'Done'; } else if (j.kind === 'heal') { k = first('depot'); txt = '+' + j.n; } else if (j.kind === 'wall') { k = first('defense'); txt = '+' + j.n; }
+  if (k) UI.ready[k] = txt; hap([12, 40, 12]); beep(660, 0.12, 0.04); beep(990, 0.16, 0.04);
+};
 const D = () => { UI.dirty = true; };
-function run(e, ok) { if (e) toast(e, 'warn'); else if (ok) toast(ok, 'good'); D(); return !e; }
+function run(e, ok) { if (e) { toast(e, 'warn'); hap([30, 40, 30]); } else { if (ok) toast(ok, 'good'); hap(14); } D(); return !e; }
 const tm = (end, both) => end > 1e15 ? '<span class="mut">on station</span>' : `<span class="t num" data-end="${end}" data-b="${both ? 1 : 0}">${tmText(end, both)}</span>`;
 function tmText(end, both) { const s = Math.max(0, (end - Date.now()) / 1000); return fmtT(s) + (both ? ' <span class="mut">(' + fmtT(s * DRILL) + ' sheet)</span>' : ''); }
 const dualT = sheet => `${fmtT(sheet)} sheet · <b class="br">${fmtT(sheet / DRILL)}</b>`;
@@ -59,99 +74,35 @@ function estOut(kind, tx, ty, c) {
 }
 function oddsText(D_, col, hero) { if (!sumCol(col)) return ''; const r = fight(attackerSide(col, hero), D_); const q = r.q; return q > 4 ? '<span class="ox">Overwhelming</span>' : q > 1.6 ? '<span class="ox">Favourable</span>' : q > 0.8 ? '<span class="br">Even</span>' : q > 0.35 ? '<span class="sg">Poor</span>' : '<span class="sg">Suicide</span>'; }
 
-/* ---------------- top bar, ticker, dock ---------------- */
+
+/* ---------------- HUD: top bar, ticker, dock, map chips ---------------- */
 function watchPhrase() { const h = new Date().getHours(); return h >= 5 && h < 8 ? ['Dawn wash', 'dawn'] : h >= 8 && h < 17 ? ['Day watch', 'day'] : h >= 17 && h < 20 ? ['Dusk wash', 'dusk'] : ['Night telemetry', 'night']; }
+const CHIP_ORDER = ['rations', 'fuel', 'alloy', 'power', 'cash'];
 function renderTop() {
   const [ph, cl] = watchPhrase(); document.body.className = 'wash-' + cl; $('#watch').textContent = ph;
   $('#cc').innerHTML = `Command Center <b class="num">${ccLevel()}</b>`;
-  $('#dia').innerHTML = svg('dia').replace('<svg', '<svg width="15" height="15"') + `<b class="num">${fmtN(S.dia)}</b>`;
   const cap = storeCap();
-  $('#res').innerHTML = RES.map(r => `<div title="${RESN[r]}">${svg(r)}<span class="${S.res[r] >= cap - 1 ? 'full' : ''}">${fmtN(S.res[r])}</span></div>`).join('');
-  $('#alarm').className = S.incoming.length ? 'on' : '';
+  const html = CHIP_ORDER.map(r => { const f = S.res[r] / cap, full = f >= 0.97; return `<button class="chip ${full ? 'full' : ''}" data-a="drawer" data-id="hero" data-tab="store" title="${RESN[r]} ${fmtN(S.res[r])} / ${fmtN(cap)}">${svg(r)}<b class="num">${fmtN(S.res[r])}</b><i class="mtr"><u style="width:${Math.min(100, f * 100).toFixed(0)}%;background:${ICOL[r]}"></u></i></button>`; }).join('')
+    + `<button class="chip dia" data-a="drawer" data-id="hero" data-tab="store" title="Diamonds">${svg('dia')}<b class="num">${fmtN(S.dia)}</b><i class="mtr"><u style="width:100%;background:${ICOL.dia}"></u></i></button>`;
+  if (html !== UI.chips) { UI.chips = html; $('#chips').innerHTML = html; }
+  $('#alarm').classList.toggle('on', S.incoming.length > 0);
   const set = setBonus(), au = $('#aura'); if (set) { au.className = 'on'; au.style.boxShadow = `inset 0 0 0 2px ${SETS[set].aura}66, inset 0 0 40px ${SETS[set].aura}33`; } else au.className = '';
 }
 function renderTicker() {
   const now = Date.now(), p = [];
   for (const j of S.jobs) p.push(`${({ build: 'Build', train: 'Train', res: 'Lab', heal: 'Heal', wall: 'Wall' })[j.kind]} ${j.why} <b>${fmtT((j.end - now) / 1000)}</b>`);
   for (const m of S.marches) p.push(`${marchName(m)} ${m.phase === 'stay' ? '<b>station</b>' : '<b>' + fmtT((m.end - now) / 1000) + '</b>'}`);
-  for (const i of S.incoming) p.push(`<span class="sg">Contact ${i.name} <b class="sg">${fmtT((i.end - now) / 1000)}</b></span>`);
+  for (const i of S.incoming) p.push(`<span class="sg">${i.rally ? 'Rally' : 'Contact'} ${i.name} <b class="sg">${fmtT((i.end - now) / 1000)}</b></span>`);
   if (S.shield.until > now) p.push(`Shield <b>${fmtT((S.shield.until - now) / 1000)}</b>`);
   $('#ticker').innerHTML = p.length ? p.join(' · ') : 'All quiet';
 }
-const TABS = [['map', 'Map'], ['base', 'Base'], ['train', 'Train'], ['lab', 'Lab'], ['med', 'Med'], ['march', 'March'], ['vault', 'Vault']];
-function renderDock() { $('#dock').innerHTML = TABS.map(([k, n]) => `<button data-a="dock" data-k="${k}" class="${(UI.desk ? UI.desk : UI.page) === k ? 'on' : ''}">${svg(k).replace(/stroke="[^"]+"/, 'stroke="currentColor"')}<span>${n}</span></button>`).join(''); }
-
-/* ---------------- map ---------------- */
-const MAP = { cx: 120, cy: 220, ts: 28, w: 0, h: 0, dpr: 1, tags: [], drag: null, mini: null };
-const cv = $('#map'), cx2 = cv.getContext('2d'), mini = $('#mini'), mx = mini.getContext('2d');
-function mixHex(a, b, t) { const p = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16)); const A = p(a), B = p(b); return '#' + A.map((v, i) => Math.round(v + (B[i] - v) * t).toString(16).padStart(2, '0')).join(''); }
-const TC = { wild: '#171c1f', forest: mixHex('#0e1113', '#8ea36a', .2), plaza: mixHex('#171c1f', '#e7e4da', .2), throne: mixHex('#0e1113', '#e0a44a', .5), monster: mixHex('#0e1113', '#d4654a', .38), camp: mixHex('#0e1113', '#d4654a', .18), food: mixHex('#0e1113', '#8ea36a', .42), oil: mixHex('#0e1113', '#e07a2f', .42), energy: mixHex('#0e1113', '#5ec4d4', .42), steel: mixHex('#0e1113', '#9aa4a8', .42) };
-function resizeMap() { const r = cv.getBoundingClientRect(); MAP.dpr = window.devicePixelRatio || 1; MAP.w = r.width; MAP.h = r.height; cv.width = r.width * MAP.dpr; cv.height = r.height * MAP.dpr; UI.dirty = true; }
-function computeTags() {
-  const seen = new Set(), tags = [];
-  for (const k in S.own) {
-    if (seen.has(k)) continue; const o = S.own[k], q = [k], patch = []; seen.add(k);
-    while (q.length) { const c = q.pop(); patch.push(c); const [x, y] = unkey(c); for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const n = key(x + dx, y + dy); if (!seen.has(n) && S.own[n] === o) { seen.add(n); q.push(n); } } }
-    if (patch.length < 12) continue; let sx = 0, sy = 0; for (const c of patch) { const [x, y] = unkey(c); sx += x; sy += y; } sx /= patch.length; sy /= patch.length;
-    let best = null, bd = 1e9; for (const c of patch) { const [x, y] = unkey(c), d = (x - sx) ** 2 + (y - sy) ** 2; if (d < bd) { bd = d; best = [x, y]; } }
-    tags.push({ x: best[0], y: best[1], t: S.al[o].tag, c: alColor(o) });
-  }
-  MAP.tags = tags; terrDirty = false; MAP.mini = null;
+const TABS = [['map', 'World Map'], ['base', 'Base'], ['hero', 'Hero/Forge'], ['alliance', 'Alliance'], ['mail', 'Mail']];
+function renderDock() {
+  const cur = ['hero', 'alliance', 'mail'].includes(UI.drawer) ? UI.drawer : UI.page, unread = S.reports.filter(r => r.id > (S.readTo || 0)).length;
+  $('#dock').innerHTML = TABS.map(([k, n]) => `<button data-a="dock" data-k="${k}" class="${cur === k ? 'on' : ''}">${svg(k).replace(/stroke="[^"]+"/, 'stroke="currentColor"')}${k === 'mail' && unread ? `<em class="bdg">${Math.min(unread, 9)}</em>` : ''}<span>${n}</span></button>`).join('');
+  const out = S.marches.filter(m => m.kind !== 'scout').length;
+  $('#mapchips').innerHTML = `<button class="btn sm glass" data-a="drawer" data-id="march" data-tab="cols">${svg('march').replace(/stroke="[^"]+"/, 'stroke="currentColor"')}Columns <b class="num">${out}/${marchQueues()}</b></button><button class="btn sm glass" data-a="drawer" data-id="desk" data-tab="train">Train</button><button class="btn sm glass" data-a="drawer" data-id="desk" data-tab="lab">Lab</button><button class="btn sm glass" data-a="drawer" data-id="desk" data-tab="med">Med</button>`;
 }
-function drawMini() {
-  const w = 66, h = 130, sx = w / W, sy = h / H;
-  if (!MAP.mini) {
-    const c = document.createElement('canvas'); c.width = w; c.height = h; const g = c.getContext('2d');
-    g.fillStyle = '#171c1f'; g.fillRect(0, 0, w, h);
-    g.fillStyle = mixHex('#171c1f', '#8ea36a', .35); g.beginPath(); g.arc(TX * sx, TY * sy, FOREST_R * sx * 1.6, 0, 7); g.fill();
-    g.fillStyle = '#e7e4da55'; g.beginPath(); g.arc(TX * sx, TY * sy, 2.2, 0, 7); g.fill(); g.fillStyle = '#e0a44a'; g.fillRect(TX * sx - 1, TY * sy - 1, 2, 2);
-    for (const k in S.own) { const [x, y] = unkey(k); g.fillStyle = alColor(S.own[k]); g.globalAlpha = .75; g.fillRect(Math.floor(x * sx), Math.floor(y * sy), 1, 1); } g.globalAlpha = 1;
-    MAP.mini = c;
-  }
-  mx.clearRect(0, 0, w, h); mx.drawImage(MAP.mini, 0, 0);
-  mx.strokeStyle = '#e0a44a'; mx.lineWidth = 1; const vw = MAP.w / MAP.ts * sx, vh = MAP.h / MAP.ts * sy; mx.strokeRect(MAP.cx * sx - vw / 2, MAP.cy * sy - vh / 2, Math.max(3, vw), Math.max(3, vh));
-  mx.fillStyle = '#e7e4da'; mx.fillRect(S.base.x * sx - 1, S.base.y * sy - 1, 3, 3);
-}
-function drawMap() {
-  if (terrDirty) computeTags();
-  const g = cx2, ts = MAP.ts, w = MAP.w, h = MAP.h; g.setTransform(MAP.dpr, 0, 0, MAP.dpr, 0, 0);
-  g.fillStyle = '#0e1113'; g.fillRect(0, 0, w, h);
-  const x0 = Math.floor(MAP.cx - w / 2 / ts) - 1, x1 = Math.ceil(MAP.cx + w / 2 / ts) + 1, y0 = Math.floor(MAP.cy - h / 2 / ts) - 1, y1 = Math.ceil(MAP.cy + h / 2 / ts) + 1;
-  g.textAlign = 'center'; g.textBaseline = 'middle'; const sel = UI.sel, now = Date.now();
-  for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
-    if (x < 0 || y < 0 || x >= W || y >= H) continue;
-    const t = tileInfo(x, y), px = Math.round(w / 2 + (x - MAP.cx) * ts - ts / 2), py = Math.round(h / 2 + (y - MAP.cy) * ts - ts / 2), s = ts - 1;
-    let col = TC[t.terr] || TC.wild; if (t.kind === 'node') col = TC[t.nk]; else if (t.kind === 'monster') col = TC.monster; else if (t.kind === 'camp') col = TC.camp;
-    g.fillStyle = col; g.fillRect(px, py, s, s);
-    if (t.owner != null) { g.globalAlpha = .3; g.fillStyle = alColor(t.owner); g.fillRect(px, py, s, s); g.globalAlpha = 1; }
-    if (t.enc) { g.strokeStyle = alColor(t.enc.o); g.setLineDash([3, 3]); g.lineWidth = 1; g.strokeRect(px + 2.5, py + 2.5, s - 5, s - 5); g.setLineDash([]); }
-    g.font = '600 13px "Barlow Condensed",sans-serif';
-    if (t.kind === 'node') { g.fillStyle = t.node.rich ? '#e0a44a' : '#e7e4da'; g.fillText(String(t.node.grade), px + s / 2, py + s / 2 + 1); if (t.node.rich) { g.strokeStyle = '#e0a44a'; g.lineWidth = 1; g.strokeRect(px + 1.5, py + 1.5, s - 3, s - 3); } }
-    else if (t.kind === 'monster') { g.fillStyle = '#d4654a'; g.beginPath(); g.moveTo(px + s / 2, py + 5); g.lineTo(px + s - 6, py + s / 2); g.lineTo(px + s / 2, py + s - 5); g.lineTo(px + 6, py + s / 2); g.fill(); g.fillStyle = '#0e1113'; g.fillText(String(t.grade), px + s / 2, py + s / 2 + 1); }
-    else if (t.kind === 'camp') { g.strokeStyle = '#d4654a'; g.lineWidth = 1.5; g.strokeRect(px + 7, py + 7, s - 14, s - 14); }
-    else if (t.kind === 'throne') { g.fillStyle = '#e0a44a'; g.fillRect(px + 4, py + 4, s - 8, s - 8); g.fillStyle = '#1a1408'; g.font = '700 14px "Barlow Condensed"'; g.fillText('T', px + s / 2, py + s / 2 + 1); }
-    else if (t.kind === 'base') { g.fillStyle = alColor(t.bot.al); g.fillRect(px + 3, py + 3, s - 6, s - 6); g.strokeStyle = '#0e1113'; g.lineWidth = 2; g.strokeRect(px + 5, py + 5, s - 10, s - 10); }
-    else if (t.kind === 'pbase') { g.fillStyle = '#e0a44a'; g.fillRect(px + 2, py + 2, s - 4, s - 4); g.fillStyle = '#1a1408'; g.font = '700 14px "Barlow Condensed"'; g.fillText('HQ', px + s / 2, py + s / 2 + 1); }
-    if (sel && sel.x === x && sel.y === y) { g.strokeStyle = '#e0a44a'; g.lineWidth = 2; g.strokeRect(px + 1, py + 1, s - 2, s - 2); }
-  }
-  for (const m of S.marches) { if (m.phase === 'out' || m.phase === 'back') { const f = clamp((now - m.start) / (m.end - m.start), 0, 1), a = m.phase === 'out' ? f : 1 - f; const bx = m.phase === 'out' ? S.base.x : m.tx, by = m.phase === 'out' ? S.base.y : m.ty; const ex = m.phase === 'out' ? m.tx : S.base.x, ey = m.phase === 'out' ? m.ty : S.base.y; const X = w / 2 + (S.base.x + (m.tx - S.base.x) * (m.phase === 'out' ? f : 1 - f) - MAP.cx) * ts, Y = h / 2 + (S.base.y + (m.ty - S.base.y) * (m.phase === 'out' ? f : 1 - f) - MAP.cy) * ts; g.strokeStyle = 'rgba(224,164,74,.5)'; g.setLineDash([4, 4]); g.beginPath(); g.moveTo(w / 2 + (S.base.x - MAP.cx) * ts, h / 2 + (S.base.y - MAP.cy) * ts); g.lineTo(w / 2 + (m.tx - MAP.cx) * ts, h / 2 + (m.ty - MAP.cy) * ts); g.stroke(); g.setLineDash([]); g.fillStyle = '#e0a44a'; g.fillRect(X - 4, Y - 4, 8, 8); } }
-  g.font = '700 12px "Barlow Condensed",sans-serif'; g.lineWidth = 3; g.strokeStyle = '#0e1113';
-  for (const tg of MAP.tags) { const px = w / 2 + (tg.x - MAP.cx) * ts, py = h / 2 + (tg.y - MAP.cy) * ts; if (px < -30 || py < -10 || px > w + 30 || py > h + 10) continue; g.fillStyle = tg.c; g.strokeText(tg.t, px, py); g.fillText(tg.t, px, py); }
-  drawMini(); $('#coord').textContent = `${Math.round(MAP.cx)},${Math.round(MAP.cy)} · base ${S.base.x},${S.base.y}`;
-}
-function panTo(x, y) { MAP.cx = clamp(x, 0, W - 1); MAP.cy = clamp(y, 0, H - 1); S.view = { x: MAP.cx, y: MAP.cy }; drawMap(); }
-function initMap() {
-  new ResizeObserver(resizeMap).observe(cv); resizeMap();
-  MAP.cx = S.view.x; MAP.cy = S.view.y; let raf = 0;
-  const sched = () => { if (!raf) raf = requestAnimationFrame(() => { raf = 0; drawMap(); }); };
-  cv.addEventListener('pointerdown', e => { cv.setPointerCapture(e.pointerId); MAP.drag = { x: e.clientX, y: e.clientY, cx: MAP.cx, cy: MAP.cy, moved: false }; });
-  cv.addEventListener('pointermove', e => { const d = MAP.drag; if (!d) return; const dx = e.clientX - d.x, dy = e.clientY - d.y; if (Math.abs(dx) + Math.abs(dy) > 6) d.moved = true; if (d.moved) { MAP.cx = clamp(d.cx - dx / MAP.ts, 0, W - 1); MAP.cy = clamp(d.cy - dy / MAP.ts, 0, H - 1); sched(); } });
-  const up = e => { const d = MAP.drag; MAP.drag = null; if (!d) return; if (!d.moved) { const r = cv.getBoundingClientRect(), x = Math.round(MAP.cx + (e.clientX - r.left - MAP.w / 2) / MAP.ts), y = Math.round(MAP.cy + (e.clientY - r.top - MAP.h / 2) / MAP.ts); if (x >= 0 && y >= 0 && x < W && y < H) selectTile(x, y); } else S.view = { x: MAP.cx, y: MAP.cy }; };
-  cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', () => { MAP.drag = null; });
-  mini.addEventListener('click', e => { const r = mini.getBoundingClientRect(); panTo((e.clientX - r.left) / r.width * W, (e.clientY - r.top) / r.height * H); });
-  $('#compass').innerHTML = [['N', 'n'], ['W', 'w'], ['Base', 'b'], ['E', 'e'], ['S', 's'], ['Jump to throne', 't']].map(([n, k]) => `<button class="btn sm glass" data-a="jump" data-k="${k}">${n}</button>`).join('');
-}
-function selectTile(x, y) { UI.sel = { x, y }; UI.sheet = { type: 'tile', x, y }; if ((y - MAP.cy) * MAP.ts + MAP.h / 2 > MAP.h * 0.4) MAP.cy = clamp(y + 4, 0, H - 1); D(); }
 
 /* ---------------- composer ---------------- */
 function compHTML(cn) {
@@ -218,7 +169,7 @@ function sheetPlot(area, idx) {
     return h + '</div>';
   }
   const d = BLD[p.b], to = p.l + 1;
-  h = `<div class="flex sp"><div><div class="h1">${d.n} <span class="br num">${p.l}</span></div><div class="sub">${area === 'in' ? 'Inner' : 'Outer'} plot ${idx + 1} · ${effectText(p.b, p.l)}</div></div><button class="btn sm line" data-a="closesheet">Close</button></div>`;
+  h = `<div class="flex"><div class="pv">${bldSVG(p.b, p.l)}</div><div class="grow"><div class="h1">${d.n} <span class="br num">${p.l}</span></div><div class="sub">${area === 'in' ? 'Inner' : 'Outer'} plot ${idx + 1} · ${['Empty lot', 'Makeshift', 'Concrete', 'Reinforced', 'Advanced', 'Fortified'][tierOf(p.l)]}</div><div class="sub">${effectText(p.b, p.l)}</div></div><button class="btn sm line" data-a="closesheet">Close</button></div>`;
   if (job) h += `<div class="panel mt"><div class="bd"><div class="lbl">Building to level ${job.to}</div>${jobCtl(job)}</div></div>`;
   else {
     const err = buildErr(area, idx, p.b);
@@ -238,29 +189,45 @@ function sheetReport(id) {
   return `<div class="flex sp"><div><div class="h1">${r.title}</div><div class="sub">${r.win == null ? 'Intel' : r.win ? '<span class="ox">Victory</span>' : '<span class="sg">Defeat</span>'}${r.obl ? ' · obliterated' : ''}${wtxt}</div></div><button class="btn sm line" data-a="closesheet">Close</button></div><div class="split mt">${side(r.left, 'me')}${side(r.right, 'them')}</div>${r.joiners ? `<div class="lbl mt">Joiners</div>${r.joiners.map(j => `<div class="rr"><span>${j.name}</span><span class="num">${j.sent} sent · <span class="sg">−${j.lost}</span> · wounded ${j.wounded}</span></div>`).join('')}` : ''}`;
 }
 function renderSheet() {
-  const el = $('#sheet'), s = UI.sheet; if (!s || UI.desk) { el.className = 'sheet glass'; return; }
-  el.className = 'sheet glass on';
-  el.innerHTML = s.type === 'tile' ? sheetTile(s.x, s.y) : s.type === 'plot' ? sheetPlot(s.area, s.idx) : s.type === 'report' ? sheetReport(s.id) : '';
+  const el = $('#sheet'), s = UI.sheet, open = !!s && !UI.drawer;
+  if (open) el.innerHTML = s.type === 'tile' ? sheetTile(s.x, s.y) : s.type === 'plot' ? sheetPlot(s.area, s.idx) : s.type === 'report' ? sheetReport(s.id) : '';
+  el.classList.toggle('on', open);
+  $('#scrim').classList.toggle('on', open || !!UI.drawer);
 }
 
-/* ---------------- base page ---------------- */
+/* ---------------- base scene ---------------- */
+const RING_C = 94.25;
+const icoStroke = n => svg(n).replace(/stroke="[^"]+"/, 'stroke="currentColor"');
+function ringHTML(j, pos, icon) {
+  const f = clamp((Date.now() - j.start) / Math.max(1, j.end - j.start), 0, 1);
+  return `<svg class="ring ${pos}" viewBox="0 0 36 36" data-rs="${j.start}" data-re="${j.end}"><circle cx="18" cy="18" r="16" class="rbg"/><circle cx="18" cy="18" r="15" class="rfg" stroke-dasharray="${RING_C}" stroke-dashoffset="${(RING_C * (1 - f)).toFixed(1)}"/><g transform="translate(10 10) scale(.66)" fill="none" stroke="#e7e4da" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${ICON[icon]}</g></svg>`;
+}
+const QUEUE_OF = { mil: ['train', 'train'], tech: ['res', 'lab'], depot: ['heal', 'med'], defense: ['wall', 'med'] };
+function plotHTML(ar, i, firsts) {
+  const p = S.plots[ar][i], outer = ar === 'out';
+  if (!p) return `<button class="plot empty ${outer ? 'fld' : 'cnc'}" data-a="plot" data-ar="${ar}" data-i="${i}">${emptyPlotSVG(outer)}</button>`;
+  const bj = S.jobs.find(j => j.kind === 'build' && j.area === ar && j.idx === i), q = QUEUE_OF[p.b] && firsts[p.b] === ar + i ? S.jobs.find(j => j.kind === QUEUE_OF[p.b][0]) : null, rdy = UI.ready[ar + i];
+  return `<button class="plot ${outer ? 'fld' : 'cnc'} ${bj ? 'busy' : ''} ${p.l >= 25 ? 'max' : ''}" data-a="plot" data-ar="${ar}" data-i="${i}" title="${BLD[p.b].n}">${bldSVG(p.b, p.l)}<span class="lv num">${p.l}</span><span class="nm">${BLD[p.b].n}</span>${bj ? ringHTML(bj, 'tr', 'base') : ''}${q ? ringHTML(q, 'tl', QUEUE_OF[p.b][1]) : ''}${rdy ? `<span class="bub">${rdy}</span>` : ''}</button>`;
+}
 function renderBase() {
-  const hr = hourly(), pl = (ar, n) => S.plots[ar].map((p, i) => {
-    const busy = S.jobs.some(j => j.kind === 'build' && j.area === ar && j.idx === i);
-    return p ? `<button class="plot ${busy ? 'busy' : ''}" data-a="plot" data-ar="${ar}" data-i="${i}" title="${BLD[p.b].n}"><b>${BLD[p.b].s}</b><i class="num">${p.l}${busy ? '↑' : ''}</i></button>` : `<button class="plot empty" data-a="plot" data-ar="${ar}" data-i="${i}"><b>+</b></button>`;
-  }).join('');
-  const f = shieldOn(), fs = inForest();
+  const hr = hourly(), firsts = {}; for (const ar of ['in', 'out']) S.plots[ar].forEach((p, i) => { if (p && p.l > 0 && !firsts[p.b]) firsts[p.b] = ar + i; });
+  const grid = ar => S.plots[ar].map((_, i) => plotHTML(ar, i, firsts)).join(''), f = shieldOn(), fs = inForest();
   $('#pg-base').innerHTML = `
+  <div class="qs"><button class="btn sm" data-a="drawer" data-id="desk" data-tab="train">${icoStroke('train')}Train</button><button class="btn sm" data-a="drawer" data-id="desk" data-tab="lab">${icoStroke('lab')}Lab</button><button class="btn sm" data-a="wing" data-w="med">${icoStroke('med')}Med</button><button class="btn sm" data-a="wing" data-w="wall">Wall</button><button class="btn sm" data-a="wing" data-w="rally">Rally</button></div>
+  <div class="zone cnc"><div class="zt">Command zone · inner compound</div><div class="grid5">${grid('in')}</div></div>
+  <div class="zone fld"><div class="zt">Fields and industry · outer ring</div><div class="grid5">${grid('out')}</div></div>
   <div class="panel"><div class="hd"><h3>Command Center ${ccLevel()}</h3><span class="tag br">${S.al[0].tag}</span></div><div class="bd">
     <div class="split"><div><div class="lbl">Headcount</div><div class="big num">${fmtN(headcount())}</div></div><div><div class="lbl">March queues</div><div class="big num">${marchQueues()}</div></div><div><div class="lbl">Help clicks</div><div class="big num">${helpCap()}</div></div><div><div class="lbl">StoreHouse</div><div class="big num">${fmtN(storeCap())}</div><div class="sub">protected ${fmtN(protectedFloor())}</div></div></div>
     <div class="sub mt">Per hour, sheet: ${RES.filter(r => hr[r]).map(r => `${RESN[r]} ${fmtN(hr[r])}`).join(' · ')}. Runs at ×${DRILL}.</div>
-    <div class="flex wrap mt"><button class="btn ${f ? 'on' : 'line'}" data-a="shield">Peace shield ${S.shield.until > Date.now() ? (fs ? 'up (dead in forest)' : 'up') : 'off'}</button><span class="sub">8 h sheet · ${fmtT(shieldSheet() / OCC)} drill</span></div>
-    <div class="flex wrap mt"><button class="btn line" data-a="builder2" ${S.builders >= 2 ? 'disabled' : ''}>${S.builders >= 2 ? 'Two builders' : 'Second builder · 220◆'}</button><button class="btn line" data-a="tpr" ${heroLocked() ? 'disabled' : ''}>Random teleport</button></div>
+    <div class="flex wrap mt"><button class="btn ${f ? 'on' : 'line'}" data-a="shield">Peace shield ${S.shield.until > Date.now() ? (fs ? 'up (dead in forest)' : 'up') : 'off'}</button><button class="btn line" data-a="builder2" ${S.builders >= 2 ? 'disabled' : ''}>${S.builders >= 2 ? 'Two builders' : 'Second builder · 220◆'}</button><button class="btn line" data-a="tpr" ${heroLocked() ? 'disabled' : ''}>Random teleport</button></div>
     ${heroLocked() ? '<div class="sub mt sg">A hero is out. The base cannot teleport.</div>' : ''}
-  </div></div>
-  ${S.jobs.filter(j => j.kind === 'build').map(j => `<div class="panel"><div class="bd"><div class="lbl">Build ${j.why}</div>${jobCtl(j)}</div></div>`).join('')}
-  <div class="panel"><div class="hd"><h3>Inner plots</h3><span class="sub">25</span></div><div class="bd"><div class="grid5">${pl('in')}</div></div></div>
-  <div class="panel"><div class="hd"><h3>Outer plots</h3><span class="sub">25</span></div><div class="bd"><div class="grid5">${pl('out')}</div></div></div>`;
+  </div></div>`;
+}
+function spawnFly() {
+  if (UI.page !== 'base' || UI.drawer || UI.sheet) return;
+  const els = [...document.querySelectorAll('.plot:not(.empty)')].filter(e => { const p = S.plots[e.dataset.ar][+e.dataset.i]; return p && p.l > 0 && (BLD[p.b].res || p.b === 'treasury'); });
+  if (!els.length) return; const e = els[Math.floor(Math.random() * els.length)], p = S.plots[e.dataset.ar][+e.dataset.i], r = BLD[p.b].res || 'cash', m = mods();
+  const amt = Math.round((BLD[p.b].rate || 480) * p.l * m.yld[r] / 3600 * DRILL * 6), s = document.createElement('span'); s.className = 'fly'; s.innerHTML = `+${fmtN(amt)} ${svg(r).replace('<svg', '<svg width="12" height="12"')}`; e.appendChild(s); setTimeout(() => s.remove(), 1700);
 }
 
 /* ---------------- desk: train, lab, med ---------------- */
@@ -315,52 +282,72 @@ function renderMed() {
   }
   return h;
 }
-function renderDesk() {
-  const el = $('#desk'); if (!UI.desk) { el.className = 'glass'; return; }
-  el.className = 'glass on';
-  $('#desktabs').innerHTML = [['train', 'Train'], ['lab', 'Lab'], ['med', 'Med']].map(([k, n]) => `<button class="${UI.desk === k ? 'on' : ''}" data-a="dock" data-k="${k}">${n}</button>`).join('') + `<button class="x" data-a="closedesk">✕</button>`;
-  $('#deskbody').innerHTML = UI.desk === 'train' ? renderTrain() : UI.desk === 'lab' ? renderLab() : renderMed();
-}
 
-/* ---------------- march page ---------------- */
-function renderMarch() {
-  const sub = [['cols', 'Columns'], ['field', 'Field'], ['rally', 'Rally'], ['rep', 'Reports']];
-  let h = `<div class="tabs2">${sub.map(([k, n]) => `<button class="${UI.mt === k ? 'on' : ''}" data-a="mtab" data-k="${k}">${n}${k === 'rep' && S.reports.length ? ' ' + S.reports.length : ''}</button>`).join('')}</div>`;
-  if (UI.mt === 'cols') {
-    if (S.incoming.length) h += `<div class="panel" style="border-color:var(--signal)"><div class="hd"><h3 class="sg">Hostile contact</h3></div><div class="bd">${S.incoming.map(i => `<div class="rr"><span>${i.name}</span><span>${tm(i.end)}</span></div>`).join('')}<div class="sub mt">Shield eats the hit. Unshielded, the wall and garrison take it.${shieldOn() ? '' : ' Shield is down.'}</div></div></div>`;
-    h += S.marches.length ? S.marches.map(m => {
-      const ph = { out: 'Out', sit: 'Hauling', hold: 'Holding', back: 'Walking home', stay: 'On station', wait: 'Gathering' }[m.phase];
-      return `<div class="panel"><div class="bd"><div class="flex sp"><b class="h" style="font-size:18px">${marchName(m)} ${m.kind === 'rally' ? m.tname : m.tx + ',' + m.ty}</b><span class="tag ${m.off ? 'sg' : ''}">${ph}</span></div><div class="sub">${Object.keys(m.col).map(k => m.col[k] + ' ' + ckName(k)).join(', ')}${m.hero ? ' · ' + HEROES[S.hero.id].n : ''}</div>${m.kind === 'rally' && m.phase === 'wait' ? `<div class="sub mt">Joiners in: ${m.joiners.filter(j => j.in).length}/${m.joiners.length} · locked, only you can cancel</div>` : ''}${lootTxt(m)}${m.phase !== 'stay' ? jobCtlM(m) : ''}<div class="flex mt wrap">${m.phase === 'back' ? '' : `<button class="btn sm bad" data-a="recall" data-id="${m.id}">${m.kind === 'rally' && m.phase === 'wait' ? 'Cancel rally' : m.phase === 'stay' || m.phase === 'hold' ? 'Withdraw' : 'Recall'}</button>`}</div></div></div>`;
-    }).join('') : '<div class="sub mb">No columns out. Tap the map to send one.</div>';
-    h += `<div class="panel"><div class="hd"><h3>Log</h3></div><div class="bd">${S.log.slice(0, 14).map(l => `<div class="rr"><span class="${l.k === 'bad' ? 'sg' : l.k === 'good' ? 'ox' : l.k === 'warn' ? 'br' : ''}">${l.m}</span><span class="mut num">${new Date(l.t).toTimeString().slice(0, 8)}</span></div>`).join('') || '<div class="sub">Nothing yet.</div>'}</div></div>`;
-  } else if (UI.mt === 'field') {
-    const col = previewCol(UI.comp), e = estOut('field', S.base.x, S.base.y, UI.comp), g = UI.fg; const Dd = mkSide({}, {}, 1, null, monsterSyn(g, true));
-    h += `<div class="panel"><div class="hd"><h3>Field march</h3></div><div class="bd"><div class="sub">Fights a seeded camp on a fixed 3600-tile leg, walks home with loot capped by load. Strips the shield.</div><div class="flex sp mt"><span class="lbl">Camp grade</span><div class="step"><button data-a="fg" data-d="-1">−</button><b class="num">${g}</b><button data-a="fg" data-d="1">+</button></div></div><div class="sub mt">Odds ${oddsText(Dd, col, UI.comp.hero) || '—'}${e ? ` · out ${fmtT(e.ms / 1000)}` : ''}</div>${compHTML('comp')}<div class="flex mt"><button class="btn pri tall grow" data-a="launch" data-k="field" ${compTotal(UI.comp) ? '' : 'disabled'}>Send field march</button></div></div></div>`;
-  } else if (UI.mt === 'rally') {
-    const R_ = UI.rl, hl = lvlMax('hall'), waits = RALLY_WAITS;
-    h += `<div class="panel"><div class="hd"><h3>Rally</h3><span class="tag">Hall ${hl} · ${fmtN(rallyCap())} cap</span></div><div class="bd"><div class="sub">Targets: real commander bases and the citadel. Waiting troops are locked. Only you cancel. If you bring no hero, the rally gets no hero, gear, gem or rank bonus.</div>
+/* ---------------- drawers: desk, hero/forge, alliance, mail, march ---------------- */
+function renderDesk_(t) { return t === 'train' ? renderTrain() : t === 'lab' ? renderLab() : renderMed(); }
+function marchCols() {
+  let h = '';
+  if (S.incoming.length) h += `<div class="panel" style="border-color:var(--signal)"><div class="hd"><h3 class="sg">Hostile contact</h3></div><div class="bd">${S.incoming.map(i => `<div class="rr"><span>${i.rally ? 'Rally · ' : ''}${i.name}</span><span>${tm(i.end)}</span></div>`).join('')}<div class="sub mt">Shield eats the hit. Unshielded, the wall and garrison take it.${shieldOn() ? '' : ' Shield is down.'}</div></div></div>`;
+  h += S.marches.length ? S.marches.map(m => {
+    const ph = { out: 'Out', sit: 'Hauling', hold: 'Holding', back: 'Walking home', stay: 'On station', wait: 'Gathering' }[m.phase];
+    return `<div class="panel"><div class="bd"><div class="flex sp"><b class="h" style="font-size:18px">${marchName(m)} ${m.kind === 'rally' ? m.tname : m.tx + ',' + m.ty}</b><span class="tag ${m.off ? 'sg' : ''}">${ph}</span></div><div class="sub">${Object.keys(m.col).map(k => m.col[k] + ' ' + ckName(k)).join(', ')}${m.hero ? ' · ' + HEROES[S.hero.id].n : ''}</div>${m.kind === 'rally' && m.phase === 'wait' ? `<div class="sub mt">Joiners in: ${m.joiners.filter(j => j.in).length}/${m.joiners.length} · locked, only you can cancel</div>` : ''}${lootTxt(m)}${m.phase !== 'stay' ? jobCtlM(m) : ''}<div class="flex mt wrap">${m.phase === 'back' ? '' : `<button class="btn sm bad" data-a="recall" data-id="${m.id}">${m.kind === 'rally' && m.phase === 'wait' ? 'Cancel rally' : m.phase === 'stay' || m.phase === 'hold' ? 'Withdraw' : 'Recall'}</button>`}<button class="btn sm line" data-a="mjump" data-x="${m.tx}" data-y="${m.ty}">Show</button></div></div></div>`;
+  }).join('') : '<div class="sub mb">No columns out. Tap the map, then a radial button.</div>';
+  return h;
+}
+function marchField() {
+  const col = previewCol(UI.comp), e = estOut('field', S.base.x, S.base.y, UI.comp), g = UI.fg, Dd = mkSide({}, {}, 1, null, monsterSyn(g, true));
+  return `<div class="panel"><div class="hd"><h3>Field march</h3></div><div class="bd"><div class="sub">Fights a seeded camp on a fixed 3600-tile leg, walks home with loot capped by load. Strips the shield.</div><div class="flex sp mt"><span class="lbl">Camp grade</span><div class="step"><button data-a="fg" data-d="-1">−</button><b class="num">${g}</b><button data-a="fg" data-d="1">+</button></div></div><div class="sub mt">Odds ${oddsText(Dd, col, UI.comp.hero) || '—'}${e ? ` · out ${fmtT(e.ms / 1000)}` : ''}</div>${compHTML('comp')}<div class="flex mt"><button class="btn pri tall grow" data-a="launch" data-k="field" ${compTotal(UI.comp) ? '' : 'disabled'}>Send field march</button></div></div></div>`;
+}
+function marchRally() {
+  const R_ = UI.rl, hl = lvlMax('hall'), waits = RALLY_WAITS;
+  return `<div class="panel"><div class="hd"><h3>Rally</h3><span class="tag">Hall ${hl} · ${fmtN(rallyCap())} cap</span></div><div class="bd"><div class="sub">Targets: real commander bases and the citadel. Waiting troops are locked. Only you cancel. If you bring no hero, the rally gets no hero, gear, gem or rank bonus.</div>
     <div class="flex wrap mt"><span class="lbl">Target</span><select data-a="rtarget"><option value="citadel" ${R_.target === 'citadel' ? 'selected' : ''}>Citadel</option>${S.bots.map(b => `<option value="${b.al}" ${String(R_.target) === String(b.al) ? 'selected' : ''}>${b.tag} ${b.cmd}</option>`).join('')}</select></div>
     <div class="flex wrap mt"><span class="lbl">Wait</span>${waits.map(([n, s], i) => `<button class="btn sm ${R_.wait === i ? 'on' : 'line'}" data-a="rwait" data-i="${i}">${n}</button>`).join('')}</div><div class="sub mt">${dualScale(Math.max(5000, waits[R_.wait][1] / OCC * 1000))}</div>
     <div class="flex sp mt"><span class="lbl">Extra slots 7–10 · tokens ${S.tokens}</span><div class="step"><button data-a="rslots" data-d="-1">−</button><b class="num">${R_.slots}</b><button data-a="rslots" data-d="1">+</button></div></div><div class="sub">Slots ${6 + R_.slots} of 10 · orders ${S.orders}</div>
     ${compHTML('rcomp')}<div class="flex mt"><button class="btn pri tall grow" data-a="rally" ${compTotal(UI.rcomp) && hl ? '' : 'disabled'}>Lead rally</button></div></div></div>`;
-  } else {
-    h += S.reports.length ? `<div class="list">${S.reports.map(r => `<div class="it" data-a="report" data-id="${r.id}" style="cursor:pointer"><div class="grow"><b class="h" style="font-size:16px">${r.title}</b><div class="sub">${new Date(r.t).toTimeString().slice(0, 8)} · ${r.win == null ? 'intel' : r.win ? 'victory' : 'defeat'}</div></div><span class="tag ${r.win === false ? 'sg' : r.win ? 'br' : ''}">${r.kind}</span></div>`).join('')}</div>` : '<div class="sub">No reports. A wiped column writes none.</div>';
-  }
+}
+function reportsHTML() {
+  return S.reports.length ? `<div class="list">${S.reports.map(r => `<div class="it" data-a="report" data-id="${r.id}" style="cursor:pointer"><div class="grow"><b class="h" style="font-size:16px">${r.title}</b><div class="sub">${new Date(r.t).toTimeString().slice(0, 8)} · ${r.win == null ? 'intel' : r.win ? 'victory' : 'defeat'}</div></div><span class="tag ${r.win === false ? 'sg' : r.win ? 'br' : ''}">${r.kind}</span></div>`).join('')}</div>` : '<div class="sub">No reports. A wiped column writes none.</div>';
+}
+function logHTML() { return `<div class="panel"><div class="bd">${S.log.slice(0, 40).map(l => `<div class="rr"><span class="${l.k === 'bad' ? 'sg' : l.k === 'good' ? 'ox' : l.k === 'warn' ? 'br' : ''}">${l.m}</span><span class="mut num">${new Date(l.t).toTimeString().slice(0, 8)}</span></div>`).join('') || '<div class="sub">Nothing yet.</div>'}</div></div>`; }
+function contactsHTML() {
+  return (S.incoming.length ? `<div class="panel" style="border-color:var(--signal)"><div class="hd"><h3 class="sg">Inbound</h3></div><div class="bd">${S.incoming.map(i => `<div class="rr"><span>${i.rally ? 'Rally · ' : ''}${i.name}</span><span>${tm(i.end)}</span></div>`).join('')}</div></div>` : '')
+    + `<div class="panel"><div class="hd"><h3>Commanders</h3></div><div class="bd list">${S.bots.map(b => `<div class="it"><span style="width:10px;height:10px;background:${alColor(b.al)};display:inline-block"></span><div class="grow"><b class="h" style="font-size:16px">${b.tag} ${b.cmd}</b><div class="sub">${b.n} · ${b.x},${b.y} · ${b.shieldUntil > Date.now() ? 'shielded' : 'exposed'}</div></div><button class="btn sm line" data-a="mjump" data-x="${b.x}" data-y="${b.y}">Show</button></div>`).join('')}</div></div>`;
+}
+function heroesHTML() {
+  const hero = HEROES[S.hero.id];
+  return `<div class="panel"><div class="hd"><h3>Heroes</h3><span class="tag ${S.hero.captured ? 'sg' : ''}">Rank ${S.hero.rank}</span></div><div class="bd">${Object.keys(HEROES).map(k => `<div class="it flex" style="padding:6px 0"><div class="grow"><b class="h" style="font-size:16px">${HEROES[k].n}</b> <span class="sub">${HEROES[k].role} · ${HEROES[k].d}</span></div><button class="btn sm ${S.hero.id === k ? 'on' : 'line'}" data-a="hero" data-k="${k}">${S.hero.id === k ? 'Stationed' : 'Station'}</button></div>`).join('')}${S.hero.captured ? `<div class="flex wrap mt"><span class="sg">${hero.n} is captured.</span><button class="btn sm" data-a="ransom">Ransom 2500</button><button class="btn sm line" data-a="ransom" data-seal="1">Use seal</button></div>` : heroLocked() ? '<div class="sub mt">The hero is out. The base cannot teleport.</div>' : ''}</div></div>`;
+}
+function ledgerHTML() { return `<div class="panel"><div class="hd"><h3>Diamond ledger</h3><b class="num br">${S.dia}◆</b></div><div class="bd">${S.ledger.map(l => `<div class="rr"><span>${l.why}</span><span class="num ${l.n < 0 ? 'sg' : 'ox'}">${l.n > 0 ? '+' : ''}${l.n} → ${l.bal}</span></div>`).join('') || '<div class="sub">No entries. A local ledger, not a store.</div>'}</div></div>`; }
+function throneHTML() {
+  const th = S.throne, king = th.ruler === 0;
+  let h = `<div class="panel"><div class="hd"><h3>Throne</h3><span class="tag ${king ? 'br' : ''}">${th.ruler != null ? alName(th.ruler) + ' rules' : th.holder != null ? alName(th.holder) + ' holds' : 'empty'}</span></div><div class="bd"><div class="sub">${th.ruler != null ? 'Reign ends ' : th.holder != null ? 'Hold completes ' : 'Nobody holds the throne. Any alliance may put troops in.'}${th.ruleUntil ? tm(th.ruleUntil, false) + ' drill · 3 sheet days' : th.holdEnd ? tm(th.holdEnd, false) + ' · 6 sheet hours' : ''}</div><div class="sub mt">Score ${S.score}</div><div class="flex mt"><button class="btn sm line" data-a="mjump" data-x="${TX}" data-y="${TY}">Show citadel</button></div></div></div>`;
+  if (king) h += `<div class="panel"><div class="hd"><h3>Officers R4</h3><span class="tag">${th.officers.length}/2</span></div><div class="bd">${S.roster.map(n => `<div class="it flex" style="padding:4px 0"><span class="grow">${n}</span><button class="btn sm ${th.officers.includes(n) ? 'on' : 'line'}" data-a="appoint" data-n="${n}">${th.officers.includes(n) ? 'R4' : 'Appoint'}</button></div>`).join('')}</div></div>
+    <div class="panel"><div class="hd"><h3>Titles</h3></div><div class="bd">${['You'].concat(S.roster).map(n => { const cur = S.titles[n === 'You' ? 'you' : n]; return `<div class="flex wrap" style="margin:4px 0"><b style="width:74px">${n}</b><select data-a="title" data-n="${n}"><option value="">—</option>${Object.keys(TITLES).map(t => `<option value="${t}" ${cur === t ? 'selected' : ''}>${TITLES[t].n} ${TITLES[t].d}</option>`).join('')}</select></div>`; }).join('')}<div class="sub mt">R5 and the two R4 may grant. When the reign ends, officers and titles clear.</div></div></div>`;
   return h;
 }
-function lootTxt(m) { const p = []; for (const r in m.loot.res) p.push(fmtN(m.loot.res[r]) + ' ' + RESN[r]); for (const g in m.loot.bars) p.push(m.loot.bars[g] + '× grade-' + g + ' bar'); if (m.loot.shard) p.push(SETS[m.loot.shard].n + ' shard'); if (m.haul && m.phase === 'sit') p.push('hauling ' + fmtN(m.haul)); return p.length ? `<div class="sub mt">Cargo: ${p.join(', ')}</div>` : ''; }
-function jobCtlM(m) {
-  if (m.kind === 'rally' && m.phase !== 'wait') return `<div class="flex mt"><span>${tm(m.end, false)}</span><span class="sub">a launched column takes no speed-up</span></div>`;
-  return jobCtl(Object.assign({}, m, { ask: undefined, kind: 'march', end: m.end }));
+function allyHTML() {
+  const king = S.throne.ruler === 0;
+  return `<div class="panel"><div class="hd"><h3>Alliance ${S.al[0].tag}</h3><span class="sub">${Object.values(S.own).filter(o => o === 0).length} tiles · score ${S.score}</span></div><div class="bd"><div class="flex wrap">${STD_KEYS.map(c => `<button class="sw${S.al[0].color === c ? ' on' : ''}" style="background:${STD[c]}" data-a="recolor" data-c="${c}" title="${c}"></button>`).join('')}</div><div class="sub mt">${king ? 'You rule. Pick a standard.' : 'Only the ruling king can recolor.'}</div><div class="flex mt"><button class="btn bad sm" data-a="disband">Disband alliance</button></div></div></div>
+  <div class="panel"><div class="hd"><h3>Settings</h3></div><div class="bd flex wrap"><button class="btn sm ${setOn('snd') ? 'on' : 'line'}" data-a="setopt" data-k="snd">Sound ${setOn('snd') ? 'on' : 'off'}</button><button class="btn sm ${setOn('hap') ? 'on' : 'line'}" data-a="setopt" data-k="hap">Haptics ${setOn('hap') ? 'on' : 'off'}</button><button class="btn bad sm" data-a="reset">Reset save</button></div></div>`;
 }
+const DR = {
+  desk: { tabs: [['train', 'Train'], ['lab', 'Lab'], ['med', 'Med']], body: renderDesk_ },
+  hero: { tabs: [['forge', 'Forge'], ['heroes', 'Heroes'], ['store', 'Store'], ['market', 'Market'], ['ledger', 'Ledger']], body: t => ({ forge: forgeHTML, heroes: heroesHTML, store: storeHTML, market: marketHTML, ledger: ledgerHTML })[t]() },
+  alliance: { tabs: [['throne', 'Throne'], ['rally', 'Rally'], ['ally', 'Alliance']], body: t => ({ throne: throneHTML, rally: marchRally, ally: allyHTML })[t]() },
+  mail: { tabs: [['rep', 'Reports'], ['log', 'Log'], ['ctc', 'Contacts']], body: t => ({ rep: reportsHTML, log: logHTML, ctc: contactsHTML })[t]() },
+  march: { tabs: [['cols', 'Columns'], ['field', 'Field']], body: t => t === 'cols' ? marchCols() : marchField() }
+};
+function renderDrawer() {
+  const el = $('#drawer'), id = UI.drawer; if (!id) { el.classList.remove('on'); return; }
+  const d = DR[id], tab = UI.dt[id];
+  $('#dtabs').innerHTML = d.tabs.map(([k, n]) => `<button class="${tab === k ? 'on' : ''}" data-a="dtab" data-k="${k}">${n}</button>`).join('') + `<button class="x" data-a="closedrawer">✕</button>`;
+  $('#dbody').innerHTML = d.body(tab); el.classList.add('on');
+  if (id === 'mail' && S.reports.length) S.readTo = S.reports[0].id;
+}
+function sheetOpen(s) { UI.sheet = s; UI.drawer = null; closeRadial(); D(); }
+function openDrawer(id, tab) { UI.drawer = id; if (tab) UI.dt[id] = tab; UI.sheet = null; closeRadial(); D(); }
 
-/* ---------------- vault page ---------------- */
-function renderVault() {
-  const tabs = [['forge', 'Forge'], ['store', 'Store'], ['market', 'Market'], ['court', 'Court'], ['ledger', 'Ledger']];
-  let h = `<div class="tabs2">${tabs.map(([k, n]) => `<button class="${UI.vt === k ? 'on' : ''}" data-a="vtab" data-k="${k}">${n}</button>`).join('')}</div>`;
-  if (UI.vt === 'forge') h += forgeHTML(); else if (UI.vt === 'store') h += storeHTML(); else if (UI.vt === 'market') h += marketHTML(); else if (UI.vt === 'court') h += courtHTML(); else h += `<div class="panel"><div class="hd"><h3>Diamond ledger</h3><b class="num br">${S.dia}◆</b></div><div class="bd">${S.ledger.map(l => `<div class="rr"><span>${l.why}</span><span class="num ${l.n < 0 ? 'sg' : 'ox'}">${l.n > 0 ? '+' : ''}${l.n} → ${l.bal}</span></div>`).join('') || '<div class="sub">No entries. A local ledger, not a store.</div>'}<div class="flex mt"><button class="btn bad sm" data-a="reset">Reset save</button></div></div></div>`;
-  return h;
-}
 function forgeHTML() {
   const u = gradeUnits(), C = UI.cr, sel = C.sel, selN = sumCol(sel);
   const bars = [1, 2, 3, 4, 5, 6].map(g => `<div class="flex sp" style="margin:4px 0"><span class="lbl" style="width:60px">Grade ${g}</span><b class="num grow">${S.bars[g] || 0}</b><div class="step"><button data-a="crsel" data-g="${g}" data-d="-1">−</button><b class="num">${sel[g] || 0}</b><button data-a="crsel" data-g="${g}" data-d="1">+</button></div><button class="btn sm" data-a="refine" data-g="${g}" ${g < 6 && (S.bars[g] || 0) >= 4 ? '' : 'disabled'}>Refine</button></div>`).join('');
@@ -385,39 +372,41 @@ function storeHTML() {
 function marketHTML() {
   rollMarket(); return `<div class="panel"><div class="hd"><h3>Black Market</h3><button class="btn sm line" data-a="mrefresh">Refresh 15◆</button></div><div class="bd list">${!hasB('market') ? '<div class="sub sg">Build a Black Market.</div>' : ''}${S.market.offers.map((o, i) => { const it = MARKET_CAT.find(x => x.id === o.id); return `<div class="it"><div class="grow"><b class="h" style="font-size:16px">${it.n}</b></div><button class="btn sm ${o.sold ? 'line' : 'pri'}" data-a="mbuy" data-i="${i}" ${o.sold || S.dia < it.cost ? 'disabled' : ''}>${o.sold ? 'Sold' : it.cost + '◆'}</button></div>`; }).join('')}</div></div>`;
 }
-function courtHTML() {
-  const th = S.throne, king = th.ruler === 0, hero = HEROES[S.hero.id];
-  let h = `<div class="panel"><div class="hd"><h3>Throne</h3><span class="tag ${king ? 'br' : ''}">${th.ruler != null ? alName(th.ruler) + ' rules' : th.holder != null ? alName(th.holder) + ' holds' : 'empty'}</span></div><div class="bd"><div class="sub">${th.ruler != null ? 'Reign ends ' : th.holder != null ? 'Hold completes ' : ''}${th.ruleUntil ? tm(th.ruleUntil, false) + ' drill · 3 sheet days' : th.holdEnd ? tm(th.holdEnd, false) + ' · 6 sheet hours' : ''}</div><div class="sub mt">Score ${S.score}</div></div></div>`;
-  h += `<div class="panel"><div class="hd"><h3>Heroes</h3><span class="tag ${S.hero.captured ? 'sg' : ''}">Rank ${S.hero.rank}</span></div><div class="bd">${Object.keys(HEROES).map(k => `<div class="it flex" style="padding:6px 0"><div class="grow"><b class="h" style="font-size:16px">${HEROES[k].n}</b> <span class="sub">${HEROES[k].role} · ${HEROES[k].d}</span></div><button class="btn sm ${S.hero.id === k ? 'on' : 'line'}" data-a="hero" data-k="${k}">${S.hero.id === k ? 'Stationed' : 'Station'}</button></div>`).join('')}${S.hero.captured ? `<div class="flex wrap mt"><span class="sg">${hero.n} is captured.</span><button class="btn sm" data-a="ransom">Ransom 2500</button><button class="btn sm line" data-a="ransom" data-seal="1">Use seal</button></div>` : heroLocked() ? '<div class="sub mt">The hero is out. The base cannot teleport.</div>' : ''}</div></div>`;
-  h += `<div class="panel"><div class="hd"><h3>Alliance ${S.al[0].tag}</h3><span class="sub">${Object.values(S.own).filter(o => o === 0).length} tiles</span></div><div class="bd"><div class="flex wrap">${STD_KEYS.map(c => `<button class="sw${S.al[0].color === c ? ' on' : ''}" style="background:${STD[c]}" data-a="recolor" data-c="${c}" title="${c}"></button>`).join('')}</div><div class="sub mt">${king ? 'You rule. Pick a standard.' : 'Only the ruling king can recolor.'}</div><div class="flex mt"><button class="btn bad sm" data-a="disband">Disband alliance</button></div></div></div>`;
-  if (king) {
-    h += `<div class="panel"><div class="hd"><h3>Officers R4</h3><span class="tag">${th.officers.length}/2</span></div><div class="bd">${S.roster.map(n => `<div class="it flex" style="padding:4px 0"><span class="grow">${n}</span><button class="btn sm ${th.officers.includes(n) ? 'on' : 'line'}" data-a="appoint" data-n="${n}">${th.officers.includes(n) ? 'R4' : 'Appoint'}</button></div>`).join('')}</div></div>
-    <div class="panel"><div class="hd"><h3>Titles</h3></div><div class="bd">${['You'].concat(S.roster).map(n => { const cur = S.titles[n === 'You' ? 'you' : n]; return `<div class="flex wrap" style="margin:4px 0"><b style="width:74px">${n}</b><select data-a="title" data-n="${n}"><option value="">—</option>${Object.keys(TITLES).map(t => `<option value="${t}" ${cur === t ? 'selected' : ''}>${TITLES[t].n} ${TITLES[t].d}</option>`).join('')}</select></div>`; }).join('')}<div class="sub mt">R5 and the two R4 may grant. When the reign ends, officers and titles clear.</div></div></div>`;
-  }
-  return h;
-}
 
 /* ---------------- actions ---------------- */
 const A = {
-  dock(d) { const k = d.k; if (k === 'train' || k === 'lab' || k === 'med') { UI.desk = k; UI.sheet = null; } else { UI.desk = null; UI.page = k; if (k !== 'map') UI.sheet = null; showPage(); } D(); },
-  closedesk() { UI.desk = null; D(); }, closesheet() { UI.sheet = null; UI.sel = null; D(); },
-  jump(d) { const k = d.k; if (k === 'n') panTo(MAP.cx, MAP.cy - 60); else if (k === 's') panTo(MAP.cx, MAP.cy + 60); else if (k === 'w') panTo(MAP.cx - 60, MAP.cy); else if (k === 'e') panTo(MAP.cx + 60, MAP.cy); else if (k === 'b') panTo(S.base.x, S.base.y); else panTo(TX, TY); },
-  plot(d) { UI.sheet = { type: 'plot', area: d.ar, idx: +d.i }; UI.page = 'base'; D(); },
+  dock(d) {
+    const k = d.k; closeRadial();
+    if (k === 'hero' || k === 'alliance' || k === 'mail') { UI.drawer = UI.drawer === k ? null : k; UI.sheet = null; }
+    else { UI.drawer = null; UI.page = k; UI.sheet = null; if (k !== 'map') UI.sel = null; }
+    D();
+  },
+  drawer(d) { openDrawer(d.id, d.tab); }, dtab(d) { UI.dt[UI.drawer] = d.k; D(); }, closedrawer() { UI.drawer = null; D(); },
+  closesheet() { UI.sheet = null; UI.sel = null; D(); },
+  scrim() { if (UI.drawer) UI.drawer = null; else { UI.sheet = null; UI.sel = null; } D(); },
+  details(d) { closeRadial(); UI.sel = { x: +d.x, y: +d.y }; UI.sheet = { type: 'tile', x: +d.x, y: +d.y }; UI.drawer = null; D(); },
+  qsend(d) {
+    const comp = bestComp(headcount()), e = launchMarch(d.k, +d.x, +d.y, comp, false); closeRadial();
+    if (run(e, 'Column out: ' + compTotal(comp) + ' troops.')) { UI.sel = null; hap([14, 40, 14]); } else UI.sel = { x: +d.x, y: +d.y };
+  },
+  mjump(d) { UI.drawer = null; UI.page = 'map'; panTo(+d.x, +d.y); D(); },
+  jump(d) { const k = d.k; closeRadial(); if (k === 'n') panTo(MAP.cx, MAP.cy - 60); else if (k === 's') panTo(MAP.cx, MAP.cy + 60); else if (k === 'w') panTo(MAP.cx - 60, MAP.cy); else if (k === 'e') panTo(MAP.cx + 60, MAP.cy); else if (k === 'b') panTo(S.base.x, S.base.y); else panTo(TX, TY); },
+  plot(d) { delete UI.ready[d.ar + d.i]; sheetOpen({ type: 'plot', area: d.ar, idx: +d.i }); UI.page = 'base'; },
   build(d) { run(startBuild(d.area, +d.idx, d.b, !!d.cover)); },
-  rush(d) { run(rushJob(+d.id)); }, slip(d) { run(slipJob(+d.id)); }, help(d) { run(askHelp(+d.id)); },
+  rush(d) { run(rushJob(+d.id)); closeRadial(); }, slip(d) { run(slipJob(+d.id)); closeRadial(); }, help(d) { run(askHelp(+d.id)); },
   cstep(d) { const c = UI[d.cn], cap = d.cn === 'rcomp' ? Math.min(headcount(), rallyCap()) : headcount(), tot = compTotal(c); c[d.c] = clamp(c[d.c] + +d.d, 0, Math.max(0, Math.min(clsAvail(d.c), cap - (tot - c[d.c])))); D(); },
   best(d) { const c = UI[d.cn]; Object.assign(c, bestComp(d.cn === 'rcomp' ? Math.min(headcount(), rallyCap()) : headcount())); D(); },
   clear(d) { const c = UI[d.cn]; CLS.forEach(k => c[k] = 0); c.hero = false; D(); }, chero(d) { const c = UI[d.cn]; c.hero = !c.hero; D(); },
   launch(d) {
     const s = UI.sheet, c = UI.comp; let x, y;
     if (d.k === 'field') { x = S.base.x; y = S.base.y; } else { x = s.x; y = s.y; }
-    const e = launchMarch(d.k, x, y, c, c.hero, { grade: UI.fg }); if (run(e, d.k === 'field' ? 'Field column is out.' : 'Column is out.')) { CLS.forEach(k => c[k] = 0); c.hero = false; if (d.k !== 'field') UI.sheet = null; } else if (!e) D();
+    const e = launchMarch(d.k, x, y, c, c.hero, { grade: UI.fg }); if (run(e, d.k === 'field' ? 'Field column is out.' : 'Column is out.')) { CLS.forEach(k => c[k] = 0); c.hero = false; if (d.k !== 'field') { UI.sheet = null; UI.sel = null; } }
   },
-  scout(d) { run(scoutTarget(+d.x, +d.y)); },
-  tp(d) { if (run(doTeleport(+d.x, +d.y))) { UI.sheet = null; UI.sel = null; MAP.cx = S.base.x; MAP.cy = S.base.y; } },
-  tpr() { if (run(randomTeleport())) { MAP.cx = S.base.x; MAP.cy = S.base.y; } },
+  scout(d) { run(scoutTarget(+d.x, +d.y)); closeRadial(); },
+  tp(d) { if (run(doTeleport(+d.x, +d.y))) { UI.sheet = null; UI.sel = null; closeRadial(); panTo(S.base.x, S.base.y); } },
+  tpr() { if (run(randomTeleport())) panTo(S.base.x, S.base.y); },
   shield() { run(toggleShield()); }, anti() { S.anti = !S.anti; D(); }, builder2() { run(buyBuilder(), 'Second builder hired.'); },
-  wing(d) { UI.sheet = null; if (d.w === 'train') A.dock({ k: 'train' }); else if (d.w === 'lab') A.dock({ k: 'lab' }); else if (d.w === 'med') { UI.med = 'depot'; A.dock({ k: 'med' }); } else if (d.w === 'wall') { UI.med = 'wall'; A.dock({ k: 'med' }); } else if (d.w === 'rally') { UI.mt = 'rally'; A.dock({ k: 'march' }); } else { UI.vt = 'market'; A.dock({ k: 'vault' }); } },
+  wing(d) { UI.sheet = null; closeRadial(); if (d.w === 'train') openDrawer('desk', 'train'); else if (d.w === 'lab') openDrawer('desk', 'lab'); else if (d.w === 'med') { UI.med = 'depot'; openDrawer('desk', 'med'); } else if (d.w === 'wall') { UI.med = 'wall'; openDrawer('desk', 'med'); } else if (d.w === 'rally') openDrawer('alliance', 'rally'); else openDrawer('hero', 'market'); },
   trcls(d) { UI.tr.cls = d.c; UI.tr.n = 0; D(); }, trtier(d) { UI.tr.tier = +d.t; UI.tr.n = 0; D(); },
   trn(d) { UI.tr.n = clamp(UI.tr.n + +d.d, 0, batchCap(UI.tr.tier)); D(); }, trmax() { UI.tr.n = batchCap(UI.tr.tier); D(); },
   train(d) { const T = UI.tr; run(startTrain(T.cls, T.tier, T.n, !!d.cover)); },
@@ -425,12 +414,11 @@ const A = {
   medtab(d) { UI.med = d.k; D(); }, heal(d) { const [c, t] = ckSplit(d.k); run(startHeal(c, t, S.wounded[d.k] || 0, !!d.cover)); },
   wlcls(d) { UI.wl.cls = d.c; UI.wl.n = 0; D(); }, wltier(d) { UI.wl.tier = +d.t; UI.wl.n = 0; D(); }, wln(d) { UI.wl.n = Math.max(0, UI.wl.n + +d.d); D(); },
   wall(d) { const w = UI.wl; run(startWall(w.cls, w.tier, w.n, !!d.cover)); },
-  mtab(d) { UI.mt = d.k; D(); }, vtab(d) { UI.vt = d.k; D(); },
-  recall(d) { run(recall(+d.id)); }, report(d) { UI.sheet = { type: 'report', id: +d.id }; D(); },
+  recall(d) { run(recall(+d.id)); closeRadial(); }, report(d) { sheetOpen({ type: 'report', id: +d.id }); },
   fg(d) { UI.fg = clamp(UI.fg + +d.d, 1, 6); D(); },
   rtarget(d, el) { UI.rl.target = el.value; D(); }, rwait(d) { UI.rl.wait = +d.i; D(); }, rslots(d) { UI.rl.slots = clamp(UI.rl.slots + +d.d, 0, Math.min(4, S.tokens)); D(); },
-  rally() { const c = UI.rcomp; if (run(createRally(UI.rl.target, c, c.hero, RALLY_WAITS[UI.rl.wait][1], UI.rl.slots), 'Rally is up.')) { CLS.forEach(k => c[k] = 0); c.hero = false; UI.rl.slots = 0; UI.mt = 'cols'; } },
-  rallyto(d) { UI.rl.target = d.t; UI.mt = 'rally'; UI.sheet = null; A.dock({ k: 'march' }); },
+  rally() { const c = UI.rcomp; if (run(createRally(UI.rl.target, c, c.hero, RALLY_WAITS[UI.rl.wait][1], UI.rl.slots), 'Rally is up.')) { CLS.forEach(k => c[k] = 0); c.hero = false; UI.rl.slots = 0; openDrawer('march', 'cols'); } },
+  rallyto(d) { UI.rl.target = d.t; closeRadial(); openDrawer('alliance', 'rally'); },
   crsel(d) { const s = UI.cr.sel, g = +d.g, tot = sumCol(s); const n = clamp((s[g] || 0) + +d.d, 0, S.bars[g] || 0); if (+d.d > 0 && tot >= 4) return toast('A craft spends exactly four bars.', 'warn'); s[g] = n; if (!n) delete s[g]; D(); },
   crslot(d) { UI.cr.slot = d.s; D(); }, crstat(d) { UI.cr.stat = d.s; D(); }, crshard(d) { UI.cr.shard = d.s; D(); }, crclear() { UI.cr.sel = {}; D(); },
   craft() { const C = UI.cr; if (run(craft(C.slot, C.sel, C.shard || null, C.stat))) { C.sel = {}; C.shard = ''; } },
@@ -441,25 +429,35 @@ const A = {
   hero(d) { run(setHero(d.k)); }, ransom(d) { run(ransom(!!d.seal)); },
   recolor(d) { run(recolor(d.c)); }, disband() { if (confirm('Disband the alliance? Every colored tile goes neutral.')) { disband(); D(); } },
   appoint(d) { run(appoint(d.n)); }, title(d, el) { run(grantTitle(d.n, el.value || null)); },
-  reset() { if (confirm('Erase the save and start over?')) { resetGame(); UI.sheet = null; UI.desk = null; MAP.cx = S.base.x; MAP.cy = S.base.y; D(); } }
+  setopt(d) { S.set[d.k] = !setOn(d.k); D(); },
+  reset() { if (confirm('Erase the save and start over?')) { resetGame(); S.set = { snd: true, hap: true }; UI.sheet = null; UI.drawer = null; UI.ready = {}; panTo(S.base.x, S.base.y); D(); } }
 };
-document.addEventListener('click', e => { const b = e.target.closest('[data-a]'); if (!b || b.tagName === 'SELECT') return; const f = A[b.dataset.a]; if (f) f(b.dataset, b); });
+document.addEventListener('click', e => { const b = e.target.closest('[data-a]'); if (!b || b.tagName === 'SELECT') return; const f = A[b.dataset.a]; if (f) { hap(6); snd(); f(b.dataset, b); } });
 document.addEventListener('change', e => { const b = e.target.closest('select[data-a]'); if (b && A[b.dataset.a]) A[b.dataset.a](b.dataset, b); });
 document.addEventListener('pointerdown', () => { try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); if (actx.state === 'suspended') actx.resume(); } catch (e) { } }, { once: true });
+$('#scrim').addEventListener('click', () => A.scrim());
+(function grab() { const g = $('#drawer .grab'); let y0 = null; g.addEventListener('pointerdown', e => { y0 = e.clientY; g.setPointerCapture(e.pointerId); $('#drawer').style.transition = 'none'; }); g.addEventListener('pointermove', e => { if (y0 == null) return; const dy = Math.max(0, e.clientY - y0); $('#drawer').style.transform = `translateY(${dy}px)`; }); const end = e => { if (y0 == null) return; const dy = e.clientY - y0; y0 = null; const el = $('#drawer'); el.style.transition = ''; el.style.transform = ''; if (dy > 90) A.closedrawer(); }; g.addEventListener('pointerup', end); g.addEventListener('pointercancel', end); })();
 
 /* ---------------- loop ---------------- */
-function showPage() { for (const p of ['map', 'base', 'march', 'vault']) $('#pg-' + p).className = 'page' + (UI.page === p ? ' on' : ''); }
+function showPage() { for (const p of ['map', 'base']) $('#pg-' + p).className = 'page' + (UI.page === p ? ' on' : ''); }
 function renderAll() {
   UI.dirty = false; renderTop(); renderDock(); showPage();
-  if (UI.page === 'base') renderBase(); else if (UI.page === 'march') $('#pg-march').innerHTML = renderMarch(); else if (UI.page === 'vault') $('#pg-vault').innerHTML = renderVault();
-  renderDesk(); renderSheet(); if (UI.page === 'map' && !UI.desk) drawMap();
+  if (UI.page === 'base') renderBase();
+  renderDrawer(); renderSheet();
 }
-function updateTimers() { document.querySelectorAll('[data-end]').forEach(el => { el.innerHTML = tmText(+el.dataset.end, el.dataset.b === '1'); }); }
+function updateTimers() {
+  document.querySelectorAll('[data-end]').forEach(el => { el.innerHTML = tmText(+el.dataset.end, el.dataset.b === '1'); });
+  document.querySelectorAll('.ring[data-rs]').forEach(el => { const s = +el.dataset.rs, e = +el.dataset.re, f = clamp((Date.now() - s) / Math.max(1, e - s), 0, 1); el.querySelector('.rfg').setAttribute('stroke-dashoffset', (RING_C * (1 - f)).toFixed(1)); });
+}
 function boot() {
-  S = load() || newState(); const el = Math.min(600, (Date.now() - (S.last || Date.now())) / 1000); if (el > 3) produce(el); S.last2 = 0; terrDirty = true;
+  S = load() || newState(); S.set = S.set || { snd: true, hap: true }; const el = Math.min(600, (Date.now() - (S.last || Date.now())) / 1000); if (el > 3) produce(el); S.last2 = 0; terrDirty = true;
   initMap(); MAP.cx = S.view.x; MAP.cy = S.view.y; renderAll();
-  setInterval(() => { tick(); renderTop(); renderTicker(); if (UI.dirty || terrDirty) renderAll(); else { updateTimers(); if (UI.page === 'map' && !UI.desk && S.marches.some(m => m.phase === 'out' || m.phase === 'back')) drawMap(); } }, 250);
+  setInterval(() => {
+    tick(); renderTop(); renderTicker();
+    const now = Date.now(); if (now - UI.flyAt > 5500) { UI.flyAt = now; spawnFly(); }
+    if (UI.dirty || terrDirty) renderAll(); else updateTimers();
+  }, 250);
   setInterval(save, 5000); window.addEventListener('beforeunload', save);
-  if (!S.log.length) note('Garrison raised. Tap the map, send a column.', 'info');
+  if (!S.log.length) note('Garrison raised. Tap the map, then a radial button.', 'info');
 }
 boot();

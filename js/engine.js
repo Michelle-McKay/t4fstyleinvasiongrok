@@ -1,7 +1,7 @@
 'use strict';
 /* IRON MARCH — engine: state, world, jobs, marches, combat, threats. No DOM here. */
 const FOREVER = 8e15;
-const UIH = { toast() { }, dirty() { }, tone() { } };
+const UIH = { toast() { }, dirty() { }, tone() { }, flash() { }, done() { } };
 let S = null;
 const SAVE_KEY = 'ironmarch.v1';
 const rnd = (a, b) => a + Math.random() * (b - a);
@@ -310,6 +310,7 @@ function startResearch(id, cover) {
   return addJob('res', researchSheetSec(id, to), { id, to }, RS[id].n + ' ' + to);
 }
 function finishJob(j) {
+  UIH.done(j);
   if (j.kind === 'build') { S.plots[j.area][j.idx] = { b: j.b, l: j.to }; note(BLD[j.b].n + ' is now level ' + j.to + '.', 'good'); }
   else if (j.kind === 'train') { const k = ck(j.cls, j.t); S.troops[k] = (S.troops[k] || 0) + j.n; note(j.n + ' ' + tierName(j.cls, j.t) + ' are on the line.', 'good'); }
   else if (j.kind === 'res') { S.research[j.id] = j.to; note(RS[j.id].n + ' ' + j.to + ' is done.', 'good'); }
@@ -643,9 +644,9 @@ function disband() { for (const k in S.own) if (S.own[k] === 0) delete S.own[k];
 function launchHostile() {
   const bot = pick(S.bots), d = playerDefSide(); let Sd = 0, Hd = 0;
   const Dd = fight(Object.assign(mkSide({ inf1: 100 }, {}, 1)), d); Sd = Dd.Sd; Hd = Dd.Hd;
-  const r = rnd(0.3, 1.3), k = Math.sqrt(r), Sa = Math.max(600, Sd * k), Ha = Math.max(6000, Hd * k);
-  const inc = { id: S.nid++, bot: bot.al, name: bot.tag + ' ' + bot.cmd, start: Date.now(), end: Date.now() + rint(25000, 42000), S: Sa, H: Ha, n: Math.round(Ha / 110) };
-  S.incoming.push(inc); UIH.tone(); note('Hostile contact: ' + inc.name + ' is marching on you.', 'bad');
+  const rally = Math.random() < 0.3, r = rnd(0.3, 1.3) * (rally ? 1.6 : 1), k = Math.sqrt(r), Sa = Math.max(600, Sd * k), Ha = Math.max(6000, Hd * k);
+  const inc = { id: S.nid++, bot: bot.al, name: bot.tag + ' ' + bot.cmd, rally, start: Date.now(), end: Date.now() + rint(25000, 42000) + (rally ? 15000 : 0), S: Sa, H: Ha, n: Math.round(Ha / 110) };
+  S.incoming.push(inc); UIH.flash(rally ? 'rally' : 'attack'); note((rally ? 'Rally inbound: ' : 'Hostile contact: ') + inc.name + ' is marching on you.', 'bad');
 }
 function hitBase(inc, instant) {
   S.incoming = S.incoming.filter(i => i !== inc);
@@ -668,7 +669,7 @@ function hitBase(inc, instant) {
   if (inForest() && !instant) { for (let i = 0; i < 400; i++) { const x = rint(20, W - 20), y = rint(20, H - 20); if (terrainAt(x, y) === 'wild' && legalSpot(x, y)) { S.base = { x, y }; S.view = { x, y }; note('Thrown from the forest to ' + x + ',' + y + '.', 'warn'); break; } } }
 }
 function botScout() {
-  const bot = pick(S.bots), blocked = S.anti && lvlMax('radar') >= 4;
+  const bot = pick(S.bots), blocked = S.anti && lvlMax('radar') >= 4; UIH.flash('scout');
   const rows = blocked ? [['Blocked', 'no garrison data', 0, 0]] : [['Garrison read', sumCol(S.troops) + ' troops', 0, 0]];
   pushReport({ title: (blocked ? 'Scout blocked: ' : 'Scout read you: ') + bot.tag + ' ' + bot.cmd, kind: 'scout', win: null, left: { name: 'You', rows: [], boosts: [['From', bot.tag + ' ' + bot.cmd + ' at ' + bot.x + ',' + bot.y], ['To', S.base.x + ',' + S.base.y]] }, right: { name: bot.tag, rows, boosts: blocked ? [] : [] } });
   note((blocked ? 'Blocked a scout from ' : 'Scout from ') + bot.tag + ' ' + bot.cmd + (blocked ? ' at ' + bot.x + ',' + bot.y + ' to ' + S.base.x + ',' + S.base.y : ' read your garrison') + '.', blocked ? 'good' : 'warn');
