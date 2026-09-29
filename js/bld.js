@@ -117,5 +117,6 @@ Object.assign(A, {
 const _sheetPlotBase = sheetPlot;
 sheetPlot = function (area, idx) {
   const p = S.plots[area][idx], h = _sheetPlotBase(area, idx); if (!p) return h;
-  return `<div class="bhead">${bldSVG(p.b, p.l)}<span class="lvp num">Lv ${p.l}/25</span></div>` + h;
+  const hd = ART.head(p.b);
+  return `<div class="bhead${hd ? ' painted' : ''}"${hd ? ` style="background-image:url('${hd}')"` : ''}>${bldSVG(p.b, p.l)}<span class="lvp num">Lv ${p.l}/25</span></div>` + h;
 };

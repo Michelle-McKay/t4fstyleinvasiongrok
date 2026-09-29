@@ -1,0 +1,1823 @@
+{
+ "v": 1,
+ "count": 220,
+ "groups": [
+  {
+   "id": "bld",
+   "title": "Buildings (70)",
+   "note": "Square, transparent, one building on a small ground pad, filling about 85 percent of the frame. Do all five tiers of one building together, and give the tool the tier 1 image as a reference for the rest."
+  },
+  {
+   "id": "cc",
+   "title": "Command Center (25)",
+   "note": "Your headquarters at every level, growing from a field tent to the Iron Citadel. Do them in order and attach the previous level as a reference so each one clearly grows from the last."
+  },
+  {
+   "id": "head",
+   "title": "Building sheet backdrops (15)",
+   "note": "The wide scenery behind a building on its info sheet. NO building in it: leave an empty flat patch of ground in the lower centre where the game places the building."
+  },
+  {
+   "id": "troop",
+   "title": "Troops (16)",
+   "note": "One unit type per image, transparent, same camera. Show a squad for infantry and a single vehicle for the rest. Do tier 1 to 4 of a class together."
+  },
+  {
+   "id": "wall",
+   "title": "Wall defenses (16)",
+   "note": "Defensive emplacements that guard your base wall. Transparent, same camera."
+  },
+  {
+   "id": "hero",
+   "title": "Heroes (3)",
+   "note": "Painted bust portraits. These fill the frame with their own dark backdrop, no transparency."
+  },
+  {
+   "id": "map",
+   "title": "Map features (26)",
+   "note": "Sprites for the world map, transparent. Shown small, so bold shapes and strong colour."
+  },
+  {
+   "id": "tile",
+   "title": "Ground tiles (6)",
+   "note": "Flat, straight top-down textures with NO perspective and NO objects. The game bends them onto the map, so edges must tile seamlessly."
+  },
+  {
+   "id": "pack",
+   "title": "Pack banners (16)",
+   "note": "The big picture at the top of each store pack. A loot still-life on a dark background with a glow. Rarity colours: 1 olive green, 2 teal, 3 indigo, 4 magenta, 5 gold."
+  },
+  {
+   "id": "gem",
+   "title": "Diamond pile icons (6)",
+   "note": "Six sizes of diamond pile for the diamond packs, transparent."
+  },
+  {
+   "id": "icon",
+   "title": "HUD icons (21)",
+   "note": "Small painted icons, front view, transparent. They replace the flat HUD icons wherever the game shows them, so check the HUD looks right after adding them."
+  }
+ ],
+ "items": [
+  {
+   "group": "bld",
+   "key": "bld_mil_t1",
+   "name": "Military Complex tier 1",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_mil_t2",
+   "name": "Military Complex tier 2",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_mil_t3",
+   "name": "Military Complex tier 3",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_mil_t4",
+   "name": "Military Complex tier 4",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_mil_t5",
+   "name": "Military Complex tier 5",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_depot_t1",
+   "name": "Depot tier 1",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_depot_t2",
+   "name": "Depot tier 2",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_depot_t3",
+   "name": "Depot tier 3",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_depot_t4",
+   "name": "Depot tier 4",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_depot_t5",
+   "name": "Depot tier 5",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_treasury_t1",
+   "name": "Treasury tier 1",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_treasury_t2",
+   "name": "Treasury tier 2",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_treasury_t3",
+   "name": "Treasury tier 3",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_treasury_t4",
+   "name": "Treasury tier 4",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_treasury_t5",
+   "name": "Treasury tier 5",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_tech_t1",
+   "name": "Tech Institute tier 1",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_tech_t2",
+   "name": "Tech Institute tier 2",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_tech_t3",
+   "name": "Tech Institute tier 3",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_tech_t4",
+   "name": "Tech Institute tier 4",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_tech_t5",
+   "name": "Tech Institute tier 5",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_hall_t1",
+   "name": "Hall of War tier 1",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_hall_t2",
+   "name": "Hall of War tier 2",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_hall_t3",
+   "name": "Hall of War tier 3",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_hall_t4",
+   "name": "Hall of War tier 4",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_hall_t5",
+   "name": "Hall of War tier 5",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_prison_t1",
+   "name": "Prison tier 1",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_prison_t2",
+   "name": "Prison tier 2",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_prison_t3",
+   "name": "Prison tier 3",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_prison_t4",
+   "name": "Prison tier 4",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_prison_t5",
+   "name": "Prison tier 5",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_radar_t1",
+   "name": "Radar Station tier 1",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_radar_t2",
+   "name": "Radar Station tier 2",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_radar_t3",
+   "name": "Radar Station tier 3",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_radar_t4",
+   "name": "Radar Station tier 4",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_radar_t5",
+   "name": "Radar Station tier 5",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_store_t1",
+   "name": "StoreHouse tier 1",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_store_t2",
+   "name": "StoreHouse tier 2",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_store_t3",
+   "name": "StoreHouse tier 3",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_store_t4",
+   "name": "StoreHouse tier 4",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_store_t5",
+   "name": "StoreHouse tier 5",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_defense_t1",
+   "name": "Defense Center tier 1",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_defense_t2",
+   "name": "Defense Center tier 2",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_defense_t3",
+   "name": "Defense Center tier 3",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_defense_t4",
+   "name": "Defense Center tier 4",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_defense_t5",
+   "name": "Defense Center tier 5",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_market_t1",
+   "name": "Black Market tier 1",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_market_t2",
+   "name": "Black Market tier 2",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_market_t3",
+   "name": "Black Market tier 3",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_market_t4",
+   "name": "Black Market tier 4",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_market_t5",
+   "name": "Black Market tier 5",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_rations_t1",
+   "name": "Rations tier 1",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_rations_t2",
+   "name": "Rations tier 2",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_rations_t3",
+   "name": "Rations tier 3",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_rations_t4",
+   "name": "Rations tier 4",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_rations_t5",
+   "name": "Rations tier 5",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_fuel_t1",
+   "name": "Fuel tier 1",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_fuel_t2",
+   "name": "Fuel tier 2",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_fuel_t3",
+   "name": "Fuel tier 3",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_fuel_t4",
+   "name": "Fuel tier 4",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_fuel_t5",
+   "name": "Fuel tier 5",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_power_t1",
+   "name": "Power Cells tier 1",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_power_t2",
+   "name": "Power Cells tier 2",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_power_t3",
+   "name": "Power Cells tier 3",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_power_t4",
+   "name": "Power Cells tier 4",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_power_t5",
+   "name": "Power Cells tier 5",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_alloy_t1",
+   "name": "Alloy tier 1",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_alloy_t2",
+   "name": "Alloy tier 2",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_alloy_t3",
+   "name": "Alloy tier 3",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_alloy_t4",
+   "name": "Alloy tier 4",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_alloy_t5",
+   "name": "Alloy tier 5",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "cc",
+   "key": "bld_cc_L01",
+   "name": "Command Center L1: Field Tent",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "cc",
+   "key": "bld_cc_L02",
+   "name": "Command Center L2: Command Post",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "cc",
+   "key": "bld_cc_L03",
+   "name": "Command Center L3: Prefab Hut",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "cc",
+   "key": "bld_cc_L04",
+   "name": "Command Center L4: Barricaded Hut",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "cc",
+   "key": "bld_cc_L05",
+   "name": "Command Center L5: Concrete Bunker",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "cc",
+   "key": "bld_cc_L06",
+   "name": "Command Center L6: Two-Storey Ops",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "cc",
+   "key": "bld_cc_L07",
+   "name": "Command Center L7: Radio Mast",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "cc",
+   "key": "bld_cc_L08",
+   "name": "Command Center L8: Walled Compound",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "cc",
+   "key": "bld_cc_L09",
+   "name": "Command Center L9: Helipad Deck",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "cc",
+   "key": "bld_cc_L10",
+   "name": "Command Center L10: Operations Tower",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "cc",
+   "key": "bld_cc_L11",
+   "name": "Command Center L11: Solar Array",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "cc",
+   "key": "bld_cc_L12",
+   "name": "Command Center L12: East Wing",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "cc",
+   "key": "bld_cc_L13",
+   "name": "Command Center L13: Guard Towers",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "cc",
+   "key": "bld_cc_L14",
+   "name": "Command Center L14: Radar Crown",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "cc",
+   "key": "bld_cc_L15",
+   "name": "Command Center L15: War Room",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "cc",
+   "key": "bld_cc_L16",
+   "name": "Command Center L16: Turret Ring",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "cc",
+   "key": "bld_cc_L17",
+   "name": "Command Center L17: Hangar Annex",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "cc",
+   "key": "bld_cc_L18",
+   "name": "Command Center L18: Shield Emitters",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "cc",
+   "key": "bld_cc_L19",
+   "name": "Command Center L19: Comms Dome",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "cc",
+   "key": "bld_cc_L20",
+   "name": "Command Center L20: Fortress Plate",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "cc",
+   "key": "bld_cc_L21",
+   "name": "Command Center L21: Satellite Uplink",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "cc",
+   "key": "bld_cc_L22",
+   "name": "Command Center L22: Reactor Core",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "cc",
+   "key": "bld_cc_L23",
+   "name": "Command Center L23: Command Spire",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "cc",
+   "key": "bld_cc_L24",
+   "name": "Command Center L24: Brass Standard",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "cc",
+   "key": "bld_cc_L25",
+   "name": "Command Center L25: Iron Citadel HQ",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "head",
+   "key": "head_cc",
+   "name": "Command Center backdrop",
+   "size": "2:1 wide, 1600 x 800",
+   "transparent": false,
+   "out": 1000
+  },
+  {
+   "group": "head",
+   "key": "head_mil",
+   "name": "Military Complex backdrop",
+   "size": "2:1 wide, 1600 x 800",
+   "transparent": false,
+   "out": 1000
+  },
+  {
+   "group": "head",
+   "key": "head_depot",
+   "name": "Depot backdrop",
+   "size": "2:1 wide, 1600 x 800",
+   "transparent": false,
+   "out": 1000
+  },
+  {
+   "group": "head",
+   "key": "head_treasury",
+   "name": "Treasury backdrop",
+   "size": "2:1 wide, 1600 x 800",
+   "transparent": false,
+   "out": 1000
+  },
+  {
+   "group": "head",
+   "key": "head_tech",
+   "name": "Tech Institute backdrop",
+   "size": "2:1 wide, 1600 x 800",
+   "transparent": false,
+   "out": 1000
+  },
+  {
+   "group": "head",
+   "key": "head_hall",
+   "name": "Hall of War backdrop",
+   "size": "2:1 wide, 1600 x 800",
+   "transparent": false,
+   "out": 1000
+  },
+  {
+   "group": "head",
+   "key": "head_prison",
+   "name": "Prison backdrop",
+   "size": "2:1 wide, 1600 x 800",
+   "transparent": false,
+   "out": 1000
+  },
+  {
+   "group": "head",
+   "key": "head_radar",
+   "name": "Radar Station backdrop",
+   "size": "2:1 wide, 1600 x 800",
+   "transparent": false,
+   "out": 1000
+  },
+  {
+   "group": "head",
+   "key": "head_store",
+   "name": "StoreHouse backdrop",
+   "size": "2:1 wide, 1600 x 800",
+   "transparent": false,
+   "out": 1000
+  },
+  {
+   "group": "head",
+   "key": "head_defense",
+   "name": "Defense Center backdrop",
+   "size": "2:1 wide, 1600 x 800",
+   "transparent": false,
+   "out": 1000
+  },
+  {
+   "group": "head",
+   "key": "head_market",
+   "name": "Black Market backdrop",
+   "size": "2:1 wide, 1600 x 800",
+   "transparent": false,
+   "out": 1000
+  },
+  {
+   "group": "head",
+   "key": "head_rations",
+   "name": "Rations backdrop",
+   "size": "2:1 wide, 1600 x 800",
+   "transparent": false,
+   "out": 1000
+  },
+  {
+   "group": "head",
+   "key": "head_fuel",
+   "name": "Fuel backdrop",
+   "size": "2:1 wide, 1600 x 800",
+   "transparent": false,
+   "out": 1000
+  },
+  {
+   "group": "head",
+   "key": "head_power",
+   "name": "Power Cells backdrop",
+   "size": "2:1 wide, 1600 x 800",
+   "transparent": false,
+   "out": 1000
+  },
+  {
+   "group": "head",
+   "key": "head_alloy",
+   "name": "Alloy backdrop",
+   "size": "2:1 wide, 1600 x 800",
+   "transparent": false,
+   "out": 1000
+  },
+  {
+   "group": "troop",
+   "key": "troop_inf_t1",
+   "name": "Riot Troopers (Infantry tier 1)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "troop",
+   "key": "troop_inf_t2",
+   "name": "Combat Infantry (Infantry tier 2)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "troop",
+   "key": "troop_inf_t3",
+   "name": "Exo-Soldiers (Infantry tier 3)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "troop",
+   "key": "troop_inf_t4",
+   "name": "Elite Vanguard (Infantry tier 4)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "troop",
+   "key": "troop_arm_t1",
+   "name": "Scout Cars (Armor tier 1)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "troop",
+   "key": "troop_arm_t2",
+   "name": "Battle Tanks (Armor tier 2)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "troop",
+   "key": "troop_arm_t3",
+   "name": "Heavy Assault Mechs (Armor tier 3)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "troop",
+   "key": "troop_arm_t4",
+   "name": "Juggernaut Armor (Armor tier 4)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "troop",
+   "key": "troop_air_t1",
+   "name": "Recon Drones (Aircraft tier 1)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "troop",
+   "key": "troop_air_t2",
+   "name": "Attack Helicopters (Aircraft tier 2)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "troop",
+   "key": "troop_air_t3",
+   "name": "Heavy Gunships (Aircraft tier 3)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "troop",
+   "key": "troop_air_t4",
+   "name": "Stealth Bombers (Aircraft tier 4)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "troop",
+   "key": "troop_siege_t1",
+   "name": "Siege Engines (Siege tier 1)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "troop",
+   "key": "troop_siege_t2",
+   "name": "Plasma Mortars (Siege tier 2)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "troop",
+   "key": "troop_siege_t3",
+   "name": "Breach Artillery (Siege tier 3)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "troop",
+   "key": "troop_siege_t4",
+   "name": "Demolition Walkers (Siege tier 4)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "wall",
+   "key": "wall_sent_t1",
+   "name": "Automated Point-Guns (Perimeter Sentinels tier 1)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "wall",
+   "key": "wall_sent_t2",
+   "name": "Hardened Bunker Guards (Perimeter Sentinels tier 2)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "wall",
+   "key": "wall_sent_t3",
+   "name": "Laser-Grid Interceptors (Perimeter Sentinels tier 3)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "wall",
+   "key": "wall_sent_t4",
+   "name": "Perimeter Plasma Emplacements (Perimeter Sentinels tier 4)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "wall",
+   "key": "wall_bast_t1",
+   "name": "Anti-Tank Spike Traps (Fortress Bastions tier 1)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "wall",
+   "key": "wall_bast_t2",
+   "name": "Railgun Turrets (Fortress Bastions tier 2)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "wall",
+   "key": "wall_bast_t3",
+   "name": "Heavy Siege-Breaker Batteries (Fortress Bastions tier 3)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "wall",
+   "key": "wall_bast_t4",
+   "name": "Quantum Shield Emplacements (Fortress Bastions tier 4)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "wall",
+   "key": "wall_sky_t1",
+   "name": "Flak Cannons (Sky-Watch Interceptors tier 1)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "wall",
+   "key": "wall_sky_t2",
+   "name": "SAM Nests (Sky-Watch Interceptors tier 2)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "wall",
+   "key": "wall_sky_t3",
+   "name": "EMP Defense Grids (Sky-Watch Interceptors tier 3)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "wall",
+   "key": "wall_sky_t4",
+   "name": "Orbital Laser Nodes (Sky-Watch Interceptors tier 4)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "wall",
+   "key": "wall_garr_t1",
+   "name": "Base Watchman Squads (Structural Garrison tier 1)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "wall",
+   "key": "wall_garr_t2",
+   "name": "Reinforced Trench Guard (Structural Garrison tier 2)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "wall",
+   "key": "wall_garr_t3",
+   "name": "Elite Perimeter Division (Structural Garrison tier 3)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "wall",
+   "key": "wall_garr_t4",
+   "name": "Automated Command Sentinels (Structural Garrison tier 4)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "hero",
+   "key": "hero_ada",
+   "name": "Ada Voss, Quartermaster",
+   "size": "1:1, 1024 x 1024",
+   "transparent": false,
+   "out": 512
+  },
+  {
+   "group": "hero",
+   "key": "hero_ivo",
+   "name": "Ivo Hale, Surgeon",
+   "size": "1:1, 1024 x 1024",
+   "transparent": false,
+   "out": 512
+  },
+  {
+   "group": "hero",
+   "key": "hero_ren",
+   "name": "Ren Kade, Marshal",
+   "size": "1:1, 1024 x 1024",
+   "transparent": false,
+   "out": 512
+  },
+  {
+   "group": "map",
+   "key": "mon_1",
+   "name": "Ash Hound",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "map",
+   "key": "mon_3",
+   "name": "Rust Brute",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "map",
+   "key": "mon_5",
+   "name": "Ember Colossus",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "map",
+   "key": "camp",
+   "name": "Raider camp",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "map",
+   "key": "outpost",
+   "name": "Rival commander base",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "map",
+   "key": "citadel",
+   "name": "Central citadel",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "map",
+   "key": "node_food_1",
+   "name": "Food field tier 1",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "map",
+   "key": "node_food_2",
+   "name": "Food field tier 2",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "map",
+   "key": "node_food_3",
+   "name": "Food field tier 3",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "map",
+   "key": "node_food_4",
+   "name": "Food field tier 4",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "map",
+   "key": "node_food_5",
+   "name": "Food field tier 5",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "map",
+   "key": "node_oil_1",
+   "name": "Oil field tier 1",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "map",
+   "key": "node_oil_2",
+   "name": "Oil field tier 2",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "map",
+   "key": "node_oil_3",
+   "name": "Oil field tier 3",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "map",
+   "key": "node_oil_4",
+   "name": "Oil field tier 4",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "map",
+   "key": "node_oil_5",
+   "name": "Oil field tier 5",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "map",
+   "key": "node_energy_1",
+   "name": "Energy vein tier 1",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "map",
+   "key": "node_energy_2",
+   "name": "Energy vein tier 2",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "map",
+   "key": "node_energy_3",
+   "name": "Energy vein tier 3",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "map",
+   "key": "node_energy_4",
+   "name": "Energy vein tier 4",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "map",
+   "key": "node_energy_5",
+   "name": "Energy vein tier 5",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "map",
+   "key": "node_steel_1",
+   "name": "Steel vein tier 1",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "map",
+   "key": "node_steel_2",
+   "name": "Steel vein tier 2",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "map",
+   "key": "node_steel_3",
+   "name": "Steel vein tier 3",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "map",
+   "key": "node_steel_4",
+   "name": "Steel vein tier 4",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "map",
+   "key": "node_steel_5",
+   "name": "Steel vein tier 5",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "tile",
+   "key": "tile_wild_1",
+   "name": "Wasteland ground 1",
+   "size": "1:1, 1024 x 1024",
+   "transparent": false,
+   "out": 256
+  },
+  {
+   "group": "tile",
+   "key": "tile_wild_2",
+   "name": "Wasteland ground 2",
+   "size": "1:1, 1024 x 1024",
+   "transparent": false,
+   "out": 256
+  },
+  {
+   "group": "tile",
+   "key": "tile_wild_3",
+   "name": "Wasteland ground 3",
+   "size": "1:1, 1024 x 1024",
+   "transparent": false,
+   "out": 256
+  },
+  {
+   "group": "tile",
+   "key": "tile_forest_1",
+   "name": "Forest canopy 1",
+   "size": "1:1, 1024 x 1024",
+   "transparent": false,
+   "out": 256
+  },
+  {
+   "group": "tile",
+   "key": "tile_forest_2",
+   "name": "Forest canopy 2",
+   "size": "1:1, 1024 x 1024",
+   "transparent": false,
+   "out": 256
+  },
+  {
+   "group": "tile",
+   "key": "tile_plaza_1",
+   "name": "Citadel plaza",
+   "size": "1:1, 1024 x 1024",
+   "transparent": false,
+   "out": 256
+  },
+  {
+   "group": "pack",
+   "key": "pack_recruit",
+   "name": "Recruit Kit",
+   "size": "4:3, 1600 x 1200",
+   "transparent": false,
+   "out": 800
+  },
+  {
+   "group": "pack",
+   "key": "pack_starter",
+   "name": "Starter Pack",
+   "size": "4:3, 1600 x 1200",
+   "transparent": false,
+   "out": 800
+  },
+  {
+   "group": "pack",
+   "key": "pack_builder",
+   "name": "Builder's Contract",
+   "size": "4:3, 1600 x 1200",
+   "transparent": false,
+   "out": 800
+  },
+  {
+   "group": "pack",
+   "key": "pack_harvest",
+   "name": "Harvest Haul",
+   "size": "4:3, 1600 x 1200",
+   "transparent": false,
+   "out": 800
+  },
+  {
+   "group": "pack",
+   "key": "pack_grid",
+   "name": "Power Grid",
+   "size": "4:3, 1600 x 1200",
+   "transparent": false,
+   "out": 800
+  },
+  {
+   "group": "pack",
+   "key": "pack_quarter",
+   "name": "Quartermaster's Lot",
+   "size": "4:3, 1600 x 1200",
+   "transparent": false,
+   "out": 800
+  },
+  {
+   "group": "pack",
+   "key": "pack_chrono",
+   "name": "Chrono Pack",
+   "size": "4:3, 1600 x 1200",
+   "transparent": false,
+   "out": 800
+  },
+  {
+   "group": "pack",
+   "key": "pack_overtime",
+   "name": "Overtime Crate",
+   "size": "4:3, 1600 x 1200",
+   "transparent": false,
+   "out": 800
+  },
+  {
+   "group": "pack",
+   "key": "pack_warpath",
+   "name": "Warpath Pack",
+   "size": "4:3, 1600 x 1200",
+   "transparent": false,
+   "out": 800
+  },
+  {
+   "group": "pack",
+   "key": "pack_marshal",
+   "name": "Marshal's Orders",
+   "size": "4:3, 1600 x 1200",
+   "transparent": false,
+   "out": 800
+  },
+  {
+   "group": "pack",
+   "key": "pack_siege",
+   "name": "Siege Train",
+   "size": "4:3, 1600 x 1200",
+   "transparent": false,
+   "out": 800
+  },
+  {
+   "group": "pack",
+   "key": "pack_foundry",
+   "name": "Foundry Pack",
+   "size": "4:3, 1600 x 1200",
+   "transparent": false,
+   "out": 800
+  },
+  {
+   "group": "pack",
+   "key": "pack_vanguard",
+   "name": "Vanguard Armoury",
+   "size": "4:3, 1600 x 1200",
+   "transparent": false,
+   "out": 800
+  },
+  {
+   "group": "pack",
+   "key": "pack_outrider",
+   "name": "Outrider Kit",
+   "size": "4:3, 1600 x 1200",
+   "transparent": false,
+   "out": 800
+  },
+  {
+   "group": "pack",
+   "key": "pack_warlord",
+   "name": "Warlord's Chest",
+   "size": "4:3, 1600 x 1200",
+   "transparent": false,
+   "out": 800
+  },
+  {
+   "group": "pack",
+   "key": "pack_sovereign",
+   "name": "Sovereign's Vault",
+   "size": "4:3, 1600 x 1200",
+   "transparent": false,
+   "out": 800
+  },
+  {
+   "group": "gem",
+   "key": "gem_1",
+   "name": "Diamond pile 1",
+   "size": "4:3, 1200 x 900",
+   "transparent": true,
+   "out": 400
+  },
+  {
+   "group": "gem",
+   "key": "gem_2",
+   "name": "Diamond pile 2",
+   "size": "4:3, 1200 x 900",
+   "transparent": true,
+   "out": 400
+  },
+  {
+   "group": "gem",
+   "key": "gem_3",
+   "name": "Diamond pile 3",
+   "size": "4:3, 1200 x 900",
+   "transparent": true,
+   "out": 400
+  },
+  {
+   "group": "gem",
+   "key": "gem_4",
+   "name": "Diamond pile 4",
+   "size": "4:3, 1200 x 900",
+   "transparent": true,
+   "out": 400
+  },
+  {
+   "group": "gem",
+   "key": "gem_5",
+   "name": "Diamond pile 5",
+   "size": "4:3, 1200 x 900",
+   "transparent": true,
+   "out": 400
+  },
+  {
+   "group": "gem",
+   "key": "gem_6",
+   "name": "Diamond pile 6",
+   "size": "4:3, 1200 x 900",
+   "transparent": true,
+   "out": 400
+  },
+  {
+   "group": "icon",
+   "key": "icon_map",
+   "name": "Icon: map",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "icon",
+   "key": "icon_base",
+   "name": "Icon: base",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "icon",
+   "key": "icon_train",
+   "name": "Icon: train",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "icon",
+   "key": "icon_lab",
+   "name": "Icon: lab",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "icon",
+   "key": "icon_med",
+   "name": "Icon: med",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "icon",
+   "key": "icon_march",
+   "name": "Icon: march",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "icon",
+   "key": "icon_vault",
+   "name": "Icon: vault",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "icon",
+   "key": "icon_hero",
+   "name": "Icon: hero",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "icon",
+   "key": "icon_alliance",
+   "name": "Icon: alliance",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "icon",
+   "key": "icon_more",
+   "name": "Icon: more",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "icon",
+   "key": "icon_mail",
+   "name": "Icon: mail",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "icon",
+   "key": "icon_rations",
+   "name": "Icon: rations",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "icon",
+   "key": "icon_fuel",
+   "name": "Icon: fuel",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "icon",
+   "key": "icon_power",
+   "name": "Icon: power",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "icon",
+   "key": "icon_alloy",
+   "name": "Icon: alloy",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "icon",
+   "key": "icon_cash",
+   "name": "Icon: cash",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "icon",
+   "key": "icon_dia",
+   "name": "Icon: dia",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "icon",
+   "key": "icon_gift",
+   "name": "Icon: gift",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "icon",
+   "key": "icon_events",
+   "name": "Icon: events",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "icon",
+   "key": "icon_crate",
+   "name": "Icon: crate",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "icon",
+   "key": "icon_handshake",
+   "name": "Icon: handshake",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  }
+ ]
+}
