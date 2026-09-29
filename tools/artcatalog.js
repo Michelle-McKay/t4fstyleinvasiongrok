@@ -66,23 +66,23 @@ const BLD_SUBJECT = {
   alloy: 'An Alloy foundry: a modern smelter hall with a chimney stack, glowing metal chute, ingot stacks and an overhead crane'
 };
 const BACKDROP = {
-  embassy: 'a bright diplomatic quarter with pale walls, a broad blue sky and a tidy landing field in the distance',
-  forge: 'a clean bright workshop yard with neat stacks of metal stock and a clear sky',
-  cc: 'a clean, bright headquarters plain with tidy roads and radio masts far away',
-  mil: 'a bright training ground with painted lines, tidy barracks blocks and clear distance',
-  depot: 'a calm, clean medical campus with pale tents and clear sky',
-  treasury: 'a bright paved compound with neat guard posts and a clear blue sky',
-  tech: 'a bright high plateau with clean antenna towers and soft blue sky',
-  hall: 'a spotless parade ground with tidy barracks and a broad blue sky',
-  prison: 'a bright gravel plain with tidy fencing and watchtowers in the distance',
-  radar: 'a bright ridge line with clean radio towers and a dish array, blue sky',
-  store: 'a clean logistics yard with neat container stacks and trucks far away',
-  defense: 'a bright open front with clean concrete barriers and a clear sky',
-  market: 'a sunny crossroads with clean awnings and lanterns, warm light',
-  rations: 'green farmland fading into clean golden fields, a windmill far away, blue sky',
-  fuel: 'a bright industrial plain with tidy tanks and distant pumpjacks, clear sky',
-  power: 'a sunny plain with far rows of solar panels and wind turbines, clear sky',
-  alloy: 'a bright industrial park with clean chimneys and a warm horizon glow'
+  embassy: 'soft green rolling hills under a broad blue sky with light clouds',
+  forge: 'warm open plains under a clear sky with a gentle sunlit haze',
+  cc: 'wide green plains fading to pale blue hills under a bright sky with light clouds',
+  mil: 'open sunlit grassland with distant low hills and a bright blue sky',
+  depot: 'calm green meadows with distant soft hills and a clear sky',
+  treasury: 'pale rocky plains with distant low mesas under a clear blue sky',
+  tech: 'a high clear plateau with distant blue ridges and soft clouds',
+  hall: 'broad green fields with distant hills and a bright blue sky',
+  prison: 'a bright gravel plain with distant flat hills and a pale sky',
+  radar: 'a high bright ridge line falling away to distant valleys, blue sky',
+  store: 'flat dry plains with distant hazy hills and a clear sky',
+  defense: 'a bright open plain with distant hills and a clear sky',
+  market: 'sunny golden fields with distant hills and warm light',
+  rations: 'green farmland fading into golden fields with distant hills, blue sky',
+  fuel: 'a bright dry plain with distant low hills and a clear sky',
+  power: 'a sunny open plain with distant rolling hills and a clear sky',
+  alloy: 'a bright rocky plain with distant hills and a warm horizon glow'
 };
 const TROOP_SUBJECT = {
   inf: [
@@ -180,7 +180,7 @@ function build() {
   G('head', 'Building sheet backdrops (17)', 'The wide scenery behind a building on its info sheet. NO building in it: leave an empty flat patch of ground in the lower centre where the game places the building.');
   for (const k of Object.keys(ALL_BLD)) add('head', {
     key: `head_${k}`, name: `${ALL_BLD[k].n} backdrop`, size: '2:1 wide, 1600 x 800', transparent: false, out: 1000,
-    prompt: make(`A wide scenic backdrop: ${BACKDROP[k]}. Empty flat clean ground in the lower centre for a building to be placed on, nothing important in the centre, bright sky in the upper half. Slightly raised camera, soft depth haze`, STYLE, BG_O)
+    prompt: make(`A wide scenic backdrop of pure scenery: ${BACKDROP[k]}. No buildings, no roads, no paved pads, no vehicles, no towers and no signs anywhere; just soft natural ground and sky. Plain, uncluttered ground in the lower half and bright sky in the upper half, nothing important in the centre. Slightly raised camera, soft depth haze`, STYLE, BG_O)
   });
   G('troop', 'Troops (16)', 'One unit type per image, transparent, same camera. A squad for infantry and a single vehicle for the rest. Do tier 1 to 4 of a class together and attach tier 1 as a reference.');
   for (const c of Object.keys(D.CLSD)) D.CLSD[c].names.forEach((nm, i) => add('troop', {
