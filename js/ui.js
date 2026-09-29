@@ -32,6 +32,7 @@ const UI = {
 /* ---------------- feedback: toast, tone, haptics ---------------- */
 let actx = null;
 const setOn = k => !(S && S.set) || S.set[k] !== false;
+function ribbon(html) { let r = $('#ribbon'); if (!r) { r = document.createElement('div'); r.id = 'ribbon'; $('#main').appendChild(r); } r.innerHTML = `<span>${html}</span>`; r.className = 'on'; clearTimeout(ribbon.t); ribbon.t = setTimeout(() => { r.className = ''; }, 3500); }
 function toast(m, k) { const t = document.createElement('div'); t.className = 'toast ' + (k || ''); t.textContent = m; const box = $('#toasts'); box.appendChild(t); while (box.children.length > 4) box.firstChild.remove(); setTimeout(() => { t.classList.add('out'); setTimeout(() => t.remove(), 260); }, 3400); }
 function beep(f, d, v, type) { if (!setOn('snd')) return; try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); const o = actx.createOscillator(), g = actx.createGain(); o.type = type || 'sine'; o.frequency.value = f; g.gain.value = v; g.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + d); o.connect(g); g.connect(actx.destination); o.start(); o.stop(actx.currentTime + d); } catch (e) { } }
 function tone() { beep(880, 0.14, 0.05, 'square'); }
@@ -212,8 +213,8 @@ function sheetReport(id) {
   return `<div class="flex sp"><div><div class="h1">${r.title}</div><div class="sub">${r.win == null ? 'Intel' : r.win ? '<span class="ox">Victory</span>' : '<span class="sg">Defeat</span>'}${r.obl ? ' · obliterated' : ''}${wtxt}</div></div><button class="xclose" data-a="closesheet" aria-label="Close">✕</button></div><div class="sub">${new Date(r.t).toLocaleString()}</div><div class="split mt">${side(r.left, 'me')}${side(r.right, 'them')}</div>${r.joiners ? `<div class="lbl mt">Joiners</div>${r.joiners.map(j => `<div class="rr"><span>${j.name}</span><span class="num">${j.sent} sent · <span class="sg">−${j.lost}</span> · wounded ${j.wounded}</span></div>`).join('')}` : ''}<div class="flex sp mt"><button class="btn pri" data-a="rsave" data-id="${r.id}" data-close="1">${r.saved ? 'Saved ★' : 'Save'}</button><button class="btn dangr" data-a="rdel" data-id="${r.id}">Delete</button></div>`;
 }
 function renderSheet() {
-  const el = $('#sheet'), s = UI.sheet, open = !!s && !UI.drawer;
-  if (open) el.innerHTML = s.type === 'tile' ? sheetTile(s.x, s.y) : s.type === 'plot' ? sheetPlot(s.area, s.idx) : s.type === 'report' ? sheetReport(s.id) : s.type === 'iap' ? sheetIap(s.id) : '';
+  const el = $('#sheet'), s = UI.sheet, open = !!s && (!UI.drawer || s.type === 'tech');
+  if (open) el.innerHTML = s.type === 'tile' ? sheetTile(s.x, s.y) : s.type === 'plot' ? sheetPlot(s.area, s.idx) : s.type === 'report' ? sheetReport(s.id) : s.type === 'iap' ? sheetIap(s.id) : s.type === 'tech' ? sheetTech(s.id) : '';
   el.classList.toggle('on', open);
   $('#scrim').classList.toggle('on', open || !!UI.drawer);
 }
@@ -271,18 +272,39 @@ function renderTrain() {
   h += `<div class="panel"><div class="hd"><h3>Garrison</h3></div><div class="bd">${CLS.map(k => [1, 2, 3, 4].filter(x => S.troops[k + x]).map(x => `<div class="rr"><span class="wi"><i class="ui">${unitSVG(k, x, { plate: false })}</i>${tierName(k, x)}</span><span class="num">${S.troops[k + x]}</span></div>`).join('')).join('') || '<div class="sub">Empty.</div>'}</div></div>`;
   return h;
 }
-function labNode(id) {
-  const d = RS[id], lv = R(id), g = researchGate(id), active = jobsOf('res')[0];
+const TCOL = { combat: '#c0543c', field: '#5b7f9a', defense: '#7a8a52', troops: '#a8863a', econ: '#4f9a86', ops: '#8a6aa8' };
+const TGLYPH = { y_rations: 'rations', y_power: 'power', y_alloy: 'alloy', y_fuel: 'fuel', wh: 'vault', build: 'base', load: 'cash', gather: 'rations', march: 'march', logi: 'train', trainspd: 'train', recon: 'lab', beds: 'med', restore: 'med', repair: 'med' };
+function techArt(id) {
+  const d = RS[id], c = TCOL[d.tree] || '#5b7f9a'; let art = '';
+  const cls = { atk_inf: 'inf', atk_arm: 'arm', atk_air: 'air', atk_siege: 'siege', plating: 'inf' }[id];
+  try {
+    if (cls) art = unitSVG(cls, 3, { plate: false }); else if (/^doc/.test(id)) art = unitSVG('inf', +id.slice(3), { plate: false }); else if (d.tree === 'defense') art = wallSVG(id === 'bulk' ? 'sent' : 'garr', id === 'repair' ? 3 : id === 'perim' ? 2 : 1);
+  } catch (e) { art = ''; }
+  if (!art) art = `<svg viewBox="0 0 24 24" fill="none" stroke="#f4efe4" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:62%;height:62%;margin:19%;filter:drop-shadow(0 2px 2px rgba(0,0,0,.6))">${ICON[TGLYPH[id]] || ICON.lab}</svg>`;
+  return `<div class="tart" style="background:radial-gradient(circle at 50% 30%,${c},#0d1012 92%)">${art}</div>`;
+}
+function labCard(id) {
+  const d = RS[id], lv = R(id), g = researchGate(id);
+  return `<button class="tcard ${g && !lv ? 'lk' : ''}" data-a="techopen" data-id="${id}">${techArt(id)}<b class="num">${lv}/${d.max}</b><span>${d.n}</span></button>`;
+}
+function sheetTech(id) {
+  const d = RS[id], lv = R(id), to = lv + 1, g = researchGate(id), busy = jobsOf('res')[0], done = to > d.max, cost = done ? null : researchCost(id, to);
   const cur = d.a || d.b ? `+${(rv(id) * 100).toFixed(1).replace(/\.0$/, '')}%` : (id === 'recon' ? 'scan ' + lv : lv ? 'done' : '—');
-  const to = lv + 1, cost = to <= d.max ? researchCost(id, to) : null;
-  return `<div class="panel"><div class="bd"><div class="flex sp"><b class="h" style="font-size:17px">${d.n}</b><span class="tag ${lv ? 'br' : ''}">${lv}/${d.max}</span></div><div class="sub">${d.what} · now ${cur}${d.req.length ? ' · needs ' + d.req.map(([r, l]) => RS[r].n + ' ' + l).join(', ') : ''}</div>
-  ${cost ? `<div class="mt">${costHTML(cost)}</div><div class="sub mt">${dualT(researchSheetSec(id, to))}</div><div class="mt">${g ? `<span class="sub sg">${g}</span>` : active ? '<span class="sub">The lab is busy.</span>' : payBtn(cost, 'research', { id }, 'Research')}</div>` : ''}</div></div>`;
+  const row = (ok, ico, txt) => `<div class="rq ${ok ? 'ok' : 'no'}"><span>${ico ? svg(ico, 'ic').replace('<svg', '<svg ' + ic) + ' ' : ''}${txt}</span></div>`;
+  let h = `<button class="xclose" data-a="closesheet" aria-label="Close">✕</button><div class="tsh">${techArt(id)}<div class="grow"><div class="h1">${d.n}</div><div class="sub">Level <b class="num br">${lv}/${d.max}</b> · ${d.what}</div><div class="sub">Now ${cur}${d.a || d.b ? ` · next +${((lin(to, d.a, d.b, d.max) || 0) * 100).toFixed(1).replace(/\.0$/, '')}%` : ''}</div></div></div>`;
+  if (done) return h + '<div class="sub mt ox">Fully researched.</div>';
+  h += '<div class="lbl mt">Requirements</div>' + row(!g, 'lab', g || 'Prerequisites met') + row(!busy, 'lab', busy ? 'Lab is busy' : 'Empty research queue') + Object.keys(cost).filter(r => cost[r] > 0).map(r => row(Math.floor(S.res[r]) >= cost[r], r, `${fmtN(S.res[r])}/${fmtN(cost[r])}`)).join('');
+  h += `<div class="lbl mt">Upgrade rewards</div><div class="rr"><span>${svg('hero', 'ic').replace('<svg', '<svg ' + ic)} Commander XP</span><span class="num">${fmtN(to * 400)}</span></div><div class="rr"><span>${svg('alliance', 'ic').replace('<svg', '<svg ' + ic)} Power</span><span class="num">+${to * 11}</span></div>`;
+  const sec = researchSheetSec(id, to), real = fmtT(sec / DRILL);
+  h += `<div class="flex sp mt"><div><div class="lbl">Original time</div><div class="num" style="font-size:18px">${fmtT(sec)}</div></div><div style="text-align:right"><div class="lbl">Real time</div><div class="num br" style="font-size:18px">${real}</div></div></div>`;
+  h += `<div class="flex sp mt"><button class="btn instant" data-a="techinstant" data-id="${id}" ${g || busy ? 'disabled' : ''}>Instant ${svg('dia', 'ic').replace('<svg', '<svg ' + ic)} ${rushCost(Date.now() + sec * 1000 / DRILL)}</button>${payBtn(cost, 'research', { id }, 'Research', 'pri')}</div>`;
+  return h;
 }
 function renderLab() {
   const job = jobsOf('res')[0];
-  let h = `<div class="tabs2">${TREES.map(([k, n]) => `<button class="${UI.lab === k ? 'on' : ''}" data-a="labtab" data-k="${k}">${n}</button>`).join('')}</div>`;
+  let h = `<div class="tabs2">${TREES.map(([k, n]) => `<button class="${UI.lab === k ? 'on' : ''}" data-a="labtab" data-k="${k}">${n}</button>`).join('')}</div><div class="tnote">Tap a technology below to get started.</div>`;
   if (job) h += `<div class="panel"><div class="bd"><div class="lbl">Researching ${job.why}</div>${jobCtl(job)}</div></div>`;
-  return h + Object.keys(RS).filter(id => RS[id].tree === UI.lab).map(labNode).join('');
+  return h + `<div class="tgrid">${Object.keys(RS).filter(id => RS[id].tree === UI.lab).map(labCard).join('')}</div>`;
 }
 function renderMed() {
   let h = `<div class="tabs2"><button class="${UI.med === 'depot' ? 'on' : ''}" data-a="medtab" data-k="depot">Depot</button><button class="${UI.med === 'wall' ? 'on' : ''}" data-a="medtab" data-k="wall">Wall</button></div>`;
@@ -333,7 +355,19 @@ function reportsHTML(saved) {
   const rs = S.reports.filter(r => !saved || r.saved);
   return rs.length ? `<div class="list mailist">${rs.map(r => `<div class="it ${r.id > (S.readTo || 0) ? 'unr' : ''}" data-a="report" data-id="${r.id}" style="cursor:pointer"><div class="grow"><b class="h" style="font-size:16px">${r.title}</b><div class="sub">${new Date(r.t).toLocaleString()} · ${r.win == null ? 'intel' : r.win ? 'victory' : 'defeat'}</div></div><span class="tag ${r.win === false ? 'sg' : r.win ? 'br' : ''}">${r.kind}</span><button class="star ${r.saved ? 'on' : ''}" data-a="rsave" data-id="${r.id}" aria-label="Save">★</button></div>`).join('')}</div>` : `<div class="sub">${saved ? 'Nothing saved. Tap the star on a report.' : 'No reports. A wiped column writes none.'}</div>`;
 }
-const MORE = [['Store', 'Diamonds, packs and settings.', 'vault', 'hero', 'store'], ['Government', 'Check who rules the citadel.', 'alliance', 'alliance', 'throne'], ['Ranks', 'Alliance standing and score.', 'hero', 'alliance', 'ally'], ['Market', 'Three offers a day.', 'cash', 'hero', 'market'], ['Diamond ledger', 'Every diamond gained or spent.', 'dia', 'hero', 'ledger'], ['Settings', 'Sound, haptics, erase save.', 'lab', 'hero', 'store']];
+function addReward(title, desc, g) { S.rewards = S.rewards || []; if (S.rewards.length >= 200) return false; S.rewards.push(Object.assign({ id: Date.now() + Math.random(), title, desc }, g)); return true; }
+function rewardsHTML() {
+  const rw = S.rewards || [], ico = r => r.dia ? svg('dia') : r.res ? svg(Object.keys(r.res)[0]) : svg('train');
+  return `<div class="rwban"><b>Current amount: ${rw.length}/200</b><span>Your Rewards Center holds 200 items. Collect regularly.</span></div>` + (rw.length ? `<div class="flex sp mb"><span class="sub">${rw.length} waiting</span><button class="btn sm pri" data-a="rwall">Collect all</button></div>` : '') + (rw.length ? rw.map(r => `<div class="rwrow"><span class="rwic">${ico(r).replace(/stroke-width="1.8"/, 'stroke-width="1.6"')}</span><div class="grow"><b>${r.title}</b><div class="sub">${r.desc}</div></div><button class="btn pri" data-a="rwget" data-id="${r.id}">Collect</button></div>`).join('') : '<div class="sub">Nothing waiting. Daily exercise, events and invites pay out here.</div>');
+}
+function grantReward(r) { if (r.dia) dchg(r.dia, r.title); if (r.res) for (const k in r.res) S.res[k] = Math.min(storeCap(), S.res[k] + r.res[k]); if (r.slips) for (const k in r.slips) S.slips[k] = (S.slips[k] || 0) + r.slips[k]; if (r.tokens) S.tokens += r.tokens; }
+function inviteHTML() {
+  S.code = S.code || Array.from({ length: 12 }, () => '0123456789abcdef'[Math.floor(Math.random() * 16)]).join('');
+  return `<div class="panel"><div class="hd"><h3>I've been invited</h3></div><div class="bd"><div class="sub">Enter a friend's code once for a gift. It goes to the Rewards Center.</div><div class="flex sp mt"><div class="rwic big">${svg('dia')}<em>x1</em><span>200 Diamonds</span></div><div class="rwic big">${svg('train')}<em>x2</em><span>60 Minute Speed Up</span></div></div><div class="flex mt"><input id="invin" class="txin" placeholder="Enter the code here" maxlength="12" ${S.invUsed ? 'disabled' : ''}><button class="btn pri" data-a="invverify" ${S.invUsed ? 'disabled' : ''}>Verify</button></div></div></div>
+  <div class="panel"><div class="hd"><h3>I'm the inviter</h3></div><div class="bd"><div class="lbl">My code</div><div class="flex mt"><input class="txin" readonly value="${S.code}"><button class="btn pri" data-a="invcopy">Copy</button></div><div class="pinkbar mt">Successfully invited <b>${S.invited || 0}</b>/30</div><div class="flex mt"><button class="btn pri grow tall" data-a="dtab" data-k="rw">Rewards</button><button class="btn pri grow tall" data-a="drawer" data-id="alliance" data-tab="ally">Find players</button></div></div></div>`;
+}
+function helpHTML() { return [['Resources', 'Rations, Fuel, Power, Alloy and Cash come from your outer ring and veins on the map. The store cap limits them; the protected floor is safe from raids.'], ['Base', 'Tap a plot for Upgrade, Info and Function. The Command Center level caps everything else.'], ['Troops', 'Train at the Military Complex. Infantry beats Aircraft, Aircraft beats Armor, Armor beats Infantry. Siege breaks walls.'], ['Map', 'Tap a tile for a menu. Gather from veins, hunt monster packs for a rich vein, encamp to claim land, and strike rival bases.'], ['Speed', 'Bars at the top show timers. Speed Up spends diamonds. Slips are free time items.']].map(([t, d]) => `<div class="panel"><div class="hd"><h3>${t}</h3></div><div class="bd sub" style="font-size:14px">${d}</div></div>`).join(''); }
+const MORE = [['Rewards Center', 'Collect prizes waiting for you.', 'dia', 'more', 'rw'], ['Invitation code', 'Invite friends and share your code.', 'mail', 'more', 'inv'], ['Help', 'Rules of the game in short.', 'lab', 'more', 'help'], ['Store', 'Diamonds, packs and settings.', 'vault', 'hero', 'store'], ['Government', 'Check who rules the citadel.', 'alliance', 'alliance', 'throne'], ['Ranks', 'Alliance standing and score.', 'hero', 'alliance', 'ally'], ['Market', 'Three offers a day.', 'cash', 'hero', 'market'], ['Diamond ledger', 'Every diamond gained or spent.', 'dia', 'hero', 'ledger'], ['Settings', 'Sound, haptics, erase save.', 'lab', 'hero', 'store']];
 function moreHTML() { return `<div class="morelist">${MORE.map(([n, d, ic, dr, tab]) => `<button class="mrow" data-a="drawer" data-id="${dr}" data-tab="${tab}"><span class="mico">${svg(ic).replace(/stroke="[^"]+"/, 'stroke="currentColor"')}</span><span class="grow"><b>${n}</b><i>${d}</i></span><em>›</em></button>`).join('')}</div>`; }
 function logHTML() { return `<div class="panel"><div class="bd">${S.log.slice(0, 40).map(l => `<div class="rr"><span class="${l.k === 'bad' ? 'sg' : l.k === 'good' ? 'ox' : l.k === 'warn' ? 'br' : ''}">${l.m}</span><span class="mut num">${new Date(l.t).toTimeString().slice(0, 8)}</span></div>`).join('') || '<div class="sub">Nothing yet.</div>'}</div></div>`; }
 function contactsHTML() {
@@ -362,7 +396,7 @@ const DR = {
   hero: { tabs: [['forge', 'Forge'], ['heroes', 'Heroes'], ['store', 'Store'], ['market', 'Market'], ['ledger', 'Ledger']], body: t => ({ forge: forgeHTML, heroes: heroesHTML, store: storeHTML, market: marketHTML, ledger: ledgerHTML })[t]() },
   alliance: { tabs: [['throne', 'Throne'], ['rally', 'Rally'], ['ally', 'Alliance']], body: t => ({ throne: throneHTML, rally: marchRally, ally: allyHTML })[t]() },
   mail: { tabs: [['rep', 'Reports'], ['sav', 'Saved'], ['log', 'Log'], ['ctc', 'Contacts']], body: t => ({ rep: reportsHTML, sav: () => reportsHTML(true), log: logHTML, ctc: contactsHTML })[t]() },
-  more: { tabs: [['menu', 'More']], body: moreHTML },
+  more: { tabs: [['menu', 'More'], ['rw', 'Rewards'], ['inv', 'Invite'], ['help', 'Help']], body: t => ({ menu: moreHTML, rw: rewardsHTML, inv: inviteHTML, help: helpHTML })[t]() },
   march: { tabs: [['cols', 'Columns'], ['field', 'Field']], body: t => t === 'cols' ? marchCols() : marchField() }
 };
 function renderDrawer() {
@@ -429,8 +463,14 @@ const A = {
   rsave(d) { const r = S.reports.find(x => x.id === +d.id); if (r) r.saved = !r.saved; D(); },
   rdel(d) { S.reports = S.reports.filter(x => x.id !== +d.id); UI.sheet = null; D(); },
   mgo() { const v = prompt('Go to X,Y', Math.round(MAP.cx) + ',' + Math.round(MAP.cy)); if (!v) return; const [a, b] = v.split(/[ ,]+/).map(Number); if (isFinite(a) && isFinite(b)) { panTo(clamp(a, 0, W - 1), clamp(b, 0, H - 1)); D(); } },
+  techopen(d) { UI.sheet = { type: 'tech', id: d.id }; ribbon('Tap <b>Research</b> to start.'); D(); },
+  techinstant(d) { let e = startResearch(d.id, true); if (!e) { const j = jobsOf('res')[0]; e = j ? rushJob(j.id) : null; } if (run(e, 'Research complete.')) UI.sheet = null; },
+  rwget(d) { const i = (S.rewards || []).findIndex(r => String(r.id) === d.id); if (i >= 0) { grantReward(S.rewards[i]); S.rewards.splice(i, 1); toast('Collected.', 'good'); } D(); },
+  rwall() { for (const r of S.rewards || []) grantReward(r); S.rewards = []; toast('All collected.', 'good'); D(); },
+  invcopy() { try { navigator.clipboard.writeText(S.code); } catch (e) { } toast('Code copied.', 'good'); },
+  invverify() { const v = ($('#invin').value || '').trim().toLowerCase(); if (!/^[0-9a-f]{12}$/.test(v)) return toast('Codes are 12 letters and numbers.', 'warn'); if (v === S.code) return toast('That is your own code.', 'warn'); S.invUsed = true; addReward('Invitation gift', '200 Diamonds and two 60 minute speed ups', { dia: 200, slips: { s60: 2 } }); toast('Gift sent to the Rewards Center.', 'good'); D(); },
   closesheet() { UI.sheet = null; UI.sel = null; D(); },
-  scrim() { closeBRadial(); if (UI.drawer) UI.drawer = null; else { UI.sheet = null; UI.sel = null; } D(); },
+  scrim() { closeBRadial(); if (UI.sheet && UI.sheet.type === 'tech') { UI.sheet = null; D(); return; } if (UI.drawer) UI.drawer = null; else { UI.sheet = null; UI.sel = null; } D(); },
   details(d) { closeRadial(); UI.sel = { x: +d.x, y: +d.y }; UI.sheet = { type: 'tile', x: +d.x, y: +d.y }; UI.drawer = null; D(); },
   qsend(d) {
     const comp = bestComp(headcount()), e = launchMarch(d.k, +d.x, +d.y, comp, false); closeRadial();
@@ -459,7 +499,7 @@ const A = {
   trcls(d) { UI.tr.cls = d.c; UI.tr.n = 0; D(); }, trtier(d) { UI.tr.tier = +d.t; UI.tr.n = 0; D(); },
   trn(d) { UI.tr.n = clamp(UI.tr.n + +d.d, 0, batchCap(UI.tr.tier)); D(); }, trmax() { UI.tr.n = batchCap(UI.tr.tier); D(); },
   train(d) { const T = UI.tr; run(startTrain(T.cls, T.tier, T.n, !!d.cover)); },
-  research(d) { run(startResearch(d.id, !!d.cover)); }, labtab(d) { UI.lab = d.k; D(); },
+  research(d) { if (run(startResearch(d.id, !!d.cover))) UI.sheet = null; }, labtab(d) { UI.lab = d.k; D(); },
   medtab(d) { UI.med = d.k; D(); }, heal(d) { const [c, t] = ckSplit(d.k); run(startHeal(c, t, S.wounded[d.k] || 0, !!d.cover)); },
   wlcls(d) { UI.wl.cls = d.c; UI.wl.n = 0; D(); }, wltier(d) { UI.wl.tier = +d.t; UI.wl.n = 0; D(); }, wln(d) { UI.wl.n = Math.max(0, UI.wl.n + +d.d); D(); },
   wall(d) { const w = UI.wl; run(startWall(w.cls, w.tier, w.n, !!d.cover)); },
@@ -498,7 +538,7 @@ function updateTimers() {
   document.querySelectorAll('.ring[data-rs]').forEach(el => { const s = +el.dataset.rs, e = +el.dataset.re, f = clamp((Date.now() - s) / Math.max(1, e - s), 0, 1); el.querySelector('.rfg').setAttribute('stroke-dashoffset', (RING_C * (1 - f)).toFixed(1)); });
 }
 function boot() {
-  S = load() || newState(); S.set = S.set || { snd: true, hap: true }; const el = Math.min(600, (Date.now() - (S.last || Date.now())) / 1000); if (el > 3) produce(el); S.last2 = 0; terrDirty = true;
+  S = load() || newState(); S.set = S.set || { snd: true, hap: true }; if (!S.rewards) { S.rewards = []; addReward('Welcome prize', '10 Minute Speed Up x 1', { slips: { s5: 2 } }); } const el = Math.min(600, (Date.now() - (S.last || Date.now())) / 1000); if (el > 3) produce(el); S.last2 = 0; terrDirty = true;
   initMap(); MAP.cx = S.view.x; MAP.cy = S.view.y; renderAll();
   setInterval(() => {
     tick(); renderTop(); renderTicker(); renderQueues();
@@ -506,6 +546,6 @@ function boot() {
     if (UI.dirty || terrDirty) renderAll(); else updateTimers();
   }, 250);
   setInterval(save, 5000); window.addEventListener('beforeunload', save);
-  if (!S.log.length) note('Garrison raised. Tap the map, then a radial button.', 'info');
+  if (!S.log.length) { note('Garrison raised. Tap the map, then a radial button.', 'info'); setTimeout(() => ribbon('Tap the <b>Base</b> tab, then a building, to start upgrading.'), 800); }
 }
 boot();

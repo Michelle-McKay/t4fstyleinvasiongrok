@@ -246,7 +246,7 @@ a{text-decoration:none}
 .sheet .rq{align-items:center;background:rgba(255,255,255,.03);border:0;border-bottom:1px solid var(--line);margin:0;padding:8px 6px}
 .sheet .rq.ok::after{content:"✓";color:#5fd26a;font:700 20px/1 var(--head);margin-left:8px}
 .sheet .rq.no::after{content:"✗";color:var(--signal);font:700 20px/1 var(--head);margin-left:8px}
-.sheet .btn.pri,.sheet .btn.pri.tall{background:linear-gradient(180deg,#3f95dc,#1b5c98);border-color:#0c2c4a;border-top-color:#8cc6f2;color:#fff;box-shadow:0 2px 0 #0c2c4a}
+.sheet .btn.pri,.sheet .btn.pri.tall,#drawer .btn.pri{background:linear-gradient(180deg,#3f95dc,#1b5c98);border-color:#0c2c4a;border-top-color:#8cc6f2;color:#fff;box-shadow:0 2px 0 #0c2c4a}
 .sheet .btn.line[data-cover]{background:linear-gradient(180deg,#4fae3f,#1f6a1c);border-color:#0d3a0c;border-top-color:#8fe07c;color:#fff;box-shadow:0 2px 0 #0d3a0c}
 .panel>.hd{background:rgba(255,255,255,.05)}
 .sheet .bhead+.flex .pv{display:none}
@@ -301,3 +301,30 @@ a{text-decoration:none}
 .mailist .it.unr{border-left:3px solid var(--glacier);padding-left:6px}
 .btn.dangr{background:linear-gradient(180deg,#d4654a,#8a2c1c);border-color:#4a120a;border-top-color:#f09a80;color:#fff;box-shadow:0 2px 0 #4a120a}
 #coord span{white-space:nowrap}
+
+/* lab tech tree cards, research pop-out, ribbon */
+.tnote{background:rgba(224,164,74,.12);border:1px solid rgba(224,164,74,.3);color:var(--brass);text-align:center;font:600 14px/1 var(--head);letter-spacing:.06em;padding:8px;margin-bottom:10px;text-transform:uppercase}
+.tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tcard{display:flex;flex-direction:column;align-items:stretch;padding:4px;background:linear-gradient(180deg,#2c3338,#171c1f);border:1px solid var(--line);text-align:center;min-width:0}
+.tcard.lk{opacity:.55}
+.tart{position:relative;aspect-ratio:1;overflow:hidden;border:1px solid rgba(0,0,0,.5)}
+.tart svg{width:100%;height:100%;display:block}
+.tcard b{background:#000;color:var(--bone);font:600 13px/18px var(--head);letter-spacing:.05em}
+.tcard span{font:600 12px/1.15 var(--head);letter-spacing:.04em;text-transform:uppercase;padding:4px 2px;min-height:30px;color:var(--mute)}
+.tsh{display:flex;gap:10px;align-items:center;margin-bottom:6px;padding-right:34px}
+.tsh .tart{width:84px;flex:none}
+.btn.instant{background:linear-gradient(180deg,#4fae3f,#1f6a1c);border-color:#0d3a0c;border-top-color:#8fe07c;color:#fff;box-shadow:0 2px 0 #0d3a0c}
+#ribbon{position:absolute;left:0;right:0;top:45%;z-index:30;display:none;pointer-events:none;text-align:center}
+#ribbon.on{display:block;animation:tin .3s var(--spring)}
+#ribbon span{display:block;padding:14px 20px;background:linear-gradient(90deg,transparent,rgba(120,26,20,.92) 12%,rgba(120,26,20,.92) 88%,transparent);color:#fff;font:500 16px/1.3 var(--body)}
+#ribbon b{color:#f0c14a}
+.sheet:has(.tsh){z-index:10}
+
+.rwban{margin:-12px -12px 10px;padding:16px 12px;background:linear-gradient(135deg,#a8481c,#e0a44a 60%,#7a3a12);text-align:center;color:#fff;text-shadow:0 1px 3px #000}
+.rwban b{display:block;font:700 20px/1.1 var(--head);letter-spacing:.06em;text-transform:uppercase}.rwban span{font-size:12px}
+.rwrow{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
+.rwic{position:relative;width:52px;height:52px;flex:none;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1f4a2a,#0d1a10);border:1px solid var(--line)}
+.rwic svg{width:30px;height:30px}
+.rwic.big{width:auto;height:auto;flex-direction:column;padding:10px 14px;gap:4px;text-align:center}.rwic.big span{font:600 12px/1.1 var(--head);text-transform:uppercase}.rwic.big em{position:absolute;right:4px;top:2px;font:700 14px var(--head);font-style:normal;color:var(--signal)}
+.txin{flex:1;min-width:0;height:38px;background:var(--ink);border:1px solid var(--line);color:var(--bone);padding:0 10px;font:16px var(--body);user-select:text;-webkit-user-select:text}
+.pinkbar{background:rgba(212,101,74,.25);text-align:center;padding:8px;font:600 16px var(--head);letter-spacing:.04em}.pinkbar b{color:var(--signal)}
