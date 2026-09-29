@@ -206,3 +206,5 @@ a{text-decoration:none}
 @keyframes gdp{0%,100%{box-shadow:0 0 0 0 rgba(224,164,74,.7)}50%{box-shadow:0 0 0 10px rgba(224,164,74,0)}}
 
 .rt{font-style:normal;font-size:9px;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--oxide);color:var(--oxide);padding:0 3px;margin-left:4px}
+
+img.bsvg{object-fit:contain;-webkit-user-drag:none}
