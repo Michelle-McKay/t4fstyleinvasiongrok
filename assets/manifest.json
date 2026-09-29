@@ -24,6 +24,7 @@
   "bld_treasury_t5": "assets/buildings/bld_treasury_t5.webp"
  },
  "clean": [
+  "bld_depot_t1",
   "bld_mil_t1",
   "bld_mil_t2",
   "bld_mil_t3",
