@@ -13,6 +13,9 @@ Open `index.html` (or serve the folder statically). Barlow Condensed and Source 
 - `js/ui.js` — frosted HUD, five-tab dock, spring slide-up drawers (Desk, Hero/Forge, Alliance, Mail, Columns), base scene with progress rings and reward bubbles, haptics and audio cues
 - `style.css` — the locked palette and instrument-panel look
 
+## Purchases
+`js/iap.js` holds the diamond-pack store, bundles and purchase layer. The browser build is sandbox only (no money). See `docs/IAP.md` for the native wrapper, server validation and compliance steps.
+
 ## Clocks
 Every job stores an absolute end time; a 4Hz tick completes what is due. Nothing is integrated per frame; columns are timers.
 Sheet values are shown, drill values run: build, train, research, heal and wall crews divide by 15; occupation, shield, throne hold and rally waits use the occupation clock (4 h sheet → 48 s). Production runs at ×15 and the base panel prints the sheet per-hour figure.

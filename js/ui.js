@@ -190,7 +190,7 @@ function sheetReport(id) {
 }
 function renderSheet() {
   const el = $('#sheet'), s = UI.sheet, open = !!s && !UI.drawer;
-  if (open) el.innerHTML = s.type === 'tile' ? sheetTile(s.x, s.y) : s.type === 'plot' ? sheetPlot(s.area, s.idx) : s.type === 'report' ? sheetReport(s.id) : '';
+  if (open) el.innerHTML = s.type === 'tile' ? sheetTile(s.x, s.y) : s.type === 'plot' ? sheetPlot(s.area, s.idx) : s.type === 'report' ? sheetReport(s.id) : s.type === 'iap' ? sheetIap(s.id) : '';
   el.classList.toggle('on', open);
   $('#scrim').classList.toggle('on', open || !!UI.drawer);
 }
