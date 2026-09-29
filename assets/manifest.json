@@ -88,7 +88,8 @@
   "bld_treasury_t4": "assets/buildings/bld_treasury_t4.webp",
   "bld_treasury_t5": "assets/buildings/bld_treasury_t5.webp",
   "troop_inf_t1": "assets/troops/troop_inf_t1.webp",
-  "troop_inf_t2": "assets/troops/troop_inf_t2.webp"
+  "troop_inf_t2": "assets/troops/troop_inf_t2.webp",
+  "troop_inf_t3": "assets/troops/troop_inf_t3.webp"
  },
  "clean": [
   "bld_alloy_t1",
@@ -177,6 +178,7 @@
   "bld_treasury_t4",
   "bld_treasury_t5",
   "troop_inf_t1",
-  "troop_inf_t2"
+  "troop_inf_t2",
+  "troop_inf_t3"
  ]
 }
