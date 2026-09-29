@@ -61,7 +61,7 @@ summary h2{font-size:21px}.gc{font:600 14px var(--body);color:var(--mut);white-s
     <li>Save the result with the exact file name shown (tap <b>Copy name</b>). PNG or JPG is fine.</li>
     <li>Send them to Claude in the project thread, up to <b>5 images per message</b>. Claude cuts out backgrounds, resizes, commits and merges them.</li>
   </ol>
-  <p><b>Look:</b> bright, clean, modern industrial. Light grey and off-white panels, sand, brass and orange accents, glowing blue lights. No rust, grime or clutter. Ask for a transparent background; if the tool cannot, the prompt falls back to flat magenta and Claude removes it.</p>
+  <p><b>Look:</b> bright, clean, modern industrial. Light grey and off-white panels, sand, brass and orange accents, glowing blue lights. No rust, grime or clutter. Every prompt asks for a flat magenta background, which Claude removes. Never use a grey checkerboard "transparent" background: it gets baked in as real pixels and cannot be removed cleanly.</p>
   <p><b>Old dark images:</b> items tagged "old look" are in the game but from the first dark set. They stay until you send a clean replacement under the same name.</p>
   <p style="margin-top:12px"><button id="cpStyle">Copy shared style block</button></p>
 </section>

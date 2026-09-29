@@ -33,7 +33,7 @@ const STYLE = STYLE_HEAD + 'Bright, clean, modern industrial-military look: modu
 /* units, heroes, creatures, icons, packs */
 const STYLE_GEN = STYLE_HEAD + 'Bright, clean, modern industrial-military palette: off-white, light grey and warm sand with safety-orange and brass accents and softly glowing blue lights. ' + STYLE_TAIL;
 const CAM = 'Camera: three-quarter overhead, looking down about 40 degrees, front-left corner facing the viewer, the same camera, scale and lighting as every other asset in this set.';
-const BG_T = 'Background: isolated on a transparent background. If your tool cannot make transparency, use one flat solid magenta (#FF00FF) background with no gradient, no floor and no shadow on it.';
+const BG_T = 'Background: one flat solid magenta (#FF00FF) colour filling the whole frame, no gradient, no floor, no shadow on it. Do NOT draw a grey checkerboard pattern (that is a fake transparency grid and cannot be removed).';
 const BG_O = 'Fill the whole frame, no transparent areas.';
 const PAD = 'Place the building complex on one clean, flat, square light-concrete pad with a thin edge (the same pad size in every image of this set), centred, filling about 85 percent of the frame. Nothing may extend past the pad. No vehicles, people, banners, flag poles or separate structures unless named.';
 
