@@ -179,7 +179,7 @@ function groundStep() {
 function drawMap(now) {
   MAP.now = now; CH.fbudget = 4; if (CH.dpr !== gdpr()) { CH.map.clear(); CH.bytes = 0; CH.pool = {}; CH.dpr = gdpr(); }
   if (terrDirty) { computeTags(); if (refreshChunks()) GR.dirty = true; }
-  const g = cx2, ts = MAP.ts, w = MAP.w, h = MAP.h, dpr = MAP.dpr, hh = ts / 2; g.setTransform(dpr, 0, 0, dpr, 0, 0); g.imageSmoothingEnabled = true;
+  const foreign = isForeign(), g = cx2, ts = MAP.ts, w = MAP.w, h = MAP.h, dpr = MAP.dpr, hh = ts / 2; g.setTransform(dpr, 0, 0, dpr, 0, 0); g.imageSmoothingEnabled = true;
   g.clearRect(0, 0, w, h);
   let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
   for (const [px, py] of [[-ts * 2, -ts * 3], [w + ts * 2, -ts * 3], [-ts * 2, h + ts * 2], [w + ts * 2, h + ts * 2]]) { const [a, b] = s2w(px, py); x0 = Math.min(x0, a); x1 = Math.max(x1, a); y0 = Math.min(y0, b); y1 = Math.max(y1, b); }
@@ -187,14 +187,14 @@ function drawMap(now) {
   const sel = UI.sel, detail = ts >= 22, pulse = (Math.sin(now / 400) + 1) / 2, pulse2 = (Math.sin(now / 900) + 1) / 2;
   g.textAlign = 'center'; g.textBaseline = 'middle';
   groundStep();
-  for (const k in S.encs) { // encampments in progress: animated dashed ring and pulse
+  if (!foreign) for (const k in S.encs) { // encampments in progress: animated dashed ring and pulse
     const [x, y] = unkey(k), cxp = w2sx(x, y), cyp = w2sy(x, y); if (cxp < -ts * 2 || cxp > w + ts * 2 || cyp < -ts * 3 || cyp > h + ts * 2) continue; const en = S.encs[k];
     g.strokeStyle = alColor(en.o); g.lineWidth = 1.5; g.setLineDash([4, 3]); g.lineDashOffset = -now / 60; g.beginPath(); diamond(g, cxp, cyp, ts, .82); g.stroke(); g.setLineDash([]); g.globalAlpha = .12 + pulse * .12; g.fillStyle = alColor(en.o); g.beginPath(); diamond(g, cxp, cyp, ts); g.fill(); g.globalAlpha = 1;
   }
   const late = [];
   for (let cy = Math.floor(y0 / CN); cy <= Math.floor(y1 / CN); cy++) for (let cx = Math.floor(x0 / CN); cx <= Math.floor(x1 / CN); cx++) {
     if (cx * CN >= W || cy * CN >= H) continue;
-    for (const it of chunkFeats(cx, cy)) { const cxp = w2sx(it.x, it.y), cyp = w2sy(it.x, it.y); if (cxp < -ts * 3 || cxp > w + ts * 3 || cyp < -ts * 4 || cyp > h + ts * 3) continue; late.push({ k: it.k, f: it.f, cxp, cyp, s: it.s, t: it.t }); }
+    for (const it of chunkFeats(cx, cy)) { if (foreign && (it.t.kind === 'pbase' || it.t.kind === 'base')) continue; const cxp = w2sx(it.x, it.y), cyp = w2sy(it.x, it.y); if (cxp < -ts * 3 || cxp > w + ts * 3 || cyp < -ts * 4 || cyp > h + ts * 3) continue; late.push({ k: it.k, f: it.f, cxp, cyp, s: it.s, t: it.t }); }
   }
   // citadel monument joins the depth-sorted list so nearer things overlap it
   const cxs = w2sx(TX, TY), cys = w2sy(TX, TY), csize = ts * 5.2;
@@ -225,7 +225,7 @@ function drawMap(now) {
   // marches and incoming
   MAP.marks = [];
   const bx = w2sx(S.base.x, S.base.y), by = w2sy(S.base.x, S.base.y);
-  for (const m of S.marches) {
+  for (const m of foreign ? [] : S.marches) {
     if (m.kind === 'field') continue; const tx = w2sx(m.tx, m.ty), ty = w2sy(m.tx, m.ty); let f = 0, back = m.phase === 'back';
     if (m.phase === 'out') f = clamp((now - m.start) / (m.end - m.start), 0, 1); else if (back) f = 1 - clamp((now - m.start) / (m.end - m.start), 0, 1); else if (m.phase === 'wait') f = 0; else f = 1;
     const X = bx + (tx - bx) * f, Y = by + (ty - by) * f;
@@ -233,7 +233,7 @@ function drawMap(now) {
     const ang = Math.atan2(ty - by, tx - bx) + (back ? Math.PI : 0); drawToken(g, X, Y, ang, ts, domClass(m.col), domTier(m.col, domClass(m.col)), false, now);
     MAP.marks.push({ id: m.id, x: X, y: Y });
   }
-  for (const i of S.incoming) {
+  for (const i of foreign ? [] : S.incoming) {
     const b = S.bots.find(b => b.al === i.bot); if (!b) continue; const sx0 = w2sx(b.x, b.y), sy0 = w2sy(b.x, b.y), f = clamp((now - i.start) / (i.end - i.start), 0, 1), X = sx0 + (bx - sx0) * f, Y = sy0 + (by - sy0) * f;
     g.strokeStyle = `rgba(212,101,74,${.4 + pulse * .5})`; g.lineWidth = i.rally ? 3 : 2; g.setLineDash([6, 4]); g.lineDashOffset = now / 40; g.beginPath(); g.moveTo(sx0, sy0); g.lineTo(bx, by); g.stroke(); g.setLineDash([]);
     const ang = Math.atan2(by - sy0, bx - sx0); drawToken(g, X, Y, ang, ts, ['inf', 'arm', 'air'][i.id % 3], i.rally ? 4 : 2, true, now, i.rally);
@@ -242,7 +242,7 @@ function drawMap(now) {
   if (sel) { const sx = w2sx(sel.x, sel.y), sy = w2sy(sel.x, sel.y); g.strokeStyle = 'rgba(224,164,74,' + (.18 + pulse * .14) + ')'; g.lineWidth = 7; g.lineJoin = 'round'; g.beginPath(); diamond(g, sx, sy, ts, .96); g.stroke(); g.strokeStyle = '#e0a44a'; g.lineWidth = 2.5; g.beginPath(); diamond(g, sx, sy, ts, .96); g.stroke(); g.globalAlpha = .12 + pulse * .08; g.fillStyle = '#e0a44a'; g.beginPath(); diamond(g, sx, sy, ts); g.fill(); g.globalAlpha = 1; }
   // alliance tags: fade near the viewport edge and at low zoom
   g.font = `700 ${clamp(Math.round(ts * .55), 11, 22)}px "Barlow Condensed",sans-serif`; g.lineJoin = 'round'; g.lineWidth = 4; g.strokeStyle = 'rgba(10,13,14,.9)';
-  for (const tg of MAP.hideTags ? [] : MAP.tags) { const px = w2sx(tg.x, tg.y), py = w2sy(tg.x, tg.y) - (Math.hypot(tg.x - S.base.x, tg.y - S.base.y) < 2.2 || S.bots.some(b => Math.hypot(tg.x - b.x, tg.y - b.y) < 2.2) ? ts * 1.5 : 0); const edge = Math.min(px, py, w - px, h - py); if (edge < -20) continue; const a = clamp(edge / 70, 0, 1) * (ts < 18 && tg.n < 40 ? 0 : 1); if (a <= 0.02) continue; g.globalAlpha = a; g.strokeText(tg.t, px, py); g.fillStyle = tg.c; g.fillText(tg.t, px, py); } g.globalAlpha = 1;
+  for (const tg of MAP.hideTags || foreign ? [] : MAP.tags) { const px = w2sx(tg.x, tg.y), py = w2sy(tg.x, tg.y) - (Math.hypot(tg.x - S.base.x, tg.y - S.base.y) < 2.2 || S.bots.some(b => Math.hypot(tg.x - b.x, tg.y - b.y) < 2.2) ? ts * 1.5 : 0); const edge = Math.min(px, py, w - px, h - py); if (edge < -20) continue; const a = clamp(edge / 70, 0, 1) * (ts < 18 && tg.n < 40 ? 0 : 1); if (a <= 0.02) continue; g.globalAlpha = a; g.strokeText(tg.t, px, py); g.fillStyle = tg.c; g.fillText(tg.t, px, py); } g.globalAlpha = 1;
   // vignette is a static CSS overlay (#pg-map::after)
   hudUpdate(now);
   positionRadial();
@@ -252,9 +252,13 @@ function drawMap(now) {
 const HUD = { utc: '', coord: '', mk: '' };
 function hudUpdate(now) {
   const u = document.getElementById('utc'); if (u) { const t = 'UTC ' + new Date().toISOString().slice(5, 19).replace('T', ' '); if (t !== HUD.utc) { HUD.utc = t; u.textContent = t; } }
-  const cd = document.getElementById('coord'), km = 'KM ' + Math.round(Math.hypot(MAP.cx - S.base.x, MAP.cy - S.base.y)), xy = `X:${Math.round(MAP.cx)} Y:${Math.round(MAP.cy)}`;
-  if (!cd.firstChild) cd.innerHTML = '<span class="pin"></span><span class="km"></span><span class="xy"></span><button data-a="mgo" aria-label="Go to coordinates">⌕</button>';
+  const cd = document.getElementById('coord'), fo = isForeign(), vk = viewK(), bx = S.base.x, by = S.base.y, dist = Math.hypot(MAP.cx - bx, MAP.cy - by);
+  const km = fo ? 'HOME K' + kHome() : 'KM ' + Math.round(dist), xy = `K${vk} X:${Math.round(MAP.cx)} Y:${Math.round(MAP.cy)}`;
+  if (!cd.firstChild) cd.innerHTML = '<button class="cmp" data-a="mhome" aria-label="Go to my base"><svg viewBox="0 0 24 24"><path d="M12 2.5l7 17-7-4.2-7 4.2z"/></svg><i></i></button><span class="km"></span><span class="xy"></span><button data-a="mgo" aria-label="Search coordinates">⌕</button>';
+  const ang = Math.round(Math.atan2(w2sy(bx, by) - MAP.h / 2, w2sx(bx, by) - MAP.w / 2) * 90 / Math.PI) * 2 + 90, here = !fo && dist < .8, cm = cd.firstChild, st = (here ? 'h' : fo ? 'f' : ang) + '';
+  if (cm.dataset.st !== st) { cm.dataset.st = st; cm.className = 'cmp' + (here ? ' here' : fo ? ' far' : ''); cm.firstChild.style.transform = 'rotate(' + ang + 'deg)'; }
   if (km + xy !== HUD.coord) { HUD.coord = km + xy; cd.children[1].textContent = km; cd.children[2].textContent = xy; }
+  const pg = document.getElementById('pg-map'); if (pg.classList.contains('foreign') !== fo) pg.classList.toggle('foreign', fo);
   const mk = MAP.cx.toFixed(1) + MAP.cy.toFixed(1) + MAP.ts.toFixed(1) + S.incoming.length + (MAP.mini ? 1 : 0) + Math.floor(now / 500);
   if (mk !== HUD.mk) { HUD.mk = mk; drawMini(); }
 }
@@ -314,12 +318,15 @@ function mapTap(px, py) {
   hap(8); snd();
   let best = null, bd = 26; for (const m of MAP.marks) { const d = Math.hypot(m.x - px, m.y - py); if (d < bd) { bd = d; best = m; } }
   if (best) { UI.sel = null; openRadial({ type: 'march', id: best.id, sx: best.x, sy: best.y }); return; }
-  const [wx, wy] = s2w(px, py), x = Math.round(wx), y = Math.round(wy); if (x < 0 || y < 0 || x >= W || y >= H) return; selectTile(x, y);
+  const [wx, wy] = s2w(px, py), x = Math.round(wx), y = Math.round(wy); if (x < 0 || y < 0 || x >= W || y >= H) return;
+  if (isForeign() && !['wild', 'forest'].includes(tileInfo(x, y).kind)) { toast('Scouting kingdom ' + viewK() + '. Tap open ground to teleport.'); return; }
+  selectTile(x, y);
 }
 function selectTile(x, y) { UI.sel = { x, y }; UI.sheet = null; UI.drawer = null; openRadial({ type: 'tile', x, y }); D(); }
 function radialItems(r) {
   if (r.type === 'march') { const m = S.marches.find(x => x.id === r.id); if (!m) return []; const it = [{ l: m.phase === 'stay' || m.phase === 'hold' ? 'Withdraw' : 'Recall', a: 'recall', d: { id: m.id }, c: 'bad', ic: 'march' }]; if (m.phase !== 'stay' && m.phase !== 'back' && !(m.kind === 'rally' && m.phase !== 'wait')) it.push({ l: 'Rush ' + rushCost(m.end) + '◆', a: 'rush', d: { id: m.id }, ic: 'dia' }, { l: 'Slip', a: 'slip', d: { id: m.id }, ic: 'train' }); it.push({ l: 'Columns', a: 'drawer', d: { id: 'march', tab: 'cols' }, ic: 'march' }); return it; }
   const t = tileInfo(r.x, r.y), it = [], d = { x: r.x, y: r.y };
+  if (isForeign()) return [{ l: 'Teleport', a: 'tp', d, c: 'pri', ic: 'map' }, { l: 'Details', a: 'details', d, ic: 'vault' }];
   if (t.kind === 'node') it.push({ l: 'Gather', a: 'qsend', d: { k: 'gather', ...d }, c: 'pri', ic: 'rations' });
   else if (t.kind === 'monster' || t.kind === 'camp') it.push({ l: 'Hunt', a: 'qsend', d: { k: 'hunt', ...d }, c: 'bad', ic: 'march' });
   else if (t.kind === 'wild' || t.kind === 'forest') { if (t.owner !== 0) it.push({ l: 'Encamp', a: 'qsend', d: { k: 'encamp', ...d }, c: 'pri', ic: 'march' }); it.push({ l: 'Teleport', a: 'tp', d, ic: 'map' }); }

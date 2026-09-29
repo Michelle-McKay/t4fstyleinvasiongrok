@@ -624,6 +624,7 @@ function scoutRows(syn, depth, p) {
 function tpKind(x, y) {
   if (heroLocked()) return { err: 'A hero is out. The base is locked.' };
   if (!legalSpot(x, y)) return { err: 'Not a legal landing.' };
+  if (isForeign()) { const e = novTpErr(); return e ? { err: e } : { kind: 'novice' }; }
   const o = S.own[key(x, y)]; return { kind: o === 0 ? 'alliance' : o != null ? 'advanced' : 'plain', o };
 }
 function doTeleport(x, y) {
@@ -631,17 +632,19 @@ function doTeleport(x, y) {
   const old = key(S.base.x, S.base.y), oldForest = inForest(), incs = S.incoming.slice();
   for (const inc of incs) { if (shieldOn()) { S.incoming = S.incoming.filter(i => i !== inc); S.shield.until = 0; note('The shield ate the hit from ' + inc.name + '.', 'good'); } else hitBase(inc, true); }
   if (k.kind === 'advanced') S.own[old] = k.o;
+  if (k.kind === 'novice') { S.novice = noviceLeft() - 1; S.kingdom = viewK(); disband(true); }
   S.base = { x, y }; S.view = { x, y }; terrDirty = true;
   if (terrainAt(x, y) === 'forest') stripShield('forest teleport');
-  note((k.kind === 'alliance' ? 'Alliance teleport' : k.kind === 'advanced' ? 'Advanced teleport' : 'Teleport') + ' complete.', 'good'); return null;
+  note(k.kind === 'novice' ? 'Novice teleport to kingdom ' + S.kingdom + ' complete. ' + S.novice + ' left.' : (k.kind === 'alliance' ? 'Alliance teleport' : k.kind === 'advanced' ? 'Advanced teleport' : 'Teleport') + ' complete.', 'good'); return null;
 }
 function randomTeleport() {
+  if (typeof MAP !== 'undefined') MAP.kv = null; // random teleports stay inside the home kingdom
   for (let i = 0; i < 800; i++) { const x = rint(20, W - 20), y = rint(20, H - 20); if (!S.own[key(x, y)] && S.own[key(x, y)] !== 0 && legalSpot(x, y)) return doTeleport(x, y); }
   const cand = []; for (const k in S.own) { const o = S.own[k]; if (o === 0) continue; const [x, y] = unkey(k); if (!legalSpot(x, y)) continue; let n = 0; for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) if (S.own[key(x + dx, y + dy)] === o) n++; cand.push([n, x, y]); }
   cand.sort((a, b) => a[0] - b[0]); if (cand.length) { const best = cand.filter(c => c[0] === cand[0][0]); const c = pick(best); return doTeleport(c[1], c[2]); }
   for (let i = 0; i < 500; i++) { const x = rint(20, W - 20), y = rint(20, H - 20); if (legalSpot(x, y)) return doTeleport(x, y); } return 'No landing found.';
 }
-function disband() { for (const k in S.own) if (S.own[k] === 0) delete S.own[k]; for (const k in S.encs) if (S.encs[k].o === 0) delete S.encs[k]; terrDirty = true; note('Alliance disbanded. Every colored tile returns to neutral.', 'warn'); }
+function disband(quiet) { for (const k in S.own) if (S.own[k] === 0) delete S.own[k]; for (const k in S.encs) if (S.encs[k].o === 0) delete S.encs[k]; terrDirty = true; if (!quiet) note('Alliance disbanded. Every colored tile returns to neutral.', 'warn'); }
 
 /* ---------------- threats and bots ---------------- */
 function launchHostile() {

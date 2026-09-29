@@ -237,7 +237,8 @@ function sheetTile(x, y) {
     h += `<div class="sub mt">Odds ${oddsText(Dd, col, c.hero) || '—'} · a dead pack leaves a rich vein · hunting strips the shield</div>` + compHTML('comp') + eta('hunt') + `<div class="flex mt"><button class="btn pri tall grow" data-a="launch" data-k="hunt" ${tot ? '' : 'disabled'}>Send hunt</button></div>`;
   } else if (t.kind === 'wild' || t.kind === 'forest') {
     const tk = tpKind(x, y);
-    if (t.owner === 0) h += `<div class="sub mt">Your alliance owns this tile. No encamp needed.</div>`;
+    if (isForeign()) h += `<div class="sub mt">Kingdom ${viewK()} · scouting view. ${novTpLine()}</div>`;
+    else if (t.owner === 0) h += `<div class="sub mt">Your alliance owns this tile. No encamp needed.</div>`;
     else { const pw = colStats(col).power, flip = t.owner != null || (t.enc && t.enc.o !== 0); h += `<div class="sub mt">Occupation ${dualScale(occDurMs(pw, flip))}${flip ? ' · enemy color ×2.6' : ''} · claim 10 · flip 25${flip ? ' · fights on arrival' : ''}</div>` + compHTML('comp') + eta('encamp') + `<div class="flex mt"><button class="btn pri tall grow" data-a="launch" data-k="encamp" ${tot ? '' : 'disabled'}>Encamp</button></div>`; }
     h += `<div class="flex mt wrap">${tk.err ? `<span class="sub">${tk.err}</span>` : `<button class="btn line" data-a="tp" data-x="${x}" data-y="${y}">${tk.kind === 'alliance' ? 'Alliance teleport' : tk.kind === 'advanced' ? 'Advanced teleport' : 'Teleport'}</button>${t.terr === 'forest' ? '<span class="sub">strips the shield</span>' : ''}`}</div>`;
   } else if (t.kind === 'base') {
