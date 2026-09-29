@@ -1,0 +1,14 @@
+/* IRON MARCH — art v3 UI hooks: unit, hero and gear art inside panels. */
+.unit{width:100%;height:100%;display:block;overflow:visible}
+.ui,.tic,.hpt{display:inline-block;flex:none;vertical-align:middle}
+.ui{width:30px;height:30px;margin-right:6px}
+.ui.big{width:44px;height:44px}
+.wi{display:inline-flex;align-items:center;min-width:0}
+.tic{width:22px;height:22px;margin:-3px 6px -3px -4px}
+.hpt{width:52px;height:52px;margin-right:10px;border-radius:5px;filter:drop-shadow(0 2px 3px rgba(0,0,0,.5))}
+.hpt.on{box-shadow:0 0 0 1px var(--brass),0 0 14px rgba(224,164,74,.35)}
+.uart{float:right;width:136px;height:136px;margin:-2px 0 6px 10px;background:rgba(0,0,0,.28);border:1px solid var(--line)}
+.uart .unit{transform-origin:50% 100%;animation:uidle 3.2s ease-in-out infinite}
+@keyframes uidle{0%,100%{transform:translateY(0)}50%{transform:translateY(-1.2px)}}
+.rr{align-items:center}.rr .ui{width:30px;height:30px;margin:-3px 8px -3px 0}
+.panel .bd::after{content:"";display:block;clear:both}

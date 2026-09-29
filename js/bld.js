@@ -112,3 +112,10 @@ Object.assign(A, {
     run(e);
   }
 });
+
+/* building pop-out header band: art on a sky backdrop, like the reference building screens */
+const _sheetPlotBase = sheetPlot;
+sheetPlot = function (area, idx) {
+  const p = S.plots[area][idx], h = _sheetPlotBase(area, idx); if (!p) return h;
+  return `<div class="bhead">${bldSVG(p.b, p.l)}<span class="lvp num">Lv ${p.l}/25</span></div>` + h;
+};

@@ -370,7 +370,7 @@ function alName(i) { return S.al[i].n; }
 function alColor(i) { return STD[S.al[i].color]; }
 
 function marchCheck(comp, hero) {
-  const tot = compTotal(comp); if (tot <= 0) return 'Empty column is not a march.';
+  const tot = compTotal(comp); if (tot <= 0) return sumCol(S.troops) > 0 ? 'Empty column is not a march.' : 'No troops at home. Recall a column first.';
   if (tot > headcount()) return 'Column is over the headcount of ' + fmtN(headcount()) + '.';
   for (const c of CLS) if ((comp[c] || 0) > clsAvail(c)) return 'Not enough ' + CLSD[c].n.toLowerCase() + ' in garrison.';
   if (S.marches.filter(m => m.kind !== 'scout').length >= marchQueues()) return 'All march queues are out.';
@@ -723,7 +723,7 @@ function buyBuilder() { if (S.builders >= 2) return 'Second builder already hire
 function buyOrders() { if (S.dia < 80) return 'Short of diamonds.'; dchg(-80, 'Operational orders x5'); S.orders += 5; return null; }
 function buySeals() { if (S.dia < 60) return 'Short of diamonds.'; dchg(-60, 'Restraint seals x5'); S.seals += 5; return null; }
 function buyToken(crate) { const c = crate ? 260 : 100; if (S.dia < c) return 'Short of diamonds.'; dchg(-c, crate ? 'Coordination Crate' : 'Coordination token'); S.tokens += crate ? 3 : 1; return null; }
-function daily() { const d = new Date().toDateString(); if (S.daily === d) return 'Exercise already run today.'; S.daily = d; S.tokens++; dchg(60, 'Daily exercise'); note('Daily exercise done: 1 token, 60 diamonds.', 'good'); return null; }
+function daily() { const d = new Date().toDateString(); if (S.daily === d) return 'Exercise already run today.'; S.daily = d; S.tokens++; dchg(60, 'Daily exercise'); if (typeof addReward === 'function') addReward('Daily exercise prize', '10 Minute Speed Up x 1', { slips: { s5: 2 } }); note('Daily exercise done: 1 token, 60 diamonds, a prize in the Rewards Center.', 'good'); return null; }
 function gradeUnits() { let u = 0; for (let g = 1; g <= 6; g++) u += (S.bars[g] || 0) * Math.pow(4, g - 1); return u; }
 function refine(g) { if (g >= 6) return 'Grade 6 is the top.'; if ((S.bars[g] || 0) < 4) return 'Four bars of grade ' + g + ' needed.'; S.bars[g] -= 4; S.bars[g + 1] = (S.bars[g + 1] || 0) + 1; return null; }
 function craft(slot, sel, shard, stat) {
