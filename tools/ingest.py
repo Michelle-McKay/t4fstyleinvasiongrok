@@ -18,14 +18,12 @@ except ImportError:
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 A = os.path.join(ROOT, 'assets')
 CAT = {i['key']: i for i in json.load(open(os.path.join(A, 'catalog.json')))['items']}
-FOLDER = {'bld': 'buildings', 'cc': 'buildings', 'head': 'backdrops', 'troop': 'troops', 'wall': 'walls', 'hero': 'heroes',
+FOLDER = {'bld': 'buildings', 'head': 'backdrops', 'troop': 'troops', 'wall': 'walls', 'hero': 'heroes',
           'map': 'map', 'tile': 'tiles', 'pack': 'packs', 'gem': 'packs', 'icon': 'icons'}
 
 def key_of(path):
     s = os.path.splitext(os.path.basename(path))[0].lower().strip()
     s = re.sub(r'\s*\(\d+\)$', '', s).replace('-', '_').replace(' ', '_')
-    s = re.sub(r'_l(\d+)$', r'_L\1', s)                        # bld_cc_l3 -> bld_cc_L3
-    s = re.sub(r'_L(\d)$', r'_L0\1', s)                       # bld_cc_L3 -> bld_cc_L03
     return s if s in CAT else None
 
 def flat_bg(im, tol=80):

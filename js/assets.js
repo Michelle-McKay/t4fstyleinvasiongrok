@@ -14,7 +14,7 @@ const ART = {
   },
   head: kind => ART.file('head_' + kind)
 };
-const artFile = (kind, level) => kind === 'cc' ? ART.file('bld_cc_L' + String(level).padStart(2, '0')) : ART.file('bld_' + kind + '_t' + Math.max(1, tierOf(level)));
+const artFile = (kind, level) => ART.file('bld_' + kind + '_t' + Math.max(1, tierOf(level)));
 const imgTag = (path, cls) => `<img class="${cls}" src="${path}" alt="" draggable="false" decoding="async">`;
 
 /* ---- buildings ---- */
@@ -26,7 +26,7 @@ const spriteKey = name => {
   let m;
   if ((m = /^nd_([a-z]+)(\d)$/.exec(name))) return 'node_' + m[1] + '_' + m[2];
   if ((m = /^mn_(\d)$/.exec(name))) return 'mon_' + m[1];
-  if ((m = /^hq_(\d+)$/.exec(name))) return 'bld_cc_L' + String(Math.min(25, +m[1])).padStart(2, '0');
+  if ((m = /^hq_(\d+)$/.exec(name))) return 'bld_cc_t' + Math.max(1, tierOf(+m[1]));
   return { camp2: 'camp', outpost2: 'outpost', cit2: 'citadel' }[name] || null;
 };
 const canvasFrom = (key, path, size) => {
