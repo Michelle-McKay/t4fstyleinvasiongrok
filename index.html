@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#0e1113">
+<title>IRON MARCH</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <header id="top">
+    <div class="row1"><span class="mark">Iron March</span><span class="watch" id="watch"></span><span class="cc" id="cc"></span><span class="dia num" id="dia"></span></div>
+    <div class="res num" id="res"></div>
+    <div id="ticker"></div>
+  </header>
+  <main id="main">
+    <section class="page on" id="pg-map">
+      <canvas id="map"></canvas>
+      <div class="mapui" id="compass"></div>
+      <canvas class="mapui" id="mini" width="66" height="130"></canvas>
+      <div class="mapui" id="coord"></div>
+    </section>
+    <section class="page" id="pg-base"></section>
+    <section class="page" id="pg-march"></section>
+    <section class="page" id="pg-vault"></section>
+    <div class="sheet glass" id="sheet"></div>
+    <div class="glass" id="desk"><div class="tabs" id="desktabs"></div><div id="deskbody"></div></div>
+    <div id="toasts"></div>
+  </main>
+  <nav id="dock"></nav>
+</div>
+<div id="alarm"></div>
+<div id="aura"></div>
+<script src="js/data.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/ui.js"></script>
+</body>
+</html>
