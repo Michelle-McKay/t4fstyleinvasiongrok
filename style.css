@@ -379,3 +379,8 @@ img.bsvg{object-fit:contain;-webkit-user-drag:none}
 #float .bdg{right:-4px;top:-4px;left:auto}
 .qs{padding-right:64px;flex-wrap:wrap}#dock button svg{width:21px;height:21px}
 .qs{flex-wrap:nowrap}.qs .btn{flex:none}
+
+html,body,button,[data-a]{touch-action:manipulation}
+button{-webkit-touch-callout:none}
+.speed.free{background:linear-gradient(180deg,#4fae3f,#1f6a1c);border-color:#0d3a0c;border-top-color:#8fe07c;color:#fff}
+.sheet,#drawer{pointer-events:none}.sheet.on,#drawer.on{pointer-events:auto}
