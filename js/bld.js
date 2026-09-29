@@ -67,7 +67,7 @@ function nextGives(p) {
   const b = p.b, L = p.l, d = BLD[b], y = mods().yld, out = [];
   if (d.res) out.push(`+${fmtN(d.rate * y[d.res])} ${RESN[d.res]} per hour (sheet)`);
   else if (b === 'treasury') out.push(`+${fmtN(480 * y.cash)} Cash per hour`);
-  else if (b === 'store') { const Ls = storeSum(); out.push(`Cap +${fmtN(Math.floor(8000 * Math.pow(Ls + 1, 1.22) * (1 + rv('wh'))) - storeCap())}`, 'Protected floor +1200'); }
+  else if (b === 'store') { const Ls = storeSum(); out.push(`Cap +${fmtN(storeCapAt(Ls + 1) - storeCap())}`, 'Protected floor +1200'); }
   else if (b === 'depot') out.push(`Beds +${fmtN(500 * (1 + rv('beds')))}`);
   else if (b === 'mil') out.push('Batch cap +40 at tier 1');
   else if (b === 'defense') out.push('Crew cap +40', 'Wall attack +40'), L + 1 >= 6 && out.push(L + 1 === 6 ? 'Opens wall tier 2' : L + 1 === 12 ? 'Opens wall tier 3' : L + 1 === 18 ? 'Opens wall tier 4' : '');
