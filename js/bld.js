@@ -98,8 +98,7 @@ function bldSheet(area, idx, p) {
     h += `<div class="panel mt"><div class="hd"><h3>Next: level ${to}</h3>${miss.length ? '<span class="tag sg">Locked</span>' : '<span class="tag br">Ready</span>'}</div><div class="bd">${gives.length ? `<div class="lbl">Gives</div>${gives.map(g => `<div class="rr"><span>${g}</span><span class="num ox">new</span></div>`).join('')}` : ''}<div class="lbl mt">Requirements</div>${treeHTML(b, to)}<div class="lbl mt">Cost</div><div>${costHTML(cost)}</div><div class="sub mt">${dualT(buildSheetSec(b, to) / (1 + mods().build))}</div><div class="mt">${miss.length ? `<span class="sub sg">Needs ${miss.map(([rb, rl]) => BLD[rb].n + ' ' + rl).join(', ')}.</span>` : err ? `<span class="sub sg">${err}</span>` : payBtn(cost, 'build', { area, idx }, 'Upgrade to ' + to)}</div></div></div>`;
   } else h += '<div class="sub mt ox">Level 25. Fully built.</div>';
   h += feedsHTML(p);
-  const g = guideBtn('upgrade', 'Show me: upgrade', `data-ar="${area}" data-i="${idx}"`) + (b === 'mil' ? guideBtn('train', 'Show me: train') : '') + (b === 'tech' ? guideBtn('research', 'Show me: research') : '');
-  return h + stepsHTML(b, g);
+  return h;
 }
 Object.assign(A, {
   bact(d, el) {
