@@ -634,7 +634,7 @@ $('#scrim').addEventListener('click', () => A.scrim());
 /* ---------------- loop ---------------- */
 function showPage() { for (const p of ['map', 'base']) $('#pg-' + p).className = 'page' + (UI.page === p ? ' on' : ''); }
 function renderAll() {
-  UI.dirty = false; renderTop(); renderQueues(); renderDock(); showPage(); renderFloat();
+  UI.dirty = false; if (typeof CH !== 'undefined') CH.fver++; renderTop(); renderQueues(); renderDock(); showPage(); renderFloat();
   if (UI.page === 'base') renderBase();
   renderDrawer(); renderSheet();
 }
