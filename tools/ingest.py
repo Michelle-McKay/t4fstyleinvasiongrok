@@ -70,10 +70,10 @@ def magenta_key(im, mask):
     between lamps), fades the purple shadow edge, and removes the magenta cast from edge pixels."""
     rgb = im.convert('RGB'); r, g, b = rgb.split()
     m = ImageChops.subtract(ImageChops.darker(r, b), g)                       # how magenta a pixel is
-    a = m.point(lambda v: 255 if v <= 45 else 0 if v >= 100 else int(255 * (100 - v) / 55))
+    a = m.point(lambda v: 255 if v <= 28 else 0 if v >= 64 else int(255 * (64 - v) / 36))
     a = ImageChops.darker(a, mask.filter(ImageFilter.MinFilter(3)))
-    edge = a.point(lambda v: 255 if v < 250 else 0).filter(ImageFilter.MaxFilter(5))   # pixels near the cut
-    m2 = ImageChops.multiply(m.point(lambda v: v if v > 12 else 0), edge.point(lambda v: 255 if v else 0))
+    edge = a.point(lambda v: 255 if v < 250 else 0).filter(ImageFilter.MaxFilter(9))   # pixels near the cut
+    m2 = ImageChops.multiply(m.point(lambda v: v if v > 8 else 0), edge.point(lambda v: 255 if v else 0))
     r = ImageChops.subtract(r, m2); b = ImageChops.subtract(b, m2)
     out = Image.merge('RGB', (r, g, b)).convert('RGBA'); out.putalpha(a.filter(ImageFilter.GaussianBlur(0.6))); return out
 
