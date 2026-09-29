@@ -3,7 +3,7 @@
 The game ships with code-drawn vector art. Painted images replace it one piece at a time: any asset without an image keeps the vector version.
 
 ## How it works
-1. `tools/artcatalog.js` is the list of every asset (220 today): file key, size, whether it needs a transparent background, and the copy-paste AI prompt. Run `node tools/artcatalog.js` after changing it; it writes `assets/catalog.json`.
+1. `tools/artcatalog.js` is the list of every asset (200 today): file key, size, whether it needs a transparent background, and the copy-paste AI prompt. Run `node tools/artcatalog.js` after changing it; it writes `assets/catalog.json`.
 2. Generate an image per key and name the file exactly as the key (`bld_mil_t1.png`).
 3. `python3 tools/ingest.py path/to/*.png` finds each asset by file name, removes a flat background if the asset needs transparency, shrinks it to the in-game size, saves WebP into `assets/<folder>/` and rewrites `assets/manifest.json`. Commit the result.
 4. `js/assets.js` reads the manifest at start-up and swaps the images in.
@@ -12,7 +12,7 @@ The game ships with code-drawn vector art. Painted images replace it one piece a
 | Key | What | Where it shows |
 |---|---|---|
 | `bld_<kind>_t1..5` | 14 buildings by upgrade tier (1: lv 1-4, 2: 5-9, 3: 10-14, 4: 15-19, 5: 20-25) | base plots, building sheets |
-| `bld_cc_L01..L25` | Command Center per level | base, sheet, map HQ (`hq_N` reuses these) |
+| `bld_cc_t1..t5` | Command Center per tier (like every building) | base, sheet, map HQ (`hq_N` reuses these by tier) |
 | `head_<kind>` | wide backdrop behind a building on its sheet (no building in it) | building sheet header |
 | `troop_<inf,arm,air,siege>_t1..4` | 16 troop types | training, garrison, columns |
 | `wall_<sent,bast,sky,garr>_t1..4` | 16 wall defenses | defense sheet |

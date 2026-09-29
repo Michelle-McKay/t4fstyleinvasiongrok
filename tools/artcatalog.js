@@ -46,6 +46,7 @@ const TIERS = {
   5: 'Upgrade tier 5 of 5, "flagship": the grandest version, the same site at its largest, gleaming white and light steel with brass accents, glowing blue energy accents, impressive but still tidy.'
 };
 const BLD_SUBJECT = {
+  cc: "The player's Command Center headquarters: a central operations building with a wide entrance, a radio mast and a flag, set inside a tidy compound",
   mil: 'A Military Complex: neat barracks blocks around a paved drill yard, a vehicle bay and a small watch tower',
   depot: 'A Depot: a clean field hospital and medical supply building with a wide entrance canopy and a teal plus sign (no red cross)',
   treasury: 'A Treasury: a solid strongroom building with a big round vault door and a covered loading bay with sealed crates',
@@ -163,23 +164,13 @@ function build() {
   const make = (subject, ...rest) => [subject.replace(/\.?$/, '.'), ...rest].filter(Boolean).join(' ');
   const G = (id, title, note) => groups.push({ id, title, note });
 
-  G('bld', 'Buildings (70)', 'Square, transparent, one building complex on a clean square pad. Lock the look first: make your favourite tier 1 image for one building, then attach it as a reference to every other prompt so the set matches. Do all five tiers of one building together.');
+  G('bld', 'Buildings (75)', 'Square, transparent, one building complex on a clean square pad. Lock the look first: make your favourite tier 1 image for one building, then attach it as a reference to every other prompt so the set matches. Do all five tiers of one building together.');
   for (const k of Object.keys(D.BLD)) {
-    if (k === 'cc') continue;
     for (let t = 1; t <= 5; t++) add('bld', {
       key: `bld_${k}_t${t}`, name: `${D.BLD[k].n} tier ${t}`, size: '1:1, 1024 x 1024', transparent: true, out: 512,
       prompt: make(BLD_SUBJECT[k], TIERS[t], PAD, STYLE, CAM, BG_T)
     });
   }
-  G('cc', 'Command Center (25)', 'Your headquarters at every level, growing from a small field post to the Iron Citadel. Do them in order and attach the previous level as a reference so each clearly grows from the last.');
-  D.CC_LEVELS.forEach(([n, d], i) => {
-    const L = i + 1, tier = L <= 4 ? 1 : L <= 9 ? 2 : L <= 14 ? 3 : L <= 19 ? 4 : 5;
-    const clean = x => x.replace(/ ?An? \w+ march queue opens\.?/g, '').replace(/^\s+|\s+$/g, ''), prev = D.CC_LEVELS.slice(Math.max(0, i - 3), i).map(x => clean(x[1])).join(' ');
-    add('cc', {
-      key: `bld_cc_L${String(L).padStart(2, '0')}`, name: `Command Center L${L}: ${n}`, size: '1:1, 1024 x 1024', transparent: true, out: 512,
-      prompt: make(`The player's Command Center headquarters at upgrade level ${L} of 25, called "${n}": ${clean(d)} ${L > 1 ? 'It keeps and grows what earlier levels added (' + prev + ').' : 'It is the very first, humblest stage, still clean and tidy.'}`, TIERS[tier], PAD, STYLE, CAM, BG_T)
-    });
-  });
   G('head', 'Building sheet backdrops (15)', 'The wide scenery behind a building on its info sheet. NO building in it: leave an empty flat patch of ground in the lower centre where the game places the building.');
   for (const k of Object.keys(D.BLD)) add('head', {
     key: `head_${k}`, name: `${D.BLD[k].n} backdrop`, size: '2:1 wide, 1600 x 800', transparent: false, out: 1000,
