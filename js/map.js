@@ -37,6 +37,14 @@ function drawMini() {
   for (const i of S.incoming) { mx.fillStyle = '#d4654a'; const b = S.bots.find(b => b.al === i.bot); if (b) mx.fillRect(b.x * sx - 1, b.y * sy - 1, 3, 3); }
 }
 
+/* march token: unit disc with a heading chevron riding the rim. Size follows zoom, clamped so it stays tappable. */
+function drawToken(g, X, Y, ang, ts, cls, tier, hostile, now, big) {
+  const d = clamp(ts * (big ? 1.25 : 1.05), 30, 58), bob = Math.sin(now / 260 + X * .01) * 1.4;
+  g.save(); g.translate(X, Y + bob);
+  g.drawImage(marchToken(cls, tier, hostile), -d / 2, -d / 2, d, d);
+  g.rotate(ang); g.fillStyle = hostile ? '#d4654a' : '#e0a44a'; g.strokeStyle = '#0e1113'; g.lineWidth = 1.4; g.beginPath();
+  g.moveTo(d / 2 + 9, 0); g.lineTo(d / 2 - 2, -6.5); g.lineTo(d / 2 + 1, 0); g.lineTo(d / 2 - 2, 6.5); g.closePath(); g.fill(); g.stroke(); g.restore();
+}
 function drawMap(now) {
   if (terrDirty) computeTags();
   const g = cx2, ts = MAP.ts, w = MAP.w, h = MAP.h, dpr = MAP.dpr; g.setTransform(dpr, 0, 0, dpr, 0, 0); g.imageSmoothingEnabled = true;
@@ -47,7 +55,7 @@ function drawMap(now) {
   const late = [];
   for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
     if (x < 0 || y < 0 || x >= W || y >= H) continue;
-    const t = tileInfo(x, y), px = Math.floor(w / 2 + (x - MAP.cx) * ts - ts / 2), py = Math.floor(h / 2 + (y - MAP.cy) * ts - ts / 2), v = Math.floor(hx(x, y, 3) * 4);
+    const t = tileInfo(x, y), px = Math.floor(w / 2 + (x - MAP.cx) * ts - ts / 2), py = Math.floor(h / 2 + (y - MAP.cy) * ts - ts / 2), v = Math.floor(hx(x, y, 3) * 8);
     const base = t.terr === 'throne' || t.terr === 'plaza' ? 'plaza' : t.terr === 'forest' ? 'forest' : 'wild';
     g.drawImage(terrainSprite(base, v), px, py, sz, sz);
     if (t.owner != null) {
@@ -90,13 +98,13 @@ function drawMap(now) {
     if (m.phase === 'out') f = clamp((now - m.start) / (m.end - m.start), 0, 1); else if (back) f = 1 - clamp((now - m.start) / (m.end - m.start), 0, 1); else if (m.phase === 'wait') f = 0; else f = 1;
     const X = bx + (tx - bx) * f, Y = by + (ty - by) * f;
     g.strokeStyle = 'rgba(224,164,74,.55)'; g.lineWidth = 1.5; g.setLineDash([5, 5]); g.lineDashOffset = -now / 50 * (back ? -1 : 1); g.beginPath(); g.moveTo(bx, by); g.lineTo(tx, ty); g.stroke(); g.setLineDash([]);
-    const ang = Math.atan2(ty - by, tx - bx) + (back ? Math.PI : 0); g.save(); g.translate(X, Y); g.rotate(ang); g.fillStyle = '#e0a44a'; g.strokeStyle = '#1a1408'; g.lineWidth = 1.5; g.beginPath(); g.moveTo(10, 0); g.lineTo(-7, -7); g.lineTo(-3, 0); g.lineTo(-7, 7); g.closePath(); g.fill(); g.stroke(); g.restore();
+    const ang = Math.atan2(ty - by, tx - bx) + (back ? Math.PI : 0); drawToken(g, X, Y, ang, ts, domClass(m.col), domTier(m.col, domClass(m.col)), false, now);
     MAP.marks.push({ id: m.id, x: X, y: Y });
   }
   for (const i of S.incoming) {
     const b = S.bots.find(b => b.al === i.bot); if (!b) continue; const sx0 = w2sx(b.x), sy0 = w2sy(b.y), f = clamp((now - i.start) / (i.end - i.start), 0, 1), X = sx0 + (bx - sx0) * f, Y = sy0 + (by - sy0) * f;
     g.strokeStyle = `rgba(212,101,74,${.4 + pulse * .5})`; g.lineWidth = i.rally ? 3 : 2; g.setLineDash([6, 4]); g.lineDashOffset = now / 40; g.beginPath(); g.moveTo(sx0, sy0); g.lineTo(bx, by); g.stroke(); g.setLineDash([]);
-    const ang = Math.atan2(by - sy0, bx - sx0); g.save(); g.translate(X, Y); g.rotate(ang); g.fillStyle = '#d4654a'; g.strokeStyle = '#0e1113'; g.lineWidth = 1.5; g.beginPath(); g.moveTo(12, 0); g.lineTo(-8, -8); g.lineTo(-3, 0); g.lineTo(-8, 8); g.closePath(); g.fill(); g.stroke(); g.restore();
+    const ang = Math.atan2(by - sy0, bx - sx0); drawToken(g, X, Y, ang, ts, ['inf', 'arm', 'air'][i.id % 3], i.rally ? 4 : 2, true, now, i.rally);
     g.strokeStyle = `rgba(212,101,74,${1 - pulse})`; g.lineWidth = 2; g.beginPath(); g.arc(X, Y, 10 + pulse * 10, 0, 7); g.stroke();
   }
   if (sel) { const px = w2sx(sel.x) - ts / 2, py = w2sy(sel.y) - ts / 2, L = ts * .3; g.strokeStyle = '#e0a44a'; g.lineWidth = 2.5; g.beginPath(); for (const [ax, ay, dx, dy] of [[px, py, 1, 1], [px + ts, py, -1, 1], [px, py + ts, 1, -1], [px + ts, py + ts, -1, -1]]) { g.moveTo(ax + dx * L, ay); g.lineTo(ax, ay); g.lineTo(ax, ay + dy * L); } g.stroke(); }
