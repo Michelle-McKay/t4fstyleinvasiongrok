@@ -13,17 +13,60 @@ const RC = (x, y, w, h, fill, st, sw, rx) => `<rect x="${x}" y="${y}" width="${w
 const CI = (x, y, r, fill, extra) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${fill}" ${extra || ''}/>`;
 const EL = (x, y, rx, ry, fill, extra) => `<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="${fill}" ${extra || ''}/>`;
 const LN = (x1, y1, x2, y2, c, w, extra) => `<path d="M${x1} ${y1}L${x2} ${y2}" stroke="${c}" stroke-width="${w || 1}" stroke-linecap="round" ${extra || ''}/>`;
-/* shaded box: (x, yb) is the front-bottom-left corner. */
-function box(x, yb, w, h, d, m, o) {
-  o = o || {}; const dx = d * 0.75, dy = d * 0.42, y = yb - h;
-  let s = P([[x + w, y], [x + w + dx, y - dy], [x + w + dx, yb - dy], [x + w, yb]], o.s || m.s, KI, .5) + P([[x + w, y], [x + w + dx, y - dy], [x + w + dx, yb - dy], [x + w, yb]], 'url(#gS)');
-  s += RC(x, y, w, h, o.f || m.f, KI, .5) + RC(x, y, w, h, 'url(#gF)');
-  s += P([[x, y], [x + dx, y - dy], [x + w + dx, y - dy], [x + w, y]], o.t || m.t, KI, .5) + P([[x, y], [x + dx, y - dy], [x + w + dx, y - dy], [x + w, y]], 'url(#gT)');
-  if (o.trim) s += RC(x, y, w, 1.4, o.trim) + RC(x, yb - 1, w, 1, o.trim, null, 0, 0);
+/* roofs: pitched, barrel vault, dome, rooftop gear */
+function roofFill(m, t) { return t <= 1 ? '#56683f' : t === 2 ? '#7a848a' : t === 3 ? '#4a565d' : t === 4 ? '#2b3a44' : '#1a2126'; }
+function gableRoof(x, y, w, d, rh, m, t, ridgeCol) {
+  const dx = d * .75, dy = d * .42, ax = x + w / 2, ay = y - rh, c = roofFill(m, t);
+  let s = P([[x - 1, y + .6], [ax, ay], [ax + dx, ay - dy], [x - 1 + dx, y - dy + .6]], c, KI, .5) + P([[x - 1, y + .6], [ax, ay], [ax + dx, ay - dy], [x - 1 + dx, y - dy + .6]], 'url(#gT)');
+  s += P([[ax, ay], [x + w + 1, y + .6], [x + w + 1 + dx, y - dy + .6], [ax + dx, ay - dy]], c, KI, .5) + P([[ax, ay], [x + w + 1, y + .6], [x + w + 1 + dx, y - dy + .6], [ax + dx, ay - dy]], 'url(#gS)');
+  for (let i = 1; i < 6; i++) { const f = i / 6; s += LN(x - 1 + (ax - x + 1) * f + dx * 0, y + .6 + (ay - y - .6) * f, x - 1 + (ax - x + 1) * f + dx, y + .6 + (ay - y - .6) * f - dy, 'rgba(0,0,0,.2)', .4); }
+  s += LN(ax, ay, ax + dx, ay - dy, ridgeCol || (t >= 3 ? BR : '#9aa4a8'), 1);
+  s += P([[x + w / 2 - w * .32, y + .6 - 1], [ax, ay + 1.6], [x + w / 2 + w * .32, y + .6 - 1]], m.f, null) ;
   return s;
 }
-const wins = (x, y, cols, rows, m, cw, ch, gx, gy, lit) => { let s = ''; for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) s += RC(x + c * (cw + gx), y + r * (ch + gy), cw, ch, m.win, KI, .3) + (lit ? RC(x + c * (cw + gx), y + r * (ch + gy), cw, ch, m.win, null, 0, 0).replace('<rect', '<rect class="glw"') : ''); return s; };
-const door = (x, yb, w, h) => RC(x, yb - h, w, h, '#12171a', KI, .4) + RC(x + 0.5, yb - h + 0.5, w - 1, 1.2, 'rgba(255,255,255,.12)');
+function vaultRoof(x, yb, w, h, d, m, t) {
+  const dx = d * .75, dy = d * .42, r = w / 2, c = roofFill(m, t), y = yb - h;
+  let s = `<path d="M${x} ${y} A${r} ${Math.min(r, h * .9)} 0 0 1 ${x + w} ${y} L${x + w + dx} ${y - dy} A${r} ${Math.min(r, h * .9)} 0 0 0 ${x + dx} ${y - dy}Z" fill="${c}" stroke="${KI}" stroke-width=".5"/>`;
+  s += `<path d="M${x} ${y} A${r} ${Math.min(r, h * .9)} 0 0 1 ${x + w} ${y} L${x + w + dx} ${y - dy} A${r} ${Math.min(r, h * .9)} 0 0 0 ${x + dx} ${y - dy}Z" fill="url(#gCyl)"/>`;
+  for (let i = 1; i < 6; i++) { const f = i / 6, ang = Math.PI * f, px = x + r - Math.cos(ang) * r, py = y - Math.sin(ang) * Math.min(r, h * .9); s += LN(px, py, px + dx, py - dy, 'rgba(0,0,0,.22)', .4); }
+  s += `<path d="M${x} ${y} A${r} ${Math.min(r, h * .9)} 0 0 1 ${x + w} ${y} Z" fill="${m.f}" stroke="${KI}" stroke-width=".5"/><path d="M${x} ${y} A${r} ${Math.min(r, h * .9)} 0 0 1 ${x + w} ${y} Z" fill="url(#gF)"/>`;
+  return s;
+}
+const dome = (cx, cy, r, base, hl) => `<path d="M${cx - r} ${cy}A${r} ${r * .95} 0 0 1 ${cx + r} ${cy}Z" fill="${base || '#c9d0d2'}" stroke="${KI}" stroke-width=".6"/><path d="M${cx - r} ${cy}A${r} ${r * .95} 0 0 1 ${cx + r} ${cy}Z" fill="url(#gCyl)"/><ellipse cx="${cx - r * .35}" cy="${cy - r * .55}" rx="${r * .28}" ry="${r * .14}" fill="rgba(255,255,255,.55)" transform="rotate(-25 ${cx - r * .35} ${cy - r * .55})"/><path d="M${cx - r} ${cy}h${2 * r}" stroke="${hl || '#5c676d'}" stroke-width="1.4"/>`;
+function roofGear(x, y, w, d, t, seed) {
+  const r = srand(seed || 7), dx = d * .75, dy = d * .42; let s = '';
+  for (let i = 0; i < Math.max(1, Math.floor(w / 12)); i++) { const px = x + 3 + r() * (w - 9) + dx * .35, py = y - dy * .5 - r() * 1.2; s += RC(px, py - 2.4, 3.6, 2.4, '#8a949a', KI, .4, .3) + RC(px, py - 2.4, 3.6, .8, 'rgba(255,255,255,.4)') + LN(px + .6, py - 1.4, px + 3, py - 1.4, 'rgba(0,0,0,.35)', .4); }
+  if (t >= 2) s += CI(x + w * .3 + dx * .4, y - dy * .6 - 1, 1.2, '#b8c0c3', `stroke="${KI}" stroke-width=".3"`);
+  return s;
+}
+/* shaded box: (x, yb) is the front-bottom-left corner. Chamfered, panelled, with cornice, plinth and cast shadow. */
+function box(x, yb, w, h, d, m, o) {
+  o = o || {}; const dx = d * 0.75, dy = d * 0.42, y = yb - h, cr = Math.min(1.4, h / 7, w / 7);
+  let s = `<path d="M${x + 2} ${yb} L${x + w + dx + 6} ${yb - dy + 3} L${x + w + dx + 6} ${yb + 2.4} L${x + 2} ${yb + 2.4}Z" fill="rgba(0,0,0,.32)" filter="url(#fBlur)"/>`;
+  const side = [[x + w, y], [x + w + dx, y - dy], [x + w + dx, yb - dy], [x + w, yb]];
+  s += P(side, o.s || m.s, KI, .5) + P(side, 'url(#gS)');
+  for (let i = 1; i < 3; i++) s += LN(x + w + dx * i / 3, y - dy * i / 3 + 1, x + w + dx * i / 3, yb - dy * i / 3 - 1, 'rgba(0,0,0,.22)', .5);
+  s += RC(x, y, w, h, o.f || m.f, KI, .5, cr) + RC(x, y, w, h, 'url(#gF)', null, 0, cr);
+  for (let yy = y + 5; yy < yb - 3; yy += 5) s += LN(x + .8, yy, x + w - .8, yy, 'rgba(0,0,0,.11)', .4) + LN(x + .8, yy + .5, x + w - .8, yy + .5, 'rgba(255,255,255,.08)', .4);
+  s += LN(x + .7, y + 1.4, x + .7, yb - 1, 'rgba(255,255,255,.28)', .7);
+  s += RC(x, y, w, Math.min(4.5, h * .28), 'rgba(0,0,0,.16)', null, 0, cr) + RC(x, y + 1, w, 1.2, 'rgba(0,0,0,.14)') + P([[x + w, yb - 3], [x + w + dx, yb - dy - 3], [x + w + dx, yb - dy], [x + w, yb]], 'rgba(0,0,0,.28)') + LN(x + w - .4, y + 1, x + w - .4, yb - 1, 'rgba(255,255,255,.16)', .5);
+  if (m !== MAT[1] && w >= 22) s += [x + 1.2, x + w - 3].map(px => RC(px, y + 2, 1.9, h - 5, 'rgba(255,255,255,.07)') + LN(px + 1.9, y + 2, px + 1.9, yb - 3, 'rgba(0,0,0,.2)', .4)).join('');
+  s += RC(x - .5, yb - 1.8, w + 1, 1.8, 'rgba(0,0,0,.35)') + RC(x, yb - 4, w, 3, 'url(#gAO)');
+  const tt = m === MAT[1] ? 1 : m === MAT[2] ? 2 : m === MAT[3] ? 3 : m === MAT[4] ? 4 : 5;
+  if (o.roof === 'gable') return s + gableRoof(x, y, w, d, o.rh || Math.max(5, w * .22), m, tt, o.ridge);
+  if (o.roof === 'vault') return s + vaultRoof(x, yb - h + 0, w, Math.min(h * .7, 9), d, m, tt);
+  const top = [[x, y], [x + dx, y - dy], [x + w + dx, y - dy], [x + w, y]];
+  s += P(top, o.t || m.t, KI, .5) + P(top, 'url(#gT)') + P([[x + 1.2, y - .3], [x + dx + .6, y - dy + .5], [x + w + dx - 1.2, y - dy + .5], [x + w - 1, y - .3]], 'none', 'rgba(0,0,0,.18)', .5);
+  s += RC(x - .8, y - 1.5, w + 1.6, 2, o.trim || m.trim, KI, .4, .6) + RC(x - .8, y + .4, w + 1.6, .9, 'rgba(0,0,0,.35)');
+  if (o.gear !== false && w > 14) s += roofGear(x, y, w, d, tt, Math.floor(x * 7 + w));
+  return s;
+}
+const wins = (x, y, cols, rows, m, cw, ch, gx, gy, lit) => { let s = ''; for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) { const X = x + c * (cw + gx), Y = y + r * (ch + gy), v = (c * 3 + r * 5) % 4, ink = v === 1 ? .78 : v === 3 ? .9 : 1;
+  s += RC(X - .7, Y - .8, cw + 1.4, ch + 1.9, 'rgba(0,0,0,.28)', null, 0, .7) + RC(X - .45, Y - .45, cw + .9, ch + .9, '#1a2024', null, 0, .5) + RC(X, Y, cw, ch, m.win, null, 0, .4).replace('<rect', `<rect opacity="${ink}"`) + RC(X, Y, cw, ch, 'url(#gGlass)', null, 0, .4)
+    + RC(X, Y, cw, Math.max(.7, ch * .28), 'rgba(0,0,0,.22)', null, 0, .3) + (cw >= 3 ? LN(X + cw / 2, Y, X + cw / 2, Y + ch, 'rgba(20,26,30,.55)', .35) : '')
+    + LN(X + .5, Y + ch - .6, X + cw * .55, Y + .5, 'rgba(255,255,255,.4)', .5) + RC(X - .8, Y + ch + .4, cw + 1.6, .8, 'rgba(255,255,255,.3)', null, 0, .3) + RC(X - .8, Y + ch + 1.2, cw + 1.6, .5, 'rgba(0,0,0,.3)')
+    + (lit ? RC(X, Y, cw, ch, m.win, null, 0, .4).replace('<rect', '<rect class="glw" opacity=".55"') : ''); } return s; };
+const door = (x, yb, w, h) => RC(x - .8, yb - h - 1, w + 1.6, h + 1, '#3a454c', KI, .4, .6) + RC(x - .6, yb - h - .6, w + 1.2, h + .6, '#2a3237', KI, .4, .5) + RC(x, yb - h, w, h, '#0c1012', KI, .3, .4) + RC(x + w / 2 - .3, yb - h, .6, h, 'rgba(255,255,255,.12)') + RC(x + .5, yb - h + .5, w - 1, 1.2, 'rgba(255,255,255,.14)') + RC(x + 1, yb - h + 2.2, w - 2, h - 2.6, 'rgba(255,184,74,.16)', null, 0, .3) + RC(x - 1.4, yb - .5, w + 2.8, 1.1, '#6b767c', KI, .3, .3) + RC(x - 1.4, yb - .5, w + 2.8, .4, 'rgba(255,255,255,.35)') + CI(x + w - 1, yb - h * .45, .35, '#e0a44a');
 const sandbags = (x, y, n) => Array.from({ length: n }, (_, i) => EL(x + i * 4.6 + (Math.floor(i / 4) % 2) * 2, y - Math.floor(i / 4) * 2.6, 3, 1.9, i % 2 ? '#a89466' : '#9a875c', `stroke="${KI}" stroke-width=".5"`)).join('');
 const crate = (x, yb, s, c) => RC(x, yb - s, s, s, c || '#8a6a3a', KI, .5) + LN(x, yb - s, x + s, yb, 'rgba(0,0,0,.35)', .6) + LN(x + s, yb - s, x, yb, 'rgba(0,0,0,.35)', .6) + RC(x, yb - s, s, 1, 'rgba(255,255,255,.25)');
 const barrel = (x, yb, c) => RC(x - 2.2, yb - 5, 4.4, 5, c || '#b8613d', KI, .5, 1) + EL(x, yb - 5, 2.2, .9, '#d2805a', `stroke="${KI}" stroke-width=".4"`) + LN(x - 2.2, yb - 3.4, x + 2.2, yb - 3.4, 'rgba(0,0,0,.35)', .5);
@@ -33,17 +76,26 @@ const dish = (x, y, r, m, spin) => `<g ${spin ? `class="spin" style="transform-o
 const glow = (x, y, r, id) => `<circle cx="${x}" cy="${y}" r="${r}" fill="url(#${id || 'gGA'})" class="glw"/>`;
 const light = (x, y, c) => CI(x, y, 1.3, c || '#ffe9a8', 'class="glw"') + CI(x, y, 3, 'rgba(255,233,168,.25)', 'class="glw"');
 function pad(t, outer) {
-  const inner = !outer;
-  let s = EL(32, 57, 29, 5, 'rgba(0,0,0,.45)');
+  let s = `<ellipse cx="32" cy="57" rx="30" ry="5.4" fill="rgba(0,0,0,.4)" filter="url(#fBlur)"/>`; const r = srand(t * 977 + (outer ? 5 : 11));
+  const shape = outer ? [[3, 20], [61, 20], [63, 58], [1, 58]] : [[3, 18], [61, 18], [63, 58], [1, 58]];
   if (outer) {
-    s += P([[3, 20], [61, 20], [63, 58], [1, 58]], '#3a3320', KI, .8) + P([[3, 20], [61, 20], [63, 58], [1, 58]], 'url(#gT)');
-    for (let i = 0; i < 5; i++) s += LN(3 - i * .4, 26 + i * 8, 61 + i * .4, 26 + i * 8, 'rgba(0,0,0,.28)', 1.4);
-    if (t >= 3) s += P([[3, 20], [61, 20], [63, 58], [1, 58]], 'none', '#3c474e', 1.2);
+    s += P(shape, '#3b3421', KI, .8) + P(shape, 'url(#gT)');
+    for (let i = 0; i < 5; i++) s += LN(3 - i * .4, 26 + i * 8, 61 + i * .4, 26 + i * 8, 'rgba(0,0,0,.26)', 1.6) + LN(3 - i * .4, 27 + i * 8, 61 + i * .4, 27 + i * 8, 'rgba(255,240,200,.05)', .8);
+    for (let i = 0; i < 26; i++) s += CI(4 + r() * 56, 22 + r() * 36, .5 + r() * .7, r() < .5 ? 'rgba(255,240,200,.07)' : 'rgba(0,0,0,.2)');
+    for (const [gx, gy] of [[5, 58], [14, 59], [50, 59], [59, 57]]) s += `<path d="M${gx} ${gy}l-1-4M${gx} ${gy}l.4-5M${gx} ${gy}l1.6-3.6" stroke="#4a6a34" stroke-width=".9" stroke-linecap="round"/>`;
+    if (t >= 3) s += P(shape, 'none', '#4c5a62', 1.4);
     return s;
   }
-  s += P([[3, 18], [61, 18], [63, 58], [1, 58]], t <= 1 ? '#3b3a33' : t === 2 ? '#454c50' : t === 3 ? '#3f484d' : '#2c353a', KI, .8) + P([[3, 18], [61, 18], [63, 58], [1, 58]], 'url(#gT)');
-  if (t <= 1) s += `<path d="M6 55l8-3 6 2 9-2" stroke="rgba(0,0,0,.4)" fill="none" stroke-width="1"/>` + P([[8, 22], [15, 21], [17, 26], [9, 27]], '#4a4638') + P([[44, 50], [52, 49], [53, 54], [45, 55]], '#4a4638');
-  else { s += LN(32, 18, 32, 58, 'rgba(255,255,255,.07)', .8) + LN(3, 38, 62, 38, 'rgba(255,255,255,.07)', .8); if (t >= 3) s += `<path d="M5 56h54" stroke="${BR}" stroke-width="1.4" stroke-dasharray="4 3" opacity=".6"/>`; if (t >= 5) s += [[5, 20], [59, 20], [3, 56], [61, 56]].map(([x, y]) => CI(x, y, 1.4, BR)).join(''); }
+  const pf = t <= 1 ? '#3b3a33' : t === 2 ? '#464d51' : t === 3 ? '#404a4f' : '#2d363b';
+  s += P(shape, 'rgba(0,0,0,.55)', 'rgba(0,0,0,.55)', 3.4) + P(shape, pf, pf, 2.4) + P(shape, 'url(#gT)') + P([[4, 19.4], [60, 19.4], [61.8, 57], [2.2, 57]], 'none', 'rgba(255,255,255,.1)', .7);
+  for (let i = 0; i < 34; i++) s += CI(4 + r() * 56, 20 + r() * 38, .4 + r() * .8, r() < .5 ? 'rgba(255,255,255,.06)' : 'rgba(0,0,0,.22)');
+  if (t <= 1) s += `<path d="M6 55l8-3 6 2 9-2" stroke="rgba(0,0,0,.4)" fill="none" stroke-width="1"/>` + P([[8, 22], [15, 21], [17, 26], [9, 27]], '#4a4638') + P([[44, 50], [52, 49], [53, 54], [45, 55]], '#4a4638') + `<path d="M4 58l-1-4M6 58l.4-5M8 58l1.6-3" stroke="#5a7a3a" stroke-width=".9" stroke-linecap="round"/>`;
+  else {
+    s += LN(32, 18, 32, 58, 'rgba(255,255,255,.06)', .8) + LN(3, 38, 62, 38, 'rgba(255,255,255,.06)', .8) + P([[3, 55], [61, 55], [63, 58], [1, 58]], t >= 3 ? '#5a666d' : '#5c666a', KI, .5) + LN(3, 55, 61, 55, 'rgba(255,255,255,.25)', .6);
+    if (t >= 3) s += `<path d="M5 56.6h54" stroke="${BR}" stroke-width="1" stroke-dasharray="4 3" opacity=".7"/>`;
+    s += CI(56, 24, 1.6, 'rgba(0,0,0,.4)', 'stroke="rgba(255,255,255,.12)" stroke-width=".4"') + CI(8, 50, 1.4, 'rgba(0,0,0,.35)');
+    if (t >= 5) s += [[5, 20], [59, 20], [3, 56], [61, 56]].map(([x, y]) => CI(x, y, 1.6, BR) + CI(x, y, .6, '#fff3c0')).join('');
+  }
   return s;
 }
 const svgWrap = (inner, cls) => `<svg viewBox="0 0 64 64" class="bsvg ${cls || ''}" aria-hidden="true">${inner}</svg>`;

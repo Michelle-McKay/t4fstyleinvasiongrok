@@ -328,3 +328,4 @@ a{text-decoration:none}
 .rwic.big{width:auto;height:auto;flex-direction:column;padding:10px 14px;gap:4px;text-align:center}.rwic.big span{font:600 12px/1.1 var(--head);text-transform:uppercase}.rwic.big em{position:absolute;right:4px;top:2px;font:700 14px var(--head);font-style:normal;color:var(--signal)}
 .txin{flex:1;min-width:0;height:38px;background:var(--ink);border:1px solid var(--line);color:var(--bone);padding:0 10px;font:16px var(--body);user-select:text;-webkit-user-select:text}
 .pinkbar{background:rgba(212,101,74,.25);text-align:center;padding:8px;font:600 16px var(--head);letter-spacing:.04em}.pinkbar b{color:var(--signal)}
+img.bsvg{object-fit:contain;-webkit-user-drag:none}
