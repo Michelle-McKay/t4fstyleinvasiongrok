@@ -120,7 +120,7 @@ const TABS = [['map', 'World Map'], ['base', 'Base'], ['hero', 'Hero'], ['allian
 function renderDock() {
   const cur = ['hero', 'alliance', 'mail'].includes(UI.drawer) ? UI.drawer : UI.page, unread = S.reports.filter(r => r.id > (S.readTo || 0)).length;
   $('#dock').innerHTML = TABS.map(([k, n]) => `<button data-a="dock" data-k="${k}" class="${cur === k ? 'on' : ''}">${svg(k).replace(/stroke="[^"]+"/, 'stroke="currentColor"')}${k === 'mail' && unread ? `<em class="bdg">${Math.min(unread, 9)}</em>` : ''}${k === 'base' && Object.keys(UI.ready).length ? `<em class="bdg ok">${Math.min(Object.keys(UI.ready).length, 9)}</em>` : ''}${k === 'hero' && S.hero.captured ? `<em class="bdg">!</em>` : ''}${k === 'alliance' && S.incoming.some(i => i.rally) ? `<em class="bdg">!</em>` : ''}<span>${n}</span></button>`).join('');
-  $('#mapchips').innerHTML = '';
+  $('#mapchips').innerHTML = `<button class="btn sm glass" data-a="jump" data-k="b">Base</button><button class="btn sm glass" data-a="jump" data-k="t">Throne</button>`;
 }
 
 /* ---------------- composer ---------------- */
@@ -139,7 +139,10 @@ function tileLabel(t) {
 }
 function sheetTile(x, y) {
   const t = tileInfo(x, y), c = UI.comp, tot = compTotal(c), col = previewCol(c);
-  let h = `<div class="flex sp"><div><div class="h1">${tileLabel(t)}</div><div class="sub num">${x},${y} · grade ${t.grade} · owner ${ownerTxt(t.owner)}${t.enc ? ' · encamping' : ''}</div></div><button class="btn sm line" data-a="closesheet">Close</button></div>`;
+  const spr = t.kind === 'monster' ? FEAT.monster(t.grade) : t.kind === 'camp' ? FEAT.camp() : t.kind === 'node' ? FEAT[t.nk === 'food' ? 'food' : t.nk === 'oil' ? 'oil' : t.nk === 'energy' ? 'energy' : 'steel'](t.node.grade) : t.kind === 'base' ? FEAT.base() : t.kind === 'pbase' ? FEAT.pbase(ccLevel()) : null;
+  let img = ''; try { if (spr) img = `<div class="tport"><img src="${spr.toDataURL()}" alt=""><i class="num">${t.grade ? 'Lv ' + t.grade : ''}</i></div>`; } catch (e) { }
+  const dist = Math.hypot(x - S.base.x, y - S.base.y);
+  let h = `<button class="xclose" data-a="closesheet" aria-label="Close">✕</button><div class="h1">${tileLabel(t)}</div><div class="sub">${t.kind === 'base' ? t.bot.cmd + ' · ' : ''}Grade ${t.grade}</div><div class="coord"><b class="num">X:${x} Y:${y}</b><button class="btn sm share" data-a="sharexy" data-x="${x}" data-y="${y}" aria-label="Copy coordinates">⧉</button></div><div class="tinfo">${img}<div class="grow"><div class="rr"><span class="mut">Ownership</span><span class="num">${ownerTxt(t.owner)}</span></div><div class="rr"><span class="mut">Distance</span><span class="num">${dist.toFixed(1)} tiles</span></div>${t.enc ? '<div class="rr"><span class="mut">Status</span><span class="num">Encamping</span></div>' : ''}</div></div>`;
   const acts = [];
   const eo = k => estOut(k, x, y, c);
   const eta = (k) => { const e = eo(k); return e ? `<div class="sub mt">Out <b class="num br">${fmtT(e.ms / 1000)}</b> · forest tiles ${e.f}${e.f ? ' (' + fmtT(e.f * 240) + ' sheet)' : ''} · speed ${Math.round(e.st.speed)}</div>` : ''; };
@@ -413,6 +416,11 @@ const A = {
   },
   drawer(d) { openDrawer(d.id, d.tab); }, dtab(d) { UI.dt[UI.drawer] = d.k; D(); }, closedrawer() { UI.drawer = null; D(); },
   'plot-cc'() { const t = plotOf('cc'); if (t) { UI.page = 'base'; sheetOpen({ type: 'plot', area: t.ar, idx: t.i }); } },
+  sharexy(d) { const t = `X:${d.x} Y:${d.y}`; try { navigator.clipboard.writeText(t); } catch (e) { } toast('Copied ' + t, 'good'); },
+  mworld() { if (MAP.ts > TS_MIN + 2) { MAP.zprev = MAP.ts; zoomAt(MAP.w / 2, MAP.h / 2, TS_MIN); } else zoomAt(MAP.w / 2, MAP.h / 2, MAP.zprev || 28); },
+  mmark() { S.bk = S.bk || []; const sl = UI.sel; if (sl && !S.bk.some(b => b.x === sl.x && b.y === sl.y)) { S.bk.push({ x: sl.x, y: sl.y }); if (S.bk.length > 6) S.bk.shift(); toast(`Marked ${sl.x},${sl.y}`, 'good'); } else if (S.bk.length) { UI.bki = ((UI.bki || 0) + 1) % S.bk.length; const b = S.bk[UI.bki]; panTo(b.x, b.y); toast(`Mark ${UI.bki + 1}/${S.bk.length}: ${b.x},${b.y}`); } else toast('Select a tile, then tap Mark.'); D(); },
+  mterr() { MAP.hideTerr = !MAP.hideTerr; D(); },
+  moff() { MAP.hideTags = !MAP.hideTags; D(); },
   closesheet() { UI.sheet = null; UI.sel = null; D(); },
   scrim() { closeBRadial(); if (UI.drawer) UI.drawer = null; else { UI.sheet = null; UI.sel = null; } D(); },
   details(d) { closeRadial(); UI.sel = { x: +d.x, y: +d.y }; UI.sheet = { type: 'tile', x: +d.x, y: +d.y }; UI.drawer = null; D(); },

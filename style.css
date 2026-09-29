@@ -263,3 +263,23 @@ a{text-decoration:none}
 #bradial .lvd i{position:relative;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font:700 17px/1 var(--head);font-style:normal;z-index:1}
 #bradial .lvd i::before{content:'';position:absolute;inset:4px;background:#3aa0d8;border:2px solid #fff;transform:rotate(45deg);z-index:-1}
 #bradial .lvd b{margin-top:-4px;background:rgba(6,8,9,.92);padding:2px 12px;font:700 14px/1 var(--head);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+
+/* world-map top bar and target pop-out */
+#compass{left:0;right:0;top:0;display:block}
+.mbar{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:6px 6px 0;background:linear-gradient(180deg,rgba(10,13,14,.85),rgba(10,13,14,0))}
+.mb{display:flex;align-items:center;justify-content:center;gap:5px;height:28px;background:linear-gradient(180deg,#535b60,#2d3438);border:1px solid #0e1113;border-top-color:#8a949a;color:var(--bone);font:600 13px/1 var(--head);letter-spacing:.05em;text-transform:uppercase}
+.mb svg{width:14px;height:14px}
+.utc{width:max-content;margin:3px auto 0;padding:1px 12px;background:rgba(10,13,14,.75);border:1px solid rgba(255,255,255,.1);font:600 12px/16px var(--head);letter-spacing:.06em;color:var(--mute);pointer-events:none}
+#mapchips{top:80px}
+.xclose{position:absolute;right:8px;top:8px;width:30px;height:30px;background:rgba(0,0,0,.4);border:1px solid var(--line);color:var(--signal);font:700 16px/1 var(--head);z-index:2}
+.coord{display:flex;align-items:center;gap:6px;margin:8px 0}
+.coord b{flex:1;background:rgba(0,0,0,.35);border:1px solid var(--line);padding:5px 8px;font:600 14px/1 var(--head);letter-spacing:.06em}
+.share{min-height:28px;padding:0 10px;background:linear-gradient(180deg,#3f95dc,#1b5c98);border-color:#0c2c4a;color:#fff}
+.tinfo{display:flex;gap:10px;align-items:stretch;margin-bottom:6px}
+.tport{position:relative;flex:none;width:92px;height:92px;background:radial-gradient(circle at 50% 40%,#5a2018,#150808);border:1px solid var(--line)}
+.tport img{width:100%;height:100%;object-fit:contain;display:block}
+.tport i{position:absolute;left:0;right:0;bottom:0;background:var(--signal);text-align:center;font:700 12px/16px var(--head);font-style:normal;color:#fff}
+.sheet .h1{padding-right:34px}
+#mini{top:58px}
+#mapchips{top:196px}
+#toasts{top:90px}
