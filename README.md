@@ -8,7 +8,10 @@ Open `index.html` (or serve the folder statically). Barlow Condensed and Source 
 ## Layout
 - `js/data.js` — constants and pure rules (troops, walls, buildings, research, titles, forge curves, clocks)
 - `js/engine.js` — state, world function, job list, marches, combat, rallies, threats, bots, forge, market, 4Hz `tick()`
-- `js/art.js` — original procedural art: canvas terrain and feature sprites, SVG buildings with five level tiers
+- `js/art.js` — sprite helpers and the first-generation art (kept as fallback)
+- `js/art2.js`, `js/art3.js` — building art v2: shaded 2.5D SVG toolkit, five material tiers, 15 buildings and 25 Command Center looks
+- `js/art4.js` — map feature art v2: forest, wild ground, resource nodes by grade, monsters, camps, outposts, player HQ, citadel
+- `js/bld.js` — per-building sheets: details, options, upgrade requirement tree rooted in the rural buildings
 - `js/map.js` — map canvas: inertial pan, pinch and wheel zoom, territory washes with edge lines, citadel beacon, radial tap menu
 - `js/cc.js` — Command Center sheet: 25-level upgrade path with prerequisites, action tiles, tap sequences and the on-screen tap guide
 - `js/ui.js` — frosted HUD, five-tab dock, spring slide-up drawers (Desk, Hero/Forge, Alliance, Mail, Columns), base scene with progress rings and reward bubbles, haptics and audio cues

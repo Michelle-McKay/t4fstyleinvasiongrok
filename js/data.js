@@ -154,12 +154,20 @@ const CC_LEVELS = [
   ['Satellite Uplink', 'Orbital uplink dish.'], ['Reactor Core', 'Glowing reactor in the courtyard.'], ['Command Spire', 'Central spire with a beacon.'], ['Brass Standard', 'Brass banners on every face.'],
   ['Iron Citadel HQ', 'The full fortress. A sixth march queue opens.']
 ];
-const CC_REQ_POOL = ['hall', 'depot', 'tech', 'mil', 'defense', 'radar', 'store', 'treasury', 'rations', 'fuel', 'power', 'alloy', 'prison', 'market'];
+const CC_REQ_POOL = ['hall', 'depot', 'tech', 'mil', 'defense', 'radar', 'store', 'treasury', 'prison', 'market'];
+const RURAL = ['rations', 'fuel', 'power', 'alloy'];
+/* every urban building is fed by one rural root: raise the root to raise the building */
+const BLD_ROOT = { store: 'rations', depot: 'rations', treasury: 'power', tech: 'power', radar: 'power', mil: 'alloy', prison: 'alloy', defense: 'alloy', hall: 'fuel', market: 'fuel' };
+function bldReqs(b, to) {
+  if (b === 'cc') return ccReqs(to);
+  const r = BLD_ROOT[b]; if (!r || to < 3) return []; return [[r, to - 1]];
+}
 function ccReqs(to) {
   if (to <= 1) return [];
-  const fixed = { 2: [['radar', 1]], 3: [['store', 2]], 4: [['depot', 2], ['mil', 3]], 5: [['tech', 3], ['hall', 2]], 6: [['defense', 4], ['radar', 4]] };
-  if (fixed[to]) return fixed[to];
-  const n = CC_REQ_POOL.length, need = Math.max(1, to - 2), a = (to * 3) % n, b = (to * 5 + 2) % n, c = (to * 7 + 4) % n, out = [[CC_REQ_POOL[a], need]];
+  const rural = RURAL[to % 4], rl = Math.max(1, to - 2);
+  const fixed = { 2: [['store', 1]], 3: [['store', 2], ['depot', 1]], 4: [['depot', 2], ['mil', 3]], 5: [['tech', 3], ['hall', 2]], 6: [['defense', 4], ['radar', 4]] };
+  if (fixed[to]) return [[rural, rl]].concat(fixed[to]);
+  const n = CC_REQ_POOL.length, need = Math.max(1, to - 2), a = (to * 3) % n, b = (to * 5 + 2) % n, c = (to * 7 + 4) % n, out = [[rural, rl], [CC_REQ_POOL[a], need]];
   if (b !== a) out.push([CC_REQ_POOL[b], Math.max(1, need - 1)]);
   if (to >= 15 && c !== a && c !== b) out.push([CC_REQ_POOL[c], Math.max(1, need - 2)]);
   return out;

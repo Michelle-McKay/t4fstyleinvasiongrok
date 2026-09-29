@@ -249,7 +249,7 @@ function buildErr(area, idx, b) {
   if (!p && BLD[b].unique && allPlots().some(x => x.b === b)) return 'One Command Center only.';
   if (to > 25) return 'Level 25 is the ceiling.';
   if (b !== 'cc' && to > cc) return 'Raise the Command Center first.';
-  if (b === 'cc') for (const [rb, rl] of ccReqs(to)) if (lvlMax(rb) < rl) return 'Needs ' + BLD[rb].n + ' ' + rl + '.';
+  for (const [rb, rl] of bldReqs(b, to)) if (lvlMax(rb) < rl) return 'Needs ' + BLD[rb].n + ' ' + rl + '.';
   return null;
 }
 function startBuild(area, idx, b, cover) {
@@ -778,4 +778,16 @@ function musterAll() {
 function recallAll() {
   let n = 0; for (const m of S.marches.slice()) if (m.phase !== 'back' && !(m.kind === 'rally' && m.phase !== 'wait')) { if (!recall(m.id)) n++; }
   return n ? null : 'No column to recall.';
+}
+
+/* ---------------- harvest and audit: per-plot collect actions ---------------- */
+const HARVEST_CD = 120000;
+function harvestReadyAt(ar, i) { return ((S.hv || {})[ar + i] || 0) + HARVEST_CD; }
+function harvestPlot(ar, i) {
+  const p = S.plots[ar][i]; if (!p || p.l <= 0) return 'Nothing to collect.';
+  const d = BLD[p.b], r = d.res || (p.b === 'treasury' ? 'cash' : null); if (!r) return 'This building does not produce.';
+  if (Date.now() < harvestReadyAt(ar, i)) return 'Not ready yet.';
+  const amt = Math.round((d.rate || 480) * p.l * mods().yld[r] * DRILL / 3600 * 60), got = addRes(r, amt);
+  if (got <= 0) return 'StoreHouse is full.'; S.hv = S.hv || {}; S.hv[ar + i] = Date.now();
+  note((p.b === 'treasury' ? 'Audit' : 'Harvest') + ': ' + fmtN(got) + ' ' + RESN[r] + '.', 'good'); return null;
 }

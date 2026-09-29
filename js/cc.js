@@ -1,5 +1,6 @@
 'use strict';
 /* IRON MARCH — Command Center sheet, per-level upgrade path, tap sequences and the on-screen tap guide. */
+const RURAL_SEQ = ['Tap the field or plant.', 'Tap Harvest to collect one minute of output now (2 minute cooldown).', 'Tap Root path to see which buildings this feeds and which Command Center levels need it.', 'Read Details: output, yield bonus, and how long until the store is full.', 'Tap Upgrade. Rural buildings have no prerequisites: they are the roots of every path.', 'Watch the ring, then tap the plot when the bubble shows.'];
 const SEQ = {
   cc: ['Tap the Command Center plot.', 'Tap an action tile (Requisition, Muster, Recall all, Shield, Relocate). Locked tiles show the level they open at.', 'Read Next level: every requirement shows a tick or a cross. Tap a cross row to jump to that building.', 'Tap Upgrade. If you are short, the button reads "cover N" and spends diamonds for the gap.', 'Watch the ring on the plot. Tap Rush (diamonds), Slip (a speed-up item) or Ask help (alliance).', 'A green bubble shows when it is done. Tap the plot to clear it and see the new look.'],
   mil: ['Tap the Military Complex plot.', 'Tap Open Train.', 'Pick a class, then a tier. Locked tiers say what they need.', 'Set the batch with the steppers, or tap Max.', 'Tap Train. A ring shows on the complex.', 'When the bubble appears, the troops are in the garrison.'],
@@ -12,7 +13,7 @@ const SEQ = {
   treasury: ['Tap the Treasury plot.', 'Each level adds Cash every hour. Upgrade to earn more.'],
   prison: ['Tap the Prison plot.', 'Seals are spent to ransom a captured hero. Tap the seals button to buy five.'],
   market: ['Tap the Black Market plot.', 'Tap Open Market.', 'Three offers a day. Refresh costs 15 diamonds.'],
-  rations: ['Tap the plot.', 'Upgrade to raise hourly output. Floating numbers show income.'], fuel: ['Tap the plot.', 'Upgrade to raise hourly output.'], power: ['Tap the plot.', 'Upgrade to raise hourly output.'], alloy: ['Tap the plot.', 'Upgrade to raise hourly output.'],
+  rations: RURAL_SEQ, fuel: RURAL_SEQ, power: RURAL_SEQ, alloy: RURAL_SEQ,
   empty: ['Tap an empty plot.', 'Tap Build on a building row.', 'A ring shows the build timer. Rush, Slip or Ask help to speed it.', 'Tap the plot again when the bubble shows.']
 };
 const stepsHTML = (kind, guides) => {
@@ -39,15 +40,15 @@ function ccSheet(area, idx, p) {
   h += `<div class="lbl mt">Command actions</div><div class="acts">${acts}</div>`;
   if (job) h += `<div class="panel mt"><div class="bd"><div class="lbl">Building to level ${job.to}</div>${jobCtl(job)}</div></div>`;
   else if (to <= 25) {
-    const req = ccReqs(to).map(([b, l]) => ({ b, l, have: lvlMax(b), ok: lvlMax(b) >= l })), miss = req.filter(r => !r.ok), f = 1 + (lvlMax('hall') ? lvlMax('hall') * 0.04 : 0);
+    const req = ccReqs(to), miss = treeMissing('cc', to), f = 1 + (lvlMax('hall') ? lvlMax('hall') * 0.04 : 0);
     const dHead = Math.floor((500 + to * 400) * f) - Math.floor((500 + L * 400) * f), dQ = Math.floor(to / 5) - Math.floor(L / 5), unlock = CC_ACTIONS.filter(a => a.lv === to);
     const cost = buildCost('cc', to), err = buildErr(area, idx, 'cc');
     h += `<div class="panel mt"><div class="hd"><h3>Next: ${to} · ${nx[0]}</h3>${miss.length ? '<span class="tag sg">Locked</span>' : '<span class="tag br">Ready</span>'}</div><div class="bd">
       <div class="sub">${nx[1]}</div>
       <div class="lbl mt">This level gives</div><div class="rr"><span>Headcount</span><span class="num ox">+${fmtN(dHead)}</span></div><div class="rr"><span>Help clicks</span><span class="num ox">+2</span></div>${dQ ? `<div class="rr"><span>March queue</span><span class="num ox">+1</span></div>` : ''}${unlock.map(a => `<div class="rr"><span>Unlocks ${a.n}</span><span class="num ox">new</span></div>`).join('')}
-      <div class="lbl mt">Requirements</div>${req.length ? req.map(r => `<button class="rq ${r.ok ? 'ok' : 'no'}" data-a="reqgo" data-b="${r.b}"><span>${r.ok ? '✓' : '✗'} ${BLD[r.b].n} ${r.l}</span><span class="num">${r.have}/${r.l}</span></button>`).join('') : '<div class="sub">None.</div>'}
+      <div class="lbl mt">Requirements · rural roots first</div>${treeHTML('cc', to)}
       <div class="lbl mt">Cost</div><div>${costHTML(cost)}</div><div class="sub mt">${dualT(buildSheetSec('cc', to) / (1 + mods().build))}</div>
-      <div class="mt">${miss.length ? `<span class="sub sg">Needs ${miss.map(r => BLD[r.b].n + ' ' + r.l).join(', ')}.</span>` : err ? `<span class="sub sg">${err}</span>` : payBtn(cost, 'build', { area, idx }, 'Upgrade to ' + to)}</div></div></div>`;
+      <div class="mt">${miss.length ? `<span class="sub sg">Needs ${miss.map(([rb, rl]) => BLD[rb].n + ' ' + rl).join(', ')}.</span>` : err ? `<span class="sub sg">${err}</span>` : payBtn(cost, 'build', { area, idx }, 'Upgrade to ' + to)}</div></div></div>`;
   } else h += `<div class="sub mt ox">Level 25. The citadel is complete.</div>`;
   const rows = UI.ccPath ? CC_LEVELS.map((x, i) => i + 1) : CC_LEVELS.map((x, i) => i + 1).filter(n => n >= L - 1 && n <= L + 4);
   h += `<div class="panel mt"><div class="hd"><h3>Upgrade path</h3><button class="btn sm line" data-a="ccpath">${UI.ccPath ? 'Nearby' : 'All 25'}</button></div><div class="bd">${rows.map(n => { const q = ccReqs(n), st = n <= L ? 'done' : n === to ? 'now' : ''; return `<div class="lvr ${st}"><b class="num">${n}</b><div class="grow"><b class="h" style="font-size:14px">${CC_LEVELS[n - 1][0]}</b><div class="sub">${CC_LEVELS[n - 1][1]}${q.length ? ' Needs ' + q.map(([b, l]) => BLD[b].n + ' ' + l).join(', ') + '.' : ''}</div></div>${n <= L ? '<span class="ox">✓</span>' : ''}</div>`; }).join('')}</div></div>`;
@@ -57,9 +58,7 @@ function ccSheet(area, idx, p) {
 const _sheetPlot = sheetPlot;
 sheetPlot = function (area, idx) {
   const p = S.plots[area][idx]; if (!p) return _sheetPlot(area, idx) + stepsHTML('empty');
-  if (p.b === 'cc') return ccSheet(area, idx, p);
-  const g = guideBtn('upgrade', 'Show me: upgrade', `data-ar="${area}" data-i="${idx}"`) + (p.b === 'mil' ? guideBtn('train', 'Show me: train') : '') + (p.b === 'tech' ? guideBtn('research', 'Show me: research') : '');
-  return _sheetPlot(area, idx) + stepsHTML(p.b, g);
+  return p.b === 'cc' ? ccSheet(area, idx, p) : bldSheet(area, idx, p);
 };
 
 /* ---------------- tap guide ---------------- */

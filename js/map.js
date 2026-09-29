@@ -51,16 +51,16 @@ function drawMap(now) {
     const base = t.terr === 'throne' || t.terr === 'plaza' ? 'plaza' : t.terr === 'forest' ? 'forest' : 'wild';
     g.drawImage(terrainSprite(base, v), px, py, sz, sz);
     if (t.owner != null) {
-      const c = alColor(t.owner); g.globalAlpha = .26; g.fillStyle = c; g.fillRect(px, py, sz, sz); g.globalAlpha = 1;
+      const c = alColor(t.owner); g.globalAlpha = .17; g.fillStyle = c; g.fillRect(px, py, sz, sz); g.globalAlpha = 1;
       g.fillStyle = c; const e = Math.max(2, ts / 12);
       if (S.own[key(x, y - 1)] !== t.owner) g.fillRect(px, py, sz, e); if (S.own[key(x, y + 1)] !== t.owner) g.fillRect(px, py + sz - e, sz, e);
       if (S.own[key(x - 1, y)] !== t.owner) g.fillRect(px, py, e, sz); if (S.own[key(x + 1, y)] !== t.owner) g.fillRect(px + sz - e, py, e, sz);
     }
     if (t.enc) { g.strokeStyle = alColor(t.enc.o); g.lineWidth = 1.5; g.setLineDash([4, 3]); g.lineDashOffset = -now / 60; g.strokeRect(px + 3, py + 3, sz - 7, sz - 7); g.setLineDash([]); g.globalAlpha = .12 + pulse * .12; g.fillStyle = alColor(t.enc.o); g.fillRect(px, py, sz, sz); g.globalAlpha = 1; }
     let f = null, s = 1;
-    if (t.kind === 'node') f = FEAT[t.nk === 'food' ? 'food' : t.nk === 'oil' ? 'oil' : t.nk === 'energy' ? 'energy' : 'steel']();
-    else if (t.kind === 'monster') f = FEAT.monster(); else if (t.kind === 'camp') f = FEAT.camp();
-    else if (t.kind === 'base') { f = FEAT.base(); s = 1.25; } else if (t.kind === 'pbase') { f = FEAT.pbase(); s = 1.5; }
+    if (t.kind === 'node') f = FEAT[t.nk === 'food' ? 'food' : t.nk === 'oil' ? 'oil' : t.nk === 'energy' ? 'energy' : 'steel'](t.node.grade);
+    else if (t.kind === 'monster') f = FEAT.monster(t.grade); else if (t.kind === 'camp') f = FEAT.camp();
+    else if (t.kind === 'base') { f = FEAT.base(); s = 1.3; } else if (t.kind === 'pbase') { f = FEAT.pbase(ccLevel()); s = 1.6; }
     if (f) late.push([f, px, py, s, t]);
   }
   if (ts >= 20) { g.strokeStyle = 'rgba(0,0,0,.22)'; g.lineWidth = 1; g.beginPath(); for (let x = x0; x <= x1; x++) { const px = Math.floor(w / 2 + (x - MAP.cx) * ts - ts / 2) + .5; g.moveTo(px, 0); g.lineTo(px, h); } for (let y = y0; y <= y1; y++) { const py = Math.floor(h / 2 + (y - MAP.cy) * ts - ts / 2) + .5; g.moveTo(0, py); g.lineTo(w, py); } g.stroke(); }
@@ -78,7 +78,7 @@ function drawMap(now) {
   const cxs = w2sx(TX), cys = w2sy(TY);
   if (cxs > -ts * 5 && cxs < w + ts * 5 && cys > -ts * 6 && cys < h + ts * 5) {
     const size = ts * 4.4; g.drawImage(FEAT.citadel(), cxs - size / 2, cys - size / 2, size, size);
-    const top = cys - size * .34, gr = g.createRadialGradient(cxs, top, 1, cxs, top, ts * (2.2 + pulse * .8)); gr.addColorStop(0, `rgba(255,214,140,${.75 + pulse * .25})`); gr.addColorStop(1, 'rgba(224,164,74,0)'); g.fillStyle = gr; g.fillRect(cxs - ts * 3.2, top - ts * 3.2, ts * 6.4, ts * 6.4);
+    const top = cys - size * .38, gr = g.createRadialGradient(cxs, top, 1, cxs, top, ts * (2.2 + pulse * .8)); gr.addColorStop(0, `rgba(255,214,140,${.75 + pulse * .25})`); gr.addColorStop(1, 'rgba(224,164,74,0)'); g.fillStyle = gr; g.fillRect(cxs - ts * 3.2, top - ts * 3.2, ts * 6.4, ts * 6.4);
     const bm = g.createLinearGradient(0, top, 0, top - ts * 6); bm.addColorStop(0, `rgba(255,220,150,${.35 + pulse * .2})`); bm.addColorStop(1, 'rgba(255,220,150,0)'); g.fillStyle = bm; g.fillRect(cxs - ts * .12, top - ts * 6, ts * .24, ts * 6);
     const th = S.throne; if (th.holder != null) { g.strokeStyle = alColor(th.holder); g.lineWidth = 2; g.globalAlpha = .5 + pulse * .5; g.beginPath(); g.arc(cxs, cys, ts * 2.3, 0, 7); g.stroke(); g.globalAlpha = 1; }
   }
@@ -102,7 +102,7 @@ function drawMap(now) {
   if (sel) { const px = w2sx(sel.x) - ts / 2, py = w2sy(sel.y) - ts / 2, L = ts * .3; g.strokeStyle = '#e0a44a'; g.lineWidth = 2.5; g.beginPath(); for (const [ax, ay, dx, dy] of [[px, py, 1, 1], [px + ts, py, -1, 1], [px, py + ts, 1, -1], [px + ts, py + ts, -1, -1]]) { g.moveTo(ax + dx * L, ay); g.lineTo(ax, ay); g.lineTo(ax, ay + dy * L); } g.stroke(); }
   // alliance tags: fade near the viewport edge and at low zoom
   g.font = `700 ${clamp(Math.round(ts * .5), 11, 22)}px "Barlow Condensed",sans-serif`; g.lineJoin = 'round'; g.lineWidth = 4; g.strokeStyle = 'rgba(10,13,14,.9)';
-  for (const tg of MAP.tags) { const px = w2sx(tg.x), py = w2sy(tg.y); const edge = Math.min(px, py, w - px, h - py); if (edge < -20) continue; const a = clamp(edge / 70, 0, 1) * (ts < 16 && tg.n < 40 ? 0 : 1); if (a <= 0.02) continue; g.globalAlpha = a; g.strokeText(tg.t, px, py); g.fillStyle = tg.c; g.fillText(tg.t, px, py); } g.globalAlpha = 1;
+  for (const tg of MAP.tags) { const px = w2sx(tg.x), py = w2sy(tg.y) - (Math.hypot(tg.x - S.base.x, tg.y - S.base.y) < 2.2 || S.bots.some(b => Math.hypot(tg.x - b.x, tg.y - b.y) < 2.2) ? ts * .95 : 0); const edge = Math.min(px, py, w - px, h - py); if (edge < -20) continue; const a = clamp(edge / 70, 0, 1) * (ts < 16 && tg.n < 40 ? 0 : 1); if (a <= 0.02) continue; g.globalAlpha = a; g.strokeText(tg.t, px, py); g.fillStyle = tg.c; g.fillText(tg.t, px, py); } g.globalAlpha = 1;
   // vignette
   const vg = g.createRadialGradient(w / 2, h / 2, Math.min(w, h) * .45, w / 2, h / 2, Math.max(w, h) * .75); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,.45)'); g.fillStyle = vg; g.fillRect(0, 0, w, h);
   drawMini(); document.getElementById('coord').textContent = `${Math.round(MAP.cx)},${Math.round(MAP.cy)} · ×${(ts / 36).toFixed(1)}`;
