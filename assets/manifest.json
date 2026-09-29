@@ -3,6 +3,7 @@
  "_comment": "Written by tools/ingest.py. Maps an asset key from assets/catalog.json to its image file.",
  "files": {
   "bld_depot_t1": "assets/buildings/bld_depot_t1.webp",
+  "bld_depot_t2": "assets/buildings/bld_depot_t2.webp",
   "bld_mil_t1": "assets/buildings/bld_mil_t1.webp",
   "bld_mil_t2": "assets/buildings/bld_mil_t2.webp",
   "bld_mil_t3": "assets/buildings/bld_mil_t3.webp",
