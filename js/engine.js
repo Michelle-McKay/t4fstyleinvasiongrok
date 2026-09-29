@@ -113,7 +113,8 @@ function headcount() { const L = ccLevel(), h = lvlMax('hall'); return Math.floo
 function marchQueues() { return 1 + Math.floor(ccLevel() / 5); }
 function helpCap() { return 4 + ccLevel() * 2; }
 function storeSum() { return lvlSum('store'); }
-function storeCap() { const L = storeSum(); return L > 0 ? Math.floor(8000 * Math.pow(L, 1.22) * (1 + rv('wh'))) : 8000; }
+function storeCapAt(L) { return L > 0 ? Math.floor(8000 * Math.pow(L, 1.5) * (1 + rv('wh'))) : 8000; }
+function storeCap() { return storeCapAt(storeSum()); }
 function protectedFloor() { return 1200 * storeSum(); }
 function bedCap() { return Math.floor(500 * lvlSum('depot') * (1 + rv('beds'))); }
 function woundedTotal() { let s = 0; for (const k in S.wounded) s += S.wounded[k]; return s; }
@@ -189,7 +190,7 @@ function synDef(S_, H_) { return { S: S_, H: H_ }; }
 function monsterSyn(g, camp) { const f = camp ? 0.5 : 1; return synDef(150 * Math.pow(g, 1.8) * f, 1500 * Math.pow(g, 1.8) * f); }
 function botScale() { return 1 + (Date.now() - S.t0) / 60000 * 0.012; }
 function botSyn(b, f) { f = f || 1; const s = botScale(); return synDef(900 * Math.pow(b.p, 1.5) * s * f, 11000 * Math.pow(b.p, 1.5) * s * f); }
-function citadelSide() { return mkSide({ inf2: 60, arm1: 16 }, {}, 1); }
+function citadelSide() { return mkSide({ inf3: 700, arm3: 500, air3: 500 }, {}, 1.5); }
 function wallStats() {
   const m = mods(), Rr = lvlMax('radar'), DC = lvlMax('defense'); let cAtk = 0, cHp = 0, crew = {};
   for (const k in S.wall) { const n = S.wall[k]; if (!n) continue; const t = ckSplit(k)[1]; cAtk += n * WT[t - 1].pow; cHp += n * WT[t - 1].hp; crew[k] = n; }
@@ -290,9 +291,9 @@ function startWall(cls, t, n, cover) {
 function healCost(cls, t, n) { const c = trainCost(cls, t), o = {}; for (const r in c) o[r] = Math.round(c[r] * 0.4 * n); return o; }
 function startHeal(cls, t, n, cover) {
   const k = ck(cls, t); n = Math.min(n, S.wounded[k] || 0); if (n <= 0) return 'Nobody wounded there.';
+  if (t > 1 && jobsOf('heal').length) return 'The heal queue is busy.';
   const pe = pay(healCost(cls, t, n), cover, 'Heal'); if (pe) return pe;
   if (t === 1) { S.wounded[k] -= n; S.troops[k] = (S.troops[k] || 0) + n; if (!S.wounded[k]) delete S.wounded[k]; return null; }
-  if (jobsOf('heal').length) { for (const r in healCost(cls, t, n)) S.res[r] += healCost(cls, t, n)[r]; return 'The heal queue is busy.'; }
   S.wounded[k] -= n; if (!S.wounded[k]) delete S.wounded[k];
   const sec = CLSD[cls].train[t - 1] * n * 0.5 / (1 + mods().heal + rv('repair'));
   return addJob('heal', sec, { cls, t, n }, n + ' ' + tierName(cls, t));
@@ -389,7 +390,7 @@ function launchMarch(kind, tx, ty, comp, hero, opts) {
   } else if (kind === 'throne') { if (t.kind !== 'throne') return 'Not the throne.'; off = true; }
   else if (kind === 'attack') { if (t.kind !== 'base' && t.kind !== 'throne') return 'Nothing to attack there.'; if (t.bot && t.bot.shieldUntil > Date.now()) return 'That base is shielded.'; off = true; }
   else if (kind === 'field') off = true;
-  if (kind === 'throne' && S.throne.holder === 0) return 'Your alliance already holds the throne.';
+  if ((kind === 'throne' || t.kind === 'throne') && S.throne.holder === 0) return 'Your alliance already holds the throne.';
   if (off) stripShield(kind === 'hunt' ? 'hunt' : 'offensive march');
   const col = {}; for (const c of CLS) if (comp[c]) Object.assign(col, takeClass(c, comp[c]));
   const m = mods(hero), st = colStats(col, m);
@@ -445,7 +446,7 @@ function arrive(m) {
       S.nodes[key(m.tx, m.ty)] = { res, nk: Object.keys(NODE_RES).find(k => NODE_RES[k] === res), grade: vg, stock: 600 * vg, max: 600 * vg, rich: true };
       addLootBar(m, rollGrade(g)); rollShard(m, g); if (Math.random() < 0.3) m.loot.dia += g * 2;
       for (const r of [pick(RES.slice(0, 4)), pick(RES)]) m.loot.res[r] = (m.loot.res[r] || 0) + Math.round(g * rnd(500, 1100));
-      if (S.kills % 8 === 0) S.hero.rank++;
+      if (S.kills % 8 === 0) S.hero.rank = Math.min(10, S.hero.rank + 1);
       if (fr.wiped) { S.marches = S.marches.filter(x => x !== m); if (m.hero) S.hero.captured = true; note('Pack dead, column gone. Rich vein left at ' + m.tx + ',' + m.ty + '.', 'warn'); return; }
       note('Pack dead at ' + m.tx + ',' + m.ty + '. A rich vein is open.', 'good');
     } else { if (fr.wiped) return wipe(m, 'on the hunt'); note('Hunt failed. Column falls back.', 'warn'); }
@@ -568,11 +569,11 @@ function createRally(target, comp, hero, waitSec, extraSlots) {
   const slots = 6 + extraSlots, joiners = [];
   const per = Math.floor(Math.max(0, rallyCap() - tot) / Math.max(1, slots));
   for (let i = 0; i < slots; i++) { const n = Math.min(per, rint(300, 700 + lvlMax('hall') * 60)); if (n < 50) continue; const cls = pick(['inf', 'arm', 'air']), jc = {}; jc[cls + 2] = Math.round(n * 0.7); jc[pick(['inf', 'arm', 'air']) + 1] = Math.round(n * 0.3); joiners.push({ name: S.roster[i % S.roster.length] + (i >= 7 ? ' II' : ''), col: jc, at: now + Math.round(wMs * rnd(0.1, 0.9)), in: false }); }
-  const m = { id: S.nid++, kind: 'rally', tx, ty, col, hero: !!hero, off: true, phase: 'wait', start: now, end: now + wMs, outMs, backMs: Math.max(3000, Math.round(outMs * 0.6)), loot: { res: {}, bars: {}, gem: 0, shard: null, dia: 0 }, wound: {}, dead: {}, joiners, target, tname: bot ? bot.tag + ' ' + bot.cmd : 'Citadel', jl: [] };
+  const m = { id: S.nid++, kind: 'rally', tx, ty, col, hero: !!hero, off: true, phase: 'wait', start: now, end: now + wMs, outMs, backMs: Math.max(3000, Math.round(outMs * 0.6)), loot: { res: {}, bars: {}, gem: 0, shard: null, dia: 0 }, wound: {}, dead: {}, joiners, target, extra: extraSlots || 0, tname: bot ? bot.tag + ' ' + bot.cmd : 'Citadel', jl: [] };
   S.marches.push(m); note('Rally is up against ' + m.tname + '.', 'info'); return null;
 }
 function launchRallyJoiners(m) { m.jl = m.joiners.slice(); }
-function cancelRally(m) { S.marches = S.marches.filter(x => x !== m); for (const k in m.col) S.troops[k] = (S.troops[k] || 0) + m.col[k]; note('Rally cancelled. Everyone is home.', 'info'); return null; }
+function cancelRally(m) { S.marches = S.marches.filter(x => x !== m); S.orders++; S.tokens += m.extra || 0; for (const k in m.col) S.troops[k] = (S.troops[k] || 0) + m.col[k]; note('Rally cancelled. Everyone is home.', 'info'); return null; }
 function arriveRally(m, t) {
   let D, rn; const isC = t.kind === 'throne' || m.target === 'citadel';
   const joinCol = {}; for (const j of m.jl) for (const k in j.col) joinCol[k] = (joinCol[k] || 0) + j.col[k];
@@ -635,6 +636,7 @@ function doTeleport(x, y) {
   note((k.kind === 'alliance' ? 'Alliance teleport' : k.kind === 'advanced' ? 'Advanced teleport' : 'Teleport') + ' complete.', 'good'); return null;
 }
 function randomTeleport() {
+  for (let i = 0; i < 800; i++) { const x = rint(20, W - 20), y = rint(20, H - 20); if (!S.own[key(x, y)] && S.own[key(x, y)] !== 0 && legalSpot(x, y)) return doTeleport(x, y); }
   const cand = []; for (const k in S.own) { const o = S.own[k]; if (o === 0) continue; const [x, y] = unkey(k); if (!legalSpot(x, y)) continue; let n = 0; for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) if (S.own[key(x + dx, y + dy)] === o) n++; cand.push([n, x, y]); }
   cand.sort((a, b) => a[0] - b[0]); if (cand.length) { const best = cand.filter(c => c[0] === cand[0][0]); const c = pick(best); return doTeleport(c[1], c[2]); }
   for (let i = 0; i < 500; i++) { const x = rint(20, W - 20), y = rint(20, H - 20); if (legalSpot(x, y)) return doTeleport(x, y); } return 'No landing found.';
@@ -716,7 +718,7 @@ function buyPack(id) {
   grant(g); note(p.n + ' opened.', 'good'); return null;
 }
 function buySlip(id) { const s = SLIPS.find(x => x.id === id); if (S.dia < s.cost) return 'Short of diamonds.'; dchg(-s.cost, s.n); S.slips[id] += s.q; return null; }
-function buyRes(r, n) { const c = n; if (S.dia < c) return 'Short of diamonds.'; if (S.res[r] >= storeCap()) return 'StoreHouse is full.'; dchg(-c, 'Crate: ' + RESN[r]); addRes(r, c * DIA_RATE[r]); return null; }
+function buyRes(r, n) { if (S.res[r] >= storeCap()) return 'StoreHouse is full.'; const c = Math.min(n, Math.ceil((storeCap() - S.res[r]) / DIA_RATE[r])); if (S.dia < c) return 'Short of diamonds.'; dchg(-c, 'Crate: ' + RESN[r]); addRes(r, c * DIA_RATE[r]); return null; }
 function buyBuilder() { if (S.builders >= 2) return 'Second builder already hired.'; if (S.dia < 220) return 'Short of diamonds.'; dchg(-220, 'Second builder'); S.builders = 2; return null; }
 function buyOrders() { if (S.dia < 80) return 'Short of diamonds.'; dchg(-80, 'Operational orders x5'); S.orders += 5; return null; }
 function buySeals() { if (S.dia < 60) return 'Short of diamonds.'; dchg(-60, 'Restraint seals x5'); S.seals += 5; return null; }
