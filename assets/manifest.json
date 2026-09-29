@@ -25,6 +25,7 @@
  },
  "clean": [
   "bld_mil_t1",
-  "bld_mil_t2"
+  "bld_mil_t2",
+  "bld_mil_t3"
  ]
 }
