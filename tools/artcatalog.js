@@ -45,7 +45,10 @@ const TIERS = {
   4: 'Upgrade tier 4 of 5, "advanced": high-tech, with tall glass sections, solar arrays, antennas and glowing blue light strips along the roofs and doors.',
   5: 'Upgrade tier 5 of 5, "flagship": the grandest version, the same site at its largest, gleaming white and light steel with brass accents, glowing blue energy accents, impressive but still tidy.'
 };
+const EXTRA_BLD = { embassy: { n: 'Embassy' }, forge: { n: 'Forge' } };   // new buildings, art first; the game gains them in js/data.js
 const BLD_SUBJECT = {
+  embassy: 'An Embassy: an allied reinforcement post, a wide welcoming hall with a flagpole, a small landing pad for arriving troop transports and a tidy reception courtyard',
+  forge: 'A Forge: a bright gear workshop with a large workshop hall, an anvil-and-gear emblem on the wall, a small furnace with a short chimney, a work bench with tools, and crates of finished armour and weapons',
   cc: "The player's Command Center headquarters: a central operations building with a wide entrance, a radio mast and a flag, set inside a tidy compound",
   mil: 'A Military Complex: neat barracks blocks around a paved drill yard, a vehicle bay and a small watch tower',
   depot: 'A Depot: a clean field hospital and medical supply building with a wide entrance canopy and a teal plus sign (no red cross)',
@@ -63,6 +66,8 @@ const BLD_SUBJECT = {
   alloy: 'An Alloy foundry: a modern smelter hall with a chimney stack, glowing metal chute, ingot stacks and an overhead crane'
 };
 const BACKDROP = {
+  embassy: 'a bright diplomatic quarter with pale walls, a broad blue sky and a tidy landing field in the distance',
+  forge: 'a clean bright workshop yard with neat stacks of metal stock and a clear sky',
   cc: 'a clean, bright headquarters plain with tidy roads and radio masts far away',
   mil: 'a bright training ground with painted lines, tidy barracks blocks and clear distance',
   depot: 'a calm, clean medical campus with pale tents and clear sky',
@@ -164,16 +169,17 @@ function build() {
   const make = (subject, ...rest) => [subject.replace(/\.?$/, '.'), ...rest].filter(Boolean).join(' ');
   const G = (id, title, note) => groups.push({ id, title, note });
 
-  G('bld', 'Buildings (75)', 'Square, transparent, one building complex on a clean square pad. Lock the look first: make your favourite tier 1 image for one building, then attach it as a reference to every other prompt so the set matches. Do all five tiers of one building together.');
-  for (const k of Object.keys(D.BLD)) {
+  const ALL_BLD = Object.assign({}, D.BLD, EXTRA_BLD);
+  G('bld', 'Buildings (85)', 'Square, transparent, one building complex on a clean square pad. Lock the look first: make your favourite tier 1 image for one building, then attach it as a reference to every other prompt so the set matches. Do all five tiers of one building together.');
+  for (const k of Object.keys(ALL_BLD)) {
     for (let t = 1; t <= 5; t++) add('bld', {
-      key: `bld_${k}_t${t}`, name: `${D.BLD[k].n} tier ${t}`, size: '1:1, 1024 x 1024', transparent: true, out: 512,
+      key: `bld_${k}_t${t}`, name: `${ALL_BLD[k].n} tier ${t}`, size: '1:1, 1024 x 1024', transparent: true, out: 512,
       prompt: make(BLD_SUBJECT[k], TIERS[t], PAD, STYLE, CAM, BG_T)
     });
   }
-  G('head', 'Building sheet backdrops (15)', 'The wide scenery behind a building on its info sheet. NO building in it: leave an empty flat patch of ground in the lower centre where the game places the building.');
-  for (const k of Object.keys(D.BLD)) add('head', {
-    key: `head_${k}`, name: `${D.BLD[k].n} backdrop`, size: '2:1 wide, 1600 x 800', transparent: false, out: 1000,
+  G('head', 'Building sheet backdrops (17)', 'The wide scenery behind a building on its info sheet. NO building in it: leave an empty flat patch of ground in the lower centre where the game places the building.');
+  for (const k of Object.keys(ALL_BLD)) add('head', {
+    key: `head_${k}`, name: `${ALL_BLD[k].n} backdrop`, size: '2:1 wide, 1600 x 800', transparent: false, out: 1000,
     prompt: make(`A wide scenic backdrop: ${BACKDROP[k]}. Empty flat clean ground in the lower centre for a building to be placed on, nothing important in the centre, bright sky in the upper half. Slightly raised camera, soft depth haze`, STYLE, BG_O)
   });
   G('troop', 'Troops (16)', 'One unit type per image, transparent, same camera. A squad for infantry and a single vehicle for the rest. Do tier 1 to 4 of a class together and attach tier 1 as a reference.');
