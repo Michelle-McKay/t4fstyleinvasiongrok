@@ -3,7 +3,7 @@
 The game ships with code-drawn vector art. Painted images replace it one piece at a time: any asset without an image keeps the vector version.
 
 ## How it works
-1. `tools/artcatalog.js` is the list of every asset (200 today): file key, size, whether it needs a transparent background, and the copy-paste AI prompt. Run `node tools/artcatalog.js` after changing it; it writes `assets/catalog.json`.
+1. `tools/artcatalog.js` is the list of every asset (212 today): file key, size, whether it needs a transparent background, and the copy-paste AI prompt. Run `node tools/artcatalog.js` after changing it; it writes `assets/catalog.json`.
 2. Generate an image per key and name the file exactly as the key (`bld_mil_t1.png`).
 3. `python3 tools/ingest.py path/to/*.png` finds each asset by file name, removes a flat background if the asset needs transparency, shrinks it to the in-game size, saves WebP into `assets/<folder>/` and rewrites `assets/manifest.json`. Commit the result.
 4. `js/assets.js` reads the manifest at start-up and swaps the images in.
