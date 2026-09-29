@@ -33,6 +33,11 @@
   "bld_mil_t2",
   "bld_mil_t3",
   "bld_mil_t4",
-  "bld_mil_t5"
+  "bld_mil_t5",
+  "bld_treasury_t1",
+  "bld_treasury_t2",
+  "bld_treasury_t3",
+  "bld_treasury_t4",
+  "bld_treasury_t5"
  ]
 }
