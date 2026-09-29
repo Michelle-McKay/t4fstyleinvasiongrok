@@ -46,7 +46,7 @@ UIH.done = j => {
   if (j.kind === 'build') { k = j.area + j.idx; txt = 'L' + j.to; } else if (j.kind === 'train') { k = first('mil'); txt = '+' + j.n; } else if (j.kind === 'res') { k = first('tech'); txt = 'Done'; } else if (j.kind === 'heal') { k = first('depot'); txt = '+' + j.n; } else if (j.kind === 'wall') { k = first('defense'); txt = '+' + j.n; }
   if (k) UI.ready[k] = txt; hap([12, 40, 12]); beep(660, 0.12, 0.04); beep(990, 0.16, 0.04);
 };
-const D = () => { UI.dirty = true; };
+const D = () => { UI.dirty = true; if (!UI.raf) UI.raf = requestAnimationFrame(() => { UI.raf = 0; if (UI.dirty && S && UI.booted) renderAll(); }); }; // repaint on the next frame, not the next 250ms tick
 function run(e, ok) { if (e) { toast(e, 'warn'); hap([30, 40, 30]); } else { if (ok) toast(ok, 'good'); hap(14); } D(); return !e; }
 const tm = (end, both) => end > 1e15 ? '<span class="mut">on station</span>' : `<span class="t num" data-end="${end}" data-b="${both ? 1 : 0}">${tmText(end, both)}</span>`;
 function tmText(end, both) { const s = Math.max(0, (end - Date.now()) / 1000); return fmtT(s) + (both ? ' <span class="mut">(' + fmtT(s * DRILL) + ' sheet)</span>' : ''); }
@@ -92,19 +92,37 @@ function renderTop() {
   if (pw !== UI.pills) { UI.pills = pw; $('#power').innerHTML = pw; }
   $('#power').classList.toggle('alert', S.incoming.length > 0);
   const db = `${svg('dia')}<b class="num">${fmtN(S.dia)}</b><em>+</em>`; if (db !== UI.dbtn) { UI.dbtn = db; $('#dbtn').innerHTML = db; }
-  const html = CHIP_ORDER.map(r => { const f = S.res[r] / cap, full = f >= 0.97; return `<button class="chip ${full ? 'full' : ''}" data-a="drawer" data-id="hero" data-tab="store" title="${RESN[r]} ${fmtN(S.res[r])} / ${fmtN(cap)}">${svg(r)}<b class="num">${fmtN(S.res[r])}</b><small class="num">${full ? 'FULL' : '+' + fmtN(hr[r] || 0) + '/h'}</small><i class="mtr"><u style="width:${Math.min(100, f * 100).toFixed(0)}%;background:${ICOL[r]}"></u></i></button>`; }).join('');
+  const html = CHIP_ORDER.map(r => { const f = S.res[r] / cap, full = f >= 0.97; return `<button class="chip ${full ? 'full' : ''}" data-a="resinfo" data-r="${r}" title="${RESN[r]} ${fmtN(S.res[r])} / ${fmtN(cap)}">${svg(r)}<b class="num">${fmtN(S.res[r])}</b><small class="num">${full ? 'FULL' : '+' + fmtN(hr[r] || 0) + '/h'}</small><i class="mtr"><u style="width:${Math.min(100, f * 100).toFixed(0)}%;background:${ICOL[r]}"></u></i></button>`; }).join('');
   if (html !== UI.chips) { UI.chips = html; $('#chips').innerHTML = html; }
   $('#alarm').classList.toggle('on', S.incoming.length > 0);
   const set = setBonus(), au = $('#aura'); if (set) { au.className = 'on'; au.style.boxShadow = `inset 0 0 0 2px ${SETS[set].aura}66, inset 0 0 40px ${SETS[set].aura}33`; } else au.className = '';
 }
 /* production bar: the job that finishes first, with Speed Up like the reference HUD */
 function renderTicker() {
-  const now = Date.now(), js = S.jobs.slice().sort((a, b) => a.end - b.end), show = UI.moreJobs ? js : js.slice(0, 2);
-  const row = j => { const f = clamp((now - j.start) / Math.max(1, j.end - j.start), 0, 1); return `<div class="prow"><div class="pbar"><u style="width:${(f * 100).toFixed(1)}%"></u><span>${HUDTXT[j.kind] || j.kind} ${j.why || ''}</span><b class="num">${ago(j.end - now)}</b></div><button class="speed" data-a="rush" data-id="${j.id}">Speed Up</button></div>`; };
+  const now = Date.now(), js = S.jobs.slice().sort((a, b) => a.end - b.end), show = UI.moreJobs ? js : js.slice(0, 2), free = j => remSheet(j.end) <= 300;
+  const row = j => `<div class="prow" data-j="${j.id}"><div class="pbar"><u></u><span>${HUDTXT[j.kind] || j.kind} ${j.why || ''}</span><b class="num"></b></div>${free(j) ? `<button class="speed free" data-a="jfree" data-id="${j.id}">Free</button>` : `<button class="speed" data-a="speedup" data-id="${j.id}">Speed Up</button>`}</div>`;
   let h = show.map(row).join('');
   if (js.length > 2) h += `<button class="more" data-a="morejobs">${UI.moreJobs ? 'Less ▲' : js.length - 2 + ' More ▼'}</button>`;
   if (!js.length) h = `<div class="prow"><div class="pbar idle"><span>Queues idle</span></div><button class="speed go" data-a="wing" data-w="train">Train</button></div>`;
-  if (h !== UI.prod) { UI.prod = h; $('#prod').innerHTML = h; }
+  if (h !== UI.prodKey) { UI.prodKey = h; $('#prod').innerHTML = h; }
+  for (const j of show) { const r = $('#prod [data-j="' + j.id + '"]'); if (!r) continue; const f = clamp((now - j.start) / Math.max(1, j.end - j.start), 0, 1); r.querySelector('u').style.width = (f * 100).toFixed(1) + '%'; r.querySelector('b').textContent = ago(j.end - now); }
+}
+function sheetSpeed(id) {
+  const j = S.jobs.find(x => x.id === id) || S.marches.find(x => x.id === id); if (!j) return `<div class="h1">Speed Up</div><div class="sub">That job is done.</div>`;
+  const rem = remSheet(j.end), c = rushCost(j.end);
+  return `<div class="h1">Speed Up</div><div class="sub">${HUDTXT[j.kind] || j.kind} ${j.why || ''} · ${ago(j.end - Date.now())} left</div>
+  <div class="panel mt"><div class="bd">${SLIPS.map(x => `<div class="rwrow"><div class="grow"><b>${x.n.replace(/^(One|Two|Five) /, '')}</b><div class="sub">In the rack: ${S.slips[x.id] || 0}</div></div><button class="btn sm ${S.slips[x.id] ? 'pri' : 'line'}" data-a="slipuse" data-id="${j.id}" data-w="${x.id}" ${S.slips[x.id] ? '' : 'disabled'}>Use</button></div>`).join('')}</div></div>
+  <div class="flex wrap mt"><button class="btn instant" data-a="rushnow" data-id="${j.id}" ${S.dia < c ? 'disabled' : ''}>Finish now · ${c}◆</button>${S.jobs.includes(j) && !j.ask ? `<button class="btn line" data-a="help" data-id="${j.id}">Ask for help</button>` : ''}<button class="btn line" data-a="scrim">Close</button></div>`;
+}
+function sheetRes(r) {
+  const cap = storeCap(), hr = hourly(), full = S.res[r] / cap;
+  return `<div class="h1">${RESN[r]}</div><div class="tinfo"><div class="tport" style="display:flex;align-items:center;justify-content:center"><div style="width:60px;height:60px">${svg(r)}</div></div><div class="grow"><div class="lbl">Stock</div><div class="big num">${fmtN(S.res[r])}</div><div class="sub">of ${fmtN(cap)} · ${(full * 100).toFixed(0)}% full</div><div class="sub">Output +${fmtN(hr[r] || 0)}/h · protected ${fmtN(protectedFloor())}</div></div></div>
+  <div class="flex wrap mt"><button class="btn" data-a="crate" data-r="${r}" data-n="20000" ${S.dia < 40 ? 'disabled' : ''}>Buy crate · 40◆</button><button class="btn line" data-a="drawer" data-id="item" data-tab="bag">Open bag</button><button class="btn line" data-a="scrim">Close</button></div>`;
+}
+function sheetProfile() {
+  const tiles = Object.values(S.own).filter(o => o === 0).length;
+  return `<div class="h1">Commander</div><div class="tinfo"><div class="tport">${heroSVG(S.hero.id)}<i>Lv ${ccLevel()}</i></div><div class="grow"><div class="lbl">${HEROES[S.hero.id].n}</div><div class="big num">${fmtN(powerScore())}</div><div class="sub">power</div><div class="sub">${S.al[0].tag} · ${tiles} tiles · score ${S.score}</div><div class="sub">${fmtN(headcount())} troops at home · ${S.dia}◆</div></div></div>
+  <div class="flex wrap mt"><button class="btn" data-a="drawer" data-id="hero" data-tab="heroes">Heroes</button><button class="btn line" data-a="drawer" data-id="hero" data-tab="forge">Forge</button><button class="btn line" data-a="drawer" data-id="more" data-tab="menu">Settings</button><button class="btn line" data-a="scrim">Close</button></div>`;
 }
 /* bottom: tips banner (next thing to do) and alliance chat strip */
 function tipNow() {
@@ -276,7 +294,9 @@ function sheetReport(id) {
 }
 function renderSheet() {
   const el = $('#sheet'), s = UI.sheet, open = !!s && (!UI.drawer || s.type === 'tech');
-  if (open) el.innerHTML = s.type === 'tile' ? sheetTile(s.x, s.y) : s.type === 'plot' ? sheetPlot(s.area, s.idx) : s.type === 'report' ? sheetReport(s.id) : s.type === 'iap' ? sheetIap(s.id) : s.type === 'tech' ? sheetTech(s.id) : '';
+  const sst = open && el.dataset.k === JSON.stringify(s) ? el.scrollTop : 0;
+  if (open) el.innerHTML = s.type === 'tile' ? sheetTile(s.x, s.y) : s.type === 'plot' ? sheetPlot(s.area, s.idx) : s.type === 'report' ? sheetReport(s.id) : s.type === 'iap' ? sheetIap(s.id) : s.type === 'speed' ? sheetSpeed(s.id) : s.type === 'res' ? sheetRes(s.r) : s.type === 'prof' ? sheetProfile() : s.type === 'tech' ? sheetTech(s.id) : '';
+  if (open) { el.dataset.k = JSON.stringify(s); el.scrollTop = sst; } else delete el.dataset.k;
   el.classList.toggle('on', open);
   $('#scrim').classList.toggle('on', open || !!UI.drawer);
 }
@@ -467,7 +487,7 @@ function renderDrawer() {
   const el = $('#drawer'), id = UI.drawer; if (!id) { el.classList.remove('on'); return; }
   const d = DR[id], tab = UI.dt[id];
   $('#dtabs').innerHTML = d.tabs.map(([k, n]) => `<button class="${tab === k ? 'on' : ''}" data-a="dtab" data-k="${k}">${n}</button>`).join('') + `<button class="x" data-a="closedrawer">✕</button>`;
-  $('#dbody').innerHTML = d.body(tab); el.classList.add('on');
+  const dbe = $('#dbody'), st = dbe.dataset.k === id + tab ? dbe.scrollTop : 0; dbe.innerHTML = d.body(tab); dbe.dataset.k = id + tab; dbe.scrollTop = st; el.classList.add('on');
   if (id === 'mail' && S.reports.length) S.readTo = S.reports[0].id;
 }
 /* building radial: Upgrade / Info / Function around the tapped plot, with a level diamond, like the reference */
@@ -547,6 +567,11 @@ const A = {
   morejobs() { UI.moreJobs = !UI.moreJobs; D(); },
   bopen(d) { closeBRadial(); if (d.f) { const [k, v] = d.f.split(':'); if (k === 'wing') { A.wing({ w: v }); return; } } sheetOpen({ type: 'plot', area: d.ar, idx: +d.i }); UI.page = 'base'; },
   build(d) { run(startBuild(d.area, +d.idx, d.b, !!d.cover)); },
+  speedup(d) { sheetOpen({ type: 'speed', id: +d.id }); },
+  jfree(d) { const j = S.jobs.find(x => x.id === +d.id) || S.marches.find(x => x.id === +d.id); if (j && remSheet(j.end) <= 300) { j.end = Date.now(); toast('Finished free', 'good'); } D(); },
+  slipuse(d) { run(slipJob(+d.id, d.w), 'Time cut.'); },
+  rushnow(d) { if (run(rushJob(+d.id))) { UI.sheet = null; } },
+  profile() { sheetOpen({ type: 'prof' }); }, resinfo(d) { sheetOpen({ type: 'res', r: d.r }); },
   rush(d) { run(rushJob(+d.id)); closeRadial(); }, slip(d) { run(slipJob(+d.id)); closeRadial(); }, help(d) { run(askHelp(+d.id)); },
   cstep(d) { const c = UI[d.cn], cap = d.cn === 'rcomp' ? Math.min(headcount(), rallyCap()) : headcount(), tot = compTotal(c); c[d.c] = clamp(c[d.c] + +d.d, 0, Math.max(0, Math.min(clsAvail(d.c), cap - (tot - c[d.c])))); D(); },
   best(d) { const c = UI[d.cn]; Object.assign(c, bestComp(d.cn === 'rcomp' ? Math.min(headcount(), rallyCap()) : headcount())); D(); },
@@ -589,7 +614,19 @@ const A = {
   setopt(d) { S.set[d.k] = !setOn(d.k); D(); },
   reset() { if (confirm('Erase the save and start over?')) { resetGame(); S.set = { snd: true, hap: true }; UI.sheet = null; UI.drawer = null; UI.ready = {}; panTo(S.base.x, S.base.y); D(); } }
 };
-document.addEventListener('click', e => { if (!e.target.closest('#bradial') && !e.target.closest('.plot')) closeBRadial(); const b = e.target.closest('[data-a]'); if (!b || b.tagName === 'SELECT') return; const f = A[b.dataset.a]; if (f) { hap(6); snd(); f(b.dataset, b); } });
+/* taps: the HUD re-renders several times a second, and a button replaced between finger-down and finger-up never gets its click.
+   So the action fires on pointerup when the finger lifts over a button with the same action it went down on; the click after it is ignored. */
+let tapDown = null, lastTap = 0;
+const tapSig = b => b.dataset.a + '|' + JSON.stringify(b.dataset);
+function fire(b) { const f = A[b.dataset.a]; if (f) { hap(6); snd(); f(b.dataset, b); } }
+document.addEventListener('pointerdown', e => { const b = e.target.closest('[data-a]'); tapDown = b && b.tagName !== 'SELECT' && !b.disabled ? { sig: tapSig(b), x: e.clientX, y: e.clientY, id: e.pointerId, t: Date.now() } : null; }, true);
+document.addEventListener('pointerup', e => {
+  const d = tapDown; tapDown = null; if (!d || d.id !== e.pointerId || Math.hypot(e.clientX - d.x, e.clientY - d.y) > 14 || Date.now() - d.t > 900) return;
+  const el = document.elementFromPoint(e.clientX, e.clientY), b = el && el.closest('[data-a]'); if (!b || b.disabled || tapSig(b) !== d.sig) return;
+  lastTap = Date.now(); if (!b.closest('#bradial') && !b.closest('.plot')) closeBRadial(); fire(b);
+}, true);
+document.addEventListener('pointercancel', () => { tapDown = null; }, true);
+document.addEventListener('click', e => { if (Date.now() - lastTap < 700) { e.stopPropagation(); return; } if (!e.target.closest('#bradial') && !e.target.closest('.plot')) closeBRadial(); const b = e.target.closest('[data-a]'); if (!b || b.tagName === 'SELECT') return; fire(b); }, true);
 document.addEventListener('change', e => { const b = e.target.closest('select[data-a]'); if (b && A[b.dataset.a]) A[b.dataset.a](b.dataset, b); });
 document.addEventListener('pointerdown', () => { try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); if (actx.state === 'suspended') actx.resume(); } catch (e) { } }, { once: true });
 $('#scrim').addEventListener('click', () => A.scrim());
@@ -607,7 +644,7 @@ function updateTimers() {
 }
 function boot() {
   S = load() || newState(); S.set = S.set || { snd: true, hap: true }; if (!S.rewards) { S.rewards = []; addReward('Welcome prize', '10 Minute Speed Up x 1', { slips: { s5: 2 } }); } const el = Math.min(600, (Date.now() - (S.last || Date.now())) / 1000); if (el > 3) produce(el); S.last2 = 0; terrDirty = true;
-  initMap(); MAP.cx = S.view.x; MAP.cy = S.view.y; renderAll();
+  initMap(); MAP.cx = S.view.x; MAP.cy = S.view.y; UI.booted = true; renderAll();
   setInterval(() => {
     tick(); renderTop(); renderTicker(); renderQueues();
     const now = Date.now(); if (now - UI.flyAt > 5500) { UI.flyAt = now; spawnFly(); }
