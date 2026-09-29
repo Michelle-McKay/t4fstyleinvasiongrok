@@ -1,0 +1,110 @@
+<title>Art Checklist</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400&display=swap">
+<style>
+/* Layout: one narrow column built for a phone, sticky progress bar, one collapsible section per asset group. */
+:root{--bg:#f3f1ec;--panel:#fbfaf7;--fg:#1c2124;--mut:#5e666b;--line:#d8d4ca;--brass:#a8741a;--brass-bg:#f1e3c4;--ok:#3e7a4a;--ok-bg:#dcebdc;--glacier:#2a7f90;
+--head:"Barlow Condensed","Arial Narrow",sans-serif;--body:"Source Sans 3",system-ui,sans-serif;--mono:"IBM Plex Mono",ui-monospace,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1113;--panel:#171c1f;--fg:#e8e6df;--mut:#98a1a6;--line:#2c3439;--brass:#e0a44a;--brass-bg:#3a2d14;--ok:#8ea36a;--ok-bg:#232d1c;--glacier:#5ec4d4;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e1113;--panel:#171c1f;--fg:#e8e6df;--mut:#98a1a6;--line:#2c3439;--brass:#e0a44a;--brass-bg:#3a2d14;--ok:#8ea36a;--ok-bg:#232d1c;--glacier:#5ec4d4;color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font:16px/1.5 var(--body);padding-inline:16px;padding-block:0 48px}
+main{max-width:640px;margin:0 auto}
+h1,h2{font-family:var(--head);text-transform:uppercase;letter-spacing:.04em;margin:0;text-wrap:balance}
+h1{font-size:30px;line-height:1.1}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:12px 10px;border-bottom:1px solid var(--line);margin-inline:-16px;padding-inline:16px}
+.bar{height:8px;background:var(--line);margin-top:8px}.bar i{display:block;height:100%;background:var(--brass);width:0}
+.cnt{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-family:var(--head);letter-spacing:.05em;text-transform:uppercase}
+.cnt b{font-size:22px}.cnt span{color:var(--mut);font-size:15px}
+.flt{display:flex;gap:8px;margin-top:8px}
+button{font:600 15px var(--body);min-height:44px;padding:0 14px;border:1px solid var(--line);background:var(--panel);color:var(--fg);cursor:pointer}
+button:focus-visible,summary:focus-visible{outline:2px solid var(--glacier);outline-offset:2px}
+button.on{background:var(--brass);border-color:var(--brass);color:#fff}
+:root:not([data-theme="light"]) button.on{color:#1a1206}
+.how{margin:16px 0;padding:14px;border:1px solid var(--line);background:var(--panel)}
+.how h2{font-size:20px;color:var(--brass);margin-bottom:6px}
+.how ol{margin:0;padding-left:20px}.how li{margin:4px 0}
+.how p{margin:8px 0 0}
+.style{font:13px/1.5 var(--mono);color:var(--mut);max-height:0;overflow:hidden;margin:0}
+details.g{margin:12px 0;border:1px solid var(--line);background:var(--panel)}
+details.g>summary{list-style:none;cursor:pointer;padding:12px 14px;display:flex;justify-content:space-between;gap:12px;align-items:center;min-height:48px}
+details.g>summary::-webkit-details-marker{display:none}
+summary h2{font-size:21px}.gc{font:600 14px var(--body);color:var(--mut);white-space:nowrap}
+.note{margin:0;padding:0 14px 10px;color:var(--mut);font-size:14px}
+.it{border-top:1px solid var(--line);padding:10px 14px}
+.row{display:flex;gap:10px;align-items:flex-start}
+.chk{width:28px;height:28px;flex:none;margin-top:1px;accent-color:var(--ok)}
+.who{min-width:0;flex:1}
+.nm{font-weight:600;overflow-wrap:anywhere}
+.key{font:13px var(--mono);color:var(--glacier);overflow-wrap:anywhere}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.tag{font-size:12px;padding:1px 7px;border:1px solid var(--line);color:var(--mut)}
+.tag.t{border-color:var(--brass);color:var(--brass)}
+.it.done .nm{color:var(--mut);text-decoration:line-through}.it.done{background:var(--ok-bg)}
+.tag.ok{border-color:var(--ok);color:var(--ok)}
+.act{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.act button{flex:1 1 130px}
+.pr{display:none;margin:8px 0 0;padding:10px;background:var(--bg);border:1px solid var(--line);font:13px/1.55 var(--mono);white-space:pre-wrap;overflow-wrap:anywhere}
+.it.open .pr{display:block}
+.empty{padding:16px 14px;color:var(--mut)}
+@media (prefers-reduced-motion:no-preference){.bar i{transition:width .3s}}
+</style>
+<main>
+<div class="top">
+  <div class="cnt"><b>Iron March art</b><span id="cnt"></span></div>
+  <div class="bar"><i id="fill"></i></div>
+  <div class="flt"><button id="fAll" class="on">All</button><button id="fTodo">To do</button><button id="fReset" title="Clear my ticks" style="margin-left:auto">Clear ticks</button></div>
+</div>
+<section class="how">
+  <h2>How this works</h2>
+  <ol>
+    <li>Open a section and tap an item. Tap <b>Copy prompt</b> and paste it into your image tool.</li>
+    <li>Save the result with the exact file name shown (tap <b>Copy name</b>). PNG or JPG is fine.</li>
+    <li>Send them to Claude in the project thread, up to <b>5 images per message</b>, named as listed. Claude cuts out backgrounds, resizes, commits and merges them.</li>
+    <li>Start with three test images (a tier 1 and a tier 3 building, and one troop) to lock the look before doing the rest.</li>
+  </ol>
+  <p><b>Keep the style steady:</b> use one chat per group and attach your favourite finished image as a reference. Ask for a transparent background; if the tool cannot, the prompt falls back to flat magenta and Claude removes it.</p>
+  <p style="margin-top:12px"><button id="cpStyle">Copy shared style block</button></p>
+</section>
+<div id="groups"></div>
+</main>
+<script>
+const DATA=/*DATA*/null;
+const HAVE=new Set(DATA.have||[]);
+const $=s=>document.querySelector(s);
+let ticks={};try{ticks=JSON.parse(localStorage.getItem('imart')||'{}')}catch(e){}
+let todo=false;
+const save=()=>{try{localStorage.setItem('imart',JSON.stringify(ticks))}catch(e){}};
+const done=k=>HAVE.has(k)||!!ticks[k];
+function copy(text,btn){const label=btn.textContent;const ok=()=>{btn.textContent='Copied';setTimeout(()=>btn.textContent=label,1200)};
+  const fb=()=>{const t=document.createElement('textarea');t.value=text;t.style.cssText='position:fixed;opacity:0';document.body.appendChild(t);t.select();try{document.execCommand('copy');ok()}catch(e){btn.textContent='Select and copy manually'}t.remove()};
+  try{navigator.clipboard.writeText(text).then(ok,fb)}catch(e){fb()}}
+function render(){
+  const root=$('#groups');const open=new Set([...root.querySelectorAll('details[open]')].map(d=>d.dataset.g));
+  const first=!root.children.length;
+  root.innerHTML='';let total=0,n=0;
+  for(const g of DATA.groups){
+    const its=DATA.items.filter(i=>i.group===g.id);const d=its.filter(i=>done(i.key)).length;total+=its.length;n+=d;
+    const det=document.createElement('details');det.className='g';det.dataset.g=g.id;if(open.has(g.id)||(first&&g.id==='bld'))det.open=true;
+    det.innerHTML=`<summary><h2>${g.title.replace(/ \(\d+\)$/,'')}</h2><span class="gc">${d} / ${its.length}</span></summary><p class="note">${g.note}</p>`;
+    const list=todo?its.filter(i=>!done(i.key)):its;
+    if(!list.length){const e=document.createElement('div');e.className='empty';e.textContent='Everything here is done.';det.appendChild(e)}
+    for(const it of list){
+      const el=document.createElement('div');el.className='it'+(done(it.key)?' done':'');
+      el.innerHTML=`<div class="row"><input class="chk" type="checkbox" id="c_${it.key}" ${done(it.key)?'checked':''} ${HAVE.has(it.key)?'disabled':''} aria-label="Mark ${it.name} made"><div class="who"><div class="nm">${it.name}</div><div class="key">${it.key}</div><div class="tags"><span class="tag">${it.size}</span><span class="tag ${it.transparent?'t':''}">${it.transparent?'transparent':'full frame'}</span>${HAVE.has(it.key)?'<span class="tag ok">in the game</span>':''}</div></div></div>
+      <div class="act"><button data-a="p">Copy prompt</button><button data-a="n">Copy name</button><button data-a="s">Show prompt</button></div><div class="pr"></div>`;
+      const pr=el.querySelector('.pr');pr.textContent=it.prompt;
+      el.querySelector('.chk').onchange=e=>{ticks[it.key]=e.target.checked;save();render()};
+      el.querySelector('[data-a=p]').onclick=e=>copy(it.prompt,e.target);
+      el.querySelector('[data-a=n]').onclick=e=>copy(it.key,e.target);
+      const sb=el.querySelector('[data-a=s]');sb.onclick=()=>{el.classList.toggle('open');sb.textContent=el.classList.contains('open')?'Hide prompt':'Show prompt'};
+      det.appendChild(el);
+    }
+    root.appendChild(det);
+  }
+  $('#cnt').textContent=n+' of '+total+' made';$('#fill').style.width=(100*n/total)+'%';
+}
+$('#fAll').onclick=()=>{todo=false;$('#fAll').classList.add('on');$('#fTodo').classList.remove('on');render()};
+$('#fTodo').onclick=()=>{todo=true;$('#fTodo').classList.add('on');$('#fAll').classList.remove('on');render()};
+$('#fReset').onclick=e=>{const b=e.target;if(b.dataset.arm){ticks={};save();b.textContent='Clear ticks';delete b.dataset.arm;render()}else{b.dataset.arm=1;b.textContent='Tap again to clear';setTimeout(()=>{b.textContent='Clear ticks';delete b.dataset.arm},2500)}};
+$('#cpStyle').onclick=e=>copy(DATA.style.style+'\n\n'+DATA.style.camera+'\n\n'+DATA.style.transparent,e.target);
+render();
+</script>

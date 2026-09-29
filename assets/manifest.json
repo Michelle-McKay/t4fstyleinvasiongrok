@@ -1,0 +1,5 @@
+{
+ "v": 2,
+ "_comment": "Written by tools/ingest.py. Maps an asset key from assets/catalog.json to its image file.",
+ "files": {}
+}

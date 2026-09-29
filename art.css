@@ -12,3 +12,11 @@
 @keyframes uidle{0%,100%{transform:translateY(0)}50%{transform:translateY(-1.2px)}}
 .rr{align-items:center}.rr .ui{width:30px;height:30px;margin:-3px 8px -3px 0}
 .panel .bd::after{content:"";display:block;clear:both}
+
+/* painted art (assets/): images that stand in for the vector art */
+img.unit{object-fit:contain}
+.hpt img.unit,.fl img.unit{object-fit:cover}
+img.pkart.painted{object-fit:cover;background:#10171a}
+img.gm.painted{object-fit:contain}
+.bhead.painted{background-size:cover;background-position:center bottom;height:150px}
+.bhead.painted img{height:140px;width:140px}

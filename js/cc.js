@@ -1,27 +1,6 @@
 'use strict';
 /* IRON MARCH — Command Center sheet, per-level upgrade path, tap sequences and the on-screen tap guide. */
-const RURAL_SEQ = ['Tap the field or plant.', 'Tap Harvest to collect one minute of output now (2 minute cooldown).', 'Tap Root path to see which buildings this feeds and which Command Center levels need it.', 'Read Details: output, yield bonus, and how long until the store is full.', 'Tap Upgrade. Rural buildings have no prerequisites: they are the roots of every path.', 'Watch the ring, then tap the plot when the bubble shows.'];
-const SEQ = {
-  cc: ['Tap the Command Center plot.', 'Tap an action tile (Requisition, Muster, Recall all, Shield, Relocate). Locked tiles show the level they open at.', 'Read Next level: every requirement shows a tick or a cross. Tap a cross row to jump to that building.', 'Tap Upgrade. If you are short, the button reads "cover N" and spends diamonds for the gap.', 'Watch the ring on the plot. Tap Rush (diamonds), Slip (a speed-up item) or Ask help (alliance).', 'A green bubble shows when it is done. Tap the plot to clear it and see the new look.'],
-  mil: ['Tap the Military Complex plot.', 'Tap Open Train.', 'Pick a class, then a tier. Locked tiers say what they need.', 'Set the batch with the steppers, or tap Max.', 'Tap Train. A ring shows on the complex.', 'When the bubble appears, the troops are in the garrison.'],
-  tech: ['Tap the Tech Institute plot.', 'Tap Open Lab.', 'Pick a tree tab, then read the requirement line on a card.', 'Tap Research. One lab queue only.', 'Use Rush, Slip or Ask help on the ring if you are in a hurry.'],
-  depot: ['Tap the Depot plot.', 'Tap Open Med. The Depot tab lists your wounded.', 'Tap Heal all on a row. Tier 1 is instant, higher tiers take a timer.', 'Beds show used over capacity. Overflow dies, so heal early.'],
-  defense: ['Tap the Defense Center plot.', 'Tap Open Wall.', 'Pick a wall class and tier. Tiers unlock with Defense Center level.', 'Set the batch and tap Crew.', 'Crew cap is 40 per Defense Center level.'],
-  hall: ['Tap the Hall of War plot.', 'Tap Open Rally.', 'Pick a target, a wait, and extra slots if you have tokens.', 'Fill the column, tap Lead rally. Only you can cancel it.'],
-  radar: ['Tap the Radar Station plot.', 'At level 4 or more, tap Anti-Scout to block scouts and see who sent them.', 'Recon research raises scan depth, up to the station level.'],
-  store: ['Tap the StoreHouse plot.', 'Read the cap and the protected floor. Raids cannot take the floor.', 'Upgrade to raise both.'],
-  treasury: ['Tap the Treasury plot.', 'Each level adds Cash every hour. Upgrade to earn more.'],
-  prison: ['Tap the Prison plot.', 'Seals are spent to ransom a captured hero. Tap the seals button to buy five.'],
-  market: ['Tap the Black Market plot.', 'Tap Open Market.', 'Three offers a day. Refresh costs 15 diamonds.'],
-  rations: RURAL_SEQ, fuel: RURAL_SEQ, power: RURAL_SEQ, alloy: RURAL_SEQ,
-  empty: ['Tap an empty plot.', 'Tap Build on a building row.', 'A ring shows the build timer. Rush, Slip or Ask help to speed it.', 'Tap the plot again when the bubble shows.']
-};
-const stepsHTML = (kind, guides) => {
-  const list = SEQ[kind] || SEQ.rations;
-  return `<div class="panel mt"><div class="hd"><h3>Tap sequence</h3><button class="btn sm line" data-a="seqtoggle">${UI.seqOpen ? 'Hide' : 'Show'}</button></div>${UI.seqOpen ? `<div class="bd"><ol class="seq">${list.map(t => `<li>${t}</li>`).join('')}</ol></div>` : ''}${guides ? `<div class="bd flex wrap">${guides}</div>` : ''}</div>`;
-};
 function plotOf(b) { let best = null; ['in', 'out'].forEach(ar => S.plots[ar].forEach((p, i) => { if (p && p.b === b && (!best || p.l > best.l)) best = { ar, i, l: p.l }; })); return best; }
-const guideBtn = (id, label, extra) => `<button class="btn sm line" data-a="guide" data-id="${id}" ${extra || ''}>${label}</button>`;
 
 /* ---------------- Command Center sheet ---------------- */
 function ccSheet(area, idx, p) {
@@ -52,38 +31,15 @@ function ccSheet(area, idx, p) {
   } else h += `<div class="sub mt ox">Level 25. The citadel is complete.</div>`;
   const rows = UI.ccPath ? CC_LEVELS.map((x, i) => i + 1) : CC_LEVELS.map((x, i) => i + 1).filter(n => n >= L - 1 && n <= L + 4);
   h += `<div class="panel mt"><div class="hd"><h3>Upgrade path</h3><button class="btn sm line" data-a="ccpath">${UI.ccPath ? 'Nearby' : 'All 25'}</button></div><div class="bd">${rows.map(n => { const q = ccReqs(n), st = n <= L ? 'done' : n === to ? 'now' : ''; return `<div class="lvr ${st}"><b class="num">${n}</b><div class="grow"><b class="h" style="font-size:14px">${CC_LEVELS[n - 1][0]}</b><div class="sub">${CC_LEVELS[n - 1][1]}${q.length ? ' Needs ' + q.map(([b, l]) => BLD[b].n + ' ' + l).join(', ') + '.' : ''}</div></div>${n <= L ? '<span class="ox">✓</span>' : ''}</div>`; }).join('')}</div></div>`;
-  h += stepsHTML('cc', guideBtn('upgrade', 'Show me: upgrade', `data-ar="${area}" data-i="${idx}"`) + guideBtn('requisition', 'Show me: requisition'));
   return h;
 }
 const _sheetPlot = sheetPlot;
 sheetPlot = function (area, idx) {
-  const p = S.plots[area][idx]; if (!p) return _sheetPlot(area, idx) + stepsHTML('empty');
+  const p = S.plots[area][idx]; if (!p) return _sheetPlot(area, idx);
   return p.b === 'cc' ? ccSheet(area, idx, p) : bldSheet(area, idx, p);
 };
 
-/* ---------------- tap guide ---------------- */
-function plotSel(ar, i) { return `.plot[data-ar="${ar}"][data-i="${i}"]`; }
-const onBase = () => ({ sel: '#dock [data-k=base]', t: 'Open Base.', skip: () => UI.page === 'base' });
-const GUIDES = {
-  upgrade: (ar, i) => [onBase(), { sel: plotSel(ar, i), t: 'Tap the building.', skip: () => UI.sheet && UI.sheet.type === 'plot' && UI.sheet.area === ar && UI.sheet.idx === +i }, { sel: '#sheet [data-a=build]', t: 'Tap Upgrade. When short, the button says "cover" and spends diamonds for the gap.', alt: { sel: '#sheet .rq.no', t: 'Upgrade is locked. Tap a red requirement to jump to that building and raise it first.' } }, { sel: '#sheet [data-a=help],#sheet [data-a=slip],#sheet [data-a=rush]', t: 'Optional: tap Ask help, Slip or Rush to cut the timer. Or skip.' }, { sel: null, t: 'A ring fills on the building. When a green bubble shows, tap the building to clear it.' }],
-  requisition: () => { const c = plotOf('cc'); return [onBase(), { sel: c ? plotSel(c.ar, c.i) : null, t: 'Tap the Command Center.', skip: () => UI.sheet && UI.sheet.type === 'plot' && S.plots[UI.sheet.area][UI.sheet.idx] && S.plots[UI.sheet.area][UI.sheet.idx].b === 'cc' }, { sel: '#sheet [data-a=ccact][data-id=req]', t: 'Tap Requisition to collect supplies.' }, { sel: null, t: 'Supplies scale with level and come back every 30 sheet minutes.' }]; },
-  train: () => { const c = plotOf('mil'); return [onBase(), { sel: c ? plotSel(c.ar, c.i) : null, t: 'Tap the Military Complex.', skip: () => UI.drawer === 'desk' || (UI.sheet && UI.sheet.type === 'plot' && S.plots[UI.sheet.area][UI.sheet.idx] && S.plots[UI.sheet.area][UI.sheet.idx].b === 'mil') }, { sel: '#sheet [data-a=wing][data-w=train]', t: 'Tap Open Train.', skip: () => UI.drawer === 'desk' }, { sel: '#drawer [data-a=trmax]', t: 'Tap Max to fill the batch.' }, { sel: '#drawer [data-a=train]', t: 'Tap Train.' }, { sel: null, t: 'A ring shows on the complex. A bubble shows when the troops arrive.' }]; },
-  research: () => { const c = plotOf('tech'); return [onBase(), { sel: c ? plotSel(c.ar, c.i) : null, t: 'Tap the Tech Institute.', skip: () => UI.drawer === 'desk' || (UI.sheet && UI.sheet.type === 'plot' && S.plots[UI.sheet.area][UI.sheet.idx] && S.plots[UI.sheet.area][UI.sheet.idx].b === 'tech') }, { sel: '#sheet [data-a=wing][data-w=lab]', t: 'Tap Open Lab.', skip: () => UI.drawer === 'desk' }, { sel: '#drawer [data-a=research]', t: 'Tap Research on a card.' }, { sel: null, t: 'One lab queue. Use Rush, Slip or Ask help on the ring.' }]; }
-};
-function applyGuide() {
-  document.querySelectorAll('.gd').forEach(e => e.classList.remove('gd'));
-  const h = $('#hint'), g = UI.guide; if (!g) { h.className = ''; return; }
-  let st = g.steps[g.i]; while (st && st.skip && st.skip()) { g.i++; st = g.steps[g.i]; }
-  if (!st) { UI.guide = null; h.className = ''; return; }
-  let el = st.sel ? document.querySelector(st.sel) : null, txt = st.t;
-  if (!el && st.alt) { el = document.querySelector(st.alt.sel); if (el) txt = st.alt.t; }
-  h.innerHTML = `<b class="br">Step ${g.i + 1}/${g.steps.length}</b> ${txt}<span class="hb"><button data-a="guideskip">Skip</button>${el || st.sel ? '' : '<button class="pri" data-a="guidenext">Got it</button>'}</span>`;
-  h.className = 'on';
-  if (el) { el.classList.add('gd'); const r = el.getBoundingClientRect(), hh = h.offsetHeight, top = r.top > hh + 90 ? r.top - hh - 10 : Math.min(innerHeight - hh - 70, r.bottom + 10); h.style.top = Math.max(60, top) + 'px'; }
-  else h.style.top = (innerHeight - h.offsetHeight - 70) + 'px';
-}
-document.addEventListener('click', e => { const g = UI.guide; if (!g) return; const st = g.steps[g.i]; if (st && st.sel && e.target.closest(st.sel)) setTimeout(() => { g.i++; UI.dirty = true; }, 0); }, true);
-setInterval(() => { applyGuide(); const b = document.querySelector('#sheet [data-a=ccact][data-id=req]'); if (b && b.disabled && Date.now() >= reqReadyAt() && S.plots) UI.dirty = true; }, 250);
+setInterval(() => { const b = document.querySelector('#sheet [data-a=ccact][data-id=req]'); if (b && b.disabled && Date.now() >= reqReadyAt() && S.plots) UI.dirty = true; }, 500);
 Object.assign(A, {
   ccact(d) {
     const id = d.id; let e = null;
@@ -92,7 +48,5 @@ Object.assign(A, {
     run(e);
   },
   reqgo(d) { const t = plotOf(d.b); if (t) sheetOpen({ type: 'plot', area: t.ar, idx: t.i }); else toast(BLD[d.b].n + ' is not built. Tap an empty plot.', 'warn'); },
-  ccpath() { UI.ccPath = !UI.ccPath; D(); }, seqtoggle() { UI.seqOpen = !UI.seqOpen; D(); },
-  guide(d) { const f = GUIDES[d.id]; UI.guide = { id: d.id, i: 0, steps: f(d.ar, d.i) }; D(); setTimeout(applyGuide, 50); },
-  guideskip() { UI.guide = null; D(); }, guidenext() { if (UI.guide) UI.guide.i++; D(); }
+  ccpath() { UI.ccPath = !UI.ccPath; D(); }
 });

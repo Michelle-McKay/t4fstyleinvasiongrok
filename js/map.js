@@ -89,7 +89,10 @@ function buildChunk(lv, cxk, cyk, old) {
     const x = X0 + lx, y = Y0 + ly; if (x >= W || y >= H) continue;
     const cxp = ox + (lx - ly) * tq, cyp = oy + (lx + ly) * hq, terr = terrainAt(x, y), k = x + ',' + y, owner = S.own[k], v = Math.floor(hx(x, y, 3) * 8);
     const base = terr === 'throne' || terr === 'plaza' ? 'plaza' : terr === 'forest' ? 'forest' : 'wild';
-    const at = tileAtlas(lv, base, v); g.drawImage(at, cxp - at.width / dpr / 2, cyp - at.height / dpr / 2, at.width / dpr, at.height / dpr);
+    let fd = 1; // forest density: clumped noise so woods have clearings and thin edges instead of a repeating carpet
+    if (base === 'forest') { fd = hx(Math.floor(x / 4), Math.floor(y / 4), 11) * .65 + hx(x, y, 12) * .35; g.fillStyle = mixHex('#14261b', '#1d3a22', hx(x, y, 13)); g.beginPath(); diamond(g, cxp, cyp, tq, 1.01); g.fill(); }
+    if (fd >= .3) { const at = tileAtlas(lv, base, v); g.globalAlpha = base === 'forest' ? clamp((fd - .3) / .25, .35, 1) : 1; g.drawImage(at, cxp - at.width / dpr / 2, cyp - at.height / dpr / 2, at.width / dpr, at.height / dpr); g.globalAlpha = 1; }
+    else if (tq >= 20 && hx(x, y, 14) < .5) tree(g, cxp + (hx(x, y, 15) - .5) * tq * .8, cyp + (hx(x, y, 16) - .5) * hq * .6, tq, hx(x, y, 17) * .6);
     if (owner != null && ownShow) {
       const col = alColor(owner); g.globalAlpha = .2; g.fillStyle = col; g.beginPath(); diamond(g, cxp, cyp, tq); g.fill(); g.globalAlpha = 1;
       g.strokeStyle = col; g.lineWidth = Math.max(2, tq / 9); g.lineCap = 'round';
