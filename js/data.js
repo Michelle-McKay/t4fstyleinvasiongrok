@@ -61,7 +61,8 @@ const BLD = {
 const INNER_KEYS = Object.keys(BLD).filter(k => BLD[k].inner);
 const OUTER_KEYS = Object.keys(BLD).filter(k => BLD[k].res);
 const BASE_COST = { rations: 500, fuel: 380, power: 340, alloy: 260, cash: 120 };
-function buildCost(b, lv) { const c = {}; for (const r of RES) c[r] = Math.round(BASE_COST[r] * BLD[b].w * Math.pow(1.55, lv - 1)); return c; }
+const BUILD_GROWTH = 1.32;   // top-level costs must stay under the StoreHouse cap (see storeCapAt)
+function buildCost(b, lv) { const c = {}; for (const r of RES) c[r] = Math.round(BASE_COST[r] * BLD[b].w * Math.pow(BUILD_GROWTH, lv - 1)); return c; }
 function buildSheetSec(b, lv) { return Math.round(90 * Math.pow(1.42, lv - 1) * (b === 'cc' ? 1.6 : 1)); }
 
 function lin(l, a, b, n) { n = n || 10; if (l <= 0) return 0; return (a + (b - a) * (l - 1) / (n - 1)) / 100; }

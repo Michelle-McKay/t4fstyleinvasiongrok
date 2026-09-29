@@ -11,6 +11,7 @@ Open `index.html` (or serve the folder statically). Barlow Condensed and Source 
 - `js/art.js` — sprite helpers and the first-generation art (kept as fallback)
 - `js/art2.js`, `js/art3.js` — building art v2: shaded 2.5D SVG toolkit, five material tiers, 15 buildings and 25 Command Center looks
 - `js/art4.js` — map feature art v2: forest, wild ground, resource nodes by grade, monsters, camps, outposts, player HQ, citadel
+- `js/assets.js` — optional real art: drop images in `assets/` and list them in `assets/manifest.json` (see `docs/ART_SPEC.md`)
 - `js/bld.js` — per-building sheets: details, options, upgrade requirement tree rooted in the rural buildings
 - `js/art5.js` — art v3 troops: 16 unit sprites (4 classes × 4 tiers), shared shading helpers and tier palettes
 - `js/art6.js` — art v3 wall crews (16), hero portraits, gear icons for all five slots by grade and set, bar icons
@@ -20,6 +21,9 @@ Open `index.html` (or serve the folder statically). Barlow Condensed and Source 
 - `js/cc.js` — Command Center sheet: 25-level upgrade path with prerequisites, action tiles, tap sequences and the on-screen tap guide
 - `js/ui.js` — frosted HUD, five-tab dock, spring slide-up drawers (Desk, Hero/Forge, Alliance, Mail, Columns), base scene with progress rings and reward bubbles, haptics and audio cues
 - `style.css` — the locked palette and instrument-panel look
+
+## Docs
+`docs/TAP_SEQUENCES.md` lists every click per building (design reference, not in the game). `docs/ART_SPEC.md` is the brief for real art. `docs/IAP.md` covers store purchases.
 
 ## Purchases
 `js/iap.js` holds the diamond-pack store, bundles and purchase layer. The browser build is sandbox only (no money). See `docs/IAP.md` for the native wrapper, server validation and compliance steps.

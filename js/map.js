@@ -48,6 +48,8 @@ function drawToken(g, X, Y, ang, ts, cls, tier, hostile, now, big) {
   g.rotate(ang); g.fillStyle = hostile ? '#d4654a' : '#e0a44a'; g.strokeStyle = '#0e1113'; g.lineWidth = 1.4; g.beginPath();
   g.moveTo(d / 2 + 9, 0); g.lineTo(d / 2 - 2, -6.5); g.lineTo(d / 2 + 1, 0); g.lineTo(d / 2 - 2, 6.5); g.closePath(); g.fill(); g.stroke(); g.restore();
 }
+function tree(g, x, y, ts, r) { const s = ts * (.3 + r * .9); g.fillStyle = 'rgba(0,0,0,.28)'; g.beginPath(); g.ellipse(x, y + s * .35, s * .5, s * .2, 0, 0, 7); g.fill(); g.fillStyle = '#3a2a1a'; g.fillRect(x - s * .05, y - s * .1, s * .1, s * .45); for (const [dy, c, k] of [[.05, '#2c4a26', .5], [-.2, '#3d6a32', .42], [-.42, '#578a45', .3]]) { g.fillStyle = c; g.beginPath(); g.ellipse(x, y + dy * s, s * k, s * k * .8, 0, 0, 7); g.fill(); } }
+function rock(g, x, y, ts) { const s = ts * .28; g.fillStyle = 'rgba(0,0,0,.3)'; g.beginPath(); g.ellipse(x, y + s * .5, s * .9, s * .3, 0, 0, 7); g.fill(); g.fillStyle = '#7d7466'; g.beginPath(); g.moveTo(x - s, y + s * .4); g.lineTo(x - s * .5, y - s * .5); g.lineTo(x + s * .3, y - s * .7); g.lineTo(x + s, y + s * .3); g.closePath(); g.fill(); g.fillStyle = '#a49a88'; g.beginPath(); g.moveTo(x - s * .5, y - s * .5); g.lineTo(x + s * .3, y - s * .7); g.lineTo(x + s * .1, y - s * .1); g.closePath(); g.fill(); }
 function drawMap(now) {
   if (terrDirty) computeTags();
   const g = cx2, ts = MAP.ts, w = MAP.w, h = MAP.h, dpr = MAP.dpr, hh = ts / 2; g.setTransform(dpr, 0, 0, dpr, 0, 0); g.imageSmoothingEnabled = true;
@@ -65,8 +67,11 @@ function drawMap(now) {
     if (cxp < -ts * 2 || cxp > w + ts * 2 || cyp < -ts * 3 || cyp > h + ts * 2) continue;
     const t = tileInfo(x, y), v = Math.floor(hx(x, y, 3) * 8);
     const base = t.terr === 'throne' || t.terr === 'plaza' ? 'plaza' : t.terr === 'forest' ? 'forest' : 'wild';
-    g.setTransform(dpr * ts, dpr * hh, -dpr * ts, dpr * hh, dpr * cxp, dpr * (cyp - hh)); g.drawImage(terrainSprite(base, v), -.015, -.015, 1.03, 1.03); g.setTransform(dpr, 0, 0, dpr, 0, 0);
-    if (t.owner != null) {
+    let fd = 1; // forest density: clumped noise so woods have clearings and thin edges instead of a repeating carpet
+    if (base === 'forest') { fd = hx(Math.floor(x / 4), Math.floor(y / 4), 11) * .65 + hx(x, y, 12) * .35; g.fillStyle = mixHex('#14261b', '#1d3a22', hx(x, y, 13)); g.beginPath(); diamond(g, cxp, cyp, ts, 1.01); g.fill(); }
+    if (fd >= .3) { g.globalAlpha = base === 'forest' ? clamp((fd - .3) / .25, .35, 1) : 1; g.setTransform(dpr * ts, dpr * hh, -dpr * ts, dpr * hh, dpr * cxp, dpr * (cyp - hh)); g.drawImage(terrainSprite(base, v), -.015, -.015, 1.03, 1.03); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.globalAlpha = 1; }
+    else if (ts >= 20 && hx(x, y, 14) < .5) tree(g, cxp + (hx(x, y, 15) - .5) * ts * .8, cyp + (hx(x, y, 16) - .5) * hh * .6, ts, hx(x, y, 17) * .6);
+    if (t.owner != null && !MAP.hideTerr) {
       const c = alColor(t.owner); g.globalAlpha = .2; g.fillStyle = c; g.beginPath(); diamond(g, cxp, cyp, ts); g.fill(); g.globalAlpha = 1;
       g.strokeStyle = c; const e = Math.max(2, ts / 9); g.lineCap = 'round';
       if (S.own[key(x, y - 1)] !== t.owner) edge(x, y, 0, cxp, cyp, e); if (S.own[key(x + 1, y)] !== t.owner) edge(x, y, 1, cxp, cyp, e);
@@ -76,6 +81,7 @@ function drawMap(now) {
       g.lineWidth = 1; g.lineCap = 'butt'; g.strokeStyle = 'rgba(255,255,255,.09)'; g.beginPath(); g.moveTo(cxp - ts, cyp); g.lineTo(cxp, cyp - hh); g.lineTo(cxp + ts, cyp); g.stroke();
       g.strokeStyle = 'rgba(0,0,0,.34)'; g.beginPath(); g.moveTo(cxp - ts, cyp); g.lineTo(cxp, cyp + hh); g.lineTo(cxp + ts, cyp); g.stroke();
     }
+    if (ts >= 20 && t.kind === 'wild' && !t.owner && t.terr === 'wild') { const r = hx(x, y, 9); if (r < .16) tree(g, cxp + (hx(x, y, 4) - .5) * ts * .7, cyp + (hx(x, y, 5) - .5) * hh * .6, ts, r); else if (r > .93) rock(g, cxp + (hx(x, y, 6) - .5) * ts * .8, cyp, ts); }
     if (t.enc) { g.strokeStyle = alColor(t.enc.o); g.lineWidth = 1.5; g.setLineDash([4, 3]); g.lineDashOffset = -now / 60; g.beginPath(); diamond(g, cxp, cyp, ts, .82); g.stroke(); g.setLineDash([]); g.globalAlpha = .12 + pulse * .12; g.fillStyle = alColor(t.enc.o); g.beginPath(); diamond(g, cxp, cyp, ts); g.fill(); g.globalAlpha = 1; }
     let f = null, s = 1;
     if (t.kind === 'node') f = FEAT[t.nk === 'food' ? 'food' : t.nk === 'oil' ? 'oil' : t.nk === 'energy' ? 'energy' : 'steel'](t.node.grade);
@@ -101,11 +107,13 @@ function drawMap(now) {
     g.fillStyle = 'rgba(0,0,0,.32)'; g.beginPath(); g.ellipse(cxp, cyp + hh * .1, dsz * .32, dsz * .13, 0, 0, 7); g.fill();
     if (t.kind === 'pbase') { g.globalAlpha = .25 + pulse2 * .3; g.strokeStyle = '#e0a44a'; g.lineWidth = 2; g.beginPath(); g.ellipse(cxp, cyp, ts * (1.5 + pulse2 * .35), ts * (.75 + pulse2 * .18), 0, 0, 7); g.stroke(); g.globalAlpha = 1; }
     g.drawImage(f, ox, oy, dsz, dsz);
-    if (t.kind === 'base') { const fx = cxp + dsz * .22, fy = oy + dsz * .1; g.fillStyle = alColor(t.bot.al); g.fillRect(fx, fy, ts * .06, ts * .5); g.fillRect(fx + ts * .06, fy, ts * .3, ts * .2); }
+    if (t.kind === 'base') { const fx = cxp + dsz * .22, fy = oy + dsz * .1; g.fillStyle = alColor(t.bot.al); g.fillRect(fx, fy, ts * .06, ts * .5); g.fillRect(fx + ts * .06, fy, ts * .3, ts * .2);
+      if (t.bot.shieldUntil > Date.now()) { g.save(); g.strokeStyle = 'rgba(200,235,255,.75)'; g.fillStyle = 'rgba(200,235,255,.14)'; g.lineWidth = 1; g.beginPath(); g.ellipse(cxp, cyp - hh * .2, ts * 1.15, ts * 1.05, 0, Math.PI, 0); g.lineTo(cxp + ts * 1.15, cyp - hh * .2); g.ellipse(cxp, cyp - hh * .2, ts * 1.15, ts * .5, 0, 0, Math.PI); g.closePath(); g.fill(); g.stroke(); for (let k = -2; k <= 2; k++) { g.beginPath(); g.ellipse(cxp, cyp - hh * .2, ts * 1.15 * Math.abs(k) / 3 + .01, ts * 1.05, 0, Math.PI, 0); g.stroke(); } g.restore(); }
+      if (ts >= 18) { g.font = `600 ${clamp(Math.round(ts * .42), 10, 15)}px "Barlow Condensed",sans-serif`; const nm = t.bot.cmd, wv = g.measureText(nm).width + 10; g.fillStyle = 'rgba(10,13,14,.78)'; g.fillRect(cxp - wv / 2, cyp + hh * .75, wv, ts * .5); g.fillStyle = alColor(t.bot.al); g.fillText(nm, cxp, cyp + hh * .75 + ts * .26); } }
     const bx = cxp + ts * .5, by = cyp + hh * .5, bw = ts * .44;
     if (t.kind === 'node') { if (t.node.rich) { g.strokeStyle = `rgba(224,164,74,${.5 + pulse * .5})`; g.lineWidth = 2; g.beginPath(); diamond(g, cxp, cyp, ts, .88); g.stroke(); }
       if (detail) { g.fillStyle = 'rgba(10,13,14,.85)'; g.fillRect(bx - bw / 2, by - bw / 2, bw, bw); g.fillStyle = t.node.rich ? '#e0a44a' : '#e7e4da'; g.font = `700 ${Math.round(ts * .34)}px "Barlow Condensed",sans-serif`; g.fillText(String(t.node.grade), bx, by + 1); } else { g.fillStyle = '#e7e4da'; g.strokeStyle = 'rgba(10,13,14,.9)'; g.lineWidth = 3; g.font = `700 ${Math.round(ts * .6)}px "Barlow Condensed",sans-serif`; g.strokeText(String(t.node.grade), cxp, cyp); g.fillText(String(t.node.grade), cxp, cyp); } }
-    if ((t.kind === 'monster' || t.kind === 'camp') && detail) { g.fillStyle = 'rgba(60,15,10,.92)'; g.fillRect(bx - bw / 2, by - bw / 2, bw, bw); g.fillStyle = '#ff9a6a'; g.font = `700 ${Math.round(ts * .34)}px "Barlow Condensed",sans-serif`; g.fillText(String(t.grade), bx, by + 1); }
+    if ((t.kind === 'monster' || t.kind === 'camp') && ts >= 16) { const w0 = ts * 1.3, x0b = cxp - w0 / 2, y0b = oy - 2; g.fillStyle = '#ff9a6a'; g.font = `700 ${clamp(Math.round(ts * .4), 10, 14)}px "Barlow Condensed",sans-serif`; g.textAlign = 'left'; g.strokeStyle = 'rgba(10,13,14,.9)'; g.lineWidth = 3; g.strokeText('Lv ' + t.grade, x0b, y0b - 6); g.fillText('Lv ' + t.grade, x0b, y0b - 6); g.textAlign = 'center'; g.fillStyle = 'rgba(10,13,14,.85)'; g.fillRect(x0b, y0b, w0, 4); g.fillStyle = '#d4443a'; g.fillRect(x0b, y0b, w0, 4); }
   }
   // marches and incoming
   MAP.marks = [];
@@ -127,10 +135,10 @@ function drawMap(now) {
   if (sel) { const sx = w2sx(sel.x, sel.y), sy = w2sy(sel.x, sel.y); g.save(); g.shadowColor = '#e0a44a'; g.shadowBlur = 10 + pulse * 6; g.strokeStyle = '#e0a44a'; g.lineWidth = 2.5; g.lineJoin = 'round'; g.beginPath(); diamond(g, sx, sy, ts, .96); g.stroke(); g.restore(); g.globalAlpha = .12 + pulse * .08; g.fillStyle = '#e0a44a'; g.beginPath(); diamond(g, sx, sy, ts); g.fill(); g.globalAlpha = 1; }
   // alliance tags: fade near the viewport edge and at low zoom
   g.font = `700 ${clamp(Math.round(ts * .55), 11, 22)}px "Barlow Condensed",sans-serif`; g.lineJoin = 'round'; g.lineWidth = 4; g.strokeStyle = 'rgba(10,13,14,.9)';
-  for (const tg of MAP.tags) { const px = w2sx(tg.x, tg.y), py = w2sy(tg.x, tg.y) - (Math.hypot(tg.x - S.base.x, tg.y - S.base.y) < 2.2 || S.bots.some(b => Math.hypot(tg.x - b.x, tg.y - b.y) < 2.2) ? ts * 1.5 : 0); const edge = Math.min(px, py, w - px, h - py); if (edge < -20) continue; const a = clamp(edge / 70, 0, 1) * (ts < 18 && tg.n < 40 ? 0 : 1); if (a <= 0.02) continue; g.globalAlpha = a; g.strokeText(tg.t, px, py); g.fillStyle = tg.c; g.fillText(tg.t, px, py); } g.globalAlpha = 1;
+  for (const tg of MAP.hideTags ? [] : MAP.tags) { const px = w2sx(tg.x, tg.y), py = w2sy(tg.x, tg.y) - (Math.hypot(tg.x - S.base.x, tg.y - S.base.y) < 2.2 || S.bots.some(b => Math.hypot(tg.x - b.x, tg.y - b.y) < 2.2) ? ts * 1.5 : 0); const edge = Math.min(px, py, w - px, h - py); if (edge < -20) continue; const a = clamp(edge / 70, 0, 1) * (ts < 18 && tg.n < 40 ? 0 : 1); if (a <= 0.02) continue; g.globalAlpha = a; g.strokeText(tg.t, px, py); g.fillStyle = tg.c; g.fillText(tg.t, px, py); } g.globalAlpha = 1;
   // vignette
   const vg = g.createRadialGradient(w / 2, h / 2, Math.min(w, h) * .45, w / 2, h / 2, Math.max(w, h) * .75); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,.45)'); g.fillStyle = vg; g.fillRect(0, 0, w, h);
-  drawMini(); document.getElementById('coord').textContent = `${Math.round(MAP.cx)},${Math.round(MAP.cy)} · ×${(ts / 28).toFixed(1)}`;
+  { const u = document.getElementById('utc'); if (u) u.textContent = 'UTC ' + new Date().toISOString().slice(5, 19).replace('T', ' '); } drawMini(); document.getElementById('coord').innerHTML = `<span class="pin"></span><span class="km">KM ${Math.round(Math.hypot(MAP.cx - S.base.x, MAP.cy - S.base.y))}</span><span class="xy">X:${Math.round(MAP.cx)} Y:${Math.round(MAP.cy)}</span><button data-a="mgo" aria-label="Go to coordinates">⌕</button>`;
   positionRadial();
 }
 
@@ -162,7 +170,7 @@ function initMap() {
   cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', e => { MAP.ptr.delete(e.pointerId); MAP.drag = null; MAP.pinch = null; MAP.active = false; });
   cv.addEventListener('wheel', e => { e.preventDefault(); const r = cv.getBoundingClientRect(); zoomAt(e.clientX - r.left, e.clientY - r.top, MAP.ts * Math.exp(-e.deltaY * .0015)); }, { passive: false });
   mini.addEventListener('click', e => { const r = mini.getBoundingClientRect(); panTo((e.clientX - r.left) / r.width * W, (e.clientY - r.top) / r.height * H); });
-  document.getElementById('compass').innerHTML = [['N', 'n'], ['W', 'w'], ['Base', 'b'], ['E', 'e'], ['S', 's'], ['Jump to throne', 't']].map(([n, k]) => `<button class="btn sm glass" data-a="jump" data-k="${k}">${n}</button>`).join('');
+  document.getElementById('compass').innerHTML = `<div class="mbar">${[['World', 'mworld', 'M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z'], ['Mark', 'mmark', 'M12 21s-6-6-6-11a6 6 0 0 1 12 0c0 5-6 11-6 11zM12 8v4'], ['Territory', 'mterr', 'M4 6l8-3 8 3v6l-8 9-8-9z'], ['Off', 'moff', 'M5 21V4M5 5h13l-3 4 3 4H5']].map(([n, a, ic]) => `<button data-a="${a}" class="mb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="${ic}"/></svg><span>${n}</span></button>`).join('')}</div><div class="utc" id="utc"></div>`;
   let prev = performance.now();
   const loop = now => {
     requestAnimationFrame(loop); if (UI.page !== 'map' || document.hidden) { prev = now; return; }
