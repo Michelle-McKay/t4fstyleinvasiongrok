@@ -2,6 +2,7 @@
  "v": 2,
  "_comment": "Written by tools/ingest.py. files maps an asset key from assets/catalog.json to its image; clean lists the keys made in the current bright clean-industrial look (the rest are the old dark look, kept until replaced).",
  "files": {
+  "head_store": "assets/backdrops/head_store.webp",
   "bld_alloy_t1": "assets/buildings/bld_alloy_t1.webp",
   "bld_alloy_t2": "assets/buildings/bld_alloy_t2.webp",
   "bld_alloy_t3": "assets/buildings/bld_alloy_t3.webp",
@@ -190,6 +191,7 @@
   "bld_treasury_t3",
   "bld_treasury_t4",
   "bld_treasury_t5",
+  "head_store",
   "troop_air_t1",
   "troop_air_t2",
   "troop_air_t3",
