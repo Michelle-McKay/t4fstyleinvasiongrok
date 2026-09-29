@@ -3,17 +3,7 @@
 The game ships a complete store front end and a purchase layer (`js/iap.js`). In a browser it runs in **sandbox mode**: no payment, labelled "Demo build", prices are placeholders. Real money must go through Apple StoreKit or Google Play Billing inside a native wrapper. Apple and Google both require this for digital goods.
 
 ## Catalog (all consumable)
-| Product id | Contents | Placeholder price |
-|---|---|---|
-| `com.ironmarch.dia.100` | 100 diamonds | 0.99 |
-| `com.ironmarch.dia.550` | 500 + 50 | 4.99 |
-| `com.ironmarch.dia.1200` | 1000 + 200 | 9.99 |
-| `com.ironmarch.dia.2600` | 2000 + 600 | 19.99 |
-| `com.ironmarch.dia.6800` | 5000 + 1800 | 49.99 |
-| `com.ironmarch.dia.14500` | 10000 + 4500 | 99.99 |
-| `com.ironmarch.pack.starter` | one per commander: 300 diamonds, 2 one-hour slips, 1 token, resources | 2.99 |
-| `com.ironmarch.pack.warpath` | 400 diamonds, slips, 3 tokens | 7.99 |
-| `com.ironmarch.pack.foundry` | 800 diamonds, bars, Battery shard, resources | 14.99 |
+Diamond packs `com.ironmarch.dia.*` (six sizes) and 16 themed packs `com.ironmarch.pack.*` (recruit, starter, builder, harvest, grid, quarter, chrono, overtime, warpath, marshal, siege, foundry, vanguard, outrider, warlord, sovereign), $0.99 to $99.99. Contents live in `js/packs.js`; `IAP_CONFIG.provider` is pinned to `sandbox` until server validation exists. Recruit, Starter and Builder's Contract are one per commander.
 
 Diamond packs give a one-time "first purchase" double of the base amount per product. Price tiers are set in App Store Connect and Play Console; the app shows the store's localized price once the native plugin loads it.
 
