@@ -97,10 +97,11 @@ function renderTop() {
 }
 /* production bar: the job that finishes first, with Speed Up like the reference HUD */
 function renderTicker() {
-  const now = Date.now(), js = S.jobs.slice().sort((a, b) => a.end - b.end), j = js[0];
-  let h;
-  if (j) { const f = clamp((now - j.start) / Math.max(1, j.end - j.start), 0, 1); h = `<div class="pbar"><u style="width:${(f * 100).toFixed(1)}%"></u><span>${HUDTXT[j.kind] || j.kind} ${j.why || ''}${js.length > 1 ? ' <em>+' + (js.length - 1) + ' more</em>' : ''}</span><b class="num">${ago(j.end - now)}</b></div><button class="speed" data-a="rush" data-id="${j.id}">Speed Up</button>`; }
-  else h = `<div class="pbar idle"><span>Queues idle</span></div><button class="speed go" data-a="wing" data-w="train">Train</button>`;
+  const now = Date.now(), js = S.jobs.slice().sort((a, b) => a.end - b.end), show = UI.moreJobs ? js : js.slice(0, 2);
+  const row = j => { const f = clamp((now - j.start) / Math.max(1, j.end - j.start), 0, 1); return `<div class="prow"><div class="pbar"><u style="width:${(f * 100).toFixed(1)}%"></u><span>${HUDTXT[j.kind] || j.kind} ${j.why || ''}</span><b class="num">${ago(j.end - now)}</b></div><button class="speed" data-a="rush" data-id="${j.id}">Speed Up</button></div>`; };
+  let h = show.map(row).join('');
+  if (js.length > 2) h += `<button class="more" data-a="morejobs">${UI.moreJobs ? 'Less ▲' : js.length - 2 + ' More ▼'}</button>`;
+  if (!js.length) h = `<div class="prow"><div class="pbar idle"><span>Queues idle</span></div><button class="speed go" data-a="wing" data-w="train">Train</button></div>`;
   if (h !== UI.prod) { UI.prod = h; $('#prod').innerHTML = h; }
 }
 /* bottom: tips banner (next thing to do) and alliance chat strip */
@@ -363,7 +364,18 @@ function renderDrawer() {
   $('#dbody').innerHTML = d.body(tab); el.classList.add('on');
   if (id === 'mail' && S.reports.length) S.readTo = S.reports[0].id;
 }
-function sheetOpen(s) { UI.sheet = s; UI.drawer = null; closeRadial(); D(); }
+/* building radial: Upgrade / Info / Function around the tapped plot, with a level diamond, like the reference */
+const FUNC_OF = { mil: 'wing:train', tech: 'wing:lab', depot: 'wing:med', defense: 'wing:wall', hall: 'wing:rally', market: 'wing:market' };
+function closeBRadial() { const r = $('#bradial'); if (r) r.remove(); }
+function openBRadial(ar, i, el) {
+  closeBRadial(); const p = S.plots[ar][i], main = $('#main').getBoundingClientRect(), r = el.getBoundingClientRect(), cx = r.left + r.width / 2 - main.left, cy = r.top + r.height / 2 - main.top;
+  const job = S.jobs.find(j => j.kind === 'build' && j.area === ar && j.idx === i), f = FUNC_OF[p.b], d = `data-a="bopen" data-ar="${ar}" data-i="${i}"`;
+  const btn = (cls, ic, lbl, extra) => `<button class="bt ${cls}" ${d} ${extra || ''}>${svg(ic).replace(/stroke="[^"]+"/, 'stroke="currentColor"')}<span>${lbl}</span></button>`;
+  const div = document.createElement('div'); div.id = 'bradial'; div.style.cssText = `left:${clamp(cx, 90, main.width - 90)}px;top:${clamp(cy, 100, main.height - 60)}px`;
+  div.innerHTML = `<svg class="bl" viewBox="-100 -110 200 130"><path d="M0 0L-62 -62M0 0L62 -62M-62 -62L62 -62" stroke="#0a0d0e" stroke-width="2" fill="none"/></svg>` + btn('up', 'base', job ? 'Building' : 'Upgrade') + btn('lf', 'vault', 'Info') + (f ? btn('rt', 'lab', 'Function', `data-f="${f}"`) : btn('rt', 'hero', 'Function')) + `<div class="lvd"><i class="num">${p.l}</i><b>${BLD[p.b].n}</b></div>`;
+  $('#main').appendChild(div);
+}
+function sheetOpen(s) { closeBRadial(); UI.sheet = s; UI.drawer = null; closeRadial(); D(); }
 function openDrawer(id, tab) { UI.drawer = id; if (tab) UI.dt[id] = tab; UI.sheet = null; closeRadial(); D(); }
 
 function forgeHTML() {
@@ -402,7 +414,7 @@ const A = {
   drawer(d) { openDrawer(d.id, d.tab); }, dtab(d) { UI.dt[UI.drawer] = d.k; D(); }, closedrawer() { UI.drawer = null; D(); },
   'plot-cc'() { const t = plotOf('cc'); if (t) { UI.page = 'base'; sheetOpen({ type: 'plot', area: t.ar, idx: t.i }); } },
   closesheet() { UI.sheet = null; UI.sel = null; D(); },
-  scrim() { if (UI.drawer) UI.drawer = null; else { UI.sheet = null; UI.sel = null; } D(); },
+  scrim() { closeBRadial(); if (UI.drawer) UI.drawer = null; else { UI.sheet = null; UI.sel = null; } D(); },
   details(d) { closeRadial(); UI.sel = { x: +d.x, y: +d.y }; UI.sheet = { type: 'tile', x: +d.x, y: +d.y }; UI.drawer = null; D(); },
   qsend(d) {
     const comp = bestComp(headcount()), e = launchMarch(d.k, +d.x, +d.y, comp, false); closeRadial();
@@ -410,7 +422,9 @@ const A = {
   },
   mjump(d) { UI.drawer = null; UI.page = 'map'; panTo(+d.x, +d.y); D(); },
   jump(d) { const k = d.k; closeRadial(); if (k === 'n') panTo(MAP.cx, MAP.cy - 60); else if (k === 's') panTo(MAP.cx, MAP.cy + 60); else if (k === 'w') panTo(MAP.cx - 60, MAP.cy); else if (k === 'e') panTo(MAP.cx + 60, MAP.cy); else if (k === 'b') panTo(S.base.x, S.base.y); else panTo(TX, TY); },
-  plot(d) { delete UI.ready[d.ar + d.i]; sheetOpen({ type: 'plot', area: d.ar, idx: +d.i }); UI.page = 'base'; },
+  plot(d, el) { delete UI.ready[d.ar + d.i]; const p = S.plots[d.ar][+d.i]; if (p && el && el.getBoundingClientRect) { openBRadial(d.ar, +d.i, el); return; } sheetOpen({ type: 'plot', area: d.ar, idx: +d.i }); UI.page = 'base'; },
+  morejobs() { UI.moreJobs = !UI.moreJobs; D(); },
+  bopen(d) { closeBRadial(); if (d.f) { const [k, v] = d.f.split(':'); if (k === 'wing') { A.wing({ w: v }); return; } } sheetOpen({ type: 'plot', area: d.ar, idx: +d.i }); UI.page = 'base'; },
   build(d) { run(startBuild(d.area, +d.idx, d.b, !!d.cover)); },
   rush(d) { run(rushJob(+d.id)); closeRadial(); }, slip(d) { run(slipJob(+d.id)); closeRadial(); }, help(d) { run(askHelp(+d.id)); },
   cstep(d) { const c = UI[d.cn], cap = d.cn === 'rcomp' ? Math.min(headcount(), rallyCap()) : headcount(), tot = compTotal(c); c[d.c] = clamp(c[d.c] + +d.d, 0, Math.max(0, Math.min(clsAvail(d.c), cap - (tot - c[d.c])))); D(); },
@@ -451,7 +465,7 @@ const A = {
   setopt(d) { S.set[d.k] = !setOn(d.k); D(); },
   reset() { if (confirm('Erase the save and start over?')) { resetGame(); S.set = { snd: true, hap: true }; UI.sheet = null; UI.drawer = null; UI.ready = {}; panTo(S.base.x, S.base.y); D(); } }
 };
-document.addEventListener('click', e => { const b = e.target.closest('[data-a]'); if (!b || b.tagName === 'SELECT') return; const f = A[b.dataset.a]; if (f) { hap(6); snd(); f(b.dataset, b); } });
+document.addEventListener('click', e => { if (!e.target.closest('#bradial') && !e.target.closest('.plot')) closeBRadial(); const b = e.target.closest('[data-a]'); if (!b || b.tagName === 'SELECT') return; const f = A[b.dataset.a]; if (f) { hap(6); snd(); f(b.dataset, b); } });
 document.addEventListener('change', e => { const b = e.target.closest('select[data-a]'); if (b && A[b.dataset.a]) A[b.dataset.a](b.dataset, b); });
 document.addEventListener('pointerdown', () => { try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); if (actx.state === 'suspended') actx.resume(); } catch (e) { } }, { once: true });
 $('#scrim').addEventListener('click', () => A.scrim());

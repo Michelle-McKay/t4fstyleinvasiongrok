@@ -38,7 +38,9 @@ button{font:inherit;color:inherit;cursor:pointer}
 .chip.full{animation:chipp 1.2s ease-in-out infinite;border-color:var(--brass)}
 .chip.full b,.chip.full small{color:var(--brass)}
 @keyframes chipp{0%,100%{box-shadow:0 0 0 0 rgba(224,164,74,0)}50%{box-shadow:0 0 10px 1px rgba(224,164,74,.5)}}
-#prod{display:flex;align-items:center;gap:8px;padding:4px 8px 5px;background:rgba(0,0,0,.4)}
+#prod{display:flex;flex-direction:column;gap:3px;padding:4px 8px 5px;background:rgba(0,0,0,.4)}
+.prow{display:flex;align-items:center;gap:8px}
+.more{align-self:flex-start;height:20px;padding:0 12px;background:rgba(40,48,54,.9);border:1px solid #3c474e;color:var(--bone);font:600 12px/1 var(--head);letter-spacing:.06em;text-transform:uppercase}
 .pbar{position:relative;flex:1;height:22px;background:#050708;border:1px solid #2c363c;display:flex;align-items:center;justify-content:space-between;padding:0 6px;font:500 12px/1 var(--head);letter-spacing:.05em;text-transform:uppercase;overflow:hidden}
 .pbar u{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(180deg,#3b8fd0,#1c5b93);transition:width .3s linear}
 .pbar span,.pbar b{position:relative;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--bone);text-shadow:0 1px 2px #000}
@@ -249,3 +251,15 @@ a{text-decoration:none}
 .panel>.hd{background:rgba(255,255,255,.05)}
 .sheet .bhead+.flex .pv{display:none}
 .sheet .h1{font-size:22px}
+
+/* building radial */
+#bradial{position:absolute;z-index:7;width:0;height:0}
+#bradial .bl{position:absolute;left:-100px;top:-110px;width:200px;height:130px;pointer-events:none}
+#bradial .bt{position:absolute;width:64px;height:64px;margin:-32px 0 0 -32px;padding:0 0 15px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#59a9d8,#2a6f9a);border:2px solid #dfe8ee;border-bottom-color:#14384f;color:#fff;box-shadow:0 4px 12px rgba(0,0,0,.6);animation:pop .3s cubic-bezier(.2,1.7,.4,1) both}
+#bradial .bt svg{width:30px;height:30px}
+#bradial .bt span{position:absolute;left:-6px;right:-6px;bottom:-1px;background:rgba(6,8,9,.92);font:700 13px/17px var(--head);letter-spacing:.06em;text-transform:uppercase;text-align:center}
+#bradial .up{left:0;top:-70px}#bradial .lf{left:-62px;top:-8px;animation-delay:.05s}#bradial .rt{left:62px;top:-8px;animation-delay:.1s}
+#bradial .lvd{position:absolute;left:0;top:14px;display:flex;flex-direction:column;align-items:center;transform:translateX(-50%);pointer-events:none}
+#bradial .lvd i{position:relative;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font:700 17px/1 var(--head);font-style:normal;z-index:1}
+#bradial .lvd i::before{content:'';position:absolute;inset:4px;background:#3aa0d8;border:2px solid #fff;transform:rotate(45deg);z-index:-1}
+#bradial .lvd b{margin-top:-4px;background:rgba(6,8,9,.92);padding:2px 12px;font:700 14px/1 var(--head);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
