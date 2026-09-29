@@ -4,6 +4,7 @@
  "files": {
   "bld_defense_t1": "assets/buildings/bld_defense_t1.webp",
   "bld_defense_t2": "assets/buildings/bld_defense_t2.webp",
+  "bld_defense_t3": "assets/buildings/bld_defense_t3.webp",
   "bld_depot_t1": "assets/buildings/bld_depot_t1.webp",
   "bld_depot_t2": "assets/buildings/bld_depot_t2.webp",
   "bld_depot_t3": "assets/buildings/bld_depot_t3.webp",
@@ -43,6 +44,7 @@
  "clean": [
   "bld_defense_t1",
   "bld_defense_t2",
+  "bld_defense_t3",
   "bld_depot_t1",
   "bld_depot_t2",
   "bld_depot_t3",
