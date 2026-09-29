@@ -4,6 +4,7 @@
  "files": {
   "bld_alloy_t1": "assets/buildings/bld_alloy_t1.webp",
   "bld_alloy_t2": "assets/buildings/bld_alloy_t2.webp",
+  "bld_alloy_t3": "assets/buildings/bld_alloy_t3.webp",
   "bld_defense_t1": "assets/buildings/bld_defense_t1.webp",
   "bld_defense_t2": "assets/buildings/bld_defense_t2.webp",
   "bld_defense_t3": "assets/buildings/bld_defense_t3.webp",
@@ -67,6 +68,7 @@
  "clean": [
   "bld_alloy_t1",
   "bld_alloy_t2",
+  "bld_alloy_t3",
   "bld_defense_t1",
   "bld_defense_t2",
   "bld_defense_t3",
