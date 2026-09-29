@@ -49,6 +49,8 @@ function box(x, yb, w, h, d, m, o) {
   s += RC(x, y, w, h, o.f || m.f, KI, .5, cr) + RC(x, y, w, h, 'url(#gF)', null, 0, cr);
   for (let yy = y + 5; yy < yb - 3; yy += 5) s += LN(x + .8, yy, x + w - .8, yy, 'rgba(0,0,0,.11)', .4) + LN(x + .8, yy + .5, x + w - .8, yy + .5, 'rgba(255,255,255,.08)', .4);
   s += LN(x + .7, y + 1.4, x + .7, yb - 1, 'rgba(255,255,255,.28)', .7);
+  s += RC(x, y, w, Math.min(4.5, h * .28), 'rgba(0,0,0,.16)', null, 0, cr) + RC(x, y + 1, w, 1.2, 'rgba(0,0,0,.14)') + P([[x + w, yb - 3], [x + w + dx, yb - dy - 3], [x + w + dx, yb - dy], [x + w, yb]], 'rgba(0,0,0,.28)') + LN(x + w - .4, y + 1, x + w - .4, yb - 1, 'rgba(255,255,255,.16)', .5);
+  if (m !== MAT[1] && w >= 22) s += [x + 1.2, x + w - 3].map(px => RC(px, y + 2, 1.9, h - 5, 'rgba(255,255,255,.07)') + LN(px + 1.9, y + 2, px + 1.9, yb - 3, 'rgba(0,0,0,.2)', .4)).join('');
   s += RC(x - .5, yb - 1.8, w + 1, 1.8, 'rgba(0,0,0,.35)') + RC(x, yb - 4, w, 3, 'url(#gAO)');
   const tt = m === MAT[1] ? 1 : m === MAT[2] ? 2 : m === MAT[3] ? 3 : m === MAT[4] ? 4 : 5;
   if (o.roof === 'gable') return s + gableRoof(x, y, w, d, o.rh || Math.max(5, w * .22), m, tt, o.ridge);
@@ -59,8 +61,12 @@ function box(x, yb, w, h, d, m, o) {
   if (o.gear !== false && w > 14) s += roofGear(x, y, w, d, tt, Math.floor(x * 7 + w));
   return s;
 }
-const wins = (x, y, cols, rows, m, cw, ch, gx, gy, lit) => { let s = ''; for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) { const X = x + c * (cw + gx), Y = y + r * (ch + gy); s += RC(X - .4, Y - .4, cw + .8, ch + .8, '#161b1e', null, 0, .5) + RC(X, Y, cw, ch, m.win, null, 0, .4) + RC(X, Y, cw, ch, 'url(#gGlass)', null, 0, .4) + LN(X + .5, Y + ch - .6, X + cw * .55, Y + .5, 'rgba(255,255,255,.4)', .5) + (lit ? RC(X, Y, cw, ch, m.win, null, 0, .4).replace('<rect', '<rect class="glw" opacity=".55"') : ''); } return s; };
-const door = (x, yb, w, h) => RC(x - .6, yb - h - .6, w + 1.2, h + .6, '#2a3237', KI, .4, .5) + RC(x, yb - h, w, h, '#0c1012', KI, .3, .4) + RC(x + w / 2 - .3, yb - h, .6, h, 'rgba(255,255,255,.1)') + RC(x + .5, yb - h + .5, w - 1, 1.2, 'rgba(255,255,255,.14)');
+const wins = (x, y, cols, rows, m, cw, ch, gx, gy, lit) => { let s = ''; for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) { const X = x + c * (cw + gx), Y = y + r * (ch + gy), v = (c * 3 + r * 5) % 4, ink = v === 1 ? .78 : v === 3 ? .9 : 1;
+  s += RC(X - .7, Y - .8, cw + 1.4, ch + 1.9, 'rgba(0,0,0,.28)', null, 0, .7) + RC(X - .45, Y - .45, cw + .9, ch + .9, '#1a2024', null, 0, .5) + RC(X, Y, cw, ch, m.win, null, 0, .4).replace('<rect', `<rect opacity="${ink}"`) + RC(X, Y, cw, ch, 'url(#gGlass)', null, 0, .4)
+    + RC(X, Y, cw, Math.max(.7, ch * .28), 'rgba(0,0,0,.22)', null, 0, .3) + (cw >= 3 ? LN(X + cw / 2, Y, X + cw / 2, Y + ch, 'rgba(20,26,30,.55)', .35) : '')
+    + LN(X + .5, Y + ch - .6, X + cw * .55, Y + .5, 'rgba(255,255,255,.4)', .5) + RC(X - .8, Y + ch + .4, cw + 1.6, .8, 'rgba(255,255,255,.3)', null, 0, .3) + RC(X - .8, Y + ch + 1.2, cw + 1.6, .5, 'rgba(0,0,0,.3)')
+    + (lit ? RC(X, Y, cw, ch, m.win, null, 0, .4).replace('<rect', '<rect class="glw" opacity=".55"') : ''); } return s; };
+const door = (x, yb, w, h) => RC(x - .8, yb - h - 1, w + 1.6, h + 1, '#3a454c', KI, .4, .6) + RC(x - .6, yb - h - .6, w + 1.2, h + .6, '#2a3237', KI, .4, .5) + RC(x, yb - h, w, h, '#0c1012', KI, .3, .4) + RC(x + w / 2 - .3, yb - h, .6, h, 'rgba(255,255,255,.12)') + RC(x + .5, yb - h + .5, w - 1, 1.2, 'rgba(255,255,255,.14)') + RC(x + 1, yb - h + 2.2, w - 2, h - 2.6, 'rgba(255,184,74,.16)', null, 0, .3) + RC(x - 1.4, yb - .5, w + 2.8, 1.1, '#6b767c', KI, .3, .3) + RC(x - 1.4, yb - .5, w + 2.8, .4, 'rgba(255,255,255,.35)') + CI(x + w - 1, yb - h * .45, .35, '#e0a44a');
 const sandbags = (x, y, n) => Array.from({ length: n }, (_, i) => EL(x + i * 4.6 + (Math.floor(i / 4) % 2) * 2, y - Math.floor(i / 4) * 2.6, 3, 1.9, i % 2 ? '#a89466' : '#9a875c', `stroke="${KI}" stroke-width=".5"`)).join('');
 const crate = (x, yb, s, c) => RC(x, yb - s, s, s, c || '#8a6a3a', KI, .5) + LN(x, yb - s, x + s, yb, 'rgba(0,0,0,.35)', .6) + LN(x + s, yb - s, x, yb, 'rgba(0,0,0,.35)', .6) + RC(x, yb - s, s, 1, 'rgba(255,255,255,.25)');
 const barrel = (x, yb, c) => RC(x - 2.2, yb - 5, 4.4, 5, c || '#b8613d', KI, .5, 1) + EL(x, yb - 5, 2.2, .9, '#d2805a', `stroke="${KI}" stroke-width=".4"`) + LN(x - 2.2, yb - 3.4, x + 2.2, yb - 3.4, 'rgba(0,0,0,.35)', .5);
@@ -80,7 +86,8 @@ function pad(t, outer) {
     if (t >= 3) s += P(shape, 'none', '#4c5a62', 1.4);
     return s;
   }
-  s += P(shape, t <= 1 ? '#3b3a33' : t === 2 ? '#464d51' : t === 3 ? '#404a4f' : '#2d363b', KI, .8) + P(shape, 'url(#gT)');
+  const pf = t <= 1 ? '#3b3a33' : t === 2 ? '#464d51' : t === 3 ? '#404a4f' : '#2d363b';
+  s += P(shape, 'rgba(0,0,0,.55)', 'rgba(0,0,0,.55)', 3.4) + P(shape, pf, pf, 2.4) + P(shape, 'url(#gT)') + P([[4, 19.4], [60, 19.4], [61.8, 57], [2.2, 57]], 'none', 'rgba(255,255,255,.1)', .7);
   for (let i = 0; i < 34; i++) s += CI(4 + r() * 56, 20 + r() * 38, .4 + r() * .8, r() < .5 ? 'rgba(255,255,255,.06)' : 'rgba(0,0,0,.22)');
   if (t <= 1) s += `<path d="M6 55l8-3 6 2 9-2" stroke="rgba(0,0,0,.4)" fill="none" stroke-width="1"/>` + P([[8, 22], [15, 21], [17, 26], [9, 27]], '#4a4638') + P([[44, 50], [52, 49], [53, 54], [45, 55]], '#4a4638') + `<path d="M4 58l-1-4M6 58l.4-5M8 58l1.6-3" stroke="#5a7a3a" stroke-width=".9" stroke-linecap="round"/>`;
   else {
