@@ -1,16 +1,16 @@
 {
- "v": 1,
+ "v": 2,
  "count": 220,
  "groups": [
   {
    "id": "bld",
    "title": "Buildings (70)",
-   "note": "Square, transparent, one building on a small ground pad, filling about 85 percent of the frame. Do all five tiers of one building together, and give the tool the tier 1 image as a reference for the rest."
+   "note": "Square, transparent, one building complex on a clean square pad. Lock the look first: make your favourite tier 1 image for one building, then attach it as a reference to every other prompt so the set matches. Do all five tiers of one building together."
   },
   {
    "id": "cc",
    "title": "Command Center (25)",
-   "note": "Your headquarters at every level, growing from a field tent to the Iron Citadel. Do them in order and attach the previous level as a reference so each one clearly grows from the last."
+   "note": "Your headquarters at every level, growing from a small field post to the Iron Citadel. Do them in order and attach the previous level as a reference so each clearly grows from the last."
   },
   {
    "id": "head",
@@ -20,7 +20,7 @@
   {
    "id": "troop",
    "title": "Troops (16)",
-   "note": "One unit type per image, transparent, same camera. Show a squad for infantry and a single vehicle for the rest. Do tier 1 to 4 of a class together."
+   "note": "One unit type per image, transparent, same camera. A squad for infantry and a single vehicle for the rest. Do tier 1 to 4 of a class together and attach tier 1 as a reference."
   },
   {
    "id": "wall",
@@ -30,7 +30,7 @@
   {
    "id": "hero",
    "title": "Heroes (3)",
-   "note": "Painted bust portraits. These fill the frame with their own dark backdrop, no transparency."
+   "note": "Bust portraits with a clean, bright backdrop, no transparency."
   },
   {
    "id": "map",
@@ -45,7 +45,7 @@
   {
    "id": "pack",
    "title": "Pack banners (16)",
-   "note": "The big picture at the top of each store pack. A loot still-life on a dark background with a glow. Rarity colours: 1 olive green, 2 teal, 3 indigo, 4 magenta, 5 gold."
+   "note": "The big picture at the top of each store pack: a clean, bright loot still life with a colour glow behind it. Rarity colours: 1 green, 2 teal, 3 indigo, 4 magenta, 5 gold."
   },
   {
    "id": "gem",
@@ -55,7 +55,7 @@
   {
    "id": "icon",
    "title": "HUD icons (21)",
-   "note": "Small painted icons, front view, transparent. They replace the flat HUD icons wherever the game shows them, so check the HUD looks right after adding them."
+   "note": "Small glossy icons, front view, transparent. They replace the flat HUD icons wherever the game shows them, so check the HUD looks right after adding them."
   }
  ],
  "items": [
@@ -1430,7 +1430,7 @@
   {
    "group": "tile",
    "key": "tile_wild_1",
-   "name": "Wasteland ground 1",
+   "name": "Open ground 1",
    "size": "1:1, 1024 x 1024",
    "transparent": false,
    "out": 256
@@ -1438,7 +1438,7 @@
   {
    "group": "tile",
    "key": "tile_wild_2",
-   "name": "Wasteland ground 2",
+   "name": "Open ground 2",
    "size": "1:1, 1024 x 1024",
    "transparent": false,
    "out": 256
@@ -1446,7 +1446,7 @@
   {
    "group": "tile",
    "key": "tile_wild_3",
-   "name": "Wasteland ground 3",
+   "name": "Open ground 3",
    "size": "1:1, 1024 x 1024",
    "transparent": false,
    "out": 256

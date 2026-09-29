@@ -56,23 +56,24 @@ summary h2{font-size:21px}.gc{font:600 14px var(--body);color:var(--mut);white-s
 <section class="how">
   <h2>How this works</h2>
   <ol>
-    <li>Open a section and tap an item. Tap <b>Copy prompt</b> and paste it into your image tool.</li>
+    <li><b>Lock the look first.</b> Make your favourite Military Complex tier 1 image. From then on, attach that image as a reference to every prompt, so the whole set matches.</li>
+    <li>Open a section, tap <b>Copy prompt</b> and paste it into your image tool. Each prompt already carries the full style.</li>
     <li>Save the result with the exact file name shown (tap <b>Copy name</b>). PNG or JPG is fine.</li>
-    <li>Send them to Claude in the project thread, up to <b>5 images per message</b>, named as listed. Claude cuts out backgrounds, resizes, commits and merges them.</li>
-    <li>Start with three test images (a tier 1 and a tier 3 building, and one troop) to lock the look before doing the rest.</li>
+    <li>Send them to Claude in the project thread, up to <b>5 images per message</b>. Claude cuts out backgrounds, resizes, commits and merges them.</li>
   </ol>
-  <p><b>Keep the style steady:</b> use one chat per group and attach your favourite finished image as a reference. Ask for a transparent background; if the tool cannot, the prompt falls back to flat magenta and Claude removes it.</p>
+  <p><b>Look:</b> bright, clean, modern industrial. Light grey and off-white panels, sand, brass and orange accents, glowing blue lights. No rust, grime or clutter. Ask for a transparent background; if the tool cannot, the prompt falls back to flat magenta and Claude removes it.</p>
+  <p><b>Old dark images:</b> items tagged "old look" are in the game but from the first dark set. They stay until you send a clean replacement under the same name.</p>
   <p style="margin-top:12px"><button id="cpStyle">Copy shared style block</button></p>
 </section>
 <div id="groups"></div>
 </main>
 <script>
 const DATA=/*DATA*/null;
-const HAVE=new Set(DATA.have||[]);
+const HAVE=new Set(DATA.have||[]);const OLD=new Set(DATA.old||[]);
 const $=s=>document.querySelector(s);
-let ticks={};try{ticks=JSON.parse(localStorage.getItem('imart')||'{}')}catch(e){}
+let ticks={};try{ticks=JSON.parse(localStorage.getItem('imart2')||'{}')}catch(e){}
 let todo=false;
-const save=()=>{try{localStorage.setItem('imart',JSON.stringify(ticks))}catch(e){}};
+const save=()=>{try{localStorage.setItem('imart2',JSON.stringify(ticks))}catch(e){}};
 const done=k=>HAVE.has(k)||!!ticks[k];
 function copy(text,btn){const label=btn.textContent;const ok=()=>{btn.textContent='Copied';setTimeout(()=>btn.textContent=label,1200)};
   const fb=()=>{const t=document.createElement('textarea');t.value=text;t.style.cssText='position:fixed;opacity:0';document.body.appendChild(t);t.select();try{document.execCommand('copy');ok()}catch(e){btn.textContent='Select and copy manually'}t.remove()};
@@ -89,7 +90,7 @@ function render(){
     if(!list.length){const e=document.createElement('div');e.className='empty';e.textContent='Everything here is done.';det.appendChild(e)}
     for(const it of list){
       const el=document.createElement('div');el.className='it'+(done(it.key)?' done':'');
-      el.innerHTML=`<div class="row"><input class="chk" type="checkbox" id="c_${it.key}" ${done(it.key)?'checked':''} ${HAVE.has(it.key)?'disabled':''} aria-label="Mark ${it.name} made"><div class="who"><div class="nm">${it.name}</div><div class="key">${it.key}</div><div class="tags"><span class="tag">${it.size}</span><span class="tag ${it.transparent?'t':''}">${it.transparent?'transparent':'full frame'}</span>${HAVE.has(it.key)?'<span class="tag ok">in the game</span>':''}</div></div></div>
+      el.innerHTML=`<div class="row"><input class="chk" type="checkbox" id="c_${it.key}" ${done(it.key)?'checked':''} ${HAVE.has(it.key)?'disabled':''} aria-label="Mark ${it.name} made"><div class="who"><div class="nm">${it.name}</div><div class="key">${it.key}</div><div class="tags"><span class="tag">${it.size}</span><span class="tag ${it.transparent?'t':''}">${it.transparent?'transparent':'full frame'}</span>${HAVE.has(it.key)?'<span class="tag ok">in the game</span>':OLD.has(it.key)?'<span class="tag t">old look, redo</span>':''}</div></div></div>
       <div class="act"><button data-a="p">Copy prompt</button><button data-a="n">Copy name</button><button data-a="s">Show prompt</button></div><div class="pr"></div>`;
       const pr=el.querySelector('.pr');pr.textContent=it.prompt;
       el.querySelector('.chk').onchange=e=>{ticks[it.key]=e.target.checked;save();render()};
@@ -105,6 +106,6 @@ function render(){
 $('#fAll').onclick=()=>{todo=false;$('#fAll').classList.add('on');$('#fTodo').classList.remove('on');render()};
 $('#fTodo').onclick=()=>{todo=true;$('#fTodo').classList.add('on');$('#fAll').classList.remove('on');render()};
 $('#fReset').onclick=e=>{const b=e.target;if(b.dataset.arm){ticks={};save();b.textContent='Clear ticks';delete b.dataset.arm;render()}else{b.dataset.arm=1;b.textContent='Tap again to clear';setTimeout(()=>{b.textContent='Clear ticks';delete b.dataset.arm},2500)}};
-$('#cpStyle').onclick=e=>copy(DATA.style.style+'\n\n'+DATA.style.camera+'\n\n'+DATA.style.transparent,e.target);
+$('#cpStyle').onclick=e=>copy(DATA.style.style+'\n\n'+DATA.style.pad+'\n\n'+DATA.style.camera+'\n\n'+DATA.style.transparent,e.target);
 render();
 </script>

@@ -98,22 +98,28 @@ def process(path):
     dst = os.path.join(d, k + '.webp'); im.save(dst, 'WEBP', quality=88, method=6)
     return ('ok', k, f'{im.width}x{im.height}, {os.path.getsize(dst) // 1024} KB, {note}')
 
-def manifest():
-    files = {}
+LOOK = 'clean'   # art direction of the images being added; older dark images are not in the manifest's "clean" list
+
+def manifest(added=()):
+    try: clean = set(json.load(open(os.path.join(A, 'manifest.json'))).get(LOOK, []))
+    except Exception: clean = set()
+    clean |= set(added); files = {}
     for d in sorted(set(FOLDER.values())):
         p = os.path.join(A, d)
         if os.path.isdir(p):
             for f in sorted(os.listdir(p)):
                 k, ext = os.path.splitext(f)
                 if k in CAT and ext in ('.webp', '.png'): files[k] = f'assets/{d}/{f}'
-    json.dump({'v': 2, '_comment': 'Written by tools/ingest.py. Maps an asset key from assets/catalog.json to its image file.', 'files': files},
+    json.dump({'v': 2, '_comment': 'Written by tools/ingest.py. files maps an asset key from assets/catalog.json to its image; clean lists the keys made in the current bright clean-industrial look (the rest are the old dark look, kept until replaced).', 'files': files, LOOK: sorted(k for k in clean if k in files)},
               open(os.path.join(A, 'manifest.json'), 'w'), indent=1); open(os.path.join(A, 'manifest.json'), 'a').write('\n')
     return files
 
 if __name__ == '__main__':
     args = [a for a in sys.argv[1:] if a != '--manifest']
+    added = []
     for p in args:
         try: st, k, msg = process(p)
         except Exception as e: st, k, msg = 'FAIL', os.path.basename(p), str(e)
         print(f'{st:4} {k}: {msg}')
-    f = manifest(); print(f'manifest: {len(f)} of {len(CAT)} assets have painted art')
+        if st == 'ok': added.append(k)
+    f = manifest(added); print(f'manifest: {len(f)} of {len(CAT)} assets have painted art')

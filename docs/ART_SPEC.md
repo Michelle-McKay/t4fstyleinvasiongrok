@@ -24,7 +24,9 @@ The game ships with code-drawn vector art. Painted images replace it one piece a
 | `icon_<name>` | painted HUD and resource icons (map, base, train, lab, med, march, vault, hero, alliance, more, mail, rations, fuel, power, alloy, cash, dia, gift, events, crate, handshake) | everywhere the game draws that icon |
 
 ## Camera and style
-Set in `tools/artcatalog.js` and included in every prompt: painted, realistic, three-quarter overhead (about 40 degrees, front-left facing), warm light from upper left, soft shadow lower right, desert wasteland, palette of tan concrete, worn steel, brass and small glacier-blue lights. Keep the same camera and scale across a set so buildings sit together on the grid.
+Set in `tools/artcatalog.js` and included in every prompt. Look: bright, clean, modern industrial-military, a polished stylized-realistic game render. Light grey and off-white panels, warm sand, tidy concrete, brass and safety-orange accents, softly glowing blue lights, bright daylight. No rust, grime, clutter or gloom. Camera: three-quarter overhead (about 40 degrees, front-left facing), light from the upper left, soft shadow lower right. Every building stands on the same clean square pad so they sit together on the grid.
+
+The first set of images used a darker, weathered look and is being replaced. `assets/manifest.json` lists the keys made in the current look under `clean`.
 
 ## Rules
 - **Original art only.** Reference screenshots are for layout and level of detail, never for copying. Do not prompt for another game's characters, logos or buildings, or a living artist's style.
