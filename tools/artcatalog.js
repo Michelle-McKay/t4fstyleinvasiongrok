@@ -45,7 +45,7 @@ const TIERS = {
   4: 'Upgrade tier 4 of 5, "advanced": high-tech, with tall glass sections, solar arrays, antennas and glowing blue light strips along the roofs and doors.',
   5: 'Upgrade tier 5 of 5, "flagship": the grandest version, the same site at its largest, gleaming white and light steel with brass accents, glowing blue energy accents, impressive but still tidy.'
 };
-const EXTRA_BLD = { embassy: { n: 'Embassy' }, forge: { n: 'Forge' } };   // new buildings, art first; the game gains them in js/data.js
+const EXTRA_BLD = {};   // buildings that have art but are not in js/data.js yet
 const BLD_SUBJECT = {
   embassy: 'An Embassy: an allied reinforcement post, a wide welcoming hall with a flagpole, a small landing pad for arriving troop transports and a tidy reception courtyard',
   forge: 'A Forge: a bright gear workshop with a large workshop hall, an anvil-and-gear emblem on the wall, a small furnace with a short chimney, a work bench with tools, and crates of finished armour and weapons',

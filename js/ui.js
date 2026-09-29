@@ -263,6 +263,8 @@ function effectText(b, l) {
   if (b === 'radar') return `Wall base HP ${fmtN(1400 * l)} · scan up to ${l}`;
   if (b === 'hall') return `Rally of ${fmtN(4000 * l)} · orders ${S.orders}/${l}`;
   if (b === 'prison') return `Restraint seals ${S.seals}/${l}`;
+  if (b === 'embassy') return `Hosting ${fmtN(embHosted())}/${fmtN(embCap())} allied troops`;
+  if (b === 'forge') return `Grade-up chance ${Math.round(forgeUp(lvlMax('forge')) * 100)}% · refine to grade ${Math.min(6, Math.floor(lvlMax('forge') / 3) + 1)}`;
   return '';
 }
 function sheetPlot(area, idx) {
@@ -281,7 +283,7 @@ function sheetPlot(area, idx) {
     if (err) h += `<div class="sub mt sg">${err}</div>`;
     else h += `<div class="mt"><div class="lbl">Upgrade to ${to}</div><div class="mb">${costHTML(buildCost(p.b, to))}</div><div class="sub mb">${dualT(buildSheetSec(p.b, to) / (1 + mods().build))}</div>${payBtn(buildCost(p.b, to), 'build', { area, idx }, 'Upgrade')}</div>`;
   }
-  if (d.wing) h += `<div class="flex mt"><button class="btn line" data-a="wing" data-w="${d.wing}">Open ${({ train: 'Train', lab: 'Lab', med: 'Med', wall: 'Wall', rally: 'Rally', market: 'Market' })[d.wing]}</button></div>`;
+  if (d.wing) h += `<div class="flex mt"><button class="btn line" data-a="wing" data-w="${d.wing}">Open ${({ train: 'Train', lab: 'Lab', med: 'Med', wall: 'Wall', rally: 'Rally', market: 'Market', embassy: 'Embassy', forge: 'Forge' })[d.wing]}</button></div>`;
   if (p.b === 'radar') h += `<div class="flex mt"><button class="btn ${S.anti ? 'on' : 'line'}" data-a="anti" ${p.l >= 4 ? '' : 'disabled'}>Anti-Scout ${S.anti ? 'on' : 'off'}</button><span class="sub">${p.l >= 4 ? 'Blocked scouts are named, no garrison data.' : 'Needs Radar Station 4.'}</span></div>`;
   if (p.b === 'hall') h += `<div class="flex mt"><span class="sub">Orders ${S.orders}/${p.l}</span><button class="btn sm" data-a="buyorders">5 orders · 80◆</button></div>`;
   if (p.b === 'prison') h += `<div class="flex mt"><span class="sub">Seals ${S.seals}/${p.l}</span><button class="btn sm" data-a="buyseals">5 seals · 60◆</button></div>`;
@@ -479,7 +481,7 @@ const DR = {
   item: { tabs: [['bag', 'Bag'], ['boost', 'Boosts']], body: itemHTML },
   desk: { tabs: [['train', 'Train'], ['lab', 'Lab'], ['med', 'Med']], body: renderDesk_ },
   hero: { tabs: [['forge', 'Forge'], ['heroes', 'Heroes'], ['store', 'Store'], ['market', 'Market'], ['ledger', 'Ledger']], body: t => ({ forge: forgeHTML, heroes: heroesHTML, store: storeHTML, market: marketHTML, ledger: ledgerHTML })[t]() },
-  alliance: { tabs: [['throne', 'Throne'], ['rally', 'Rally'], ['ally', 'Alliance']], body: t => ({ throne: throneHTML, rally: marchRally, ally: allyHTML })[t]() },
+  alliance: { tabs: [['throne', 'Throne'], ['rally', 'Rally'], ['emb', 'Embassy'], ['ally', 'Alliance']], body: t => ({ throne: throneHTML, rally: marchRally, emb: embassyHTML, ally: allyHTML })[t]() },
   mail: { tabs: [['rep', 'Reports'], ['sav', 'Saved'], ['log', 'Log'], ['ctc', 'Contacts']], body: t => ({ rep: reportsHTML, sav: () => reportsHTML(true), log: logHTML, ctc: contactsHTML })[t]() },
   more: { tabs: [['menu', 'More'], ['rw', 'Rewards'], ['inv', 'Invite'], ['help', 'Help']], body: t => ({ menu: moreHTML, rw: rewardsHTML, inv: inviteHTML, help: helpHTML })[t]() },
   march: { tabs: [['cols', 'Columns'], ['field', 'Field']], body: t => t === 'cols' ? marchCols() : marchField() }
@@ -492,7 +494,7 @@ function renderDrawer() {
   if (id === 'mail' && S.reports.length) S.readTo = S.reports[0].id;
 }
 /* building radial: Upgrade / Info / Function around the tapped plot, with a level diamond, like the reference */
-const FUNC_OF = { mil: 'wing:train', tech: 'wing:lab', depot: 'wing:med', defense: 'wing:wall', hall: 'wing:rally', market: 'wing:market' };
+const FUNC_OF = { mil: 'wing:train', tech: 'wing:lab', depot: 'wing:med', defense: 'wing:wall', hall: 'wing:rally', market: 'wing:market', embassy: 'wing:embassy', forge: 'wing:forge' };
 function closeBRadial() { const r = $('#bradial'); if (r) r.remove(); }
 function openBRadial(ar, i, el) {
   closeBRadial(); const p = S.plots[ar][i], main = $('#main').getBoundingClientRect(), r = el.getBoundingClientRect(), cx = r.left + r.width / 2 - main.left, cy = r.top + r.height / 2 - main.top;
@@ -505,18 +507,29 @@ function openBRadial(ar, i, el) {
 function sheetOpen(s) { closeBRadial(); UI.sheet = s; UI.drawer = null; closeRadial(); D(); }
 function openDrawer(id, tab) { UI.drawer = id; if (tab) UI.dt[id] = tab; UI.sheet = null; closeRadial(); D(); }
 
+function embassyHTML() {
+  if (!hasB('embassy')) return `<div class="panel"><div class="bd"><div class="h1">No Embassy</div><div class="sub mt">Build an Embassy on an empty inner plot. Allies in your kingdom then send troops to hold your base.</div></div></div>`;
+  const cap = embCap(), used = embHosted(), L = lvlMax('embassy'), cool = embLeft() > 0, kd = kdGet(kHome());
+  const rows = reinf().map(r => { const k = Object.keys(r.col)[0]; return `<div class="it"><div class="grow"><b class="h" style="font-size:15px">${r.who}</b><div class="sub">${fmtN(r.col[k])} ${ckName(k)} · ${r.in ? 'garrisoned' : 'marching in'}</div></div><button class="btn sm line" data-a="embhome" data-id="${r.id}">Send home</button></div>`; }).join('');
+  return `<div class="panel"><div class="hd"><h3>Embassy ${L}</h3><span class="tag ${used ? 'br' : ''}">${fmtN(used)}/${fmtN(cap)}</span></div><div class="bd"><div class="bar"><i style="width:${Math.min(100, used / Math.max(1, cap) * 100)}%"></i></div>
+  <div class="sub mt">Allied members of ${kd ? kd.ally.name : S.al[0].n} in kingdom ${kHome()} send troops. Garrisoned allies fight beside your own troops and wall when you are attacked, and their losses are theirs to bear. Up to tier ${embTier(L)} at this level. Capacity ${fmtN(EMB_PER_LEVEL)} per Embassy level.</div>
+  <div class="flex mt"><button class="btn pri" data-a="embcall" ${cool || used >= cap ? 'disabled' : ''}>${cool ? 'Mustering ' + fmtT(embLeft() / 1000) : 'Call for reinforcements'}</button><button class="btn line" data-a="embhome" ${used ? '' : 'disabled'}>Send all home</button></div>
+  <div class="sub mt">The alliance also answers an incoming attack on its own most of the time.</div></div></div>
+  <div class="panel"><div class="hd"><h3>Garrison</h3></div><div class="bd list">${rows || '<div class="sub">No allied troops here.</div>'}</div></div>`;
+}
 function forgeHTML() {
-  const u = gradeUnits(), C = UI.cr, sel = C.sel, selN = sumCol(sel);
-  const bars = [1, 2, 3, 4, 5, 6].map(g => `<div class="flex sp" style="margin:4px 0"><i class="ui">${barSVG(g)}</i><span class="lbl" style="width:64px;white-space:nowrap">Grade ${g}</span><b class="num grow">${S.bars[g] || 0}</b><div class="step"><button data-a="crsel" data-g="${g}" data-d="-1">−</button><b class="num">${sel[g] || 0}</b><button data-a="crsel" data-g="${g}" data-d="1">+</button></div><button class="btn sm" data-a="refine" data-g="${g}" ${g < 6 && (S.bars[g] || 0) >= 4 ? '' : 'disabled'}>Refine</button></div>`).join('');
+  const u = gradeUnits(), C = UI.cr, sel = C.sel, selN = sumCol(sel), fl = lvlMax('forge'), hasF = hasB('forge');
+  const fhead = hasF ? `<div class="panel"><div class="hd"><h3>Forge ${fl}</h3><span class="tag br">${Math.round(forgeUp(fl) * 100)}% grade-up</span></div><div class="bd"><div class="sub">Refining bars into grade N+1 needs Forge 3 × N. Each crafted piece has a ${Math.round(forgeUp(fl) * 100)}% chance to come out one grade higher. Refined up to grade ${Math.min(6, Math.floor(fl / 3) + 1)} today.</div></div></div>` : `<div class="panel" style="border-color:var(--signal)"><div class="bd"><div class="h1">No Forge</div><div class="sub mt">Build a Forge on an empty inner plot to refine bars and craft gear.</div></div></div>`;
+  const bars = [1, 2, 3, 4, 5, 6].map(g => `<div class="flex sp" style="margin:4px 0"><i class="ui">${barSVG(g)}</i><span class="lbl" style="width:64px;white-space:nowrap">Grade ${g}</span><b class="num grow">${S.bars[g] || 0}</b><div class="step"><button data-a="crsel" data-g="${g}" data-d="-1">−</button><b class="num">${sel[g] || 0}</b><button data-a="crsel" data-g="${g}" data-d="1">+</button></div><button class="btn sm" data-a="refine" data-g="${g}" ${g < 6 && (S.bars[g] || 0) >= 4 && hasF && fl >= forgeGate(g) ? '' : 'disabled'}>${hasF && g < 6 && fl < forgeGate(g) ? 'Forge ' + forgeGate(g) : 'Refine'}</button></div>`).join('');
   let tw = 0; for (const g in sel) if (sel[g]) tw += sel[g] * sel[g];
   const odds = tw ? Object.keys(sel).filter(g => sel[g]).map(g => `G${g} ${Math.round(sel[g] * sel[g] / tw * 100)}%`).join(' · ') : '—';
   const worn = SLOTS.map(s => { const p = slotPiece(s); return `<div class="rr"><span class="wi"><i class="ui">${p ? gearSVG(s, p.grade, p.set) : emptySlot(s)}</i>${s}</span><span class="num ${p ? 'br' : 'mut'}">${p ? 'G' + p.grade + ' ' + (p.set ? SETS[p.set].n : '') + ' ' + pieceText(p) : 'empty'}</span></div>`; }).join('');
-  return `<div class="panel"><div class="hd"><h3>Bars</h3><span class="tag">Gems ${S.gems}</span></div><div class="bd"><div class="flex sp"><span class="lbl">Stockpile</span><b class="num">${u}/1024</b></div><div class="bar mt"><i style="width:${Math.min(100, u / 1024 * 100)}%"></i><u style="left:50%"></u></div><div class="flex sp sub"><span>0</span><span>512</span><span>1024 = grade 6</span></div><div class="mt">${bars}</div><div class="sub">Four of grade N refine into one of N+1.</div></div></div>
+  return fhead + `<div class="panel"><div class="hd"><h3>Bars</h3><span class="tag">Gems ${S.gems}</span></div><div class="bd"><div class="flex sp"><span class="lbl">Stockpile</span><b class="num">${u}/1024</b></div><div class="bar mt"><i style="width:${Math.min(100, u / 1024 * 100)}%"></i><u style="left:50%"></u></div><div class="flex sp sub"><span>0</span><span>512</span><span>1024 = grade 6</span></div><div class="mt">${bars}</div><div class="sub">Four of grade N refine into one of N+1.</div></div></div>
   <div class="panel"><div class="hd"><h3>Craft</h3><span class="tag ${selN === 4 ? 'br' : ''}">${selN}/4 bars</span></div><div class="bd"><div class="tabs2">${SLOTS.map(s => `<button class="${C.slot === s ? 'on' : ''}" data-a="crslot" data-s="${s}"><i class="tic">${gearSVG(s, 3)}</i>${s}</button>`).join('')}</div>
   ${C.slot === 'accessory' ? `<div class="flex mb"><span class="lbl">Stamp</span><button class="btn sm ${C.stat === 'training' ? 'on' : 'line'}" data-a="crstat" data-s="training">Training</button><button class="btn sm ${C.stat === 'yield' ? 'on' : 'line'}" data-a="crstat" data-s="yield">Yield</button></div>` : ''}
   <div class="flex wrap mb"><span class="lbl">Shard</span><button class="btn sm ${!C.shard ? 'on' : 'line'}" data-a="crshard" data-s="">None</button>${Object.keys(SETS).map(s => `<button class="btn sm ${C.shard === s ? 'on' : 'line'}" data-a="crshard" data-s="${s}" ${S.shards[s] ? '' : 'disabled'}>${SETS[s].n} ${S.shards[s] || 0}</button>`).join('')}</div>
   <div class="sub">Roll weights each grade by count². Odds ${odds}. The lone bar can still win.</div><div class="sub">${C.slot}: ${C.slot === 'accessory' ? 'stamped stat' : SLOT_WHAT[C.slot]} +${SLOT_CURVE[C.slot][0]}% to +${SLOT_CURVE[C.slot][1]}%</div>
-  <div class="flex mt"><button class="btn pri" data-a="craft" ${selN === 4 ? '' : 'disabled'}>Refine into gear</button><button class="btn line" data-a="crclear">Clear</button></div></div></div>
+  <div class="flex mt"><button class="btn pri" data-a="craft" ${selN === 4 && hasF ? '' : 'disabled'}>Refine into gear</button><button class="btn line" data-a="crclear">Clear</button></div></div></div>
   <div class="panel"><div class="hd"><h3>Worn</h3><span class="tag ${setBonus() ? 'br' : ''}">${setBonus() ? SETS[setBonus()].n + ' set · ' + SETS[setBonus()].d : 'no full set'}</span></div><div class="bd">${worn}</div></div>
   <div class="panel"><div class="hd"><h3>Rack</h3></div><div class="bd list">${S.gear.pieces.map(p => { const w = S.gear.worn[p.slot] === p.id; return `<div class="it"><i class="ui big">${gearSVG(p.slot, p.grade, p.set)}</i><div class="grow"><b class="h" style="font-size:15px">${p.slot} G${p.grade} ${p.set ? SETS[p.set].n : ''}</b><div class="sub">${pieceText(p)}</div></div><button class="btn sm ${w ? 'line' : 'pri'}" data-a="${w ? 'rack' : 'wear'}" data-id="${p.id}">${w ? 'Rack' : 'Wear'}</button></div>`; }).join('') || '<div class="sub">Nothing forged.</div>'}</div></div>`;
 }
@@ -586,7 +599,7 @@ const A = {
   tp(d) { if (run(doTeleport(+d.x, +d.y))) { UI.sheet = null; UI.sel = null; closeRadial(); panTo(S.base.x, S.base.y); } },
   tpr() { if (run(randomTeleport())) panTo(S.base.x, S.base.y); },
   shield() { run(toggleShield()); }, anti() { S.anti = !S.anti; D(); }, builder2() { run(buyBuilder(), 'Second builder hired.'); },
-  wing(d) { UI.sheet = null; closeRadial(); if (d.w === 'train') openDrawer('desk', 'train'); else if (d.w === 'lab') openDrawer('desk', 'lab'); else if (d.w === 'med') { UI.med = 'depot'; openDrawer('desk', 'med'); } else if (d.w === 'wall') { UI.med = 'wall'; openDrawer('desk', 'med'); } else if (d.w === 'rally') openDrawer('alliance', 'rally'); else openDrawer('hero', 'market'); },
+  wing(d) { UI.sheet = null; closeRadial(); if (d.w === 'train') openDrawer('desk', 'train'); else if (d.w === 'lab') openDrawer('desk', 'lab'); else if (d.w === 'med') { UI.med = 'depot'; openDrawer('desk', 'med'); } else if (d.w === 'wall') { UI.med = 'wall'; openDrawer('desk', 'med'); } else if (d.w === 'rally') openDrawer('alliance', 'rally'); else if (d.w === 'embassy') openDrawer('alliance', 'emb'); else if (d.w === 'forge') openDrawer('hero', 'forge'); else openDrawer('hero', 'market'); },
   trcls(d) { UI.tr.cls = d.c; UI.tr.n = 0; D(); }, trtier(d) { UI.tr.tier = +d.t; UI.tr.n = 0; D(); },
   trn(d) { UI.tr.n = clamp(UI.tr.n + +d.d, 0, batchCap(UI.tr.tier)); D(); }, trmax() { UI.tr.n = batchCap(UI.tr.tier); D(); },
   train(d) { const T = UI.tr; run(startTrain(T.cls, T.tier, T.n, !!d.cover)); },
@@ -601,6 +614,8 @@ const A = {
   rallyto(d) { UI.rl.target = d.t; closeRadial(); openDrawer('alliance', 'rally'); },
   crsel(d) { const s = UI.cr.sel, g = +d.g, tot = sumCol(s); const n = clamp((s[g] || 0) + +d.d, 0, S.bars[g] || 0); if (+d.d > 0 && tot >= 4) return toast('A craft spends exactly four bars.', 'warn'); s[g] = n; if (!n) delete s[g]; D(); },
   crslot(d) { UI.cr.slot = d.s; D(); }, crstat(d) { UI.cr.stat = d.s; D(); }, crshard(d) { UI.cr.shard = d.s; D(); }, crclear() { UI.cr.sel = {}; D(); },
+  embcall() { run(callAllies(false)); },
+  embhome(d) { run(sendAlliesHome(d.id == null ? null : +d.id)); },
   craft() { const C = UI.cr; if (run(craft(C.slot, C.sel, C.shard || null, C.stat))) { C.sel = {}; C.shard = ''; } },
   refine(d) { run(refine(+d.g)); }, wear(d) { run(wear(+d.id)); }, rack(d) { run(rack(+d.id)); },
   pack(d) { run(buyPack(d.id)); }, slipbuy(d) { run(buySlip(d.id), 'Slips racked.'); }, crate(d) { run(buyRes(d.r, +d.n), 'Crate opened.'); },
