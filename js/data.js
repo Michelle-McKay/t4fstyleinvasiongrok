@@ -143,3 +143,34 @@ function trainCost(cls, t) { const c = {}; for (const r in CLSD[cls].cost) c[r] 
 function ck(cls, t) { return cls + t; }
 function ckSplit(k) { return [k.slice(0, -1), +k.slice(-1)]; }
 function ckName(k) { const [c, t] = ckSplit(k); if (WCLSD[c]) return WCLSD[c].names[t - 1]; return tierName(c, t); }
+
+/* ---------------- Command Center upgrade path ---------------- */
+const CC_LEVELS = [
+  ['Field Tent', 'A tent, a radio and a flag.'], ['Command Post', 'Second tent and a supply stack.'], ['Prefab Hut', 'A proper roof and a door.'], ['Barricaded Hut', 'Sandbags and a diesel generator.'],
+  ['Concrete Bunker', 'Poured concrete. A second march queue opens.'], ['Two-Storey Ops', 'Second floor and a briefing room.'], ['Radio Mast', 'Long-range mast with a beacon.'], ['Walled Compound', 'Perimeter wall and a gate.'],
+  ['Helipad Deck', 'Roof helipad for fast couriers.'], ['Operations Tower', 'Third floor. A third march queue opens.'], ['Solar Array', 'Panel field beside the block.'], ['East Wing', 'Side wing for staff.'],
+  ['Guard Towers', 'Corner towers with floodlights.'], ['Radar Crown', 'Rotating dish on the roof.'], ['War Room', 'Fourth floor. A fourth march queue opens.'], ['Turret Ring', 'Gun turrets on the wall.'],
+  ['Hangar Annex', 'Vehicle hangar beside the HQ.'], ['Shield Emitters', 'Emitter posts wrap the compound.'], ['Comms Dome', 'Hardened comms dome.'], ['Fortress Plate', 'Armor plating. A fifth march queue opens.'],
+  ['Satellite Uplink', 'Orbital uplink dish.'], ['Reactor Core', 'Glowing reactor in the courtyard.'], ['Command Spire', 'Central spire with a beacon.'], ['Brass Standard', 'Brass banners on every face.'],
+  ['Iron Citadel HQ', 'The full fortress. A sixth march queue opens.']
+];
+const CC_REQ_POOL = ['hall', 'depot', 'tech', 'mil', 'defense', 'radar', 'store', 'treasury', 'rations', 'fuel', 'power', 'alloy', 'prison', 'market'];
+function ccReqs(to) {
+  if (to <= 1) return [];
+  const fixed = { 2: [['radar', 1]], 3: [['store', 2]], 4: [['depot', 2], ['mil', 3]], 5: [['tech', 3], ['hall', 2]], 6: [['defense', 4], ['radar', 4]] };
+  if (fixed[to]) return fixed[to];
+  const n = CC_REQ_POOL.length, need = Math.max(1, to - 2), a = (to * 3) % n, b = (to * 5 + 2) % n, c = (to * 7 + 4) % n, out = [[CC_REQ_POOL[a], need]];
+  if (b !== a) out.push([CC_REQ_POOL[b], Math.max(1, need - 1)]);
+  if (to >= 15 && c !== a && c !== b) out.push([CC_REQ_POOL[c], Math.max(1, need - 2)]);
+  return out;
+}
+/* actions unlocked by Command Center level */
+const CC_ACTIONS = [
+  { id: 'req', n: 'Requisition', lv: 1, d: 'Collect supplies. Scales with level.' },
+  { id: 'muster', n: 'Muster', lv: 2, d: 'Ask alliance help on every open job.' },
+  { id: 'recall', n: 'Recall all', lv: 4, d: 'Pull every column home.' },
+  { id: 'shield', n: 'Shield', lv: 5, d: 'Raise or drop the peace shield.' },
+  { id: 'tp', n: 'Relocate', lv: 8, d: 'Random teleport to a legal tile.' }
+];
+const REQ_COOLDOWN_SHEET = 1800;   // 30 sheet minutes between requisitions
+function reqAmounts(L) { return { rations: L * 500, fuel: L * 500, power: L * 400, alloy: L * 300, cash: L * 150 }; }

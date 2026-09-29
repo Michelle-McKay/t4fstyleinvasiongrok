@@ -249,6 +249,7 @@ function buildErr(area, idx, b) {
   if (!p && BLD[b].unique && allPlots().some(x => x.b === b)) return 'One Command Center only.';
   if (to > 25) return 'Level 25 is the ceiling.';
   if (b !== 'cc' && to > cc) return 'Raise the Command Center first.';
+  if (b === 'cc') for (const [rb, rl] of ccReqs(to)) if (lvlMax(rb) < rl) return 'Needs ' + BLD[rb].n + ' ' + rl + '.';
   return null;
 }
 function startBuild(area, idx, b, cover) {
@@ -760,4 +761,21 @@ function tick() {
   if (S.shield.until && now >= S.shield.until) { S.shield.until = 0; note('Peace shield expired.', 'info'); ch = true; }
   for (const b of S.bots) if (b.shieldUntil && now > b.shieldUntil) b.shieldUntil = 0;
   if (ch) UIH.dirty();
+}
+
+/* ---------------- Command Center actions ---------------- */
+function reqReadyAt() { return (S.reqAt || 0) + REQ_COOLDOWN_SHEET / DRILL * 1000; }
+function requisition() {
+  const now = Date.now(); if (now < reqReadyAt()) return 'Supplies are not ready yet.';
+  const amt = reqAmounts(ccLevel()); let got = [];
+  for (const r of RES) { const a = addRes(r, amt[r]); if (a > 0) got.push(fmtN(a) + ' ' + RESN[r]); }
+  if (!got.length) return 'StoreHouse is full.'; S.reqAt = now; note('Requisition: ' + got.join(', ') + '.', 'good'); return null;
+}
+function musterAll() {
+  let n = 0; for (const j of S.jobs) if (!j.ask) { j.ask = true; j.nextHelp = Date.now() + 800 + n * 300; n++; }
+  if (!n) return 'No open job needs help.'; note('Help asked on ' + n + ' job' + (n > 1 ? 's' : '') + '.', 'info'); return null;
+}
+function recallAll() {
+  let n = 0; for (const m of S.marches.slice()) if (m.phase !== 'back' && !(m.kind === 'rally' && m.phase !== 'wait')) { if (!recall(m.id)) n++; }
+  return n ? null : 'No column to recall.';
 }

@@ -42,6 +42,7 @@ function pad(t, outer) {
   return s;
 }
 function bldSVG(kind, level) {
+  if (kind === 'cc') return ccSVG(Math.max(1, level));
   const t = tierOf(level), ck = kind + ':' + t + ':' + (level >= 25 ? 1 : 0); if (bcache[ck]) return bcache[ck];
   const outer = !!BLD[kind].res, gl = level >= 25;
   let b = '';
@@ -77,3 +78,40 @@ function bldSVG(kind, level) {
   return (bcache[ck] = out);
 }
 function emptyPlotSVG(outer) { return `<svg viewBox="0 0 64 64" class="bsvg"><rect x="6" y="10" width="52" height="46" fill="none" stroke="${outer ? '#5a5a3a' : '#5c676d'}" stroke-width="1.5" stroke-dasharray="4 4"/><path d="M32 24v16M24 32h16" stroke="#9aa4a8" stroke-width="2"/></svg>`; }
+
+/* ---------------- Command Center: 25 distinct looks ---------------- */
+function ccSVG(L) {
+  const ck = 'cc25:' + L; if (bcache[ck]) return bcache[ck];
+  const K = BC, has = n => L >= n;
+  const conc = has(5), floors = 1 + (has(6) ? 1 : 0) + (has(10) ? 1 : 0) + (has(15) ? 1 : 0) + (has(20) ? 1 : 0), plate = has(20);
+  const wall = !conc ? '#5b5f52' : plate ? '#4d585e' : has(15) ? '#7a848a' : K.conc, roof = !conc ? K.tarp : plate ? '#22292e' : '#3c474e';
+  const w = has(12) ? 30 : 26, x0 = 32 - w / 2 - (has(12) ? 2 : 0), top = 50 - 8 * floors, glow = has(20);
+  let s = `<ellipse cx="32" cy="58" rx="28" ry="4" fill="rgba(0,0,0,.5)"/>`;
+  s += `<rect x="2" y="8" width="60" height="52" fill="${conc ? '#3a4247' : '#2c3236'}"/>`;
+  if (!conc) s += `<path d="M4 58q6-5 12 0t12 0 12 0 12 0 8 0" fill="#7b6a4a" stroke="${K.ink}" stroke-width=".8"/>`;
+  else s += `<rect x="2" y="8" width="60" height="52" fill="none" stroke="${has(15) ? K.brass : '#5c676d'}" stroke-width="${has(24) ? 2 : 1.2}"/>`;
+  if (has(11)) s += [0, 1, 2].map(i => `<polygon points="${5 + i * 7},52 ${8 + i * 7},46 ${13 + i * 7},46 ${10 + i * 7},52" fill="#1d5670" stroke="${K.ice}" stroke-width=".6"/>`).join('');
+  if (L === 1) s += `<polygon points="14,46 32,22 50,46" fill="${K.tarp}" stroke="${K.ink}"/><rect x="27" y="36" width="10" height="10" fill="#171c1f"/><rect x="8" y="46" width="8" height="6" fill="#7b6a4a"/>`;
+  else if (L === 2) s += `<polygon points="8,46 22,26 36,46" fill="${K.tarp}" stroke="${K.ink}"/><polygon points="30,46 44,30 58,46" fill="#5b5f52" stroke="${K.ink}"/><rect x="42" y="46" width="8" height="6" fill="#7b6a4a"/><rect x="45" y="42" width="7" height="5" fill="#8a7a55"/>`;
+  else if (L <= 4) s += `<rect x="16" y="32" width="32" height="18" fill="#5b5f52" stroke="${K.ink}"/><polygon points="14,32 32,20 50,32" fill="${K.tarp}" stroke="${K.ink}"/><rect x="28" y="40" width="9" height="10" fill="#171c1f"/><rect x="19" y="37" width="5" height="4" fill="#c9b070"/>` + (L === 4 ? `<rect x="50" y="42" width="8" height="8" fill="${K.dark}" stroke="${K.ink}"/><circle cx="54" cy="45" r="1.6" fill="${K.red}" class="blink"/>` + Array.from({ length: 7 }, (_, i) => `<ellipse cx="${10 + i * 7}" cy="54" rx="4.5" ry="2.6" fill="#9c8a5f" stroke="${K.ink}" stroke-width=".7"/>`).join('') : '') + `<path d="M32 20V8" stroke="${K.light}" stroke-width="1.5"/><polygon points="32,8 42,11 32,14" fill="${K.brass}"/>`;
+  else {
+    if (has(17)) s += `<path d="M4 50V40q7-9 14 0v10z" fill="#59646a" stroke="${K.ink}"/><rect x="8" y="44" width="6" height="6" fill="#171c1f"/>`;
+    if (has(12)) s += `<rect x="${x0 + w}" y="42" width="10" height="10" fill="${wall}" stroke="${K.ink}"/><rect x="${x0 + w + 2}" y="45" width="6" height="3" fill="${K.ice}" opacity=".8"/>`;
+    for (let f = 0; f < floors; f++) { const y = 50 - 8 * (f + 1); s += `<rect x="${x0}" y="${y}" width="${w}" height="8" fill="${wall}" stroke="${K.ink}" stroke-width="1"/>` + Array.from({ length: has(12) ? 5 : 4 }, (_, i) => `<rect x="${x0 + 3 + i * 6}" y="${y + 2.5}" width="3.5" height="3" fill="${has(10) ? K.ice : '#c9b070'}" class="${has(10) ? 'glw' : ''}"/>`).join(''); if (plate) s += `<path d="M${x0} ${y + 4}h${w}" stroke="${K.brass}" stroke-width=".8" opacity=".7"/>`; }
+    s += `<rect x="${x0 - 1}" y="${top - 3}" width="${w + 2}" height="4" fill="${roof}" stroke="${K.ink}"/><rect x="${32 - 4}" y="42" width="8" height="8" fill="#171c1f"/>`;
+    if (has(8)) s += `<rect x="2" y="53" width="60" height="4" fill="#59646a" stroke="${K.ink}"/><rect x="26" y="53" width="12" height="4" fill="#171c1f"/>`;
+    if (has(7)) s += `<path d="M${x0 + w - 3} ${top - 3}V${top - 15}" stroke="${K.light}" stroke-width="1.5"/><circle cx="${x0 + w - 3}" cy="${top - 15}" r="1.8" fill="${K.red}" class="blink"/>`;
+    if (has(9)) s += `<circle cx="${x0 + 8}" cy="${top - 6}" r="5" fill="none" stroke="${K.brass}" stroke-width="1.2"/><path d="M${x0 + 6} ${top - 8}v4M${x0 + 10} ${top - 8}v4M${x0 + 6} ${top - 6}h4" stroke="${K.brass}" stroke-width="1"/>`;
+    if (has(13)) s += [6, 56].map(x => `<rect x="${x - 3}" y="40" width="6" height="14" fill="${wall}" stroke="${K.ink}"/><rect x="${x - 4}" y="37" width="8" height="4" fill="${roof}" stroke="${K.ink}"/><circle cx="${x}" cy="39" r="1.3" fill="#ffe9a8" class="glw"/>`).join('');
+    if (has(14)) s += `<g class="spin" style="transform-origin:${x0 + 6}px ${top - 5}px"><path d="M${x0} ${top - 5}a6 5 0 0 1 12 0z" fill="${K.light}" stroke="${K.ink}" stroke-width=".8"/></g>`;
+    if (has(16)) s += [14, 50].map(x => `<rect x="${x - 3}" y="50" width="6" height="4" fill="${K.dark}" stroke="${K.ink}"/><rect x="${x - .8}" y="44" width="1.6" height="7" fill="${K.light}"/>`).join('');
+    if (has(18)) s += [4, 60].map(x => `<rect x="${x - 1}" y="26" width="2" height="26" fill="${K.light}"/><circle cx="${x}" cy="26" r="2.4" fill="${K.ice}" class="glw"/>`).join('') + `<path d="M4 26Q32 -2 60 26" fill="none" stroke="${K.ice}" stroke-width=".8" stroke-dasharray="2 3" opacity=".7" class="glw"/>`;
+    if (has(19)) s += `<path d="M${32 - 6} ${top - 3}a6 6 0 0 1 12 0z" fill="#3c474e" stroke="${K.ice}" stroke-width=".8"/>`;
+    if (has(21)) s += `<path d="M${x0 + w - 2} ${top - 6}l8-8" stroke="${K.light}" stroke-width="1.2"/><ellipse cx="${x0 + w + 8}" cy="${top - 15}" rx="6" ry="3" transform="rotate(-30 ${x0 + w + 8} ${top - 15})" fill="${K.light}" stroke="${K.ink}" stroke-width=".8"/>`;
+    if (has(22)) s += `<circle cx="32" cy="46" r="3.6" fill="${K.ice}" class="glw"/><circle cx="32" cy="46" r="6" fill="none" stroke="${K.ice}" stroke-width=".8" opacity=".6" class="ping"/>`;
+    if (has(23)) s += `<path d="M32 ${top - 3}V${top - 20}" stroke="${K.light}" stroke-width="2"/><circle cx="32" cy="${top - 21}" r="2.4" fill="${K.brass}" class="glw"/>`;
+    if (has(24)) s += [x0 + 2, x0 + w - 4].map(x => `<rect x="${x}" y="${top + 3}" width="3" height="10" fill="${K.brass}"/>`).join('');
+    if (L === 25) s += `<circle cx="32" cy="${top - 21}" r="8" fill="none" stroke="${K.brass}" stroke-width="1.2" class="ping"/><rect x="1" y="7" width="62" height="54" fill="none" stroke="${K.brass}" stroke-width="2" class="glw"/>`;
+  }
+  return (bcache[ck] = `<svg viewBox="0 0 64 64" class="bsvg" aria-hidden="true">${s}</svg>`);
+}

@@ -184,3 +184,23 @@ select{background:var(--ink);border:1px solid var(--line);color:var(--bone);font
 .pt{position:absolute;top:0;left:0;right:0;background:var(--brass);color:var(--brassink);font:700 10px/14px var(--head);letter-spacing:.1em;text-transform:uppercase;font-style:normal}
 .pk .pt+.gm,.pk .pt+svg{margin-top:12px}
 a{text-decoration:none}
+
+.acts{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-top:6px}
+.act{display:flex;flex-direction:column;gap:2px;align-items:flex-start;text-align:left;padding:8px 10px;min-height:52px;background:var(--raised);border:1px solid var(--line);transition:transform .12s var(--spring)}
+.act:active{transform:scale(.96)}
+.act b{font-family:var(--head);text-transform:uppercase;letter-spacing:.08em;font-size:15px;color:var(--brass)}
+.act span{font-size:11px;color:var(--mute);line-height:1.2}
+.act.lk{opacity:.5}.act[disabled]{opacity:.5;pointer-events:none}
+.rq{display:flex;justify-content:space-between;width:100%;padding:7px 8px;margin-top:4px;background:rgba(0,0,0,.25);border:1px solid var(--line);font-size:13px;text-align:left}
+.rq.ok{border-color:rgba(142,163,106,.6);color:var(--oxide)}.rq.no{border-color:var(--signal);color:var(--signal)}
+.lvr{display:flex;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid rgba(60,71,78,.5)}
+.lvr>b{width:26px;height:26px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);font-family:var(--head);font-size:14px}
+.lvr.done{opacity:.6}.lvr.now>b{background:var(--brass);color:var(--brassink);border-color:var(--brass)}
+.seq{margin:0;padding-left:20px}.seq li{margin:4px 0;font-size:13px}
+#hint{position:fixed;left:12px;right:12px;z-index:45;display:none;padding:10px 12px;font-size:13px;background:rgba(20,25,28,.95);border:1px solid var(--brass);box-shadow:0 6px 24px rgba(0,0,0,.6)}
+#hint.on{display:block;animation:tin .28s var(--spring)}
+#hint .hb{display:flex;gap:8px;justify-content:flex-end;margin-top:6px}
+#hint .hb button{min-height:32px;padding:0 12px;font-family:var(--head);text-transform:uppercase;letter-spacing:.07em;background:var(--raised);border:1px solid var(--line)}
+#hint .hb .pri{background:var(--brass);color:var(--brassink);border-color:var(--brass)}
+.gd{position:relative;z-index:46;outline:3px solid var(--brass);outline-offset:2px;animation:gdp 1s ease-in-out infinite}
+@keyframes gdp{0%,100%{box-shadow:0 0 0 0 rgba(224,164,74,.7)}50%{box-shadow:0 0 0 10px rgba(224,164,74,0)}}
