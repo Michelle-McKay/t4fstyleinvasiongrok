@@ -23,7 +23,7 @@ const ICON = {
 const ICOL = { rations: '#8ea36a', fuel: '#e07a2f', power: '#5ec4d4', alloy: '#9aa4a8', cash: '#e0a44a', dia: '#5ec4d4' };
 const svg = (n, cls) => typeof RESICON !== 'undefined' && RESICON[n] ? resSvg(n, cls) : `<svg viewBox="0 0 24 24" fill="none" stroke="${ICOL[n] || 'currentColor'}" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" ${cls ? 'class="' + cls + '"' : ''}>${ICON[n]}</svg>`;
 const UI = {
-  page: 'map', drawer: null, dt: { more: 'menu', desk: 'train', hero: 'forge', alliance: 'throne', mail: 'rep', march: 'cols' }, sheet: null,
+  page: 'map', drawer: null, dt: { mission: 'mis', item: 'bag', more: 'menu', desk: 'train', hero: 'forge', alliance: 'throne', mail: 'rep', march: 'cols' }, sheet: null,
   comp: { inf: 0, arm: 0, air: 0, siege: 0, hero: false }, rcomp: { inf: 0, arm: 0, air: 0, siege: 0, hero: false },
   tr: { cls: 'inf', tier: 1, n: 0 }, wl: { cls: 'sent', tier: 1, n: 0 }, lab: 'combat', med: 'depot', fg: 3,
   cr: { slot: 'weapon', sel: {}, shard: '', stat: 'training' }, rl: { target: 'citadel', wait: 0, slots: 0 }, sel: null, dirty: true, ready: {}, flyAt: 0, chips: '', plate: '', pills: '', qbar: '', prod: '', dbtn: ''
@@ -118,13 +118,71 @@ function renderQueues() {
   const html = `<button class="tips ${hot ? 'hot' : ''}" ${act}><i>TIPS</i><span>${t}</span></button><div class="chat"><svg viewBox="0 0 24 24" class="cico"><path d="M4 5h16v11H9l-5 4z" fill="#5ec4d4" stroke="#0e1113" stroke-width="1.4"/></svg><div>${log.length ? log.map(l => `<p><b>SYSTEM:</b> ${l.m}</p>`).join('') : '<p><b>SYSTEM:</b> All quiet.</p>'}</div><button class="btn sm pri2" data-a="dock" data-k="alliance" aria-label="Alliance">${svg('alliance').replace(/stroke="[^"]+"/, 'stroke="currentColor"')}</button></div>`;
   if (html !== UI.qbar) { UI.qbar = html; $('#qbar').innerHTML = html; }
 }
-const TABS = [['toggle', ''], ['hero', 'Hero'], ['alliance', 'Alliance'], ['mail', 'Mail'], ['more', 'More']];
+Object.assign(ICON, {
+  mission: '<rect x="5" y="4" width="14" height="17"/><path d="M9 4V2h6v2M8 10l1.5 1.5L12 9M14 10.5h3M8 16l1.5 1.5L12 15M14 16.5h3"/>',
+  item: '<rect x="3" y="8" width="18" height="12"/><path d="M3 12h18M10 12v3h4v-3M7 8V5h10v3"/>',
+  guild: '<path d="M12 3l8 3v6c0 5-3.5 7.5-8 9-4.5-1.5-8-4-8-9V6z"/><path d="M12 7v10M8 11h8"/>',
+  gift: '<rect x="3" y="9" width="18" height="11"/><path d="M12 9v11M2 6h20v3H2zM12 6C9 1 5 3 7 6M12 6c3-5 7-3 5 0"/>',
+  events: '<path d="M6 8h12a4 4 0 0 1 4 4v3a2.5 2.5 0 0 1-4.3 1.7L15 14H9l-2.7 2.7A2.5 2.5 0 0 1 2 15v-3a4 4 0 0 1 4-4z"/><path d="M7 10.5v3M5.5 12h3M16 11h.01M18 13h.01"/>',
+  crate: '<path d="M3 9l9-5 9 5v9l-9 4-9-4z"/><path d="M3 9l9 4 9-4M12 13v9"/>',
+  handshake: '<path d="M2 12l5-5 4 2 4-2 5 5-6 6-3-2-3 2z"/><path d="M8 13l3 3M11 11l3 3"/>'
+});
+const TABS = [['toggle', ''], ['mission', 'Mission'], ['item', 'Item'], ['alliance', 'Guild'], ['mail', 'Mail'], ['more', 'More']];
+const DRAWERS = ['mission', 'item', 'hero', 'alliance', 'mail', 'more'];
+/* missions: goals read off the live save, claimed once for a prize */
+const MISSIONS = [
+  { id: 'm1', n: 'Muster 500 troops', d: () => Math.min(headcount(), 500), t: 500, dia: 30 },
+  { id: 'm2', n: 'Muster 5,000 troops', d: () => Math.min(headcount(), 5000), t: 5000, dia: 80, slips: { s60: 1 } },
+  { id: 'm3', n: 'Hold 40 tiles of land', d: () => Math.min(Object.values(S.own).filter(o => o === 0).length, 40), t: 40, dia: 50 },
+  { id: 'm4', n: 'Read your first report', d: () => Math.min(S.reports.length, 1), t: 1, res: { rations: 5000, fuel: 5000 } },
+  { id: 'm5', n: 'Forge a piece of gear', d: () => Math.min(S.gear.pieces.length, 1), t: 1, dia: 40 },
+  { id: 'm6', n: 'Run the daily exercise', d: () => S.daily === new Date().toDateString() ? 1 : 0, t: 1, slips: { s5: 2 }, daily: 1 },
+  { id: 'm7', n: 'Raise the Command Center to 10', d: () => Math.min(ccLevel(), 10), t: 10, dia: 120, tokens: 1 }
+];
+const HOUR = 3600e3;
+function missionHTML() {
+  S.missions = S.missions || {}; const day = new Date().toDateString();
+  const rows = MISSIONS.map(m => {
+    const done = m.daily ? S.missions[m.id] === day : !!S.missions[m.id], cur = m.d(), ok = cur >= m.t, pr = [m.dia ? `${m.dia}◆` : '', m.tokens ? `${m.tokens} token` : '', ...(m.slips ? Object.keys(m.slips).map(k => `${m.slips[k]}× slip`) : []), ...(m.res ? Object.keys(m.res).map(k => `${fmtN(m.res[k])} ${RESN[k]}`) : [])].filter(Boolean).join(' · ');
+    return `<div class="rwrow"><div class="grow"><b>${m.n}</b><div class="sub">${fmtN(cur)}/${fmtN(m.t)} · ${pr}</div><div class="bar"><i style="width:${cur / m.t * 100}%"></i></div></div><button class="btn sm ${ok && !done ? 'pri' : 'line'}" data-a="mclaim" data-id="${m.id}" ${ok && !done ? '' : 'disabled'}>${done ? 'Claimed' : 'Claim'}</button></div>`;
+  }).join('');
+  return `<div class="panel"><div class="hd"><h3>Missions</h3><span class="sub">${MISSIONS.filter(m => m.d() >= m.t && !(m.daily ? S.missions[m.id] === day : S.missions[m.id])).length} ready</span></div><div class="bd">${rows}</div></div>`;
+}
+function eventsHTML() {
+  const now = Date.now(), fd = Math.max(0, (S.freeDiaAt || 0) + 4 * HOUR - now), sp = Math.max(0, (S.supplyAt || 0) + 0.5 * HOUR - now), dl = S.daily === new Date().toDateString();
+  const row = (n, sub, btn) => `<div class="rwrow"><div class="grow"><b>${n}</b><div class="sub">${sub}</div></div>${btn}</div>`;
+  return `<div class="panel"><div class="hd"><h3>Events</h3></div><div class="bd">
+  ${row('Daily exercise', '60◆, a token and a prize in the Rewards Center', `<button class="btn sm ${dl ? 'line' : 'pri'}" data-a="daily" ${dl ? 'disabled' : ''}>${dl ? 'Done' : 'Run'}</button>`)}
+  ${row('Free diamonds', 'Every 4 hours', `<button class="btn sm ${fd ? 'line' : 'pri'}" data-a="freedia" ${fd ? 'disabled' : ''}>${fd ? ago(fd) : 'Claim'}</button>`)}
+  ${row('Supply drop', 'Every 30 minutes, resources for the base', `<button class="btn sm ${sp ? 'line' : 'pri'}" data-a="supply" ${sp ? 'disabled' : ''}>${sp ? ago(sp) : 'Open'}</button>`)}
+  ${row('Rewards Center', `${(S.rewards || []).length} waiting`, `<button class="btn sm" data-a="drawer" data-id="more" data-tab="rw">Open</button>`)}
+  </div></div>`;
+}
+function itemHTML(t) {
+  if (t === 'boost') return `<div class="panel"><div class="hd"><h3>Speed-up slips</h3></div><div class="bd">${SLIPS.map(s => `<div class="rwrow"><div class="grow"><b>${s.n}</b><div class="sub">In the rack: ${S.slips[s.id] || 0}</div></div><button class="btn sm" data-a="slipbuy" data-id="${s.id}" ${S.dia < s.cost ? 'disabled' : ''}>${s.cost}◆</button></div>`).join('')}</div></div>`;
+  return `<div class="panel"><div class="hd"><h3>Bag</h3></div><div class="bd">${RES.map(r => `<div class="rwrow"><div class="rwic">${svg(r)}</div><div class="grow"><b>${RESN[r]}</b></div><b class="num">${fmtN(S.res[r])}</b></div>`).join('')}
+  <div class="rwrow"><div class="grow"><b>Diamonds</b></div><b class="num">${fmtN(S.dia)}</b></div><div class="rwrow"><div class="grow"><b>Orders · seals · tokens</b></div><b class="num">${S.orders} · ${S.seals} · ${S.tokens}</b></div></div></div>`;
+}
+/* floating buttons over the base, off centre so they stay out of the way */
+function renderFloat() {
+  const el = $('#float'), on = UI.page === 'base' && !UI.drawer && !UI.sheet; el.className = on ? 'on' : '';
+  if (!on) return;
+  const fd = Math.max(0, (S.freeDiaAt || 0) + 4 * HOUR - Date.now()), sp = Math.max(0, (S.supplyAt || 0) + 0.5 * HOUR - Date.now()), day = new Date().toDateString();
+  const rdy = MISSIONS.some(m => m.d() >= m.t && !(m.daily ? (S.missions || {})[m.id] === day : (S.missions || {})[m.id]));
+  const html = `<button class="fl gift" data-a="drawer" data-id="more" data-tab="rw" aria-label="Rewards">${svg('gift')}${(S.rewards || []).length ? `<em class="bdg">${Math.min(9, S.rewards.length)}</em>` : ''}</button>
+  <button class="fl evt" data-a="drawer" data-id="mission" data-tab="ev" aria-label="Events">${svg('events')}${rdy ? '<em class="bdg">!</em>' : ''}</button>
+  <button class="fl hro" data-a="drawer" data-id="hero" data-tab="heroes" aria-label="Hero"><i>${heroSVG(S.hero.id)}</i>${S.hero.captured ? '<em class="dot"></em>' : ''}</button>
+  <button class="fl sup ${sp ? 'cd' : ''}" data-a="supply" aria-label="Supply drop">${svg('crate')}${sp ? `<small>${ago(sp)}</small>` : ''}</button>
+  <button class="fl fdi ${fd ? 'cd' : ''}" data-a="freedia" aria-label="Free diamonds">${svg('dia')}<small>${fd ? ago(fd) : 'Free'}</small></button>
+  <button class="fl hsk ${S.incoming.some(i => i.rally) ? 'hot' : ''}" data-a="drawer" data-id="alliance" data-tab="throne" aria-label="Alliance">${svg('handshake')}</button>`;
+  if (html !== UI.flt) { UI.flt = html; el.innerHTML = html; }
+}
 function renderDock() {
-  const over = ['hero', 'alliance', 'mail', 'more'].includes(UI.drawer) ? UI.drawer : null, unread = S.reports.filter(r => r.id > (S.readTo || 0)).length;
+  const over = DRAWERS.includes(UI.drawer) ? UI.drawer : null, unread = S.reports.filter(r => r.id > (S.readTo || 0)).length;
   const dest = UI.page === 'map' ? 'base' : 'map'; // one button flips between the map and the base; it shows where a tap takes you
   $('#dock').innerHTML = TABS.map(([k, n]) => {
     const kk = k === 'toggle' ? dest : k, label = k === 'toggle' ? (dest === 'base' ? 'Base' : 'World Map') : n, on = k === 'toggle' ? !over && !UI.drawer : over === k;
-    return `<button data-a="dock" data-k="${k}" class="${on ? 'on' : ''}">${svg(kk).replace(/stroke="[^"]+"/, 'stroke="currentColor"')}${k === 'mail' && unread ? `<em class="bdg">${Math.min(unread, 9)}</em>` : ''}${k === 'toggle' && Object.keys(UI.ready).length ? `<em class="bdg ok">${Math.min(Object.keys(UI.ready).length, 9)}</em>` : ''}${k === 'hero' && S.hero.captured ? `<em class="bdg">!</em>` : ''}${k === 'alliance' && S.incoming.some(i => i.rally) ? `<em class="bdg">!</em>` : ''}<span>${label}</span></button>`;
+    return `<button data-a="dock" data-k="${k}" class="${on ? 'on' : ''}">${svg(kk).replace(/stroke="[^"]+"/, 'stroke="currentColor"')}${k === 'mail' && unread ? `<em class="bdg">${Math.min(unread, 9)}</em>` : ''}${k === 'toggle' && Object.keys(UI.ready).length ? `<em class="bdg ok">${Math.min(Object.keys(UI.ready).length, 9)}</em>` : ''}${k === 'mission' && MISSIONS.some(m => m.d() >= m.t && !(m.daily ? (S.missions || {})[m.id] === new Date().toDateString() : (S.missions || {})[m.id])) ? `<em class="bdg">!</em>` : ''}${k === 'alliance' && S.incoming.some(i => i.rally) ? `<em class="bdg">!</em>` : ''}<span>${label}</span></button>`;
   }).join('');
   $('#mapchips').innerHTML = `<button class="btn sm glass" data-a="jump" data-k="b">Base</button><button class="btn sm glass" data-a="jump" data-k="t">Throne</button>`;
 }
@@ -396,6 +454,8 @@ function allyHTML() {
   <div class="panel"><div class="hd"><h3>Settings</h3></div><div class="bd flex wrap"><button class="btn sm ${setOn('snd') ? 'on' : 'line'}" data-a="setopt" data-k="snd">Sound ${setOn('snd') ? 'on' : 'off'}</button><button class="btn sm ${setOn('hap') ? 'on' : 'line'}" data-a="setopt" data-k="hap">Haptics ${setOn('hap') ? 'on' : 'off'}</button><button class="btn bad sm" data-a="reset">Reset save</button></div></div>`;
 }
 const DR = {
+  mission: { tabs: [['mis', 'Missions'], ['ev', 'Events']], body: t => t === 'ev' ? eventsHTML() : missionHTML() },
+  item: { tabs: [['bag', 'Bag'], ['boost', 'Boosts']], body: itemHTML },
   desk: { tabs: [['train', 'Train'], ['lab', 'Lab'], ['med', 'Med']], body: renderDesk_ },
   hero: { tabs: [['forge', 'Forge'], ['heroes', 'Heroes'], ['store', 'Store'], ['market', 'Market'], ['ledger', 'Ledger']], body: t => ({ forge: forgeHTML, heroes: heroesHTML, store: storeHTML, market: marketHTML, ledger: ledgerHTML })[t]() },
   alliance: { tabs: [['throne', 'Throne'], ['rally', 'Rally'], ['ally', 'Alliance']], body: t => ({ throne: throneHTML, rally: marchRally, ally: allyHTML })[t]() },
@@ -454,7 +514,7 @@ const A = {
   dock(d) {
     const k = d.k; closeRadial();
     if (k === 'toggle') { if (UI.drawer || UI.sheet) { UI.drawer = null; UI.sheet = null; } else { UI.page = UI.page === 'map' ? 'base' : 'map'; if (UI.page !== 'map') UI.sel = null; } D(); return; }
-    if (k === 'hero' || k === 'alliance' || k === 'mail' || k === 'more') { UI.drawer = UI.drawer === k ? null : k; UI.sheet = null; }
+    if (DRAWERS.includes(k)) { UI.drawer = UI.drawer === k ? null : k; UI.sheet = null; }
     else { UI.drawer = null; UI.page = k; UI.sheet = null; if (k !== 'map') UI.sel = null; }
     D();
   },
@@ -519,6 +579,9 @@ const A = {
   refine(d) { run(refine(+d.g)); }, wear(d) { run(wear(+d.id)); }, rack(d) { run(rack(+d.id)); },
   pack(d) { run(buyPack(d.id)); }, slipbuy(d) { run(buySlip(d.id), 'Slips racked.'); }, crate(d) { run(buyRes(d.r, +d.n), 'Crate opened.'); },
   buyorders() { run(buyOrders(), 'Five orders.'); }, buyseals() { run(buySeals(), 'Five seals.'); }, buytoken() { run(buyToken(false), 'Token bought.'); }, buycrate() { run(buyToken(true), 'Three tokens.'); }, daily() { run(daily()); },
+  mclaim(d) { S.missions = S.missions || {}; const m = MISSIONS.find(x => x.id === d.id); if (!m || m.d() < m.t) return; S.missions[m.id] = m.daily ? new Date().toDateString() : 1; if (m.dia) dchg(m.dia, 'Mission'); if (m.tokens) S.tokens += m.tokens; if (m.slips) grant(m.slips); if (m.res) grant(m.res); toast('Mission complete: ' + m.n, 'good'); hap(14); D(); },
+  freedia() { if (Date.now() < (S.freeDiaAt || 0) + 4 * HOUR) return toast('Free diamonds are cooling down.', 'warn'); S.freeDiaAt = Date.now(); dchg(20, 'Free diamonds'); toast('+20 diamonds', 'good'); hap(14); D(); },
+  supply() { if (Date.now() < (S.supplyAt || 0) + 0.5 * HOUR) return toast('The next drop is not ready.', 'warn'); S.supplyAt = Date.now(); const g = {}; for (const r of RES) g[r] = Math.round(storeCap() * 0.02); grant(g); toast('Supply drop: ' + fmtN(g[RES[0]]) + ' of each resource', 'good'); hap(14); D(); },
   mrefresh() { if (S.dia < 15) return run('Short of diamonds.'); dchg(-15, 'Market refresh'); rollMarket(true); D(); }, mbuy(d) { run(buyMarket(+d.i), 'Bought.'); },
   hero(d) { run(setHero(d.k)); }, ransom(d) { run(ransom(!!d.seal)); },
   recolor(d) { run(recolor(d.c)); }, disband() { if (confirm('Disband the alliance? Every colored tile goes neutral.')) { disband(); D(); } },
@@ -534,7 +597,7 @@ $('#scrim').addEventListener('click', () => A.scrim());
 /* ---------------- loop ---------------- */
 function showPage() { for (const p of ['map', 'base']) $('#pg-' + p).className = 'page' + (UI.page === p ? ' on' : ''); }
 function renderAll() {
-  UI.dirty = false; renderTop(); renderQueues(); renderDock(); showPage();
+  UI.dirty = false; renderTop(); renderQueues(); renderDock(); showPage(); renderFloat();
   if (UI.page === 'base') renderBase();
   renderDrawer(); renderSheet();
 }

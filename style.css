@@ -83,7 +83,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .rb:active{filter:brightness(1.3)}
 @keyframes pop{from{scale:.2;opacity:0}to{scale:1;opacity:1}}
 /* dock */
-#dock{position:relative;z-index:12;display:grid;grid-template-columns:repeat(5,1fr);padding-bottom:env(safe-area-inset-bottom);border-width:1px 0 0}
+#dock{position:relative;z-index:12;display:grid;grid-template-columns:repeat(6,1fr);padding-bottom:env(safe-area-inset-bottom);border-width:1px 0 0}
 #dock button{position:relative;background:none;border:0;min-height:54px;min-width:44px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--mute);border-top:2px solid transparent;padding:4px 0;transition:color .15s,background .15s}
 #dock button svg{width:23px;height:23px;transition:transform .25s var(--spring)}
 #dock button span{font-family:var(--head);font-size:10px;letter-spacing:.1em;text-transform:uppercase;line-height:1}
@@ -364,3 +364,18 @@ a{text-decoration:none}
 .txin{flex:1;min-width:0;height:38px;background:var(--ink);border:1px solid var(--line);color:var(--bone);padding:0 10px;font:16px var(--body);user-select:text;-webkit-user-select:text}
 .pinkbar{background:rgba(212,101,74,.25);text-align:center;padding:8px;font:600 16px var(--head);letter-spacing:.04em}.pinkbar b{color:var(--signal)}
 img.bsvg{object-fit:contain;-webkit-user-drag:none}
+
+/* floating base buttons: off centre over the scene */
+#float{position:absolute;inset:0;z-index:5;pointer-events:none;display:none}#float.on{display:block}
+#float .fl{position:absolute;pointer-events:auto;width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 35% 30%,#5b6469,#22292d);border:3px solid var(--brass);box-shadow:0 4px 10px rgba(0,0,0,.6);color:var(--bone);padding:0}
+#float .fl svg{width:30px;height:30px}
+#float .fl small{position:absolute;left:50%;bottom:-8px;transform:translateX(-50%);background:rgba(6,8,9,.92);padding:2px 6px;font:700 11px/1 var(--head);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+#float .fl.cd{filter:saturate(.5)}
+#float .gift{right:8px;top:8px;border-radius:6px}#float .evt{left:0;top:38%;border-radius:0 8px 8px 0;border-left:0;width:44px;height:44px}
+#float .hro{right:8px;top:38%;overflow:visible}#float .hro i{width:100%;height:100%;border-radius:50%;overflow:hidden;display:block}#float .hro i svg,#float .hro i img{width:100%;height:100%}
+#float .dot{position:absolute;right:-1px;top:-1px;width:14px;height:14px;border-radius:50%;background:#e2402c;border:2px solid #fff}
+#float .sup{left:8px;bottom:14px}#float .fdi{left:50%;margin-left:-27px;bottom:18px}#float .hsk{right:8px;bottom:14px}
+#float .hot{animation:chipp 1s ease-in-out infinite}
+#float .bdg{right:-4px;top:-4px;left:auto}
+.qs{padding-right:64px;flex-wrap:wrap}#dock button svg{width:21px;height:21px}
+.qs{flex-wrap:nowrap}.qs .btn{flex:none}
