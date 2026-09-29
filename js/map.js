@@ -104,11 +104,13 @@ function drawMap(now) {
     g.fillStyle = 'rgba(0,0,0,.32)'; g.beginPath(); g.ellipse(cxp, cyp + hh * .1, dsz * .32, dsz * .13, 0, 0, 7); g.fill();
     if (t.kind === 'pbase') { g.globalAlpha = .25 + pulse2 * .3; g.strokeStyle = '#e0a44a'; g.lineWidth = 2; g.beginPath(); g.ellipse(cxp, cyp, ts * (1.5 + pulse2 * .35), ts * (.75 + pulse2 * .18), 0, 0, 7); g.stroke(); g.globalAlpha = 1; }
     g.drawImage(f, ox, oy, dsz, dsz);
-    if (t.kind === 'base') { const fx = cxp + dsz * .22, fy = oy + dsz * .1; g.fillStyle = alColor(t.bot.al); g.fillRect(fx, fy, ts * .06, ts * .5); g.fillRect(fx + ts * .06, fy, ts * .3, ts * .2); }
+    if (t.kind === 'base') { const fx = cxp + dsz * .22, fy = oy + dsz * .1; g.fillStyle = alColor(t.bot.al); g.fillRect(fx, fy, ts * .06, ts * .5); g.fillRect(fx + ts * .06, fy, ts * .3, ts * .2);
+      if (t.bot.shieldUntil > Date.now()) { g.save(); g.strokeStyle = 'rgba(200,235,255,.75)'; g.fillStyle = 'rgba(200,235,255,.14)'; g.lineWidth = 1; g.beginPath(); g.ellipse(cxp, cyp - hh * .2, ts * 1.15, ts * 1.05, 0, Math.PI, 0); g.lineTo(cxp + ts * 1.15, cyp - hh * .2); g.ellipse(cxp, cyp - hh * .2, ts * 1.15, ts * .5, 0, 0, Math.PI); g.closePath(); g.fill(); g.stroke(); for (let k = -2; k <= 2; k++) { g.beginPath(); g.ellipse(cxp, cyp - hh * .2, ts * 1.15 * Math.abs(k) / 3 + .01, ts * 1.05, 0, Math.PI, 0); g.stroke(); } g.restore(); }
+      if (ts >= 18) { g.font = `600 ${clamp(Math.round(ts * .42), 10, 15)}px "Barlow Condensed",sans-serif`; const nm = t.bot.cmd, wv = g.measureText(nm).width + 10; g.fillStyle = 'rgba(10,13,14,.78)'; g.fillRect(cxp - wv / 2, cyp + hh * .75, wv, ts * .5); g.fillStyle = alColor(t.bot.al); g.fillText(nm, cxp, cyp + hh * .75 + ts * .26); } }
     const bx = cxp + ts * .5, by = cyp + hh * .5, bw = ts * .44;
     if (t.kind === 'node') { if (t.node.rich) { g.strokeStyle = `rgba(224,164,74,${.5 + pulse * .5})`; g.lineWidth = 2; g.beginPath(); diamond(g, cxp, cyp, ts, .88); g.stroke(); }
       if (detail) { g.fillStyle = 'rgba(10,13,14,.85)'; g.fillRect(bx - bw / 2, by - bw / 2, bw, bw); g.fillStyle = t.node.rich ? '#e0a44a' : '#e7e4da'; g.font = `700 ${Math.round(ts * .34)}px "Barlow Condensed",sans-serif`; g.fillText(String(t.node.grade), bx, by + 1); } else { g.fillStyle = '#e7e4da'; g.strokeStyle = 'rgba(10,13,14,.9)'; g.lineWidth = 3; g.font = `700 ${Math.round(ts * .6)}px "Barlow Condensed",sans-serif`; g.strokeText(String(t.node.grade), cxp, cyp); g.fillText(String(t.node.grade), cxp, cyp); } }
-    if ((t.kind === 'monster' || t.kind === 'camp') && detail) { g.fillStyle = 'rgba(60,15,10,.92)'; g.fillRect(bx - bw / 2, by - bw / 2, bw, bw); g.fillStyle = '#ff9a6a'; g.font = `700 ${Math.round(ts * .34)}px "Barlow Condensed",sans-serif`; g.fillText(String(t.grade), bx, by + 1); }
+    if ((t.kind === 'monster' || t.kind === 'camp') && ts >= 16) { const w0 = ts * 1.3, x0b = cxp - w0 / 2, y0b = oy - 2; g.fillStyle = '#ff9a6a'; g.font = `700 ${clamp(Math.round(ts * .4), 10, 14)}px "Barlow Condensed",sans-serif`; g.textAlign = 'left'; g.strokeStyle = 'rgba(10,13,14,.9)'; g.lineWidth = 3; g.strokeText('Lv ' + t.grade, x0b, y0b - 6); g.fillText('Lv ' + t.grade, x0b, y0b - 6); g.textAlign = 'center'; g.fillStyle = 'rgba(10,13,14,.85)'; g.fillRect(x0b, y0b, w0, 4); g.fillStyle = '#d4443a'; g.fillRect(x0b, y0b, w0, 4); }
   }
   // marches and incoming
   MAP.marks = [];
@@ -133,7 +135,7 @@ function drawMap(now) {
   for (const tg of MAP.hideTags ? [] : MAP.tags) { const px = w2sx(tg.x, tg.y), py = w2sy(tg.x, tg.y) - (Math.hypot(tg.x - S.base.x, tg.y - S.base.y) < 2.2 || S.bots.some(b => Math.hypot(tg.x - b.x, tg.y - b.y) < 2.2) ? ts * 1.5 : 0); const edge = Math.min(px, py, w - px, h - py); if (edge < -20) continue; const a = clamp(edge / 70, 0, 1) * (ts < 18 && tg.n < 40 ? 0 : 1); if (a <= 0.02) continue; g.globalAlpha = a; g.strokeText(tg.t, px, py); g.fillStyle = tg.c; g.fillText(tg.t, px, py); } g.globalAlpha = 1;
   // vignette
   const vg = g.createRadialGradient(w / 2, h / 2, Math.min(w, h) * .45, w / 2, h / 2, Math.max(w, h) * .75); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,.45)'); g.fillStyle = vg; g.fillRect(0, 0, w, h);
-  { const u = document.getElementById('utc'); if (u) u.textContent = 'UTC ' + new Date().toISOString().slice(5, 19).replace('T', ' '); } drawMini(); document.getElementById('coord').textContent = `${Math.round(MAP.cx)},${Math.round(MAP.cy)} · ×${(ts / 28).toFixed(1)}`;
+  { const u = document.getElementById('utc'); if (u) u.textContent = 'UTC ' + new Date().toISOString().slice(5, 19).replace('T', ' '); } drawMini(); document.getElementById('coord').innerHTML = `<span class="pin"></span><span class="km">KM ${Math.round(Math.hypot(MAP.cx - S.base.x, MAP.cy - S.base.y))}</span><span class="xy">X:${Math.round(MAP.cx)} Y:${Math.round(MAP.cy)}</span><button data-a="mgo" aria-label="Go to coordinates">⌕</button>`;
   positionRadial();
 }
 
