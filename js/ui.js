@@ -25,7 +25,7 @@ const UI = {
   page: 'map', drawer: null, dt: { desk: 'train', hero: 'forge', alliance: 'throne', mail: 'rep', march: 'cols' }, sheet: null,
   comp: { inf: 0, arm: 0, air: 0, siege: 0, hero: false }, rcomp: { inf: 0, arm: 0, air: 0, siege: 0, hero: false },
   tr: { cls: 'inf', tier: 1, n: 0 }, wl: { cls: 'sent', tier: 1, n: 0 }, lab: 'combat', med: 'depot', fg: 3,
-  cr: { slot: 'weapon', sel: {}, shard: '', stat: 'training' }, rl: { target: 'citadel', wait: 0, slots: 0 }, sel: null, dirty: true, ready: {}, flyAt: 0, chips: '', plate: '', pills: '', qbar: ''
+  cr: { slot: 'weapon', sel: {}, shard: '', stat: 'training' }, rl: { target: 'citadel', wait: 0, slots: 0 }, sel: null, dirty: true, ready: {}, flyAt: 0, chips: '', plate: '', pills: '', qbar: '', prod: '', dbtn: ''
 };
 
 /* ---------------- feedback: toast, tone, haptics ---------------- */
@@ -79,48 +79,43 @@ function oddsText(D_, col, hero) { if (!sumCol(col)) return ''; const r = fight(
 function watchPhrase() { const h = new Date().getHours(); return h >= 5 && h < 8 ? ['Dawn wash', 'dawn'] : h >= 8 && h < 17 ? ['Day watch', 'day'] : h >= 17 && h < 20 ? ['Dusk wash', 'dusk'] : ['Night telemetry', 'night']; }
 const CHIP_ORDER = ['rations', 'fuel', 'alloy', 'power', 'cash'];
 const ago = ms => fmtT(Math.max(0, ms) / 1000);
-function crestSVG(n) { return `<svg viewBox="0 0 44 50" class="crest"><path d="M22 2l18 6v15c0 12-8 20-18 25C12 43 4 35 4 23V8z" fill="#171c1f" stroke="#e0a44a" stroke-width="2.4"/><path d="M22 7l13 4.4V23c0 9-6 15-13 19.4C15 38 9 32 9 23V11.4z" fill="url(#gF)" stroke="rgba(224,164,74,.45)" stroke-width="1"/><text x="22" y="30" text-anchor="middle" font-family="Barlow Condensed,sans-serif" font-weight="700" font-size="${n > 9 ? 20 : 24}" fill="#e0a44a">${n}</text></svg>`; }
-function pill(cls, ico, txt, sub, act) { return `<${act ? 'button ' + act : 'div'} class="pill ${cls}">${ico}<span><b>${txt}</b><i>${sub}</i></span></${act ? 'button' : 'div'}>`; }
+const HUDTXT = { build: 'Constructing', train: 'Training', res: 'Researching', heal: 'Healing', wall: 'Crewing wall' };
+function powerScore() { let p = 0; for (const k in S.troops) p += S.troops[k] * (+k.slice(-1) || 1) * 4; for (const ar of ['in', 'out']) for (const b of S.plots[ar]) if (b) p += b.l * 60; return p + S.hero.rank * 300; }
 function renderTop() {
   const [ph, cl] = watchPhrase(); document.body.className = 'wash-' + cl;
-  const now = Date.now(), L = ccLevel(), cap = storeCap(), hr = hourly(), troops = Object.values(S.troops).reduce((a, b) => a + b, 0), hero = HEROES[S.hero.id];
-  const plate = `${crestSVG(L)}<span class="pn2"><b>Iron March <em>${S.al[0].tag}</em></b><i>CC ${L} · Score ${fmtN(S.score)}</i><i class="mut">${ph}</i></span>`;
-  if (plate !== UI.plate) { UI.plate = plate; $('#plate').innerHTML = plate; }
-  const sh = S.shield.until > now, hs = S.hero.captured ? 'Captured' : heroLocked() ? 'On march' : 'Ready';
-  const pills = pill(sh ? (inForest() ? 'warn' : 'ok') : 'dim', svg('base').replace(/stroke="[^"]+"/, 'stroke="currentColor"'), sh ? ago(S.shield.until - now) : 'Down', inForest() && sh ? 'Shield · void' : 'Shield')
-    + pill('', svg('train').replace(/stroke="[^"]+"/, 'stroke="currentColor"'), fmtN(troops), 'Troops · ' + fmtN(woundedTotal()) + ' hurt')
-    + pill(S.hero.captured ? 'bad' : '', svg('hero').replace(/stroke="[^"]+"/, 'stroke="currentColor"'), hero.n.split(' ')[0], 'R' + S.hero.rank + ' · ' + hs)
-    + pill(S.incoming.length ? 'bad blink2' : 'dim', svg('alliance').replace(/stroke="[^"]+"/, 'stroke="currentColor"'), S.incoming.length ? ago(Math.min(...S.incoming.map(i => i.end)) - now) : 'Clear', S.incoming.length ? S.incoming.length + ' inbound' : 'Threats');
-  if (pills !== UI.pills) { UI.pills = pills; $('#pills').innerHTML = pills; }
-  const html = CHIP_ORDER.map(r => { const f = S.res[r] / cap, full = f >= 0.97; return `<button class="chip ${full ? 'full' : ''}" data-a="drawer" data-id="hero" data-tab="store" title="${RESN[r]} ${fmtN(S.res[r])} / ${fmtN(cap)}">${svg(r)}<b class="num">${fmtN(S.res[r])}</b><small class="num">${full ? 'FULL' : '+' + fmtN(hr[r] || 0) + '/h'}</small><i class="mtr"><u style="width:${Math.min(100, f * 100).toFixed(0)}%;background:${ICOL[r]}"></u></i></button>`; }).join('')
-    + `<button class="chip dia" data-a="drawer" data-id="hero" data-tab="store" title="Diamonds">${svg('dia')}<b class="num">${fmtN(S.dia)}</b><small class="num">Buy +</small><i class="mtr"><u style="width:100%;background:${ICOL.dia}"></u></i></button>`;
+  const now = Date.now(), L = ccLevel(), cap = storeCap(), hr = hourly(), hero = HEROES[S.hero.id];
+  const port = `${heroSVG(S.hero.id)}<i class="lvl num">${L}</i>${S.hero.captured || S.incoming.length ? '<em class="dot"></em>' : ''}`;
+  if (port !== UI.plate) { UI.plate = port; $('#port').innerHTML = port; }
+  const sh = S.shield.until > now, pw = `<span class="pl">Power</span><b class="num">${fmtN(powerScore())}</b><span class="ps">${sh ? 'Shield ' + ago(S.shield.until - now) : 'No shield'} · ${S.incoming.length ? '<em class="sg">' + S.incoming.length + ' inbound ' + ago(Math.min(...S.incoming.map(i => i.end)) - now) + '</em>' : 'Radar clear'}</span>`;
+  if (pw !== UI.pills) { UI.pills = pw; $('#power').innerHTML = pw; }
+  $('#power').classList.toggle('alert', S.incoming.length > 0);
+  const db = `${svg('dia')}<b class="num">${fmtN(S.dia)}</b><em>+</em>`; if (db !== UI.dbtn) { UI.dbtn = db; $('#dbtn').innerHTML = db; }
+  const html = CHIP_ORDER.map(r => { const f = S.res[r] / cap, full = f >= 0.97; return `<button class="chip ${full ? 'full' : ''}" data-a="drawer" data-id="hero" data-tab="store" title="${RESN[r]} ${fmtN(S.res[r])} / ${fmtN(cap)}">${svg(r)}<b class="num">${fmtN(S.res[r])}</b><small class="num">${full ? 'FULL' : '+' + fmtN(hr[r] || 0) + '/h'}</small><i class="mtr"><u style="width:${Math.min(100, f * 100).toFixed(0)}%;background:${ICOL[r]}"></u></i></button>`; }).join('');
   if (html !== UI.chips) { UI.chips = html; $('#chips').innerHTML = html; }
   $('#alarm').classList.toggle('on', S.incoming.length > 0);
   const set = setBonus(), au = $('#aura'); if (set) { au.className = 'on'; au.style.boxShadow = `inset 0 0 0 2px ${SETS[set].aura}66, inset 0 0 40px ${SETS[set].aura}33`; } else au.className = '';
 }
+/* production bar: the job that finishes first, with Speed Up like the reference HUD */
 function renderTicker() {
-  const now = Date.now(), p = [];
-  for (const i of S.incoming) p.push(`<span class="sg">${i.rally ? 'Rally' : 'Contact'} ${i.name} <b class="sg">${ago(i.end - now)}</b></span>`);
-  const l = S.log[0]; const el = $('#ticker');
-  el.innerHTML = p.length ? p.join(' · ') : l ? `<b>Latest</b> ${l.m}` : 'All quiet';
+  const now = Date.now(), js = S.jobs.slice().sort((a, b) => a.end - b.end), j = js[0];
+  let h;
+  if (j) { const f = clamp((now - j.start) / Math.max(1, j.end - j.start), 0, 1); h = `<div class="pbar"><u style="width:${(f * 100).toFixed(1)}%"></u><span>${HUDTXT[j.kind] || j.kind} ${j.why || ''}${js.length > 1 ? ' <em>+' + (js.length - 1) + ' more</em>' : ''}</span><b class="num">${ago(j.end - now)}</b></div><button class="speed" data-a="rush" data-id="${j.id}">Speed Up</button>`; }
+  else h = `<div class="pbar idle"><span>Queues idle</span></div><button class="speed go" data-a="wing" data-w="train">Train</button>`;
+  if (h !== UI.prod) { UI.prod = h; $('#prod').innerHTML = h; }
 }
-/* bottom queue bar: every timer the player is waiting on, tap to open its screen */
+/* bottom: tips banner (next thing to do) and alliance chat strip */
+function tipNow() {
+  const now = Date.now(); if (S.incoming.length) { const i = S.incoming.slice().sort((a, b) => a.end - b.end)[0]; return [`Incoming ${i.rally ? 'rally' : 'attack'} from ${i.name}: ${ago(i.end - now)}`, 'data-a="dock" data-k="base"', 1]; }
+  if (!S.jobs.some(j => j.kind === 'build')) return ['Build queue empty. Upgrade a building.', 'data-a="dock" data-k="base"']; if (!S.jobs.some(j => j.kind === 'train')) return ['Barracks idle. Train troops.', 'data-a="wing" data-w="train"'];
+  if (!S.jobs.some(j => j.kind === 'res')) return ['Lab idle. Start a research.', 'data-a="wing" data-w="lab"']; if (!S.marches.length) return ['Hunt a monster pack to win a rich vein.', 'data-a="dock" data-k="map"'];
+  return ['Eliminate the nearest raider camp.', 'data-a="dock" data-k="map"'];
+}
 function renderQueues() {
-  const now = Date.now(), q = [];
-  const job = (kind, ico, name, act, cap) => {
-    const js = S.jobs.filter(j => j.kind === kind), j = js[0], f = j ? clamp((now - j.start) / Math.max(1, j.end - j.start), 0, 1) : 0;
-    q.push(`<button class="qc ${j ? 'run' : ''}" ${act}><span class="qh">${icoStroke(ico)}<b>${name}</b></span><i class="num">${j ? ago(j.end - now) + (js.length > 1 ? ' +' + (js.length - 1) : '') : 'Idle'}</i><u style="width:${(f * 100).toFixed(0)}%"></u></button>`);
-  };
-  job('build', 'base', 'Build', 'data-a="dock" data-k="base"', S.builders);
-  job('train', 'train', 'Train', 'data-a="wing" data-w="train"');
-  job('res', 'lab', 'Lab', 'data-a="wing" data-w="lab"');
-  job('heal', 'med', 'Heal', 'data-a="wing" data-w="med"');
-  job('wall', 'alliance', 'Wall', 'data-a="wing" data-w="wall"');
-  const ms = S.marches.filter(m => m.kind !== 'scout'), nx = ms.filter(m => m.end < FOREVER).sort((a, b) => a.end - b.end)[0];
-  q.push(`<button class="qc ${ms.length ? 'run' : ''}" data-a="drawer" data-id="march" data-tab="cols"><span class="qh">${icoStroke('march')}<b>Cols</b></span><i class="num">${ms.length}/${marchQueues()}${nx ? ' ' + ago(nx.end - now) : ''}</i></button>`);
-  const html = q.join(''); if (html !== UI.qbar) { UI.qbar = html; $('#qbar').innerHTML = html; }
+  const [t, act, hot] = tipNow(), log = S.log.slice(0, 2);
+  const html = `<button class="tips ${hot ? 'hot' : ''}" ${act}><i>TIPS</i><span>${t}</span></button><div class="chat"><svg viewBox="0 0 24 24" class="cico"><path d="M4 5h16v11H9l-5 4z" fill="#5ec4d4" stroke="#0e1113" stroke-width="1.4"/></svg><div>${log.length ? log.map(l => `<p><b>SYSTEM:</b> ${l.m}</p>`).join('') : '<p><b>SYSTEM:</b> All quiet.</p>'}</div><button class="btn sm pri2" data-a="dock" data-k="alliance" aria-label="Alliance">${svg('alliance').replace(/stroke="[^"]+"/, 'stroke="currentColor"')}</button></div>`;
+  if (html !== UI.qbar) { UI.qbar = html; $('#qbar').innerHTML = html; }
 }
-const TABS = [['map', 'World Map'], ['base', 'Base'], ['hero', 'Hero/Forge'], ['alliance', 'Alliance'], ['mail', 'Mail']];
+const TABS = [['map', 'World Map'], ['base', 'Base'], ['hero', 'Hero'], ['alliance', 'Alliance'], ['mail', 'Mail']];
 function renderDock() {
   const cur = ['hero', 'alliance', 'mail'].includes(UI.drawer) ? UI.drawer : UI.page, unread = S.reports.filter(r => r.id > (S.readTo || 0)).length;
   $('#dock').innerHTML = TABS.map(([k, n]) => `<button data-a="dock" data-k="${k}" class="${cur === k ? 'on' : ''}">${svg(k).replace(/stroke="[^"]+"/, 'stroke="currentColor"')}${k === 'mail' && unread ? `<em class="bdg">${Math.min(unread, 9)}</em>` : ''}${k === 'base' && Object.keys(UI.ready).length ? `<em class="bdg ok">${Math.min(Object.keys(UI.ready).length, 9)}</em>` : ''}${k === 'hero' && S.hero.captured ? `<em class="bdg">!</em>` : ''}${k === 'alliance' && S.incoming.some(i => i.rally) ? `<em class="bdg">!</em>` : ''}<span>${n}</span></button>`).join('');
@@ -405,6 +400,7 @@ const A = {
     D();
   },
   drawer(d) { openDrawer(d.id, d.tab); }, dtab(d) { UI.dt[UI.drawer] = d.k; D(); }, closedrawer() { UI.drawer = null; D(); },
+  'plot-cc'() { const t = plotOf('cc'); if (t) { UI.page = 'base'; sheetOpen({ type: 'plot', area: t.ar, idx: t.i }); } },
   closesheet() { UI.sheet = null; UI.sel = null; D(); },
   scrim() { if (UI.drawer) UI.drawer = null; else { UI.sheet = null; UI.sel = null; } D(); },
   details(d) { closeRadial(); UI.sel = { x: +d.x, y: +d.y }; UI.sheet = { type: 'tile', x: +d.x, y: +d.y }; UI.drawer = null; D(); },
