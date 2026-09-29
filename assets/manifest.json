@@ -1,5 +1,5 @@
 {
-  "_comment": "Empty on purpose. Add file paths here and the game uses them instead of the built-in vector art. See docs/ART_SPEC.md.",
-  "buildings": {},
-  "map": {}
+ "v": 2,
+ "_comment": "Written by tools/ingest.py. Maps an asset key from assets/catalog.json to its image file.",
+ "files": {}
 }

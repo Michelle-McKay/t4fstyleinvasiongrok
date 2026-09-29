@@ -11,7 +11,8 @@ Open `index.html` (or serve the folder statically). Barlow Condensed and Source 
 - `js/art.js` — sprite helpers and the first-generation art (kept as fallback)
 - `js/art2.js`, `js/art3.js` — building art v2: shaded 2.5D SVG toolkit, five material tiers, 15 buildings and 25 Command Center looks
 - `js/art4.js` — map feature art v2: forest, wild ground, resource nodes by grade, monsters, camps, outposts, player HQ, citadel
-- `js/assets.js` — optional real art: drop images in `assets/` and list them in `assets/manifest.json` (see `docs/ART_SPEC.md`)
+- `js/assets.js` — painted-art loader: uses images from `assets/` when `assets/manifest.json` lists them, otherwise the vector art (see `docs/ART_SPEC.md`)
+- `tools/artcatalog.js` lists every paintable asset with its AI prompt; `tools/ingest.py` resizes, cuts backgrounds and updates the manifest
 - `js/bld.js` — per-building sheets: details, options, upgrade requirement tree rooted in the rural buildings
 - `js/art5.js` — art v3 troops: 16 unit sprites (4 classes × 4 tiers), shared shading helpers and tier palettes
 - `js/art6.js` — art v3 wall crews (16), hero portraits, gear icons for all five slots by grade and set, bar icons
