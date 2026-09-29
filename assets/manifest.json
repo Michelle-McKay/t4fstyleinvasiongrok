@@ -3,6 +3,7 @@
  "_comment": "Written by tools/ingest.py. files maps an asset key from assets/catalog.json to its image; clean lists the keys made in the current bright clean-industrial look (the rest are the old dark look, kept until replaced).",
  "files": {
   "bld_alloy_t1": "assets/buildings/bld_alloy_t1.webp",
+  "bld_alloy_t2": "assets/buildings/bld_alloy_t2.webp",
   "bld_defense_t1": "assets/buildings/bld_defense_t1.webp",
   "bld_defense_t2": "assets/buildings/bld_defense_t2.webp",
   "bld_defense_t3": "assets/buildings/bld_defense_t3.webp",
@@ -65,6 +66,7 @@
  },
  "clean": [
   "bld_alloy_t1",
+  "bld_alloy_t2",
   "bld_defense_t1",
   "bld_defense_t2",
   "bld_defense_t3",
