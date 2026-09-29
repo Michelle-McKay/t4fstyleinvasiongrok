@@ -67,7 +67,10 @@ function drawMap(now) {
     if (cxp < -ts * 2 || cxp > w + ts * 2 || cyp < -ts * 3 || cyp > h + ts * 2) continue;
     const t = tileInfo(x, y), v = Math.floor(hx(x, y, 3) * 8);
     const base = t.terr === 'throne' || t.terr === 'plaza' ? 'plaza' : t.terr === 'forest' ? 'forest' : 'wild';
-    g.setTransform(dpr * ts, dpr * hh, -dpr * ts, dpr * hh, dpr * cxp, dpr * (cyp - hh)); g.drawImage(terrainSprite(base, v), -.015, -.015, 1.03, 1.03); g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    let fd = 1; // forest density: clumped noise so woods have clearings and thin edges instead of a repeating carpet
+    if (base === 'forest') { fd = hx(Math.floor(x / 4), Math.floor(y / 4), 11) * .65 + hx(x, y, 12) * .35; g.fillStyle = mixHex('#14261b', '#1d3a22', hx(x, y, 13)); g.beginPath(); diamond(g, cxp, cyp, ts, 1.01); g.fill(); }
+    if (fd >= .3) { g.globalAlpha = base === 'forest' ? clamp((fd - .3) / .25, .35, 1) : 1; g.setTransform(dpr * ts, dpr * hh, -dpr * ts, dpr * hh, dpr * cxp, dpr * (cyp - hh)); g.drawImage(terrainSprite(base, v), -.015, -.015, 1.03, 1.03); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.globalAlpha = 1; }
+    else if (ts >= 20 && hx(x, y, 14) < .5) tree(g, cxp + (hx(x, y, 15) - .5) * ts * .8, cyp + (hx(x, y, 16) - .5) * hh * .6, ts, hx(x, y, 17) * .6);
     if (t.owner != null && !MAP.hideTerr) {
       const c = alColor(t.owner); g.globalAlpha = .2; g.fillStyle = c; g.beginPath(); diamond(g, cxp, cyp, ts); g.fill(); g.globalAlpha = 1;
       g.strokeStyle = c; const e = Math.max(2, ts / 9); g.lineCap = 'round';
