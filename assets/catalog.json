@@ -496,6 +496,86 @@
   },
   {
    "group": "bld",
+   "key": "bld_embassy_t1",
+   "name": "Embassy tier 1",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_embassy_t2",
+   "name": "Embassy tier 2",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_embassy_t3",
+   "name": "Embassy tier 3",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_embassy_t4",
+   "name": "Embassy tier 4",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_embassy_t5",
+   "name": "Embassy tier 5",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_forge_t1",
+   "name": "Forge tier 1",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_forge_t2",
+   "name": "Forge tier 2",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_forge_t3",
+   "name": "Forge tier 3",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_forge_t4",
+   "name": "Forge tier 4",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
+   "key": "bld_forge_t5",
+   "name": "Forge tier 5",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "bld",
    "key": "bld_rations_t1",
    "name": "Rations tier 1",
    "size": "1:1, 1024 x 1024",
@@ -655,86 +735,6 @@
    "out": 512
   },
   {
-   "group": "bld",
-   "key": "bld_embassy_t1",
-   "name": "Embassy tier 1",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 512
-  },
-  {
-   "group": "bld",
-   "key": "bld_embassy_t2",
-   "name": "Embassy tier 2",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 512
-  },
-  {
-   "group": "bld",
-   "key": "bld_embassy_t3",
-   "name": "Embassy tier 3",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 512
-  },
-  {
-   "group": "bld",
-   "key": "bld_embassy_t4",
-   "name": "Embassy tier 4",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 512
-  },
-  {
-   "group": "bld",
-   "key": "bld_embassy_t5",
-   "name": "Embassy tier 5",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 512
-  },
-  {
-   "group": "bld",
-   "key": "bld_forge_t1",
-   "name": "Forge tier 1",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 512
-  },
-  {
-   "group": "bld",
-   "key": "bld_forge_t2",
-   "name": "Forge tier 2",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 512
-  },
-  {
-   "group": "bld",
-   "key": "bld_forge_t3",
-   "name": "Forge tier 3",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 512
-  },
-  {
-   "group": "bld",
-   "key": "bld_forge_t4",
-   "name": "Forge tier 4",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 512
-  },
-  {
-   "group": "bld",
-   "key": "bld_forge_t5",
-   "name": "Forge tier 5",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 512
-  },
-  {
    "group": "head",
    "key": "head_cc",
    "name": "Command Center backdrop",
@@ -824,6 +824,22 @@
   },
   {
    "group": "head",
+   "key": "head_embassy",
+   "name": "Embassy backdrop",
+   "size": "2:1 wide, 1600 x 800",
+   "transparent": false,
+   "out": 1000
+  },
+  {
+   "group": "head",
+   "key": "head_forge",
+   "name": "Forge backdrop",
+   "size": "2:1 wide, 1600 x 800",
+   "transparent": false,
+   "out": 1000
+  },
+  {
+   "group": "head",
    "key": "head_rations",
    "name": "Rations backdrop",
    "size": "2:1 wide, 1600 x 800",
@@ -850,22 +866,6 @@
    "group": "head",
    "key": "head_alloy",
    "name": "Alloy backdrop",
-   "size": "2:1 wide, 1600 x 800",
-   "transparent": false,
-   "out": 1000
-  },
-  {
-   "group": "head",
-   "key": "head_embassy",
-   "name": "Embassy backdrop",
-   "size": "2:1 wide, 1600 x 800",
-   "transparent": false,
-   "out": 1000
-  },
-  {
-   "group": "head",
-   "key": "head_forge",
-   "name": "Forge backdrop",
    "size": "2:1 wide, 1600 x 800",
    "transparent": false,
    "out": 1000

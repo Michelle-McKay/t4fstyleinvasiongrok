@@ -16,7 +16,7 @@ function newState() {
   const inner = Array(25).fill(null), outer = Array(25).fill(null);
   const put = (arr, i, b, l) => { arr[i] = { b, l }; };
   put(inner, 12, 'cc', 6); put(inner, 7, 'mil', 6); put(inner, 11, 'depot', 4); put(inner, 13, 'treasury', 3); put(inner, 17, 'tech', 4);
-  put(inner, 6, 'hall', 3); put(inner, 18, 'prison', 1); put(inner, 8, 'radar', 4); put(inner, 16, 'store', 4); put(inner, 2, 'defense', 4); put(inner, 22, 'market', 1);
+  put(inner, 6, 'hall', 3); put(inner, 18, 'prison', 1); put(inner, 8, 'radar', 4); put(inner, 16, 'store', 4); put(inner, 2, 'defense', 4); put(inner, 22, 'market', 1); put(inner, 14, 'embassy', 2); put(inner, 10, 'forge', 3);
   [[0, 'rations'], [1, 'rations'], [2, 'rations'], [5, 'fuel'], [6, 'fuel'], [10, 'power'], [11, 'power'], [15, 'alloy'], [16, 'alloy']].forEach(([i, b]) => put(outer, i, b, 4));
   const bots = [
     { n: 'Black Ridge', tag: 'BRG', cmd: 'Vex Marlow', color: 'ember', x: 340, y: 330, p: 1 },
@@ -40,7 +40,7 @@ function newState() {
     al: [{ n: 'Iron March', tag: 'IRM', color: 'brass' }].concat(bots.map(b => ({ n: b.n, tag: b.tag, color: b.color }))), bots,
     reports: [], log: [], score: 0, view: { x: 120, y: 220 }, market: { day: -1, offers: [] }, daily: '', kills: 0,
     next: { expand: now + 8000, atk: now + 100000, scout: now + 50000, throne: now + 360000, orders: now + 120000 },
-    scoutStamps: [], prod: {}, nid: 1
+    scoutStamps: [], prod: {}, reinf: [], nid: 1
   };
   const A = st.al; // starter territory blobs
   st.own = {};
@@ -117,6 +117,36 @@ function storeCapAt(L) { return L > 0 ? Math.floor(8000 * Math.pow(L, 1.5) * (1 
 function storeCap() { return storeCapAt(storeSum()); }
 function protectedFloor() { return 1200 * storeSum(); }
 function bedCap() { return Math.floor(500 * lvlSum('depot') * (1 + rv('beds'))); }
+function embCap() { return EMB_PER_LEVEL * lvlSum('embassy'); }
+function reinf() { return S.reinf || (S.reinf = []); }
+function embHosted() { let n = 0; for (const r of reinf()) n += sumCol(r.col); return n; }
+function embCol() { const c = {}; for (const r of reinf()) if (r.in) for (const k in r.col) c[k] = (c[k] || 0) + r.col[k]; return c; }
+function embLeft() { return Math.max(0, S.next.emb || 0) - Date.now(); }
+/* allied members of the home kingdom send troops; auto = the alliance answers an incoming attack on its own */
+function callAllies(auto) {
+  if (!hasB('embassy')) return 'Build an Embassy first.';
+  if (!auto && embLeft() > 0) return 'Allies are still mustering. Try again in ' + fmtT(embLeft() / 1000) + '.';
+  const room = embCap() - embHosted(); if (room < 60) return 'The Embassy is full. Send some allies home first.';
+  const L = lvlMax('embassy'), tmax = embTier(L), kd = kdGet(kHome()), al = kd ? kd.ally.name : S.al[0].n, names = S.roster.slice(), now = Date.now();
+  let left = room, sent = 0; const n = auto ? 2 : 3;
+  for (let i = 0; i < n && left >= 60; i++) {
+    const who = names.splice(rint(0, names.length - 1), 1)[0] || 'An ally', cls = pick(CLS), t = rint(1, tmax), k = ck(cls, t);
+    const q = Math.min(left, Math.round(rint(220, 520) / TCOST[t - 1] + L * 20)); if (q < 1) continue;
+    reinf().push({ id: S.nid++, who, al, k: kd ? kd.k : kHome(), col: { [k]: q }, at: now + rint(6000, 16000) }); left -= q; sent += q;
+  }
+  if (!auto) S.next.emb = now + EMB_CALL_MS;
+  if (sent) note((auto ? 'Your alliance answered the alarm: ' : 'Allies called: ') + fmtN(sent) + ' troops from ' + al + ' are marching to your Embassy.', 'good');
+  return sent ? null : 'No ally could spare troops.';
+}
+function tickEmbassy(now) {
+  let ch = false;
+  for (const r of reinf()) if (!r.in && now >= r.at) { r.in = true; ch = true; const k = Object.keys(r.col)[0]; note(r.who + ' reinforced you with ' + fmtN(r.col[k]) + ' ' + ckName(k) + '.', 'good'); }
+  return ch;
+}
+function sendAlliesHome(id) {
+  const list = reinf(), a = id == null ? list.slice() : list.filter(r => r.id === id); if (!a.length) return 'No such contingent.';
+  S.reinf = list.filter(r => !a.includes(r)); note(id == null ? 'All allied troops sent home.' : a[0].who + "'s troops sent home.", 'info'); return null;
+}
 function woundedTotal() { let s = 0; for (const k in S.wounded) s += S.wounded[k]; return s; }
 function sumCol(c) { let s = 0; for (const k in c) s += c[k]; return s; }
 function clsAvail(cls) { let s = 0; for (let t = 1; t <= 4; t++) s += S.troops[cls + t] || 0; return s; }
@@ -198,7 +228,8 @@ function wallStats() {
   const atk = (Math.floor(90 * Rr * (1 + m.wallAtk)) + DC * 40 + 0.25 * cAtk * (1 + m.wallAtk)) * (1 + m.helmet);
   return { hp, atk, crew, crewN: sumCol(crew) };
 }
-function playerDefSide() { const m = mods(); const w = wallStats(); return Object.assign(mkSide(S.troops, m.atk, m.hp, w), { plating: rv('plating') }); }
+function defCol() { const c = Object.assign({}, S.troops), e = embCol(); for (const k in e) c[k] = (c[k] || 0) + e[k]; return c; }
+function playerDefSide() { const m = mods(); const w = wallStats(); return Object.assign(mkSide(defCol(), m.atk, m.hp, w), { plating: rv('plating') }); }
 function attackerSide(col, hero) { const m = mods(hero); return Object.assign(mkSide(col, m.atk, m.hp), { plating: rv('plating') }); }
 function unitRows(side, res) { return side.units.map(u => [tierName(u.c, u.t), u.n, (res.lost && res.lost[u.k]) || 0, (res.wounded && res.wounded[u.k]) || 0]); }
 function boostRows(hero) {
@@ -632,7 +663,7 @@ function doTeleport(x, y) {
   const old = key(S.base.x, S.base.y), oldForest = inForest(), incs = S.incoming.slice();
   for (const inc of incs) { if (shieldOn()) { S.incoming = S.incoming.filter(i => i !== inc); S.shield.until = 0; note('The shield ate the hit from ' + inc.name + '.', 'good'); } else hitBase(inc, true); }
   if (k.kind === 'advanced') S.own[old] = k.o;
-  if (k.kind === 'novice') { S.novice = noviceLeft() - 1; S.kingdom = viewK(); disband(true); }
+  if (k.kind === 'novice') { S.novice = noviceLeft() - 1; S.kingdom = viewK(); disband(true); if (reinf().length) { S.reinf = []; note('Allied troops returned home when you left the kingdom.', 'info'); } }
   S.base = { x, y }; S.view = { x, y }; terrDirty = true;
   if (terrainAt(x, y) === 'forest') stripShield('forest teleport');
   note(k.kind === 'novice' ? 'Novice teleport to kingdom ' + S.kingdom + ' complete. ' + S.novice + ' left.' : (k.kind === 'alliance' ? 'Alliance teleport' : k.kind === 'advanced' ? 'Advanced teleport' : 'Teleport') + ' complete.', 'good'); return null;
@@ -652,7 +683,8 @@ function launchHostile() {
   const Dd = fight(Object.assign(mkSide({ inf1: 100 }, {}, 1)), d); Sd = Dd.Sd; Hd = Dd.Hd;
   const rally = Math.random() < 0.3, r = rnd(0.3, 1.3) * (rally ? 1.6 : 1), k = Math.sqrt(r), Sa = Math.max(600, Sd * k), Ha = Math.max(6000, Hd * k);
   const inc = { id: S.nid++, bot: bot.al, name: bot.tag + ' ' + bot.cmd, rally, start: Date.now(), end: Date.now() + rint(25000, 42000) + (rally ? 15000 : 0), S: Sa, H: Ha, n: Math.round(Ha / 110) };
-  S.incoming.push(inc); UIH.flash(rally ? 'rally' : 'attack'); note((rally ? 'Rally inbound: ' : 'Hostile contact: ') + inc.name + ' is marching on you.', 'bad');
+  S.incoming.push(inc); UIH.flash(rally ? 'rally' : 'attack');
+  if (hasB('embassy') && Math.random() < 0.7) callAllies(true); note((rally ? 'Rally inbound: ' : 'Hostile contact: ') + inc.name + ' is marching on you.', 'bad');
 }
 function hitBase(inc, instant) {
   S.incoming = S.incoming.filter(i => i !== inc);
@@ -666,11 +698,12 @@ function hitBase(inc, instant) {
   const wl = applyLoss(wallBefore, fdef * 0.8), rec = 0.5 + rv('repair'); const nw = {};
   for (const k in wallBefore) { const l = wl.lost[k] || 0, back = Math.round(l * Math.min(0.95, rec)); nw[k] = wallBefore[k] - l + back; if (!nw[k]) delete nw[k]; }
   S.wall = nw;
+  let allyLost = 0; for (const rn of reinf()) if (rn.in) { const al = applyLoss(rn.col, fdef); allyLost += sumCol(al.lost); rn.col = al.left; } S.reinf = reinf().filter(rn => sumCol(rn.col) > 0);
   let stolen = [];
   if (r.win) { const fl = protectedFloor(), retain = 1 - Math.min(0.9, rv('repair')); for (const rr of RES.slice(0, 4)) { const un = Math.max(0, S.res[rr] - fl), t = Math.floor(un * 0.08 * retain); S.res[rr] -= t; if (t) stolen.push(fmtN(t) + ' ' + RESN[rr]); } }
   const emptied = sumCol(S.troops) === 0 && sumCol(S.wall) === 0;
   let capt = false; if (emptied && r.win && heroOn() && !heroLocked()) { S.hero.captured = true; capt = true; }
-  pushReport({ title: (r.win ? 'Base hit by ' : 'Repelled ') + inc.name, win: !r.win, kind: 'defense', left: { name: 'You', rows: Object.keys(before).map(k => [ckName(k), before[k], (tres.lost[k]) || 0, (tres.wounded[k]) || 0]).concat(Object.keys(wallBefore).map(k => [ckName(k) + ' (wall)', wallBefore[k], (wl.lost[k]) || 0, 0])), boosts: [['Wall HP', fmtN(D.wall.hp)], ['Wall attack', fmtN(D.wall.atk)], ['Shield', 'down']] }, right: { name: inc.name, rows: [['Hostile column', inc.n, 0, 0]], boosts: [['Force ratio', r.q.toFixed(2)]] } });
+  pushReport({ title: (r.win ? 'Base hit by ' : 'Repelled ') + inc.name, win: !r.win, kind: 'defense', left: { name: 'You', rows: Object.keys(before).map(k => [ckName(k), before[k], (tres.lost[k]) || 0, (tres.wounded[k]) || 0]).concat(Object.keys(wallBefore).map(k => [ckName(k) + ' (wall)', wallBefore[k], (wl.lost[k]) || 0, 0])), boosts: [['Wall HP', fmtN(D.wall.hp)], ['Wall attack', fmtN(D.wall.atk)], ['Shield', 'down']].concat(embHosted() || allyLost ? [['Allied garrison lost', fmtN(allyLost)]] : []) }, right: { name: inc.name, rows: [['Hostile column', inc.n, 0, 0]], boosts: [['Force ratio', r.q.toFixed(2)]] } });
   note(r.win ? 'Base hit by ' + inc.name + (stolen.length ? '. Raided: ' + stolen.join(', ') : '') + (capt ? '. ' + HEROES[S.hero.id].n + ' captured' : '') + '.' : 'Repelled ' + inc.name + '.', r.win ? 'bad' : 'good');
   if (inForest() && !instant) { for (let i = 0; i < 400; i++) { const x = rint(20, W - 20), y = rint(20, H - 20); if (terrainAt(x, y) === 'wild' && legalSpot(x, y)) { S.base = { x, y }; S.view = { x, y }; note('Thrown from the forest to ' + x + ',' + y + '.', 'warn'); break; } } }
 }
@@ -728,8 +761,9 @@ function buySeals() { if (S.dia < 60) return 'Short of diamonds.'; dchg(-60, 'Re
 function buyToken(crate) { const c = crate ? 260 : 100; if (S.dia < c) return 'Short of diamonds.'; dchg(-c, crate ? 'Coordination Crate' : 'Coordination token'); S.tokens += crate ? 3 : 1; return null; }
 function daily() { const d = new Date().toDateString(); if (S.daily === d) return 'Exercise already run today.'; S.daily = d; S.tokens++; dchg(60, 'Daily exercise'); if (typeof addReward === 'function') addReward('Daily exercise prize', '10 Minute Speed Up x 1', { slips: { s5: 2 } }); note('Daily exercise done: 1 token, 60 diamonds, a prize in the Rewards Center.', 'good'); return null; }
 function gradeUnits() { let u = 0; for (let g = 1; g <= 6; g++) u += (S.bars[g] || 0) * Math.pow(4, g - 1); return u; }
-function refine(g) { if (g >= 6) return 'Grade 6 is the top.'; if ((S.bars[g] || 0) < 4) return 'Four bars of grade ' + g + ' needed.'; S.bars[g] -= 4; S.bars[g + 1] = (S.bars[g + 1] || 0) + 1; return null; }
+function refine(g) { if (!hasB('forge')) return 'Build a Forge first.'; if (g >= 6) return 'Grade 6 is the top.'; if (lvlMax('forge') < forgeGate(g)) return 'Forge ' + forgeGate(g) + ' needed to refine grade ' + g + '.'; if ((S.bars[g] || 0) < 4) return 'Four bars of grade ' + g + ' needed.'; S.bars[g] -= 4; S.bars[g + 1] = (S.bars[g + 1] || 0) + 1; return null; }
 function craft(slot, sel, shard, stat) {
+  if (!hasB('forge')) return 'Build a Forge first.';
   const tot = sumCol(sel); if (tot !== 4) return 'A craft spends exactly four bars.';
   for (const g in sel) if ((S.bars[g] || 0) < sel[g]) return 'Not enough grade ' + g + ' bars.';
   if (slot === 'accessory' && !stat) return 'Stamp Training or Yield.';
@@ -737,7 +771,8 @@ function craft(slot, sel, shard, stat) {
   for (const g in sel) S.bars[g] -= sel[g]; if (shard) S.shards[shard]--;
   let tw = 0; const ws = []; for (const g in sel) { const w = sel[g] * sel[g]; ws.push([+g, w]); tw += w; }
   let r = Math.random() * tw, grade = ws[0][0]; for (const [g, w] of ws) { r -= w; if (r <= 0) { grade = g; break; } }
-  const p = { id: S.nid++, slot, grade, set: shard || null, stat: slot === 'accessory' ? stat : null }; S.gear.pieces.push(p); note('Forged ' + slot + ' grade ' + grade + '.', 'good'); return null;
+  const up = grade < 6 && Math.random() < forgeUp(lvlMax('forge')); if (up) grade++;
+  const p = { id: S.nid++, slot, grade, set: shard || null, stat: slot === 'accessory' ? stat : null }; S.gear.pieces.push(p); note('Forged ' + slot + ' grade ' + grade + (up ? ' (the Forge lifted it a grade)' : '') + '.', 'good'); return null;
 }
 function wear(id) { const p = S.gear.pieces.find(x => x.id === id); if (!p) return 'No such piece.'; S.gear.worn[p.slot] = id; return null; }
 function rack(id) { const p = S.gear.pieces.find(x => x.id === id); if (!p) return 'No such piece.'; if (S.gear.worn[p.slot] === id) delete S.gear.worn[p.slot]; return null; }
@@ -756,6 +791,7 @@ function tick() {
     if (m.kind === 'rally' && m.phase === 'wait') { for (const j of m.joiners) if (!j.in && now >= j.at) { j.in = true; ch = true; } }
     if (now >= m.end) { stepMarch(m); ch = true; }
   }
+  if (tickEmbassy(now)) ch = true;
   for (const inc of S.incoming.slice()) if (now >= inc.end) { hitBase(inc); ch = true; }
   for (const k in S.encs) { const e = S.encs[k]; if (e.o !== 0 && now >= e.end) { const cur = S.own[k]; if (cur == null || cur === e.o) S.own[k] = e.o; delete S.encs[k]; terrDirty = true; ch = true; } }
   if (now > S.next.expand) { S.next.expand = now + rint(9000, 16000); botExpand(); ch = true; }

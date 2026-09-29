@@ -47,6 +47,8 @@ const DETAILS = {
     const w = wallStats(); return stat('Scan depth', `${R('recon')} / ${p.l}`) + stat('Wall base HP', fmtN(1400 * p.l * (1 + mods().wallHp))) + stat('Wall attack base', fmtN(90 * p.l * (1 + mods().wallAtk))) + stat('Anti-Scout', p.l >= 4 ? (S.anti ? 'on' : 'off') : 'needs level 4') + stat('Wall totals', `HP ${fmtN(w.hp)} · atk ${fmtN(w.atk)}`) + '<div class="sub mt">Scan 10 is the only scan that names a defending hero.</div>';
   },
   defense(p) { const w = wallStats(); return stat('Crew', `${w.crewN} / ${p.l * 40}`) + stat('Wall HP', fmtN(w.hp)) + stat('Wall attack', fmtN(w.atk)) + WT.map((x, i) => stat('Wall tier ' + (i + 1), p.l >= WALL_GATE[i] ? 'open' : 'Defense Center ' + WALL_GATE[i])).join(''); },
+  embassy(p) { const kd = kdGet(kHome()); return stat('Capacity', fmtN(embCap())) + stat('Hosted', fmtN(embHosted())) + stat('Best tier sent', 'Tier ' + embTier(p.l)) + stat('Alliance', (kd ? kd.ally.name : S.al[0].n) + ' · kingdom ' + kHome()) + '<div class="sub mt">Allies fight beside your troops and wall. Capacity counts every Embassy. Reinforcements go home if you leave the kingdom.</div>'; },
+  forge(p) { const fl = lvlMax('forge'); return stat('Grade-up chance', Math.round(forgeUp(fl) * 100) + '% per crafted piece') + [1, 2, 3, 4, 5].map(g => stat('Refine grade ' + g + ' to ' + (g + 1), fl >= forgeGate(g) ? 'open' : 'Forge ' + forgeGate(g))).join('') + stat('Bars in stock', gradeUnits() + ' / 1024') + stat('Pieces on the rack', S.gear.pieces.length); },
   market(p) { rollMarket(); return S.market.offers.map(o => { const it = MARKET_CAT.find(x => x.id === o.id); return stat(it.n, o.sold ? 'sold' : it.cost + '◆'); }).join('') + '<div class="sub mt">Three offers a day. Refresh costs 15 diamonds.</div>'; }
 };
 function actionsFor(p, ar, i) {
@@ -60,6 +62,8 @@ function actionsFor(p, ar, i) {
   if (b === 'prison') { a.push(act('buyseals', '5 seals', '60 diamonds.')); if (S.hero.captured) a.push(act('ransom', 'Free hero', 'Use a seal.')); }
   if (b === 'radar') { a.push(act('anti', 'Anti-Scout', p.l >= 4 ? (S.anti ? 'On. Tap to turn off.' : 'Off. Tap to turn on.') : 'Needs level 4.', '', p.l < 4)); a.push(act('lab:field', 'Recon', 'Research scan depth.')); }
   if (b === 'defense') { a.push(act('wing:wall', 'Open Wall', 'Crew the wall.')); a.push(act('lab:defense', 'Bulkheads', 'Research wall HP.')); }
+  if (b === 'embassy') { const cool = embLeft() > 0; a.push(act('wing:embassy', 'Open Embassy', 'Garrison list and send-home.')); a.push(act('embcall', 'Call allies', cool ? 'Mustering ' + fmtT(embLeft() / 1000) : 'Ask allies for troops.', '', cool || embHosted() >= embCap())); }
+  if (b === 'forge') { a.push(act('wing:forge', 'Open Forge', 'Refine bars and craft gear.')); }
   if (b === 'market') { a.push(act('wing:market', 'Open Market', 'Today\'s offers.')); }
   return a.join('');
 }
@@ -76,6 +80,8 @@ function nextGives(p) {
   else if (b === 'prison') out.push('Seal cap +1');
   else if (b === 'tech') out.push(L + 1 === 8 ? 'Opens tier 3 troops' : L + 1 === 12 ? 'Opens tier 4 troops' : 'Research access', '');
   else if (b === 'market') out.push('Longer shelf of offers');
+  else if (b === 'embassy') out.push('Capacity +' + fmtN(EMB_PER_LEVEL), (L + 1) % 8 === 0 ? 'Allies send tier ' + embTier(L + 1) : '');
+  else if (b === 'forge') out.push('Grade-up chance +2%', (L + 1) % 3 === 0 ? 'Refine grade ' + (L + 1) / 3 + ' bars' : '');
   return out.filter(Boolean);
 }
 function feedsHTML(p) {
@@ -108,7 +114,7 @@ Object.assign(A, {
     else if (id.startsWith('wing:')) { A.wing({ w: id.slice(5) }); return; }
     else if (id.startsWith('lab:')) { UI.lab = id.slice(4); openDrawer('desk', 'lab'); return; }
     else if (id === 'healt1') { const names = Object.keys(S.wounded).filter(k => k.endsWith('1') && S.wounded[k] > 0); for (const k of names) { const [c, t] = ckSplit(k); e = startHeal(c, t, S.wounded[k], false) || e; } }
-    else if (id === 'buyorders') e = buyOrders(); else if (id === 'buyseals') e = buySeals(); else if (id === 'ransom') e = ransom(true); else if (id === 'anti') { S.anti = !S.anti; }
+    else if (id === 'embcall') e = callAllies(false); else if (id === 'buyorders') e = buyOrders(); else if (id === 'buyseals') e = buySeals(); else if (id === 'ransom') e = ransom(true); else if (id === 'anti') { S.anti = !S.anti; }
     run(e);
   }
 });

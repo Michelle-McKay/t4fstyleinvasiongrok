@@ -29,6 +29,27 @@ function block(t, o) {
   return s;
 }
 const URBAN_DRAW = {
+  embassy(t) {
+    const m = MAT[t]; let s = pad(t, false);
+    const bunting = (x1, x2, y) => `<path d="M${x1} ${y}Q${(x1 + x2) / 2} ${y + 4} ${x2} ${y}" fill="none" stroke="${BR}" stroke-width=".8" stroke-dasharray="2 1.6"/>`;
+    const padH = (x, y) => EL(x, y, 8, 3, '#b8c0c3', `stroke="${KI}" stroke-width=".5"`) + `<text x="${x}" y="${y + 1.4}" font-size="4" text-anchor="middle" fill="#3a454c" font-family="sans-serif" font-weight="700">H</text>`;
+    if (t === 1) s += tent(6, 46, 28, 20, '#e6e3d6', '#c9c5b3') + flag(38, 46, 28, GRN) + flag(44, 46, 24, BR) + padH(50, 54) + sandbags(8, 54, 6);
+    else if (t === 2) s += block(t, { x: 6, w: 34, floors: 1, doorX: 14, roof: 'gable', rh: 6 }) + [44, 50].map((x, i) => flag(x, 56, 30 - i * 4, i ? BR : GRN)).join('') + padH(52, 58) + bunting(8, 38, 34);
+    else if (t === 3) s += block(t, { x: 4, w: 36, floors: 2, doorX: 15, roof: 'gable', rh: 8, ridge: BR }) + [8, 14, 20, 26, 32].map(x => RC(x, 40, 2, 14, '#e8eaea', KI, .3)).join('') + [44, 50, 56].map((x, i) => flag(x, 57, 32 - i * 3, [GRN, BR, ICE][i])).join('') + padH(52, 60);
+    else { s += block(t, { x: 4, w: 38, floors: 2, doorX: 16 }) + dome(23, 22, 8, '#c9d0d2', m.trim) + [8, 14, 20, 26, 32].map(x => RC(x, 40, 2, 14, '#e8eaea', KI, .3)).join('') + [46, 52, 58].map((x, i) => flag(x, 58, 34 - i * 3, [GRN, BR, ICE][i])).join('') + padH(52, 61) + `<path d="M4 22h38" stroke="${m.trim}" stroke-width="1"/>`; if (t >= 5) s += glow(23, 18, 14) + `<circle cx="52" cy="61" r="9" fill="none" stroke="${ICE}" stroke-width=".8" class="glw"/>`; }
+    return s;
+  },
+  forge(t) {
+    const m = MAT[t]; let s = pad(t, false);
+    const stack = (x, yb, h) => RC(x, yb - h, 6, h, '#6c7d86', KI, .5) + RC(x, yb - h, 6, h, 'url(#gCyl)') + RC(x - 1, yb - h - 2, 8, 2.4, '#3c474e', KI, .4);
+    const anvil = (x, yb) => P([[x, yb - 5], [x + 12, yb - 5], [x + 9, yb - 3], [x + 8, yb], [x + 4, yb], [x + 3, yb - 3]], '#4a555c', KI, .5) + RC(x + 1, yb - 6, 10, 1.4, '#b8c0c3') + CI(x + 6, yb - 8, 1.6, '#ffb84a', 'class="glw"');
+    const furnace = (x, yb, w, h) => RC(x, yb - h, w, h, '#5a6a72', KI, .5) + RC(x, yb - h, w, h, 'url(#gF)') + RC(x + w / 2 - 4, yb - 6, 8, 5, '#12171a', KI, .4) + RC(x + w / 2 - 3, yb - 5, 6, 3.4, '#ff8a2a', null, 0, 0).replace('<rect', '<rect class="glw"');
+    if (t === 1) s += furnace(8, 54, 18, 16) + stack(20, 38, 16) + anvil(32, 55) + crate(46, 55, 7, '#8a6a3a') + sandbags(8, 58, 4) + glow(17, 50, 8);
+    else if (t === 2) s += block(t, { x: 6, w: 32, floors: 1, door: false, roof: 'gable', rh: 5 }) + furnace(10, 56, 12, 12) + stack(28, 38, 18) + anvil(44, 57) + crate(52, 47, 6, '#8a6a3a');
+    else if (t === 3) s += block(t, { x: 4, w: 34, floors: 2, door: false }) + furnace(8, 56, 14, 12) + stack(30, 30, 22) + stack(40, 30, 18) + anvil(44, 58) + glow(15, 50, 8);
+    else { s += block(t, { x: 4, w: 36, floors: 2, door: false }) + furnace(8, 58, 14, 14) + stack(30, 24, 24) + stack(40, 24, 20) + anvil(44, 59) + `<path d="M6 30h34" stroke="${BR}" stroke-width="1.2"/>` + `<path d="M22 24V30M18 30l4 4 4-4" stroke="#b8c0c3" stroke-width="1" fill="none"/>` + glow(15, 50, 10) + glow(33, 12, 6); if (t >= 5) s += RC(4, 30, 36, 1.4, BR) + CI(33, 12, 4, 'none', `stroke="${BR}" stroke-width=".8" class="glw"`); }
+    return s;
+  },
   mil(t) {
     const m = MAT[t]; let s = pad(t, false);
     if (t === 1) s += tent(6, 40, 16, 12, '#6b7a4a') + tent(22, 42, 16, 12, '#65744a') + tent(38, 40, 16, 12, '#6b7a4a') + sandbags(8, 52, 8) + truck(38, 56) + flag(58, 30, 16, RED);

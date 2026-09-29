@@ -53,6 +53,8 @@ const BLD = {
   store: { n: 'StoreHouse', s: 'SH', inner: 1, w: 0.9 },
   defense: { n: 'Defense Center', s: 'DC', inner: 1, w: 1.1, wing: 'wall' },
   market: { n: 'Black Market', s: 'BM', inner: 1, w: 0.8, wing: 'market' },
+  embassy: { n: 'Embassy', s: 'EM', inner: 1, w: 1, wing: 'embassy' },
+  forge: { n: 'Forge', s: 'FG', inner: 1, w: 1, wing: 'forge' },
   rations: { n: 'Rations', s: 'RA', res: 'rations', rate: 900, w: 0.8 },
   fuel: { n: 'Fuel', s: 'FU', res: 'fuel', rate: 720, w: 0.8 },
   power: { n: 'Power Cells', s: 'PC', res: 'power', rate: 720, w: 0.8 },
@@ -158,7 +160,7 @@ const CC_LEVELS = [
 const CC_REQ_POOL = ['hall', 'depot', 'tech', 'mil', 'defense', 'radar', 'store', 'treasury', 'prison', 'market'];
 const RURAL = ['rations', 'fuel', 'power', 'alloy'];
 /* every urban building is fed by one rural root: raise the root to raise the building */
-const BLD_ROOT = { store: 'rations', depot: 'rations', treasury: 'power', tech: 'power', radar: 'power', mil: 'alloy', prison: 'alloy', defense: 'alloy', hall: 'fuel', market: 'fuel' };
+const BLD_ROOT = { store: 'rations', depot: 'rations', treasury: 'power', tech: 'power', radar: 'power', mil: 'alloy', prison: 'alloy', defense: 'alloy', hall: 'fuel', market: 'fuel', embassy: 'fuel', forge: 'alloy' };
 function bldReqs(b, to) {
   if (b === 'cc') return ccReqs(to);
   const r = BLD_ROOT[b]; if (!r || to < 3) return []; return [[r, to - 1]];
@@ -181,5 +183,11 @@ const CC_ACTIONS = [
   { id: 'shield', n: 'Shield', lv: 5, d: 'Raise or drop the peace shield.' },
   { id: 'tp', n: 'Relocate', lv: 8, d: 'Random teleport to a legal tile.' }
 ];
+/* Embassy: allied members of your kingdom send troops to garrison your base. Forge: gates and improves gear crafting. */
+const EMB_PER_LEVEL = 1500;                    // allied troops hosted per Embassy level
+const EMB_CALL_MS = 45000;                     // cooldown between reinforcement calls (drill time)
+const embTier = L => clamp(1 + Math.floor(L / 8), 1, 3);   // best tier the allies send
+const forgeGate = g => 3 * g;                  // Forge level needed to refine grade g bars into g+1
+const forgeUp = L => Math.min(0.5, 0.02 * L);  // chance a crafted piece comes out one grade higher
 const REQ_COOLDOWN_SHEET = 1800;   // 30 sheet minutes between requisitions
 function reqAmounts(L) { return { rations: L * 500, fuel: L * 500, power: L * 400, alloy: L * 300, cash: L * 150 }; }
