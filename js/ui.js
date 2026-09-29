@@ -473,7 +473,7 @@ const A = {
   scrim() { closeBRadial(); if (UI.sheet && UI.sheet.type === 'tech') { UI.sheet = null; D(); return; } if (UI.drawer) UI.drawer = null; else { UI.sheet = null; UI.sel = null; } D(); },
   details(d) { closeRadial(); UI.sel = { x: +d.x, y: +d.y }; UI.sheet = { type: 'tile', x: +d.x, y: +d.y }; UI.drawer = null; D(); },
   qsend(d) {
-    const comp = bestComp(headcount()), e = launchMarch(d.k, +d.x, +d.y, comp, false); closeRadial();
+    const home = sumCol(S.troops), cap = (d.k === 'encamp' || d.k === 'gather') ? Math.max(1, Math.ceil(Math.min(headcount(), home) / 2)) : headcount(), comp = bestComp(cap), e = launchMarch(d.k, +d.x, +d.y, comp, false); /* claim and gather runs send half the garrison so a second column can follow */ closeRadial();
     if (run(e, 'Column out: ' + compTotal(comp) + ' troops.')) { UI.sel = null; hap([14, 40, 14]); } else UI.sel = { x: +d.x, y: +d.y };
   },
   mjump(d) { UI.drawer = null; UI.page = 'map'; panTo(+d.x, +d.y); D(); },

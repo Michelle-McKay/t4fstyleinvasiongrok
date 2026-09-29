@@ -369,7 +369,7 @@ function alName(i) { return S.al[i].n; }
 function alColor(i) { return STD[S.al[i].color]; }
 
 function marchCheck(comp, hero) {
-  const tot = compTotal(comp); if (tot <= 0) return 'Empty column is not a march.';
+  const tot = compTotal(comp); if (tot <= 0) return sumCol(S.troops) > 0 ? 'Empty column is not a march.' : 'No troops at home. Recall a column first.';
   if (tot > headcount()) return 'Column is over the headcount of ' + fmtN(headcount()) + '.';
   for (const c of CLS) if ((comp[c] || 0) > clsAvail(c)) return 'Not enough ' + CLSD[c].n.toLowerCase() + ' in garrison.';
   if (S.marches.filter(m => m.kind !== 'scout').length >= marchQueues()) return 'All march queues are out.';
