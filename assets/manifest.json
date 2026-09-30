@@ -104,6 +104,11 @@
   "bld_treasury_t3": "assets/buildings/bld_treasury_t3.webp",
   "bld_treasury_t4": "assets/buildings/bld_treasury_t4.webp",
   "bld_treasury_t5": "assets/buildings/bld_treasury_t5.webp",
+  "base_1": "assets/map/base_1.webp",
+  "base_2": "assets/map/base_2.webp",
+  "base_3": "assets/map/base_3.webp",
+  "base_4": "assets/map/base_4.webp",
+  "base_5": "assets/map/base_5.webp",
   "camp": "assets/map/camp.webp",
   "citadel": "assets/map/citadel.webp",
   "mon_1": "assets/map/mon_1.webp",
@@ -188,6 +193,11 @@
   "wall_sky_t4": "assets/walls/wall_sky_t4.webp"
  },
  "clean": [
+  "base_1",
+  "base_2",
+  "base_3",
+  "base_4",
+  "base_5",
   "bld_alloy_t1",
   "bld_alloy_t2",
   "bld_alloy_t3",
