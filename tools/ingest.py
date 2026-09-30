@@ -69,6 +69,14 @@ def square(im, pad=0.04):
     im = im.crop(bb); side = round(max(im.size) * (1 + 2 * pad)); out = Image.new('RGBA', (side, side), (0, 0, 0, 0))
     out.paste(im, ((side - im.width) // 2, (side - im.height) // 2)); return out
 
+def trim(im, pad=0.02):
+    """Crop to the visible pixels with a small margin, keeping the aspect ratio."""
+    if im.mode != 'RGBA': return im
+    bb = im.getchannel('A').point(lambda v: 255 if v > 8 else 0).getbbox()
+    if not bb: return im
+    im = im.crop(bb); m = round(max(im.size) * pad); out = Image.new('RGBA', (im.width + 2 * m, im.height + 2 * m), (0, 0, 0, 0))
+    out.paste(im, (m, m)); return out
+
 def magenta_key(im, mask):
     """Chroma key for the magenta fallback background: also clears magenta trapped inside the art (gaps in gantries,
     between lamps), fades the purple shadow edge, and removes the magenta cast from edge pixels."""
@@ -98,7 +106,8 @@ def process(path):
         im = im.convert('RGB')
         if it['size'].startswith('1:1') and im.width != im.height:  # not square: centre-crop so it does not stretch
             n = min(im.size); l, t = (im.width - n) // 2, (im.height - n) // 2; im = im.crop((l, t, l + n, t + n)); note = 'centre-cropped to square'
-    if it['transparent'] and it['size'].startswith('1:1'): im = square(im)
+    if it['transparent'] and k.startswith('city_ground'): im = trim(im)   # ground blobs are wide: keep their own aspect, the game stretches them over the island
+    elif it['transparent'] and it['size'].startswith('1:1'): im = square(im)
     m = it['out']; sc = m / max(im.size)
     if sc < 1: im = im.resize((round(im.width * sc), round(im.height * sc)), Image.LANCZOS)
     d = os.path.join(A, FOLDER[it['group']]); os.makedirs(d, exist_ok=True)
