@@ -129,7 +129,8 @@
   "wall_sent_t3": "assets/walls/wall_sent_t3.webp",
   "wall_sent_t4": "assets/walls/wall_sent_t4.webp",
   "wall_sky_t1": "assets/walls/wall_sky_t1.webp",
-  "wall_sky_t2": "assets/walls/wall_sky_t2.webp"
+  "wall_sky_t2": "assets/walls/wall_sky_t2.webp",
+  "wall_sky_t3": "assets/walls/wall_sky_t3.webp"
  },
  "clean": [
   "bld_alloy_t1",
@@ -259,6 +260,7 @@
   "wall_sent_t3",
   "wall_sent_t4",
   "wall_sky_t1",
-  "wall_sky_t2"
+  "wall_sky_t2",
+  "wall_sky_t3"
  ]
 }
