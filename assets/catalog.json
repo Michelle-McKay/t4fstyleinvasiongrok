@@ -1,6 +1,6 @@
 {
  "v": 2,
- "count": 366,
+ "count": 497,
  "groups": [
   {
    "id": "bld",
@@ -86,6 +86,31 @@
    "id": "item",
    "title": "Item icons (18)",
    "note": "Icons for pack contents and rewards, transparent, front view, no letters or numbers. Speed-up slips get bigger, brighter and more elaborate with size; hero XP potions grow from a small vial to a huge glowing jug."
+  },
+  {
+   "id": "tab",
+   "title": "Tab headers, empty states and mail icons (23)",
+   "note": "Header banners for the Item, Mail, Alliance, Quest, Event, More, Rewards and Help screens (wide, no lettering, calm middle for a title), eight empty-state pictures shown when a list has nothing in it, and seven mail icons."
+  },
+  {
+   "id": "ally",
+   "title": "Alliance art (38)",
+   "note": "Sixteen alliance emblems, five rank badges, fifteen feature icons (help, tech, gifts, war, territory, shop, members, donations, chat, rally, embassy, throne, mail, quests, flag), a create-alliance banner and the alliance hall backdrop."
+  },
+  {
+   "id": "march",
+   "title": "March and map-action art (20)",
+   "note": "Two screen headers, ten march-type icons and six small march sprites for the world map (top-down-ish, transparent), plus a route end-marker and a dust puff."
+  },
+  {
+   "id": "quest",
+   "title": "Quest tab art (22)",
+   "note": "Four quest-list headers, ten quest category icons, four reward chests that grow with rank, and four small status pieces."
+  },
+  {
+   "id": "city",
+   "title": "City backdrop, ground and decor (28)",
+   "note": "Replaces the flat dark background and square street grid: three full-screen backdrops, a horizon strip, three organic ground islands, three plot pads, four winding road pieces and fourteen scenery pieces that make the base feel like one place."
   }
  ],
  "items": [
@@ -3029,6 +3054,1054 @@
    "group": "item",
    "key": "item_wheel",
    "name": "Casino wheel",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "tab",
+   "key": "tabhead_item",
+   "name": "Header: Item bag",
+   "size": "16:5, 1600 x 500",
+   "transparent": false,
+   "out": 800
+  },
+  {
+   "group": "tab",
+   "key": "tabhead_boost",
+   "name": "Header: Boosts",
+   "size": "16:5, 1600 x 500",
+   "transparent": false,
+   "out": 800
+  },
+  {
+   "group": "tab",
+   "key": "tabhead_mail",
+   "name": "Header: Mail",
+   "size": "16:5, 1600 x 500",
+   "transparent": false,
+   "out": 800
+  },
+  {
+   "group": "tab",
+   "key": "tabhead_alliance",
+   "name": "Header: Alliance",
+   "size": "16:5, 1600 x 500",
+   "transparent": false,
+   "out": 800
+  },
+  {
+   "group": "tab",
+   "key": "tabhead_quest",
+   "name": "Header: Quests",
+   "size": "16:5, 1600 x 500",
+   "transparent": false,
+   "out": 800
+  },
+  {
+   "group": "tab",
+   "key": "tabhead_event",
+   "name": "Header: Events",
+   "size": "16:5, 1600 x 500",
+   "transparent": false,
+   "out": 800
+  },
+  {
+   "group": "tab",
+   "key": "tabhead_more",
+   "name": "Header: More",
+   "size": "16:5, 1600 x 500",
+   "transparent": false,
+   "out": 800
+  },
+  {
+   "group": "tab",
+   "key": "tabhead_rewards",
+   "name": "Header: Rewards",
+   "size": "16:5, 1600 x 500",
+   "transparent": false,
+   "out": 800
+  },
+  {
+   "group": "tab",
+   "key": "empty_mail",
+   "name": "Empty state: mail",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "tab",
+   "key": "empty_reports",
+   "name": "Empty state: reports",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "tab",
+   "key": "empty_saved",
+   "name": "Empty state: saved",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "tab",
+   "key": "empty_contacts",
+   "name": "Empty state: contacts",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "tab",
+   "key": "empty_bag",
+   "name": "Empty state: bag",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "tab",
+   "key": "empty_quests",
+   "name": "Empty state: quests",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "tab",
+   "key": "empty_alliance",
+   "name": "Empty state: alliance",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "tab",
+   "key": "empty_rally",
+   "name": "Empty state: rally",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "tab",
+   "key": "mail_report_win",
+   "name": "Mail icon: report win",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "tab",
+   "key": "mail_report_loss",
+   "name": "Mail icon: report loss",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "tab",
+   "key": "mail_scout",
+   "name": "Mail icon: scout",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "tab",
+   "key": "mail_system",
+   "name": "Mail icon: system",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "tab",
+   "key": "mail_alliance",
+   "name": "Mail icon: alliance",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "tab",
+   "key": "mail_gift",
+   "name": "Mail icon: gift",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "tab",
+   "key": "mail_unread",
+   "name": "Mail icon: unread",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "ally",
+   "key": "ally_emblem_1",
+   "name": "Alliance emblem 1",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "ally",
+   "key": "ally_emblem_2",
+   "name": "Alliance emblem 2",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "ally",
+   "key": "ally_emblem_3",
+   "name": "Alliance emblem 3",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "ally",
+   "key": "ally_emblem_4",
+   "name": "Alliance emblem 4",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "ally",
+   "key": "ally_emblem_5",
+   "name": "Alliance emblem 5",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "ally",
+   "key": "ally_emblem_6",
+   "name": "Alliance emblem 6",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "ally",
+   "key": "ally_emblem_7",
+   "name": "Alliance emblem 7",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "ally",
+   "key": "ally_emblem_8",
+   "name": "Alliance emblem 8",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "ally",
+   "key": "ally_emblem_9",
+   "name": "Alliance emblem 9",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "ally",
+   "key": "ally_emblem_10",
+   "name": "Alliance emblem 10",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "ally",
+   "key": "ally_emblem_11",
+   "name": "Alliance emblem 11",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "ally",
+   "key": "ally_emblem_12",
+   "name": "Alliance emblem 12",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "ally",
+   "key": "ally_emblem_13",
+   "name": "Alliance emblem 13",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "ally",
+   "key": "ally_emblem_14",
+   "name": "Alliance emblem 14",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "ally",
+   "key": "ally_emblem_15",
+   "name": "Alliance emblem 15",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "ally",
+   "key": "ally_emblem_16",
+   "name": "Alliance emblem 16",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "ally",
+   "key": "ally_rank_1",
+   "name": "Alliance rank R1",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "ally",
+   "key": "ally_rank_2",
+   "name": "Alliance rank R2",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "ally",
+   "key": "ally_rank_3",
+   "name": "Alliance rank R3",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "ally",
+   "key": "ally_rank_4",
+   "name": "Alliance rank R4",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "ally",
+   "key": "ally_rank_5",
+   "name": "Alliance rank R5",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "ally",
+   "key": "ally_help",
+   "name": "Alliance: help",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "ally",
+   "key": "ally_tech",
+   "name": "Alliance: tech",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "ally",
+   "key": "ally_gifts",
+   "name": "Alliance: gifts",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "ally",
+   "key": "ally_war",
+   "name": "Alliance: war",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "ally",
+   "key": "ally_territory",
+   "name": "Alliance: territory",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "ally",
+   "key": "ally_shop",
+   "name": "Alliance: shop",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "ally",
+   "key": "ally_members",
+   "name": "Alliance: members",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "ally",
+   "key": "ally_donate",
+   "name": "Alliance: donate",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "ally",
+   "key": "ally_chat",
+   "name": "Alliance: chat",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "ally",
+   "key": "ally_rally",
+   "name": "Alliance: rally",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "ally",
+   "key": "ally_embassy",
+   "name": "Alliance: embassy",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "ally",
+   "key": "ally_throne",
+   "name": "Alliance: throne",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "ally",
+   "key": "ally_mail",
+   "name": "Alliance: mail",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "ally",
+   "key": "ally_quests",
+   "name": "Alliance: quests",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "ally",
+   "key": "ally_flag",
+   "name": "Alliance: flag",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "ally",
+   "key": "ally_create",
+   "name": "Alliance: create banner",
+   "size": "16:5, 1600 x 500",
+   "transparent": false,
+   "out": 800
+  },
+  {
+   "group": "ally",
+   "key": "ally_hall",
+   "name": "Alliance hall backdrop",
+   "size": "9:16, 1080 x 1920",
+   "transparent": false,
+   "out": 1600
+  },
+  {
+   "group": "march",
+   "key": "marchhead_cols",
+   "name": "Header: March columns",
+   "size": "16:5, 1600 x 500",
+   "transparent": false,
+   "out": 800
+  },
+  {
+   "group": "march",
+   "key": "marchhead_field",
+   "name": "Header: Field marches",
+   "size": "16:5, 1600 x 500",
+   "transparent": false,
+   "out": 800
+  },
+  {
+   "group": "march",
+   "key": "march_attack",
+   "name": "March: attack",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "march",
+   "key": "march_scout",
+   "name": "March: scout",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "march",
+   "key": "march_rally",
+   "name": "March: rally",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "march",
+   "key": "march_gather",
+   "name": "March: gather",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "march",
+   "key": "march_reinforce",
+   "name": "March: reinforce",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "march",
+   "key": "march_return",
+   "name": "March: return",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "march",
+   "key": "march_camp",
+   "name": "March: camp",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "march",
+   "key": "march_monster",
+   "name": "March: monster",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "march",
+   "key": "march_teleport",
+   "name": "March: teleport",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "march",
+   "key": "march_trade",
+   "name": "March: trade",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "march",
+   "key": "mapmarch_troop",
+   "name": "Map march: troop",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "march",
+   "key": "mapmarch_scout",
+   "name": "Map march: scout",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "march",
+   "key": "mapmarch_attack",
+   "name": "Map march: attack",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "march",
+   "key": "mapmarch_rally",
+   "name": "Map march: rally",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "march",
+   "key": "mapmarch_gather",
+   "name": "Map march: gather",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "march",
+   "key": "mapmarch_return",
+   "name": "Map march: return",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "march",
+   "key": "march_target",
+   "name": "March target marker",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "march",
+   "key": "march_dust",
+   "name": "March dust puff",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "quest",
+   "key": "questhead_main",
+   "name": "Header: Main quest",
+   "size": "16:5, 1600 x 500",
+   "transparent": false,
+   "out": 800
+  },
+  {
+   "group": "quest",
+   "key": "questhead_daily",
+   "name": "Header: Daily quests",
+   "size": "16:5, 1600 x 500",
+   "transparent": false,
+   "out": 800
+  },
+  {
+   "group": "quest",
+   "key": "questhead_chapter",
+   "name": "Header: Chapter quests",
+   "size": "16:5, 1600 x 500",
+   "transparent": false,
+   "out": 800
+  },
+  {
+   "group": "quest",
+   "key": "questhead_event",
+   "name": "Header: Event quests",
+   "size": "16:5, 1600 x 500",
+   "transparent": false,
+   "out": 800
+  },
+  {
+   "group": "quest",
+   "key": "quest_build",
+   "name": "Quest: build",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "quest",
+   "key": "quest_train",
+   "name": "Quest: train",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "quest",
+   "key": "quest_research",
+   "name": "Quest: research",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "quest",
+   "key": "quest_gather",
+   "name": "Quest: gather",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "quest",
+   "key": "quest_battle",
+   "name": "Quest: battle",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "quest",
+   "key": "quest_hunt",
+   "name": "Quest: hunt",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "quest",
+   "key": "quest_alliance",
+   "name": "Quest: alliance",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "quest",
+   "key": "quest_hero",
+   "name": "Quest: hero",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "quest",
+   "key": "quest_forge",
+   "name": "Quest: forge",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "quest",
+   "key": "quest_social",
+   "name": "Quest: social",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "quest",
+   "key": "quest_chest_1",
+   "name": "Quest chest 1",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "quest",
+   "key": "quest_chest_2",
+   "name": "Quest chest 2",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "quest",
+   "key": "quest_chest_3",
+   "name": "Quest chest 3",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "quest",
+   "key": "quest_chest_4",
+   "name": "Quest chest 4",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "quest",
+   "key": "quest_scroll",
+   "name": "Quest scroll",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "quest",
+   "key": "quest_done",
+   "name": "Quest done stamp",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "quest",
+   "key": "quest_star",
+   "name": "Quest star",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "quest",
+   "key": "quest_lock",
+   "name": "Quest locked",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "city",
+   "key": "city_backdrop_1",
+   "name": "City backdrop 1",
+   "size": "9:16, 1080 x 1920",
+   "transparent": false,
+   "out": 1600
+  },
+  {
+   "group": "city",
+   "key": "city_backdrop_2",
+   "name": "City backdrop 2",
+   "size": "9:16, 1080 x 1920",
+   "transparent": false,
+   "out": 1600
+  },
+  {
+   "group": "city",
+   "key": "city_backdrop_3",
+   "name": "City backdrop 3",
+   "size": "9:16, 1080 x 1920",
+   "transparent": false,
+   "out": 1600
+  },
+  {
+   "group": "city",
+   "key": "city_horizon",
+   "name": "City horizon strip",
+   "size": "16:5, 1600 x 500",
+   "transparent": false,
+   "out": 800
+  },
+  {
+   "group": "city",
+   "key": "city_ground_inner",
+   "name": "City ground: inner",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "city",
+   "key": "city_ground_res",
+   "name": "City ground: res",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "city",
+   "key": "city_ground_outer",
+   "name": "City ground: outer",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "city",
+   "key": "city_pad_empty",
+   "name": "City pad: empty",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "city",
+   "key": "city_pad_build",
+   "name": "City pad: build",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "city",
+   "key": "city_pad_locked",
+   "name": "City pad: locked",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "city",
+   "key": "city_road_straight",
+   "name": "City road: straight",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "city",
+   "key": "city_road_curve",
+   "name": "City road: curve",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "city",
+   "key": "city_road_junction",
+   "name": "City road: junction",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "city",
+   "key": "city_road_end",
+   "name": "City road: end",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "city",
+   "key": "city_deco_tree_1",
+   "name": "City decor: tree 1",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "city",
+   "key": "city_deco_tree_2",
+   "name": "City decor: tree 2",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "city",
+   "key": "city_deco_tree_3",
+   "name": "City decor: tree 3",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "city",
+   "key": "city_deco_rock_1",
+   "name": "City decor: rock 1",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "city",
+   "key": "city_deco_rock_2",
+   "name": "City decor: rock 2",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "city",
+   "key": "city_deco_fence",
+   "name": "City decor: fence",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "city",
+   "key": "city_deco_lamp",
+   "name": "City decor: lamp",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "city",
+   "key": "city_deco_sandbag",
+   "name": "City decor: sandbag",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "city",
+   "key": "city_deco_crates",
+   "name": "City decor: crates",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "city",
+   "key": "city_deco_water",
+   "name": "City decor: water",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "city",
+   "key": "city_deco_barrel",
+   "name": "City decor: barrel",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "city",
+   "key": "city_deco_flag",
+   "name": "City decor: flag",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "city",
+   "key": "city_deco_pond",
+   "name": "City decor: pond",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "city",
+   "key": "city_deco_bush",
+   "name": "City decor: bush",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256

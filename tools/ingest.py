@@ -20,7 +20,8 @@ A = os.path.join(ROOT, 'assets')
 CAT = {i['key']: i for i in json.load(open(os.path.join(A, 'catalog.json')))['items']}
 FOLDER = {'bld': 'buildings', 'head': 'backdrops', 'troop': 'troops', 'wall': 'walls', 'hero': 'heroes',
           'map': 'map', 'tile': 'tiles', 'pack': 'packs', 'gem': 'packs', 'icon': 'icons', 'skill': 'skills', 'gear': 'gear', 'core': 'cores',
-          'vip': 'vip', 'avatar': 'avatars', 'chat': 'chat', 'item': 'items'}
+          'vip': 'vip', 'avatar': 'avatars', 'chat': 'chat', 'item': 'items',
+          'tab': 'tabs', 'ally': 'alliance', 'march': 'marches', 'quest': 'quests', 'city': 'city'}
 
 def key_of(path):
     s = os.path.splitext(os.path.basename(path))[0].lower().strip()
