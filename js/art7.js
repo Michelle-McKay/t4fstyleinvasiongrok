@@ -64,7 +64,7 @@ function emberColossus() {
 }
 const monsterArt3 = g => g >= 5 ? emberColossus() : g >= 3 ? rustBrute() : ashHound();
 monsterArt = monsterArt3;
-FEAT.monster = FEAT2.monster = g => svgSprite('mn_' + (g >= 5 ? 5 : g >= 3 ? 3 : 1), monsterArt3(g), 96);
+FEAT.monster = FEAT2.monster = g => svgSprite('mn_' + clamp(g || 1, 1, 6), monsterArt3(g), 96);
 
 /* ================= RAIDER CAMP ================= */
 function campArt3() {

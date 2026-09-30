@@ -1,6 +1,6 @@
 {
  "v": 2,
- "count": 208,
+ "count": 214,
  "groups": [
   {
    "id": "bld",
@@ -29,7 +29,7 @@
   },
   {
    "id": "map",
-   "title": "Map features (26)",
+   "title": "Map features (32)",
    "note": "Sprites for the world map, transparent. Shown small, so bold shapes and strong colour. The map is made of diamond (isometric) tiles, so every camp, base, citadel and resource site sits on a square patch that reads as a diamond. Nothing is round, hexagonal or octagonal."
   },
   {
@@ -1128,8 +1128,24 @@
   },
   {
    "group": "map",
+   "key": "mon_2",
+   "name": "Dune Raptor",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "map",
    "key": "mon_3",
    "name": "Rust Brute",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "map",
+   "key": "mon_4",
+   "name": "Slate Crawler",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 384
@@ -1144,16 +1160,16 @@
   },
   {
    "group": "map",
-   "key": "camp",
-   "name": "Raider camp",
+   "key": "mon_6",
+   "name": "Iron Wyrm",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 384
   },
   {
    "group": "map",
-   "key": "outpost",
-   "name": "Rival commander base",
+   "key": "camp",
+   "name": "Raider camp",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 384
@@ -1208,6 +1224,14 @@
   },
   {
    "group": "map",
+   "key": "node_food_6",
+   "name": "Food field tier 6",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "map",
    "key": "node_oil_1",
    "name": "Oil field tier 1",
    "size": "1:1, 1024 x 1024",
@@ -1242,6 +1266,14 @@
    "group": "map",
    "key": "node_oil_5",
    "name": "Oil field tier 5",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "map",
+   "key": "node_oil_6",
+   "name": "Oil field tier 6",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -1288,6 +1320,14 @@
   },
   {
    "group": "map",
+   "key": "node_energy_6",
+   "name": "Energy vein tier 6",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "map",
    "key": "node_steel_1",
    "name": "Steel vein tier 1",
    "size": "1:1, 1024 x 1024",
@@ -1322,6 +1362,14 @@
    "group": "map",
    "key": "node_steel_5",
    "name": "Steel vein tier 5",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "map",
+   "key": "node_steel_6",
+   "name": "Steel vein tier 6",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256

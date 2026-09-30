@@ -115,7 +115,7 @@ function chunkFeats(cxk, cyk) { // feature tiles (nodes, monsters, camps, bases)
     if (x >= W || y >= H) continue; const t = tileInfo(x, y); let f = null, s = 1;
     if (t.kind === 'node') f = FEAT[t.nk === 'food' ? 'food' : t.nk === 'oil' ? 'oil' : t.nk === 'energy' ? 'energy' : 'steel'](t.node.grade);
     else if (t.kind === 'monster') f = FEAT.monster(t.grade); else if (t.kind === 'camp') f = FEAT.camp();
-    else if (t.kind === 'base') { f = FEAT.base(); s = 1.3; } else if (t.kind === 'pbase') { f = FEAT.pbase(ccLevel()); s = 1.6; }
+    else if (t.kind === 'base') { f = FEAT.base(t.bot.p); s = 1.6; } else if (t.kind === 'pbase') { f = FEAT.pbase(ccLevel()); s = 1.6; }
     if (f) list.push({ x, y, k: x + y, f, s, t });
   }
   CH.feats.set(k, { list, fv: CH.fver, t: MAP.now }); if (CH.feats.size > 400) CH.feats.delete(CH.feats.keys().next().value); return list;
@@ -266,7 +266,7 @@ function hudUpdate(now) {
 function prewarmArt() {
   const jobs = []; for (const b of ['wild', 'forest', 'plaza']) for (let v = 0; v < 8; v++) jobs.push(() => terrainSprite(b, v));
   for (const c of ['inf', 'arm', 'air']) for (let t = 1; t <= 4; t++) for (const h of [false, true]) jobs.push(() => marchToken(c, t, h));
-  for (const k of ['food', 'oil', 'energy', 'steel']) jobs.push(() => FEAT[k](1)); jobs.push(() => FEAT.monster(1), () => FEAT.camp(), () => FEAT.base(), () => FEAT.citadel());
+  for (const k of ['food', 'oil', 'energy', 'steel']) jobs.push(() => FEAT[k](1)); jobs.push(() => FEAT.monster(1), () => FEAT.camp(), () => FEAT.base(1), () => FEAT.citadel());
   const idle = window.requestIdleCallback || (f => setTimeout(() => f({ timeRemaining: () => 8 }), 30));
   const run = dl => { while (jobs.length && dl.timeRemaining() > 4) { try { jobs.shift()(); } catch (e) { } } if (jobs.length) idle(run); }; idle(run);
 }

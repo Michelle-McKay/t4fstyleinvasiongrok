@@ -10,7 +10,7 @@ Open `index.html` (or serve the folder statically). Barlow Condensed and Source 
 - `js/engine.js` — state, world function, job list, marches, combat, rallies, threats, bots, forge, market, 4Hz `tick()`
 - `js/art.js` — sprite helpers and the first-generation art (kept as fallback)
 - `js/art2.js`, `js/art3.js` — building art v2: shaded 2.5D SVG toolkit, five material tiers, 15 buildings and 25 Command Center looks
-- `js/art4.js` — map feature art v2: forest, wild ground, resource nodes by grade, monsters, camps, outposts, player HQ, citadel
+- `js/art4.js` — map feature art v2: forest, wild ground, resource nodes by grade, monsters, camps, bases (same art for player and enemy, five levels), citadel
 - `js/assets.js` — painted-art loader: uses images from `assets/` when `assets/manifest.json` lists them, otherwise the vector art (see `docs/ART_SPEC.md`)
 - `tools/artcatalog.js` lists every paintable asset with its AI prompt; `tools/ingest.py` resizes, cuts backgrounds and updates the manifest
 - `js/bld.js` — per-building sheets: details, options, upgrade requirement tree rooted in the rural buildings
