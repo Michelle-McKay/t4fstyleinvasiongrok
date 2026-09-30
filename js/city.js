@@ -41,7 +41,7 @@ function cityHorizon() {
 /* Whole scene: horizon + two islands. `grid(ar)` returns the plot buttons. */
 function cityScene(grid) {
   const t = cityTier(), bd = cityImg('city_backdrop_' + t), padE = cityImg('city_pad_empty'), padL = cityImg('city_pad_locked'), gi = cityImg('city_ground_inner'), gr = cityImg('city_ground_res');
-  const vars = [`--pad:${padE ? `url(${padE}) center/contain no-repeat` : 'radial-gradient(closest-side,rgba(255,255,255,.14),rgba(255,255,255,.04) 70%,transparent)'}`, bd ? `--bd:url(${bd}) center top/100% auto no-repeat,#6f7d52` : ''].filter(Boolean).join(';');
+  const vars = [`--pad:${padE ? `url(${padE}) center/contain no-repeat` : 'radial-gradient(closest-side,rgba(255,255,255,.14),rgba(255,255,255,.04) 70%,transparent)'}`, bd ? `--bd:url(${bd}) center/cover no-repeat,#c9b48c` : ''].filter(Boolean).join(';');
   const isle = (kind, title, ar, img) => {
     const rim = cityOutline('rim' + kind, 5, 0), fill = cityOutline('fill' + kind, 5, .07);
     return `<div class="isle ${kind}"><div class="irim" style="clip-path:${rim}"></div><div class="ifill" style="clip-path:${fill}${img ? `;background-image:url(${img});background-size:100% 100%` : ''}"></div>${cityRoads(kind)}${cityDecor(kind)}<div class="zt">${title}</div><div class="grid5">${grid(ar)}</div></div>`;
