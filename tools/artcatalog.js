@@ -27,14 +27,14 @@ const STYLE_HEAD = 'Style: clean, polished, stylized-realistic game-asset render
 const STYLE_TAIL =
   'Bright daylight, high-key lighting, soft ambient light with a gentle shadow falling to the lower right. Saturated, readable colours with strong contrast and a crisp silhouette that still reads at small size. ' +
   'Everything is tidy and well kept: clean surfaces, neat surroundings. No rust, no grime, no dirt streaks, no scrap, no debris, no clutter, not dark, not gritty, not post-apocalyptic. ' +
-  'Original design, not a copy of any existing game or franchise. No text, letters, numbers, logos, real flags, watermark, signature or border.';
+  'Original design, not a copy of any existing game or franchise. No text, letters, numbers, logos, real flags, watermark, signature or border. Sharp clean edges everywhere, no smeared, melted, blurry or duplicated parts, no floating fragments, no warped perspective, no extra or missing limbs, no fake writing or squiggles that look like letters.';
 /* buildings and backdrops */
 const STYLE = STYLE_HEAD + 'Bright, clean, modern industrial-military look: modular buildings with smooth painted metal panels in off-white, light grey and warm sand, tidy poured-concrete, safety-orange and brass accents, and softly glowing blue windows and light strips. ' + STYLE_TAIL;
 /* units, heroes, creatures, icons, packs */
 const STYLE_GEN = STYLE_HEAD + 'Bright, clean, modern industrial-military palette: off-white, light grey and warm sand with safety-orange and brass accents and softly glowing blue lights. ' + STYLE_TAIL;
 const CAM = 'Camera: three-quarter overhead, looking down about 40 degrees, front-left corner facing the viewer, the same camera, scale and lighting as every other asset in this set.';
 const DIA = 'Footprint: the whole subject sits on ONE perfectly square patch of ground with straight edges and sharp corners, which from the camera angle reads as a diamond that fills the frame, exactly like an isometric map tile. Any fence or wall is straight and follows the edges of that square. No round, oval, hexagonal or octagonal shapes in the outline, and nothing sticks out past the square.';
-const BG_T = 'Background: one flat solid magenta (#FF00FF) colour filling the whole frame, no gradient, no floor, no shadow on it. Do NOT draw a grey checkerboard pattern (that is a fake transparency grid and cannot be removed).';
+const BG_T = 'Background: one flat solid magenta (#FF00FF) colour filling the whole frame, no gradient, no floor, no shadow on it. Any shadow inside the subject is a soft neutral grey-brown, never purple, pink or magenta, and no pink, red-violet or magenta colour appears anywhere on the subject itself. Do NOT draw a grey checkerboard pattern (that is a fake transparency grid and cannot be removed).';
 const BG_O = 'Fill the whole frame, no transparent areas.';
 const PAD = 'Place the building complex on one clean, flat, square light-concrete pad with a thin edge (the same pad size in every image of this set), centred, filling about 85 percent of the frame. Nothing may extend past the pad. No vehicles, people, banners, flag poles or separate structures unless named.';
 
@@ -67,50 +67,51 @@ const BLD_SUBJECT = {
   alloy: 'An Alloy foundry: a modern smelter hall with a chimney stack, glowing metal chute, ingot stacks and an overhead crane'
 };
 const BACKDROP = {
-  embassy: 'soft green rolling hills under a broad blue sky with light clouds',
-  forge: 'warm open plains under a clear sky with a gentle sunlit haze',
-  cc: 'wide green plains fading to pale blue hills under a bright sky with light clouds',
-  mil: 'open sunlit grassland with distant low hills and a bright blue sky',
-  depot: 'calm green meadows with distant soft hills and a clear sky',
-  treasury: 'pale rocky plains with distant low mesas under a clear blue sky',
-  tech: 'a high clear plateau with distant blue ridges and soft clouds',
-  hall: 'broad green fields with distant hills and a bright blue sky',
-  prison: 'a bright gravel plain with distant flat hills and a pale sky',
-  radar: 'a high bright ridge line falling away to distant valleys, blue sky',
-  store: 'flat dry plains with distant hazy hills and a clear sky',
-  defense: 'a bright open plain with distant hills and a clear sky',
-  market: 'sunny golden fields with distant hills and warm light',
-  rations: 'green farmland fading into golden fields with distant hills, blue sky',
-  fuel: 'a bright dry plain with distant low hills and a clear sky',
-  power: 'a sunny open plain with distant rolling hills and a clear sky',
-  alloy: 'a bright rocky plain with distant hills and a warm horizon glow'
+  embassy: 'gentle green hills with soft flowering shrubs, a pale winding footpath fading into the distance and a broad blue sky with a few white clouds',
+  forge: 'a warm red-brown rocky quarry floor with layered stone ledges, a few dark ore veins in the cliff walls and a hazy orange-tinted sky',
+  cc: 'wide open green plains with a few small tree clumps, pale blue hills in the distance and a bright sky with light clouds',
+  mil: 'a flat sunlit drill-ground of short trimmed grass and packed earth with a low tree line far away and a clear blue sky',
+  depot: 'calm green meadow with scattered white wildflowers, a soft treeline and a clear pale sky',
+  treasury: 'pale sandstone plains with a few smooth rounded boulders and two distant flat-topped mesas under a clear blue sky',
+  tech: 'a high clean plateau of pale grey rock and short grass with distant blue ridges and soft clouds',
+  hall: 'broad green fields cut by a long shallow river far away, distant hills and a bright blue sky',
+  prison: 'a flat bare gravel plain in pale grey with a few tiny dry shrubs, distant flat hills and a pale hazy sky',
+  radar: 'a bright rocky ridge top with short grass falling away to blue valleys far below and a high clear sky',
+  store: 'flat dry golden grassland with faint tyre tracks fading to the horizon, distant hazy hills and a clear sky',
+  defense: 'an open grey-green plain with low rocky outcrops, distant hills and a clear sky',
+  market: 'sunny golden wheat fields with a few poplar trees, distant hills and warm afternoon light',
+  rations: 'green farmland in neat stripes fading into golden fields, distant hills and a blue sky',
+  fuel: 'a dry ochre plain with small dark oil-stained patches far away, distant low hills and a clear sky',
+  power: 'a sunny open green-brown plain with a few tall grass tufts, distant rolling hills and a clear sky',
+  alloy: 'a grey rocky mesa top with orange mineral seams in the rock, distant hills and a warm horizon glow'
 };
 const TROOP_SUBJECT = {
   inf: [
-    'a squad of three riot troopers in clean grey-and-sand riot armour with clear shields and helmets',
-    'a squad of three modern combat infantry in clean sand-coloured uniforms with plate carriers, helmets and rifles',
-    'a squad of three soldiers in sleek white-and-grey powered exoskeleton suits with visors and rifles',
-    'a squad of three elite vanguard soldiers in polished white exo-armour with brass trim and glowing blue visors'
+    'a squad of exactly three riot troopers in sand-and-grey riot armour: full-face clear visors, knee and elbow guards, and a tall clear riot shield each, holding batons, standing close together, clearly defensive and unarmed at range',
+    'a squad of exactly three modern combat infantry in plain sand-coloured fabric uniforms with a simple plate carrier, an open-face helmet and a rifle each, in a ready stance, no exoskeleton, no glowing parts, no shields',
+    'a squad of exactly three soldiers in sleek white-and-grey powered exoskeleton suits: exposed joint pistons, a bulky backpack power pack, angular shoulder plates, a closed blue visor and a heavy rifle each, clearly bulkier and more mechanical than plain infantry',
+    'a squad of exactly three elite vanguard soldiers, taller than the other tiers, in polished white full-body exo-armour with thick brass trim, a swept-back helmet crest, glowing blue chest cores and visors and a heavy plasma rifle each, imposing and heroic'
   ],
   arm: [
-    'a light armoured scout car with a roof-mounted gun and large wheels, clean sand-and-white paint',
-    'a battle tank with a long cannon and angled armour, clean sand-and-grey paint',
-    'a heavy assault mech: a two-legged armoured walker with twin arm cannons, clean white and grey panels',
-    'a juggernaut: a giant multi-turret tracked super-tank with layered white armour, brass trim and glowing blue vents'
+    'a light armoured scout car: a four-wheeled open-frame vehicle with a small roof-mounted gun, large wheels, clean sand-and-white paint, no cannon',
+    'a battle tank: a tracked tank with a single long cannon on a rotating turret and angled armour, clean sand-and-grey paint',
+    'a heavy assault mech: a two-legged armoured walker standing upright with twin arm cannons and a small cockpit, clean white and grey panels',
+    'a juggernaut: a giant tracked super-tank with three turrets, layered white armour, brass trim and glowing blue vents, far wider and heavier than the battle tank'
   ],
   air: [
-    'a small recon drone, a compact quad-rotor with a camera pod, hovering slightly above its shadow',
-    'an attack helicopter with stub wings and rocket pods, clean sand-and-white paint, hovering slightly above its shadow',
-    'a heavy gunship: a twin-rotor VTOL with side guns, white and grey, hovering slightly above its shadow',
-    'a stealth bomber: a sleek angular flying wing in pale grey with glowing blue engine slits, slightly above its shadow'
+    'a small recon drone: a compact four-rotor drone with a camera pod under its body, no weapons, hovering slightly above its shadow',
+    'an attack helicopter: a single main rotor and tail rotor, stub wings with rocket pods, clean sand-and-white paint, hovering slightly above its shadow',
+    'a heavy gunship: a twin-rotor VTOL aircraft with side-mounted guns and a wide fuselage, white and grey, hovering slightly above its shadow',
+    'a stealth bomber: a sleek angular flying wing in pale grey with no rotors, glowing blue engine slits, slightly above its shadow'
   ],
   siege: [
-    'a simple siege launcher: a truck-mounted rocket rack with a tidy frame, clean sand-and-white paint',
-    'a plasma mortar: a compact armoured carriage with a glowing blue coil barrel',
-    'a breach artillery piece: a long-barrelled howitzer on a reinforced tracked carriage, clean grey and white',
-    'a demolition walker: a large four-legged walker carrying a wrecking arm and a siege cannon, white with brass trim'
+    'a simple siege launcher: a wheeled truck carrying an open rocket rack with six rockets on a tidy frame, clean sand-and-white paint',
+    'a plasma mortar: a compact armoured tracked carriage with a short fat barrel wrapped in glowing blue coils',
+    'a breach artillery piece: a very long-barrelled howitzer on a reinforced tracked carriage, clean grey and white',
+    'a demolition walker: a large four-legged walker carrying a swinging wrecking-ball arm and a siege cannon, white with brass trim'
   ]
 };
+const TSUF = 'Render style: smooth polished 3D game render with soft shading and clean edges, exactly the same style as the buildings of this set, NOT a comic, NOT a cartoon, NOT cel-shaded, NO black outlines. The unit faces front-left, fills about 80 percent of the frame, and is shown at the same scale and camera as every other unit in the set. A soft neutral shadow directly under it, no ground, no base plate, no text';
 const WALL_SUBJECT = {
   sent: [
     'an automated point-gun: a small clean auto-turret on a low concrete mount',
@@ -141,15 +142,44 @@ const MONSTERS = [
   ['mon_2', 'Dune Raptor', 'a small-to-mid hostile creature, a fast two-legged raptor-like beast with pale grey and sand armour plates, a long tail, sharp brass claws and glowing orange eyes, running low, a clearly different shape from a hound, clean stylized design'],
   ['mon_3', 'Rust Brute', 'a mid-sized hostile creature, a hulking brute with orange-brown armoured hide, bone-white spurs, thick arms and glowing orange eyes, clean stylized design'],
   ['mon_4', 'Slate Crawler', 'a large hostile creature, a big armoured scorpion-like crawler with slate-blue plates, two heavy claws raised, a curved tail stinger with a glowing orange tip and glowing orange eyes, clean stylized design'],
-  ['mon_5', 'Ember Colossus', 'a huge boss creature standing fully upright and tall on two thick legs, twice the height of a hunched brute, with a broad chest and a crown of long curved horns; cool pale-grey and slate-blue armour plates with brass trim, a bright glowing molten-ember core in the chest showing through a cracked plate, two short brass smokestacks on the shoulders venting a little light steam, glowing orange eyes; a clearly different silhouette and colour scheme from the hunched orange-brown brute, clean stylized design'],
+  ['mon_5', 'Ember Colossus', 'a huge boss creature standing fully upright and tall on two thick legs, twice the height of a hunched brute, with a broad chest and a crown of long curved horns; cool pale-grey and slate-blue armour plates with brass trim, a bright glowing molten-ember core in the chest showing through a cracked plate, two short brass smokestacks on the shoulders venting a little light steam, glowing orange eyes; a clearly different silhouette and colour scheme from the hunched orange-brown Rust Brute (it must NOT be orange-brown and must NOT be hunched), clean stylized design'],
   ['mon_6', 'Iron Wyrm', 'the biggest boss creature, an enormous armoured serpent-like wyrm rearing up with its long segmented body coiled behind it, white and brass armour plates, a wide crest of horns, a glowing ember mouth and glowing orange eyes, far larger and more imposing than every other monster, clean stylized design']
 ];
 const NODES = {
-  food: ['Food field', 'a resource field of crops: a fenced field of bright green-gold wheat rows and a harvest cart', ['a small patch of crops', 'a modest field of crops', 'a healthy field with a cart', 'a large rich field with silos and a tractor', 'a huge lush farmstead with silos, tractors and a windmill', 'the richest farmstead: sprawling gold wheat fields, many silos, tractors, a barn and a windmill']],
-  oil: ['Oil field', 'an oil resource site: a clean pumpjack site with dark oil pools and barrels', ['a single small oil seep with a few barrels', 'a small pumpjack and barrels', 'two pumpjacks with a storage tank', 'a busy derrick cluster with tanks and pipes', 'a large oil complex with derricks, tanks and a flare stack', 'the biggest oil complex: many derricks, large tanks, a small refinery tower and a bright flare stack']],
-  energy: ['Energy vein', 'an energy resource site: glowing blue energy crystals rising out of the ground', ['a few small glowing crystals', 'a small crystal cluster', 'a larger crystal outcrop with a cable rig', 'a big crystal formation with a harvester rig', 'a huge crystal spire field with a harvester and generators', 'a colossal crystal spire cluster with several harvester rigs, generators and arcs of blue light']],
-  steel: ['Steel vein', 'a steel ore resource site: light grey-blue metal ore veins and a clean ore pile', ['a small pile of ore', 'an ore outcrop with a mining cart', 'a mining pit with a drill rig', 'a big open-cast mine with machines and ore stacks', 'a large mine complex with cranes and conveyors', 'a giant mine complex: cranes, conveyors, tall ore stacks and glowing furnaces']]
+  food: ['Food field', 'a food resource site: wheat crop plots inside the compound', [
+    'ONE small square plot of young green seedlings in four short rows and a single wooden hand cart, otherwise bare packed earth',
+    'TWO plots of green wheat, six rows each, and one harvest cart',
+    'FOUR plots of tall green-gold wheat in a two-by-two grid with a dirt cross path and a small farm truck',
+    'four large golden wheat plots, one round grain silo and a tractor',
+    'four large golden wheat plots, THREE tall grain silos, two tractors and a small windmill',
+    'the richest farmstead: five golden wheat plots filling the compound, FOUR tall silos, a red-roofed barn, three tractors and a windmill'
+  ]],
+  oil: ['Oil field', 'an oil resource site: dark oil and pumping equipment inside the compound', [
+    'ONE small round dark oil pool and three orange barrels, nothing else',
+    'ONE pumpjack over an oil pool and four orange barrels',
+    'TWO pumpjacks, one round steel storage tank and a small control cabin',
+    'a tall steel derrick tower in the centre, two pumpjacks, three round storage tanks and connecting pipes',
+    'a derrick, three pumpjacks, four storage tanks, a pipe network and a tall flare stack with a small flame',
+    'the biggest oil complex: two derricks, four pumpjacks, six large tanks, a slim distillation tower and a tall flare stack with a bright flame'
+  ]],
+  energy: ['Energy vein', 'an energy resource site: glowing blue crystals inside the compound', [
+    'THREE small glowing blue crystals on bare ground and one tiny cable box',
+    'ONE small cluster of five blue crystals with a cable running to a small box',
+    'ONE medium crystal outcrop, a small harvester machine and two cable boxes',
+    'ONE large crystal formation, a harvester rig with a short arm and two small generators',
+    'THREE tall crystal spires with a large harvester rig, three generators and a ring of glowing cables',
+    'the richest vein: a colossal central crystal spire surrounded by six smaller spires, three harvester rigs, four generators and thin arcs of blue light between them'
+  ]],
+  steel: ['Steel vein', 'a steel ore resource site: grey-blue metal ore inside the compound', [
+    'ONE small pile of grey-blue ore rocks and a shovel, on bare ground',
+    'ONE ore outcrop and one mining cart on a short rail',
+    'a shallow mining pit with a small drill rig and one ore cart',
+    'a deep stepped open-cast pit with an excavator, a dump truck and two stacks of ore',
+    'a large stepped pit with a crane, a conveyor belt running to an ore stack and two trucks',
+    'the giant mine: a very deep stepped pit, two cranes, two conveyors, tall ore stacks, three trucks and a glowing furnace'
+  ]]
 };
+const NODEFP = 'Every one of the six levels of a resource uses the IDENTICAL compound: one square fenced compound of packed sand-brown earth with a low fence of pale warm-grey panels and small brass posts (no pink, red or magenta trim), exactly the same size, angle and corner positions in every image, filling the frame width. Only what stands inside the compound changes, and each level clearly holds more, bigger and more advanced equipment than the level before, with the exact counts given';
 const ICONS = {
   map: 'a folded map with a brass pin', base: 'a small clean fortified base building', train: 'crossed rifles with a chevron', lab: 'a glass flask with a glowing blue liquid',
   med: 'a first-aid case with a teal plus sign (no red cross)', march: 'a marching column flag on a pole', vault: 'a steel vault door with a brass wheel', hero: 'a commander helmet with a brass badge',
@@ -178,12 +208,12 @@ function build() {
   G('head', 'Building sheet backdrops (17)', 'The wide scenery behind a building on its info sheet. NO building in it: leave an empty flat patch of ground in the lower centre where the game places the building.');
   for (const k of Object.keys(ALL_BLD)) add('head', {
     key: `head_${k}`, name: `${ALL_BLD[k].n} backdrop`, size: '2:1 wide, 1600 x 800', transparent: false, out: 1000,
-    prompt: make(`A wide scenic backdrop of pure scenery: ${BACKDROP[k]}. No buildings, no roads, no paved pads, no vehicles, no towers and no signs anywhere; just soft natural ground and sky. Plain, uncluttered ground in the lower half and bright sky in the upper half, nothing important in the centre. Slightly raised camera, soft depth haze`, STYLE, BG_O)
+    prompt: make(`A wide scenic backdrop of pure scenery: ${BACKDROP[k]}. Painted, stylized 3D game-background look with soft clean shapes and gentle colour, NOT a photograph and NOT photorealistic. No buildings, no roads, no paved pads, no vehicles, no towers, no fences, no people and no signs anywhere; just natural ground and sky. Composition: sky in the top 30 percent, distant hills or horizon at 30 percent, then calm plain ground filling the lower 70 percent with nothing at all in the centre, interest only near the left and right edges. Slightly raised camera, soft depth haze, no vignette, no frame`, STYLE, BG_O)
   });
   G('troop', 'Troops (16)', 'One unit type per image, transparent, same camera. A squad for infantry and a single vehicle for the rest. Do tier 1 to 4 of a class together and attach tier 1 as a reference.');
   for (const c of Object.keys(D.CLSD)) D.CLSD[c].names.forEach((nm, i) => add('troop', {
     key: `troop_${c}_t${i + 1}`, name: `${nm} (${D.CLSD[c].n} tier ${i + 1})`, size: '1:1, 1024 x 1024', transparent: true, out: 384,
-    prompt: make(`${TROOP_SUBJECT[c][i].replace(/^./, x => x.toUpperCase())}. Military unit "${nm}", tier ${i + 1} of 4 (higher tiers look more advanced and imposing). Only the unit, centred, on no ground`, STYLE_GEN, CAM, BG_T)
+    prompt: make(`${TROOP_SUBJECT[c][i].replace(/^./, x => x.toUpperCase())}. Military unit "${nm}", tier ${i + 1} of 4: each higher tier is clearly larger, better armoured and more advanced than the one before, with a clearly different silhouette. ${TSUF}`, STYLE_GEN, CAM, BG_T)
   }));
   G('wall', 'Wall defenses (16)', 'Defensive emplacements that guard your base wall. Transparent, same camera.');
   for (const c of Object.keys(D.WCLSD)) D.WCLSD[c].names.forEach((nm, i) => add('wall', {
@@ -220,7 +250,7 @@ function build() {
   });
   G('map', 'Map features (37)', 'Sprites for the world map, transparent. Shown small, so bold shapes and strong colour. The map is made of diamond (isometric) tiles, so every camp, base, citadel and resource site sits on a square patch that reads as a diamond. Nothing is round, hexagonal or octagonal.');
   for (const [key, n, d] of MONSTERS) add('map', { key, name: n, size: '1:1, 1024 x 1024', transparent: true, out: 384, prompt: make(`${d.replace(/^./, c => c.toUpperCase())}. Original monster design. Only the creature, centred, with a soft shadow`, STYLE_GEN, CAM, BG_T) });
-  add('map', { key: 'camp', name: 'Raider camp', size: '1:1, 1024 x 1024', transparent: true, out: 384, prompt: make('A hostile raider camp: a small cluster of dark red-brown tents around a campfire, low straight barricade fencing along the square edges and a red pennant on a pole', STYLE_GEN, CAM, DIA, BG_T) });
+  add('map', { key: 'camp', name: 'Raider camp', size: '1:1, 1024 x 1024', transparent: true, out: 384, prompt: make('A hostile raider camp on the same kind of square compound as the commander bases: one square fenced pad of packed sand-brown earth with a low straight barricade of grey panels along all four edges (NOT a circle, NOT an oval), four dark red-brown tents around a campfire in the middle, a red pennant on a pole and two crates', STYLE_GEN, CAM, DIA, BG_T) });
   add('map', { key: 'citadel', name: 'Central citadel', size: '1:1, 1024 x 1024', transparent: true, out: 512, prompt: make('The Iron Citadel, a giant white-and-steel fortress with a brass-edged plinth, square walls following the plinth edges, four tall towers one at each corner of the square and a central spire with a bright warm beacon at the top', STYLE_GEN, CAM, DIA, BG_T) });
   const BASES = [
     'A brand-new commander base at its smallest: one small white-and-steel command hut with a brass door and a short radio mast at the back corner, a flagpole, two small supply crates and a low straight fence along the square edges. Wide open empty ground around it',
@@ -232,13 +262,13 @@ function build() {
   BASES.forEach((d, i) => add('map', { key: `base_${i + 1}`, name: `Commander base level ${i + 1}`, size: '1:1, 1024 x 1024', transparent: true, out: 384, prompt: make(`${d}. Commander base, level ${i + 1} of 5. It is the same base design and the same footprint at every level, only grander, so the five images read as one base growing. Neutral white, grey and warm sand colours with no player colour, the same base is used for the player and for enemy commanders`, STYLE_GEN, CAM, DIA, BG_T) }));
   for (const nk of Object.keys(NODES)) {
     const [n, d, tiers] = NODES[nk];
-    tiers.forEach((tx, i) => add('map', { key: `node_${nk}_${i + 1}`, name: `${n} tier ${i + 1}`, size: '1:1, 1024 x 1024', transparent: true, out: 256, prompt: make(`${d.replace(/^./, c => c.toUpperCase())}. Richness level ${i + 1} of 6: ${tx}`, STYLE_GEN, CAM, DIA, BG_T) }));
+    tiers.forEach((tx, i) => add('map', { key: `node_${nk}_${i + 1}`, name: `${n} tier ${i + 1}`, size: '1:1, 1024 x 1024', transparent: true, out: 256, prompt: make(`${d.replace(/^./, c => c.toUpperCase())}. Richness level ${i + 1} of 6, containing exactly: ${tx}. ${NODEFP}`, STYLE_GEN, CAM, DIA, BG_T) }));
   }
   G('tile', 'Ground tiles (6)', 'Flat, straight top-down textures with NO perspective and NO objects. The game bends them onto the map, so edges must tile seamlessly.');
   const tileStyle = 'Flat top-down view, no perspective, no shadows from tall objects, even bright lighting, seamless tileable texture where the left edge matches the right and the top matches the bottom. Soft, clean, low-contrast so buildings stand out on top of it. ' + BG_O + ' Style: clean stylized-realistic game texture, bright daylight, no text or logos.';
-  for (let v = 1; v <= 3; v++) add('tile', { key: `tile_wild_${v}`, name: `Open ground ${v}`, size: '1:1, 1024 x 1024', transparent: false, out: 256, prompt: `Ground texture: clean light desert sand and packed earth with fine gentle ripples and a few small pebbles, ${['warm sand-tan', 'slightly greyer sand', 'slightly warmer golden sand'][v - 1]}. ${tileStyle}` });
-  for (let v = 1; v <= 2; v++) add('tile', { key: `tile_forest_${v}`, name: `Forest canopy ${v}`, size: '1:1, 1024 x 1024', transparent: false, out: 256, prompt: `Forest texture seen straight from above: bright, healthy green tree crowns with soft shadows between them, ${['dense and even', 'slightly broken with lighter ground showing'][v - 1]}. ${tileStyle}` });
-  add('tile', { key: 'tile_plaza_1', name: 'Citadel plaza', size: '1:1, 1024 x 1024', transparent: false, out: 256, prompt: `Ground texture: clean pale concrete plaza paving with thin brass inlay lines in a cross pattern. ${tileStyle}` });
+  for (let v = 1; v <= 3; v++) add('tile', { key: `tile_wild_${v}`, name: `Open ground ${v}`, size: '1:1, 1024 x 1024', transparent: false, out: 256, prompt: `Ground texture seen straight from above: ${['warm golden desert sand with fine wind ripples running diagonally and a few tiny pebbles', 'pale grey packed dust and fine gravel with scattered small flat stones, no ripples', 'dry sun-baked tan earth with a fine network of shallow cracks and a few tiny dry tufts'][v - 1]}. The three open-ground textures must clearly differ from each other in colour and pattern. ${tileStyle}` });
+  for (let v = 1; v <= 2; v++) add('tile', { key: `tile_forest_${v}`, name: `Forest canopy ${v}`, size: '1:1, 1024 x 1024', transparent: false, out: 256, prompt: `Forest texture seen straight from above: ${['a dense broadleaf forest, round bright-green tree crowns of mixed sizes packed closely with soft shadows between them', 'a conifer forest, small dark blue-green star-shaped pine crowns with a few small clearings of pale grass showing'][v - 1]}. The two forest textures must clearly differ in tree shape and colour. ${tileStyle}` });
+  add('tile', { key: 'tile_plaza_1', name: 'Citadel plaza', size: '1:1, 1024 x 1024', transparent: false, out: 256, prompt: `Ground texture seen straight from above: pale concrete plaza paving in large square slabs laid in a running-bond pattern, with a thin brass inlay line forming one large square frame and a small brass compass-star in the centre, very light wear. ${tileStyle}` });
   G('pack', 'Pack banners (16)', 'The big picture at the top of each store pack: a clean, bright loot still life with a colour glow behind it. Rarity colours: 1 green, 2 teal, 3 indigo, 4 magenta, 5 gold.');
   const rare = { 1: 'fresh green', 2: 'teal', 3: 'indigo', 4: 'magenta', 5: 'warm gold' };
   /* each pack shows its OWN contents in its own composition, so no two banners look alike */
@@ -318,7 +348,7 @@ function build() {
   add('item', { key: 'item_shard', name: 'Hero shard', size: '1:1, 1024 x 1024', transparent: true, out: 128, prompt: make('A glowing angular crystal shard with a small star inside, cool white-blue light. Front three-quarter view, centred, only the item', STYLE_GEN, BG_T) });
   add('item', { key: 'item_wheel', name: 'Casino wheel', size: '1:1, 1024 x 1024', transparent: true, out: 256, prompt: make('A casino prize wheel: a round white-and-brass wheel divided into many bright colour segments with a small brass pointer at the top and a glowing centre hub. No numbers or letters. Front view, centred, only the wheel', STYLE_GEN, BG_T) });
   /* ---- screens, alliance, marches, quests, city (Michelle, 2026-09-30) ---- */
-  const HEAD = 'Wide header banner, 16:5, nothing that looks like text or letters. The middle third stays calm and slightly darker so a title can sit on it. Soft light-grey to warm-sand backdrop with a subtle steel panel edge along the bottom.';
+  const HEAD = 'Wide header banner, 16:5, nothing that looks like text or letters. The middle third stays calm, with low contrast and no small details, so a title can sit on it; the interesting objects sit in the left and right thirds. The picture runs right to every edge of the frame: NO frame, NO border, NO trim, NO panel edge, NO rounded corners, NO dark bars or strips along any edge. Soft light-grey to warm-sand tones.';
   const ICO = (subj, extra) => make(`A single glossy game icon of ${subj}. Front view, bold simple shape that reads at 32 pixels, thick soft dark-blue outline, centred, only the icon${extra ? ', ' + extra : ''}`, STYLE_GEN, BG_T);
   const ICOADD = (grp, key, name, subj, out, extra) => add(grp, { key, name, size: '1:1, 1024 x 1024', transparent: true, out: out || 128, prompt: ICO(subj, extra) });
   const HEADADD = (grp, key, name, scene) => add(grp, { key, name, size: '16:5, 1600 x 500', transparent: false, out: 800, prompt: make(`${scene}. ${HEAD}`, STYLE_GEN, BG_O) });
