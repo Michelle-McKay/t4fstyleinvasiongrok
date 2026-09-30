@@ -30,7 +30,7 @@ function newState() {
     res: { rations: 20000, fuel: 16000, power: 14000, alloy: 12000, cash: 6000 }, dia: 250, ledger: [],
     base: { x: 120, y: 220 }, plots: { in: inner, out: outer }, builders: 1,
     troops: { inf1: 160, arm1: 70, air1: 45, siege1: 24, inf2: 36 },
-    wounded: { inf1: 40, siege1: 8, inf2: 18 }, wall: { sent1: 12, garr1: 8 },
+    wounded: { inf1: 40, siege1: 8, inf2: 18 }, wall: { sent1: 12, bast1: 8 },
     jobs: [], marches: [], incoming: [], own: {}, encs: {}, nodes: {}, dead: {},
     research: {}, bars: { 1: 6, 2: 2, 3: 1, 4: 0, 5: 0, 6: 0 }, gems: 0, shards: { vanguard: 1, outrider: 0, battery: 1 },
     gear: { pieces: [], worn: {} }, slips: { s5: 2, s60: 0, s480: 0 }, tokens: 1, orders: 3, seals: 1,
@@ -50,7 +50,7 @@ function newState() {
   return st;
 }
 function save() { try { S.last = Date.now(); localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) { } }
-function load() { try { const s = localStorage.getItem(SAVE_KEY); if (s) { const o = JSON.parse(s); if (o && o.v === 1) return o; } } catch (e) { } return null; }
+function load() { try { const s = localStorage.getItem(SAVE_KEY); if (s) { const o = JSON.parse(s); if (o && o.v === 1) { for (const k of Object.keys(o.wall || {})) if (/^garr/.test(k)) delete o.wall[k]; o.jobs = (o.jobs || []).filter(j => !(j.kind === 'wall' && j.cls === 'garr')); return o; } } } catch (e) { } return null; }
 function resetGame() { try { localStorage.removeItem(SAVE_KEY); } catch (e) { } S = newState(); terrDirty = true; UIH.dirty(); }
 function note(m, kind) { S.log.unshift({ t: Date.now(), m, k: kind || 'info' }); if (S.log.length > 80) S.log.length = 80; UIH.toast(m, kind); }
 function dchg(n, why) { S.dia += n; S.ledger.unshift({ t: Date.now(), n, why, bal: S.dia }); if (S.ledger.length > 120) S.ledger.length = 120; }

@@ -15,7 +15,7 @@ The game ships with code-drawn vector art. Painted images replace it one piece a
 | `bld_cc_t1..t5` | Command Center per tier (like every building) | base, sheet, map HQ (`hq_N` reuses these by tier) |
 | `head_<kind>` | wide backdrop behind a building on its sheet (no building in it) | building sheet header |
 | `troop_<inf,arm,air,siege>_t1..4` | 16 troop types | training, garrison, columns |
-| `wall_<sent,bast,sky,garr>_t1..4` | 16 wall defenses | defense sheet |
+| `wall_<sent,bast,sky>_t1..4` | 12 wall defenses | defense sheet |
 | `hero_<ada,ivo,ren>` | hero portraits | HUD, hero screen |
 | `mon_1, mon_3, mon_5`, `camp`, `outpost`, `citadel`, `node_<food,oil,energy,steel>_1..5` | map sprites | world map |
 | `tile_wild_1..3`, `tile_forest_1..2`, `tile_plaza_1` | flat top-down ground textures | world map |
