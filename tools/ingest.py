@@ -19,7 +19,8 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 A = os.path.join(ROOT, 'assets')
 CAT = {i['key']: i for i in json.load(open(os.path.join(A, 'catalog.json')))['items']}
 FOLDER = {'bld': 'buildings', 'head': 'backdrops', 'troop': 'troops', 'wall': 'walls', 'hero': 'heroes',
-          'map': 'map', 'tile': 'tiles', 'pack': 'packs', 'gem': 'packs', 'icon': 'icons'}
+          'map': 'map', 'tile': 'tiles', 'pack': 'packs', 'gem': 'packs', 'icon': 'icons', 'skill': 'skills', 'gear': 'gear', 'core': 'cores',
+          'vip': 'vip', 'avatar': 'avatars', 'chat': 'chat', 'item': 'items'}
 
 def key_of(path):
     s = os.path.splitext(os.path.basename(path))[0].lower().strip()
@@ -35,7 +36,7 @@ def flat_bg(im, tol=80):
         if all(max(abs(a - b) for a, b in zip(use[0], c)) <= tol for c in use): return tuple(sum(c[i] for c in use) // len(use) for i in range(3))
     return None
 
-def cut_out(im, bg, tol=64):
+def cut_out(im, bg, tol=64, hollow=False):
     rgb = im.convert('RGB'); diff = ImageChops.difference(rgb, Image.new('RGB', rgb.size, bg))
     r, g, b = diff.split(); d = ImageChops.lighter(ImageChops.lighter(r, g), b)
     cand = d.point(lambda v: 255 if v <= tol else 0)          # pixels close to the background colour
@@ -54,7 +55,7 @@ def cut_out(im, bg, tol=64):
     for y in range(h):
         row = y * w
         for x in range(w):
-            if seen[row + x]: mp[x, y] = 0
+            if seen[row + x] or (hollow and cp[x, y] == 255): mp[x, y] = 0   # hollow frames also lose the enclosed background
     if bg[0] > 150 and bg[2] > 150 and bg[1] < 120: return magenta_key(im, mask)
     mask = mask.filter(ImageFilter.MinFilter(3)).filter(ImageFilter.GaussianBlur(0.8))   # shave the halo, soften the edge
     out = im.convert('RGBA'); out.putalpha(mask); return out
@@ -91,7 +92,7 @@ def process(path):
         else:
             bg = flat_bg(im)
             if bg is None: note = 'WARNING background is not one flat colour, left as is'
-            else: im = cut_out(im, bg); note = 'background removed'
+            else: im = cut_out(im, bg, hollow=bool(it.get('hollow'))); note = 'background removed'
     else:
         im = im.convert('RGB')
         if it['size'].startswith('1:1') and im.width != im.height:  # not square: centre-crop so it does not stretch

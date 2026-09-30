@@ -1,6 +1,6 @@
 {
  "v": 2,
- "count": 214,
+ "count": 366,
  "groups": [
   {
    "id": "bld",
@@ -24,12 +24,12 @@
   },
   {
    "id": "hero",
-   "title": "Heroes (3)",
+   "title": "Heroes (16)",
    "note": "Bust portraits with a clean, bright backdrop, no transparency."
   },
   {
    "id": "map",
-   "title": "Map features (32)",
+   "title": "Map features (37)",
    "note": "Sprites for the world map, transparent. Shown small, so bold shapes and strong colour. The map is made of diamond (isometric) tiles, so every camp, base, citadel and resource site sits on a square patch that reads as a diamond. Nothing is round, hexagonal or octagonal."
   },
   {
@@ -51,6 +51,41 @@
    "id": "icon",
    "title": "HUD icons (21)",
    "note": "Small glossy icons, front view, transparent. They replace the flat HUD icons wherever the game shows them, so check the HUD looks right after adding them."
+  },
+  {
+   "id": "skill",
+   "title": "Hero skill icons (12)",
+   "note": "Small glossy icons for hero skills and skill tree nodes, front view, transparent, bold shapes that read at 32 pixels."
+  },
+  {
+   "id": "gear",
+   "title": "Gear icons (30)",
+   "note": "Five slots in six grades, transparent, front view. Higher grades look grander, and the number of visible round sockets matches the grade rule: grade 1 and 2 none, grade 3 one, grade 4 two, grade 5 three, grade 6 four. Do a whole slot (six grades) together."
+  },
+  {
+   "id": "core",
+   "title": "Cores, the socket gems (6)",
+   "note": "The six socket gem types, transparent. The tier (1 to 6) is shown by a glow the game draws in code, so draw one clean cut stone each."
+  },
+  {
+   "id": "vip",
+   "title": "VIP badges (12)",
+   "note": "Twelve crest badges, transparent, front view, no numbers or letters. They escalate in material and ornament so each level is clearly grander than the last: bronze for 1 to 3, silver for 4 to 6, gold for 7 to 9, platinum and diamond for 10 to 12."
+  },
+  {
+   "id": "avatar",
+   "title": "Avatars and frames (40)",
+   "note": "Commander avatars are square head-and-shoulders portraits with a plain soft backdrop (the game masks them round). Frames are transparent square borders with the whole inside flat magenta. The 12 hero portraits are reused as avatars, so they are not here."
+  },
+  {
+   "id": "chat",
+   "title": "Chat icons and stickers (16)",
+   "note": "Four channel icons and twelve stickers, transparent, front view, no letters. Stickers are bold expressive emotes in the same glossy style, worn by a small helmeted mascot face or hand."
+  },
+  {
+   "id": "item",
+   "title": "Item icons (18)",
+   "note": "Icons for pack contents and rewards, transparent, front view, no letters or numbers. Speed-up slips get bigger, brighter and more elaborate with size; hero XP potions grow from a small vial to a huge glowing jug."
   }
  ],
  "items": [
@@ -1119,6 +1154,114 @@
    "out": 512
   },
   {
+   "group": "hero",
+   "key": "hero_mara",
+   "name": "Mara Kessel, Infantry commander",
+   "size": "1:1, 1024 x 1024",
+   "transparent": false,
+   "out": 512
+  },
+  {
+   "group": "hero",
+   "key": "hero_tobias",
+   "name": "Tobias Renn, Armour commander",
+   "size": "1:1, 1024 x 1024",
+   "transparent": false,
+   "out": 512
+  },
+  {
+   "group": "hero",
+   "key": "hero_lyra",
+   "name": "Lyra Okoye, Air commander",
+   "size": "1:1, 1024 x 1024",
+   "transparent": false,
+   "out": 512
+  },
+  {
+   "group": "hero",
+   "key": "hero_dov",
+   "name": "Dov Arkin, Engineer",
+   "size": "1:1, 1024 x 1024",
+   "transparent": false,
+   "out": 512
+  },
+  {
+   "group": "hero",
+   "key": "hero_sable",
+   "name": "Sable Quinn, Scout",
+   "size": "1:1, 1024 x 1024",
+   "transparent": false,
+   "out": 512
+  },
+  {
+   "group": "hero",
+   "key": "hero_hollis",
+   "name": "Hollis Grey, Logistician",
+   "size": "1:1, 1024 x 1024",
+   "transparent": false,
+   "out": 512
+  },
+  {
+   "group": "hero",
+   "key": "hero_nadia",
+   "name": "Nadia Ferro, Negotiator",
+   "size": "1:1, 1024 x 1024",
+   "transparent": false,
+   "out": 512
+  },
+  {
+   "group": "hero",
+   "key": "hero_viktor",
+   "name": "Viktor Aldane, Warlord",
+   "size": "1:1, 1024 x 1024",
+   "transparent": false,
+   "out": 512
+  },
+  {
+   "group": "hero",
+   "key": "hero_elena",
+   "name": "Elena Marrow, Strategist",
+   "size": "1:1, 1024 x 1024",
+   "transparent": false,
+   "out": 512
+  },
+  {
+   "group": "hero",
+   "key": "heroframe_common",
+   "name": "Hero portrait frame: common",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "hollow": true,
+   "out": 256
+  },
+  {
+   "group": "hero",
+   "key": "heroframe_rare",
+   "name": "Hero portrait frame: rare",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "hollow": true,
+   "out": 256
+  },
+  {
+   "group": "hero",
+   "key": "heroframe_epic",
+   "name": "Hero portrait frame: epic",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "hollow": true,
+   "out": 256
+  },
+  {
+   "group": "hero",
+   "key": "heroframe_legendary",
+   "name": "Hero portrait frame: legendary",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "hollow": true,
+   "out": 256
+  },
+  {
    "group": "map",
    "key": "mon_1",
    "name": "Ash Hound",
@@ -1181,6 +1324,46 @@
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 512
+  },
+  {
+   "group": "map",
+   "key": "base_1",
+   "name": "Commander base level 1",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "map",
+   "key": "base_2",
+   "name": "Commander base level 2",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "map",
+   "key": "base_3",
+   "name": "Commander base level 3",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "map",
+   "key": "base_4",
+   "name": "Commander base level 4",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "map",
+   "key": "base_5",
+   "name": "Commander base level 5",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
   },
   {
    "group": "map",
@@ -1765,6 +1948,1090 @@
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128
+  },
+  {
+   "group": "skill",
+   "key": "skill_attack",
+   "name": "Skill icon: attack",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "skill",
+   "key": "skill_defence",
+   "name": "Skill icon: defence",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "skill",
+   "key": "skill_health",
+   "name": "Skill icon: health",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "skill",
+   "key": "skill_speed",
+   "name": "Skill icon: speed",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "skill",
+   "key": "skill_yield",
+   "name": "Skill icon: yield",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "skill",
+   "key": "skill_heal",
+   "name": "Skill icon: heal",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "skill",
+   "key": "skill_rally",
+   "name": "Skill icon: rally",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "skill",
+   "key": "skill_ransom",
+   "name": "Skill icon: ransom",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "skill",
+   "key": "skill_scout",
+   "name": "Skill icon: scout",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "skill",
+   "key": "skill_wall",
+   "name": "Skill icon: wall",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "skill",
+   "key": "skill_counter",
+   "name": "Skill icon: counter",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "skill",
+   "key": "skill_air",
+   "name": "Skill icon: air",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "gear",
+   "key": "gear_weapon_g1",
+   "name": "Gear: weapon, grade 1",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "gear",
+   "key": "gear_weapon_g2",
+   "name": "Gear: weapon, grade 2",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "gear",
+   "key": "gear_weapon_g3",
+   "name": "Gear: weapon, grade 3",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "gear",
+   "key": "gear_weapon_g4",
+   "name": "Gear: weapon, grade 4",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "gear",
+   "key": "gear_weapon_g5",
+   "name": "Gear: weapon, grade 5",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "gear",
+   "key": "gear_weapon_g6",
+   "name": "Gear: weapon, grade 6",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "gear",
+   "key": "gear_chest_g1",
+   "name": "Gear: chest, grade 1",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "gear",
+   "key": "gear_chest_g2",
+   "name": "Gear: chest, grade 2",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "gear",
+   "key": "gear_chest_g3",
+   "name": "Gear: chest, grade 3",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "gear",
+   "key": "gear_chest_g4",
+   "name": "Gear: chest, grade 4",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "gear",
+   "key": "gear_chest_g5",
+   "name": "Gear: chest, grade 5",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "gear",
+   "key": "gear_chest_g6",
+   "name": "Gear: chest, grade 6",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "gear",
+   "key": "gear_helmet_g1",
+   "name": "Gear: helmet, grade 1",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "gear",
+   "key": "gear_helmet_g2",
+   "name": "Gear: helmet, grade 2",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "gear",
+   "key": "gear_helmet_g3",
+   "name": "Gear: helmet, grade 3",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "gear",
+   "key": "gear_helmet_g4",
+   "name": "Gear: helmet, grade 4",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "gear",
+   "key": "gear_helmet_g5",
+   "name": "Gear: helmet, grade 5",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "gear",
+   "key": "gear_helmet_g6",
+   "name": "Gear: helmet, grade 6",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "gear",
+   "key": "gear_boots_g1",
+   "name": "Gear: boots, grade 1",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "gear",
+   "key": "gear_boots_g2",
+   "name": "Gear: boots, grade 2",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "gear",
+   "key": "gear_boots_g3",
+   "name": "Gear: boots, grade 3",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "gear",
+   "key": "gear_boots_g4",
+   "name": "Gear: boots, grade 4",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "gear",
+   "key": "gear_boots_g5",
+   "name": "Gear: boots, grade 5",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "gear",
+   "key": "gear_boots_g6",
+   "name": "Gear: boots, grade 6",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "gear",
+   "key": "gear_accessory_g1",
+   "name": "Gear: accessory, grade 1",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "gear",
+   "key": "gear_accessory_g2",
+   "name": "Gear: accessory, grade 2",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "gear",
+   "key": "gear_accessory_g3",
+   "name": "Gear: accessory, grade 3",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "gear",
+   "key": "gear_accessory_g4",
+   "name": "Gear: accessory, grade 4",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "gear",
+   "key": "gear_accessory_g5",
+   "name": "Gear: accessory, grade 5",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "gear",
+   "key": "gear_accessory_g6",
+   "name": "Gear: accessory, grade 6",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "core",
+   "key": "core_strike",
+   "name": "Core: strike",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "core",
+   "key": "core_guard",
+   "name": "Core: guard",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "core",
+   "key": "core_bulwark",
+   "name": "Core: bulwark",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "core",
+   "key": "core_haste",
+   "name": "Core: haste",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "core",
+   "key": "core_yield",
+   "name": "Core: yield",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "core",
+   "key": "core_mend",
+   "name": "Core: mend",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "vip",
+   "key": "vip_1",
+   "name": "VIP badge 1",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "vip",
+   "key": "vip_2",
+   "name": "VIP badge 2",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "vip",
+   "key": "vip_3",
+   "name": "VIP badge 3",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "vip",
+   "key": "vip_4",
+   "name": "VIP badge 4",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "vip",
+   "key": "vip_5",
+   "name": "VIP badge 5",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "vip",
+   "key": "vip_6",
+   "name": "VIP badge 6",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "vip",
+   "key": "vip_7",
+   "name": "VIP badge 7",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "vip",
+   "key": "vip_8",
+   "name": "VIP badge 8",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "vip",
+   "key": "vip_9",
+   "name": "VIP badge 9",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "vip",
+   "key": "vip_10",
+   "name": "VIP badge 10",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "vip",
+   "key": "vip_11",
+   "name": "VIP badge 11",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "vip",
+   "key": "vip_12",
+   "name": "VIP badge 12",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "avatar",
+   "key": "avatar_c1",
+   "name": "Avatar: commander 1",
+   "size": "1:1, 1024 x 1024",
+   "transparent": false,
+   "out": 256
+  },
+  {
+   "group": "avatar",
+   "key": "avatar_c2",
+   "name": "Avatar: commander 2",
+   "size": "1:1, 1024 x 1024",
+   "transparent": false,
+   "out": 256
+  },
+  {
+   "group": "avatar",
+   "key": "avatar_c3",
+   "name": "Avatar: commander 3",
+   "size": "1:1, 1024 x 1024",
+   "transparent": false,
+   "out": 256
+  },
+  {
+   "group": "avatar",
+   "key": "avatar_c4",
+   "name": "Avatar: commander 4",
+   "size": "1:1, 1024 x 1024",
+   "transparent": false,
+   "out": 256
+  },
+  {
+   "group": "avatar",
+   "key": "avatar_c5",
+   "name": "Avatar: commander 5",
+   "size": "1:1, 1024 x 1024",
+   "transparent": false,
+   "out": 256
+  },
+  {
+   "group": "avatar",
+   "key": "avatar_c6",
+   "name": "Avatar: commander 6",
+   "size": "1:1, 1024 x 1024",
+   "transparent": false,
+   "out": 256
+  },
+  {
+   "group": "avatar",
+   "key": "avatar_c7",
+   "name": "Avatar: commander 7",
+   "size": "1:1, 1024 x 1024",
+   "transparent": false,
+   "out": 256
+  },
+  {
+   "group": "avatar",
+   "key": "avatar_c8",
+   "name": "Avatar: commander 8",
+   "size": "1:1, 1024 x 1024",
+   "transparent": false,
+   "out": 256
+  },
+  {
+   "group": "avatar",
+   "key": "avatar_c9",
+   "name": "Avatar: commander 9",
+   "size": "1:1, 1024 x 1024",
+   "transparent": false,
+   "out": 256
+  },
+  {
+   "group": "avatar",
+   "key": "avatar_c10",
+   "name": "Avatar: commander 10",
+   "size": "1:1, 1024 x 1024",
+   "transparent": false,
+   "out": 256
+  },
+  {
+   "group": "avatar",
+   "key": "avatar_c11",
+   "name": "Avatar: commander 11",
+   "size": "1:1, 1024 x 1024",
+   "transparent": false,
+   "out": 256
+  },
+  {
+   "group": "avatar",
+   "key": "avatar_c12",
+   "name": "Avatar: commander 12",
+   "size": "1:1, 1024 x 1024",
+   "transparent": false,
+   "out": 256
+  },
+  {
+   "group": "avatar",
+   "key": "avatar_e1",
+   "name": "Avatar: event 1",
+   "size": "1:1, 1024 x 1024",
+   "transparent": false,
+   "out": 256
+  },
+  {
+   "group": "avatar",
+   "key": "avatar_e2",
+   "name": "Avatar: event 2",
+   "size": "1:1, 1024 x 1024",
+   "transparent": false,
+   "out": 256
+  },
+  {
+   "group": "avatar",
+   "key": "avatar_e3",
+   "name": "Avatar: event 3",
+   "size": "1:1, 1024 x 1024",
+   "transparent": false,
+   "out": 256
+  },
+  {
+   "group": "avatar",
+   "key": "avatar_e4",
+   "name": "Avatar: event 4",
+   "size": "1:1, 1024 x 1024",
+   "transparent": false,
+   "out": 256
+  },
+  {
+   "group": "avatar",
+   "key": "avatar_e5",
+   "name": "Avatar: event 5",
+   "size": "1:1, 1024 x 1024",
+   "transparent": false,
+   "out": 256
+  },
+  {
+   "group": "avatar",
+   "key": "avatar_e6",
+   "name": "Avatar: event 6",
+   "size": "1:1, 1024 x 1024",
+   "transparent": false,
+   "out": 256
+  },
+  {
+   "group": "avatar",
+   "key": "avatar_e7",
+   "name": "Avatar: event 7",
+   "size": "1:1, 1024 x 1024",
+   "transparent": false,
+   "out": 256
+  },
+  {
+   "group": "avatar",
+   "key": "avatar_e8",
+   "name": "Avatar: event 8",
+   "size": "1:1, 1024 x 1024",
+   "transparent": false,
+   "out": 256
+  },
+  {
+   "group": "avatar",
+   "key": "avatar_v1",
+   "name": "Avatar: VIP 1",
+   "size": "1:1, 1024 x 1024",
+   "transparent": false,
+   "out": 256
+  },
+  {
+   "group": "avatar",
+   "key": "avatar_v2",
+   "name": "Avatar: VIP 2",
+   "size": "1:1, 1024 x 1024",
+   "transparent": false,
+   "out": 256
+  },
+  {
+   "group": "avatar",
+   "key": "avatar_v3",
+   "name": "Avatar: VIP 3",
+   "size": "1:1, 1024 x 1024",
+   "transparent": false,
+   "out": 256
+  },
+  {
+   "group": "avatar",
+   "key": "avatar_v4",
+   "name": "Avatar: VIP 4",
+   "size": "1:1, 1024 x 1024",
+   "transparent": false,
+   "out": 256
+  },
+  {
+   "group": "avatar",
+   "key": "avatar_v5",
+   "name": "Avatar: VIP 5",
+   "size": "1:1, 1024 x 1024",
+   "transparent": false,
+   "out": 256
+  },
+  {
+   "group": "avatar",
+   "key": "avatar_v6",
+   "name": "Avatar: VIP 6",
+   "size": "1:1, 1024 x 1024",
+   "transparent": false,
+   "out": 256
+  },
+  {
+   "group": "avatar",
+   "key": "avatar_v7",
+   "name": "Avatar: VIP 7",
+   "size": "1:1, 1024 x 1024",
+   "transparent": false,
+   "out": 256
+  },
+  {
+   "group": "avatar",
+   "key": "avatar_v8",
+   "name": "Avatar: VIP 8",
+   "size": "1:1, 1024 x 1024",
+   "transparent": false,
+   "out": 256
+  },
+  {
+   "group": "avatar",
+   "key": "frame_1",
+   "name": "Avatar frame 1",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "hollow": true,
+   "out": 256
+  },
+  {
+   "group": "avatar",
+   "key": "frame_2",
+   "name": "Avatar frame 2",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "hollow": true,
+   "out": 256
+  },
+  {
+   "group": "avatar",
+   "key": "frame_3",
+   "name": "Avatar frame 3",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "hollow": true,
+   "out": 256
+  },
+  {
+   "group": "avatar",
+   "key": "frame_4",
+   "name": "Avatar frame 4",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "hollow": true,
+   "out": 256
+  },
+  {
+   "group": "avatar",
+   "key": "frame_5",
+   "name": "Avatar frame 5",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "hollow": true,
+   "out": 256
+  },
+  {
+   "group": "avatar",
+   "key": "frame_6",
+   "name": "Avatar frame 6",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "hollow": true,
+   "out": 256
+  },
+  {
+   "group": "avatar",
+   "key": "frame_7",
+   "name": "Avatar frame 7",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "hollow": true,
+   "out": 256
+  },
+  {
+   "group": "avatar",
+   "key": "frame_8",
+   "name": "Avatar frame 8",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "hollow": true,
+   "out": 256
+  },
+  {
+   "group": "avatar",
+   "key": "frame_9",
+   "name": "Avatar frame 9",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "hollow": true,
+   "out": 256
+  },
+  {
+   "group": "avatar",
+   "key": "frame_10",
+   "name": "Avatar frame 10",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "hollow": true,
+   "out": 256
+  },
+  {
+   "group": "avatar",
+   "key": "frame_11",
+   "name": "Avatar frame 11",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "hollow": true,
+   "out": 256
+  },
+  {
+   "group": "avatar",
+   "key": "frame_12",
+   "name": "Avatar frame 12",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "hollow": true,
+   "out": 256
+  },
+  {
+   "group": "chat",
+   "key": "chat_world",
+   "name": "Chat channel: world",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "chat",
+   "key": "chat_alliance",
+   "name": "Chat channel: alliance",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "chat",
+   "key": "chat_private",
+   "name": "Chat channel: private",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "chat",
+   "key": "chat_system",
+   "name": "Chat channel: system",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "chat",
+   "key": "sticker_1",
+   "name": "Sticker 1",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "chat",
+   "key": "sticker_2",
+   "name": "Sticker 2",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "chat",
+   "key": "sticker_3",
+   "name": "Sticker 3",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "chat",
+   "key": "sticker_4",
+   "name": "Sticker 4",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "chat",
+   "key": "sticker_5",
+   "name": "Sticker 5",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "chat",
+   "key": "sticker_6",
+   "name": "Sticker 6",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "chat",
+   "key": "sticker_7",
+   "name": "Sticker 7",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "chat",
+   "key": "sticker_8",
+   "name": "Sticker 8",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "chat",
+   "key": "sticker_9",
+   "name": "Sticker 9",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "chat",
+   "key": "sticker_10",
+   "name": "Sticker 10",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "chat",
+   "key": "sticker_11",
+   "name": "Sticker 11",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "chat",
+   "key": "sticker_12",
+   "name": "Sticker 12",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "item",
+   "key": "item_slip_1m",
+   "name": "Speed-up slip 1m",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "item",
+   "key": "item_slip_5m",
+   "name": "Speed-up slip 5m",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "item",
+   "key": "item_slip_15m",
+   "name": "Speed-up slip 15m",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "item",
+   "key": "item_slip_30m",
+   "name": "Speed-up slip 30m",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "item",
+   "key": "item_slip_1h",
+   "name": "Speed-up slip 1h",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "item",
+   "key": "item_slip_3h",
+   "name": "Speed-up slip 3h",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "item",
+   "key": "item_slip_8h",
+   "name": "Speed-up slip 8h",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "item",
+   "key": "item_slip_24h",
+   "name": "Speed-up slip 24h",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "item",
+   "key": "item_xp_s",
+   "name": "Hero XP potion s",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "item",
+   "key": "item_xp_m",
+   "name": "Hero XP potion m",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "item",
+   "key": "item_xp_l",
+   "name": "Hero XP potion l",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "item",
+   "key": "item_xp_h",
+   "name": "Hero XP potion h",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "item",
+   "key": "item_chip_1",
+   "name": "Casino chips 1",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "item",
+   "key": "item_chip_10",
+   "name": "Casino chips 10",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "item",
+   "key": "item_chip_100",
+   "name": "Casino chips 100",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "item",
+   "key": "item_skillbook",
+   "name": "Skill book",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "item",
+   "key": "item_shard",
+   "name": "Hero shard",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "item",
+   "key": "item_wheel",
+   "name": "Casino wheel",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
   }
  ]
 }
