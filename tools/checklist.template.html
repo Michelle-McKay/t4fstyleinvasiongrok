@@ -46,6 +46,7 @@ summary h2{font-size:21px}.gc{font:600 14px var(--body);color:var(--mut);white-s
 .it.open .pr{display:block}
 .empty{padding:16px 14px;color:var(--mut)}
 @media (prefers-reduced-motion:no-preference){.bar i{transition:width .3s}}
+.sep{margin:18px 2px 6px;font:600 12px/1 system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;opacity:.6}details.fin{opacity:.75}
 </style>
 <main>
 <div class="top">
@@ -82,10 +83,15 @@ function render(){
   const root=$('#groups');const open=new Set([...root.querySelectorAll('details[open]')].map(d=>d.dataset.g));
   const first=!root.children.length;
   root.innerHTML='';let total=0,n=0;
-  for(const g of DATA.groups){
-    const its=DATA.items.filter(i=>i.group===g.id);const d=its.filter(i=>done(i.key)).length;total+=its.length;n+=d;
-    const det=document.createElement('details');det.className='g';det.dataset.g=g.id;if(open.has(g.id)||(first&&g.id==='bld'))det.open=true;
-    det.innerHTML=`<summary><h2>${g.title.replace(/ \(\d+\)$/,'')}</h2><span class="gc">${d} / ${its.length}</span></summary><p class="note">${g.note}</p>`;
+  const stat=g=>{const its=DATA.items.filter(i=>i.group===g.id);return{its,d:its.filter(i=>done(i.key)).length}};
+  const fin=g=>{const t=stat(g);return t.its.length>0&&t.d===t.its.length};
+  const order=[...DATA.groups.filter(g=>!fin(g)),...DATA.groups.filter(fin)];   // finished sections sink to the bottom
+  const firstTodo=order.find(g=>!fin(g));let sepDone=false;
+  for(const g of order){
+    const {its,d}=stat(g);total+=its.length;n+=d;
+    if(fin(g)&&!sepDone){sepDone=true;const h=document.createElement('div');h.className='sep';h.textContent='Finished sections';root.appendChild(h)}
+    const det=document.createElement('details');det.className='g'+(fin(g)?' fin':'');det.dataset.g=g.id;if(open.has(g.id)||(first&&firstTodo&&g.id===firstTodo.id))det.open=true;
+    det.innerHTML=`<summary><h2>${g.title.replace(/ \(\d+\)$/,'')}</h2><span class="gc">${fin(g)?'\u2713 ':''}${d} / ${its.length}</span></summary><p class="note">${g.note}</p>`;
     const list=todo?its.filter(i=>!done(i.key)):its;
     if(!list.length){const e=document.createElement('div');e.className='empty';e.textContent='Everything here is done.';det.appendChild(e)}
     for(const it of list){
