@@ -1,6 +1,6 @@
 {
  "v": 2,
- "count": 497,
+ "count": 492,
  "groups": [
   {
    "id": "bld",
@@ -69,8 +69,8 @@
   },
   {
    "id": "vip",
-   "title": "VIP badges (12)",
-   "note": "Twelve crest badges, transparent, front view, no numbers or letters. They escalate in material and ornament so each level is clearly grander than the last: bronze for 1 to 3, silver for 4 to 6, gold for 7 to 9, platinum and diamond for 10 to 12."
+   "title": "VIP badges (7)",
+   "note": "One badge family in seven images. Levels 1 and 2 share image 1, levels 3 and 4 share image 2, 5 and 6 share image 3, 7 and 8 share image 4, 9 and 10 share image 5, level 11 has its own (vip_11) and level 12 has one special badge (vip_12). Every badge has the identical shape, size and layout; only the metal and one small detail change, so they read as a set. Attach the first one you like as a reference when making the rest."
   },
   {
    "id": "avatar",
@@ -2361,7 +2361,7 @@
   {
    "group": "vip",
    "key": "vip_1",
-   "name": "VIP badge 1",
+   "name": "VIP badge 1 (levels 1 and 2)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -2369,7 +2369,7 @@
   {
    "group": "vip",
    "key": "vip_2",
-   "name": "VIP badge 2",
+   "name": "VIP badge 2 (levels 3 and 4)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -2377,7 +2377,7 @@
   {
    "group": "vip",
    "key": "vip_3",
-   "name": "VIP badge 3",
+   "name": "VIP badge 3 (levels 5 and 6)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -2385,7 +2385,7 @@
   {
    "group": "vip",
    "key": "vip_4",
-   "name": "VIP badge 4",
+   "name": "VIP badge 4 (levels 7 and 8)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -2393,47 +2393,7 @@
   {
    "group": "vip",
    "key": "vip_5",
-   "name": "VIP badge 5",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 256
-  },
-  {
-   "group": "vip",
-   "key": "vip_6",
-   "name": "VIP badge 6",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 256
-  },
-  {
-   "group": "vip",
-   "key": "vip_7",
-   "name": "VIP badge 7",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 256
-  },
-  {
-   "group": "vip",
-   "key": "vip_8",
-   "name": "VIP badge 8",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 256
-  },
-  {
-   "group": "vip",
-   "key": "vip_9",
-   "name": "VIP badge 9",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 256
-  },
-  {
-   "group": "vip",
-   "key": "vip_10",
-   "name": "VIP badge 10",
+   "name": "VIP badge 5 (levels 9 and 10)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -2449,7 +2409,7 @@
   {
    "group": "vip",
    "key": "vip_12",
-   "name": "VIP badge 12",
+   "name": "VIP badge 12 (special, the top level)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
