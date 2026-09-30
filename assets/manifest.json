@@ -119,7 +119,11 @@
   "troop_siege_t1": "assets/troops/troop_siege_t1.webp",
   "troop_siege_t2": "assets/troops/troop_siege_t2.webp",
   "troop_siege_t3": "assets/troops/troop_siege_t3.webp",
-  "troop_siege_t4": "assets/troops/troop_siege_t4.webp"
+  "troop_siege_t4": "assets/troops/troop_siege_t4.webp",
+  "wall_sent_t1": "assets/walls/wall_sent_t1.webp",
+  "wall_sent_t2": "assets/walls/wall_sent_t2.webp",
+  "wall_sent_t3": "assets/walls/wall_sent_t3.webp",
+  "wall_sent_t4": "assets/walls/wall_sent_t4.webp"
  },
  "clean": [
   "bld_alloy_t1",
@@ -239,6 +243,10 @@
   "troop_siege_t1",
   "troop_siege_t2",
   "troop_siege_t3",
-  "troop_siege_t4"
+  "troop_siege_t4",
+  "wall_sent_t1",
+  "wall_sent_t2",
+  "wall_sent_t3",
+  "wall_sent_t4"
  ]
 }
