@@ -35,12 +35,13 @@ TERRAIN.wild = v => mk('wild2_' + v, (g, n, r) => {
 /* ---------------- features from the shared toolkit ---------------- */
 const nodeDraw = { food: drawRations, oil: drawFuel, energy: drawPower, steel: drawAlloy };
 const nodeKey = { food: 'rations', oil: 'fuel', energy: 'power', steel: 'alloy' };
-function nodeSprite(nk, g) { const t = gradeTier(g || 3); return svgSprite('nd_' + nk + t, nodeDraw[nk](t, t * 5), 96); }
+function nodeSprite(nk, g) { const gr = clamp(g || 3, 1, 6), t = gradeTier(gr); return svgSprite('nd_' + nk + gr, nodeDraw[nk](t, t * 5), 96); }
 const FEAT2 = {
   food: g => nodeSprite('food', g), oil: g => nodeSprite('oil', g), energy: g => nodeSprite('energy', g), steel: g => nodeSprite('steel', g),
-  monster: g => svgSprite('mn_' + (g >= 5 ? 5 : g >= 3 ? 3 : 1), monsterArt(g), 96),
+  monster: g => svgSprite('mn_' + clamp(g || 1, 1, 6), monsterArt(g), 96),
   camp: () => svgSprite('camp2', campArt(), 96),
-  base: () => svgSprite('outpost2', outpostArt(), 96),
+  /* enemy bases look exactly like the player's base: bot rank 1-5 picks the same five levels as Command Center tiers 1-5 */
+  base: p => { const L = [1, 5, 10, 15, 20][clamp(p || 1, 1, 5) - 1]; return svgSprite('hq_' + L, stripSvg(ccSVG(L)), 96); },
   pbase: L => svgSprite('hq_' + Math.max(1, L), stripSvg(ccSVG(Math.max(1, L))), 96),
   citadel: () => svgSprite('cit2', citadelArt(), 256)
 };

@@ -27,7 +27,7 @@ const spriteKey = name => {
   if ((m = /^nd_([a-z]+)(\d)$/.exec(name))) return 'node_' + m[1] + '_' + m[2];
   if ((m = /^mn_(\d)$/.exec(name))) return 'mon_' + m[1];
   if ((m = /^hq_(\d+)$/.exec(name))) return 'bld_cc_t' + Math.max(1, tierOf(+m[1]));
-  return { camp2: 'camp', outpost2: 'outpost', cit2: 'citadel' }[name] || null;
+  return { camp2: 'camp', cit2: 'citadel' }[name] || null;
 };
 const canvasFrom = (key, path, size) => {
   const ck = 'img:' + key + ':' + size; if (SP[ck]) return SP[ck];
