@@ -138,7 +138,7 @@ const HERO_SUBJECT = {
 const MONSTERS = [
   ['mon_1', 'Ash Hound', 'a small hostile creature, a lean hound-like beast with pale grey armour plates and glowing orange eyes, crouched to attack, clean stylized design'],
   ['mon_3', 'Rust Brute', 'a mid-sized hostile creature, a hulking brute with orange-brown armoured hide, bone-white spurs, thick arms and glowing orange eyes, clean stylized design'],
-  ['mon_5', 'Ember Colossus', 'a huge boss creature, a towering armoured colossus with a glowing ember core visible through cracks, a horned skull crown and glowing orange eyes, clean stylized design']
+  ['mon_5', 'Ember Colossus', 'a huge boss creature standing fully upright and tall on two thick legs, twice the height of a hunched brute, with a broad chest and a crown of long curved horns; cool pale-grey and slate-blue armour plates with brass trim, a bright glowing molten-ember core in the chest showing through a cracked plate, two short brass smokestacks on the shoulders venting a little light steam, glowing orange eyes; a clearly different silhouette and colour scheme from the hunched orange-brown brute, clean stylized design']
 ];
 const NODES = {
   food: ['Food field', 'a resource field of crops: a fenced field of bright green-gold wheat rows and a harvest cart', ['a small patch of crops', 'a modest field of crops', 'a healthy field with a cart', 'a large rich field with silos and a tractor', 'a huge lush farmstead with silos, tractors and a windmill']],
