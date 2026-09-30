@@ -92,7 +92,10 @@ def process(path):
             bg = flat_bg(im)
             if bg is None: note = 'WARNING background is not one flat colour, left as is'
             else: im = cut_out(im, bg); note = 'background removed'
-    else: im = im.convert('RGB')
+    else:
+        im = im.convert('RGB')
+        if it['size'].startswith('1:1') and im.width != im.height:  # not square: centre-crop so it does not stretch
+            n = min(im.size); l, t = (im.width - n) // 2, (im.height - n) // 2; im = im.crop((l, t, l + n, t + n)); note = 'centre-cropped to square'
     if it['transparent'] and it['size'].startswith('1:1'): im = square(im)
     m = it['out']; sc = m / max(im.size)
     if sc < 1: im = im.resize((round(im.width * sc), round(im.height * sc)), Image.LANCZOS)
