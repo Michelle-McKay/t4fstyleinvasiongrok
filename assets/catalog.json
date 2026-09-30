@@ -30,7 +30,7 @@
   {
    "id": "map",
    "title": "Map features (26)",
-   "note": "Sprites for the world map, transparent. Shown small, so bold shapes and strong colour."
+   "note": "Sprites for the world map, transparent. Shown small, so bold shapes and strong colour. The map is made of diamond (isometric) tiles, so every camp, base, citadel and resource site sits on a square patch that reads as a diamond. Nothing is round, hexagonal or octagonal."
   },
   {
    "id": "tile",
