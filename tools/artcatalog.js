@@ -128,12 +128,6 @@ const WALL_SUBJECT = {
     'a SAM nest: surface-to-air missile launchers on a clean platform',
     'an EMP defense grid: tall clean antenna pylons with glowing blue arcs',
     'an orbital laser node: a tall white tower with a glowing blue beam to the sky, brass trim'
-  ],
-  garr: [
-    'a squad of base guards in clean uniforms and helmets at a low concrete post',
-    'a reinforced guard position: soldiers behind clean concrete walls with a mounted gun',
-    'an elite perimeter division: armoured soldiers with shields at a checkpoint barrier',
-    'automated command sentinels: tall white guard robots in a line, glowing blue eyes, brass trim'
   ]
 };
 const HERO_SUBJECT = {

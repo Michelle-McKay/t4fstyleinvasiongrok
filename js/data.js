@@ -24,12 +24,11 @@ const CLSD = {
   siege: { n: 'Siege', names: ['Siege Engines', 'Plasma Mortars', 'Breach Artillery', 'Demolition Walkers'], atk: 18, hp: 60, pow: 22, load: 160, pace: 0.75, train: [35, 105, 270, 720], cost: { power: 30, alloy: 30, cash: 5 } }
 };
 const TSTAT = [1, 1.8, 3.2, 5.4], TCOST = [1, 3, 8, 18], TSPEED = [180, 157, 133, 110], TLOAD = [1, 1.5, 2.2, 3.2];
-const WCLS = ['sent', 'bast', 'sky', 'garr'];
+const WCLS = ['sent', 'bast', 'sky'];
 const WCLSD = {
   sent: { n: 'Perimeter Sentinels', counter: 'inf', names: ['Automated Point-Guns', 'Hardened Bunker Guards', 'Laser-Grid Interceptors', 'Perimeter Plasma Emplacements'] },
   bast: { n: 'Fortress Bastions', counter: 'arm', names: ['Anti-Tank Spike Traps', 'Railgun Turrets', 'Heavy Siege-Breaker Batteries', 'Quantum Shield Emplacements'] },
   sky: { n: 'Sky-Watch Interceptors', counter: 'air', names: ['Flak Cannons', 'SAM Nests', 'EMP Defense Grids', 'Orbital Laser Nodes'] },
-  garr: { n: 'Structural Garrison', counter: null, names: ['Base Watchman Squads', 'Reinforced Trench Guard', 'Elite Perimeter Division', 'Automated Command Sentinels'] }
 };
 const WT = [{ pow: 15, hp: 50, sec: 20 }, { pow: 35, hp: 120, sec: 60 }, { pow: 85, hp: 280, sec: 180 }, { pow: 200, hp: 650, sec: 420 }];
 const WALL_GATE = [1, 6, 12, 18];              // Defense Center level per wall tier

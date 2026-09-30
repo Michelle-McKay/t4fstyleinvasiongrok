@@ -1,6 +1,6 @@
 {
  "v": 2,
- "count": 212,
+ "count": 208,
  "groups": [
   {
    "id": "bld",
@@ -1090,38 +1090,6 @@
    "group": "wall",
    "key": "wall_sky_t4",
    "name": "Orbital Laser Nodes (Sky-Watch Interceptors tier 4)",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 384
-  },
-  {
-   "group": "wall",
-   "key": "wall_garr_t1",
-   "name": "Base Watchman Squads (Structural Garrison tier 1)",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 384
-  },
-  {
-   "group": "wall",
-   "key": "wall_garr_t2",
-   "name": "Reinforced Trench Guard (Structural Garrison tier 2)",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 384
-  },
-  {
-   "group": "wall",
-   "key": "wall_garr_t3",
-   "name": "Elite Perimeter Division (Structural Garrison tier 3)",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 384
-  },
-  {
-   "group": "wall",
-   "key": "wall_garr_t4",
-   "name": "Automated Command Sentinels (Structural Garrison tier 4)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 384
