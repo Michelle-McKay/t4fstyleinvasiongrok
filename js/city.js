@@ -50,3 +50,27 @@ function cityScene(grid) {
 }
 /* Per-plot drift so lots sit like a settled town: odd rows shift sideways and each lot wobbles a little. */
 function cityDrift(ar, i) { const r = cityRand(ar + i), row = Math.floor(i / 5), sh = row % 2 ? 14 : -4; return `--dx:${(sh + (r() - .5) * 8).toFixed(1)}px;--dy:${((r() - .5) * 10).toFixed(1)}px`; }
+
+/* ---------- moving parts: construction site over a plot being built, working effects on finished buildings ---------- */
+/* Painted layers (city_build_scaffold, city_build_crane, city_build_load, city_build_beacon, city_build_sparks, city_build_dust) replace the drawn ones as soon as they are in the manifest. */
+function buildFX() {
+  const sc = cityImg('city_build_scaffold'), cr = cityImg('city_build_crane'), ld = cityImg('city_build_load'), bc = cityImg('city_build_beacon'), sp = cityImg('city_build_sparks'), du = cityImg('city_build_dust');
+  const im = (u, cls, st) => `<img class="${cls}" style="${st}" src="${u}" alt="">`;
+  return `<span class="cfx" aria-hidden="true">
+    ${sc ? im(sc, 'cf-scaf', 'left:8%;top:10%;width:84%') : `<svg class="cf-scaf" viewBox="0 0 100 100"><path d="M50 14 L90 44 L50 74 L10 44 Z" fill="none" stroke="#e8842a" stroke-width="2" stroke-dasharray="6 4"/><g stroke="#d9dde0" stroke-width="1.6" fill="none"><path d="M18 44 V20 M50 74 V50 M82 44 V20 M50 14 V-4"/><path d="M18 26 L50 50 L82 26 M18 38 L50 62 L82 38"/></g></svg>`}
+    ${cr ? im(cr, 'cf-crane', 'right:-4%;top:-6%;width:40%') : `<svg class="cf-crane" viewBox="0 0 40 60"><g stroke="#e8a12a" stroke-width="2" fill="none"><path d="M30 58 V8 M26 58 V8 M26 20 H30 M26 34 H30 M26 46 H30"/></g><g class="cf-jib"><path d="M4 8 H38" stroke="#e8a12a" stroke-width="2.4"/><rect x="34" y="6" width="5" height="5" fill="#8b979d"/></g></svg>`}
+    ${ld ? im(ld, 'cf-load', 'right:20%;top:6%;width:18%') : `<svg class="cf-load" viewBox="0 0 20 30"><path d="M10 0 V16" stroke="#333" stroke-width="1"/><rect x="3" y="16" width="14" height="5" fill="#8b979d" stroke="#5f6b72" stroke-width=".8"/><rect x="5" y="21" width="10" height="4" fill="#a4afb4" stroke="#5f6b72" stroke-width=".8"/></svg>`}
+    ${bc ? im(bc, 'cf-beacon', 'left:4%;top:10%;width:14%') : `<svg class="cf-beacon" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#ffb02e"/><circle cx="5" cy="5" r="1.6" fill="#fff4c9"/></svg>`}
+    ${sp ? im(sp, 'cf-spark', 'left:26%;top:38%;width:18%') : `<svg class="cf-spark" viewBox="0 0 20 20"><g stroke="#ffd27a" stroke-width="1.4" stroke-linecap="round"><path d="M10 2 V7 M10 13 V18 M2 10 H7 M13 10 H18 M4.5 4.5 L8 8 M12 12 L15.5 15.5 M15.5 4.5 L12 8 M8 12 L4.5 15.5"/></g><circle cx="10" cy="10" r="2" fill="#fff"/></svg>`}
+    ${du ? im(du, 'cf-dust', 'left:58%;top:62%;width:26%') : `<svg class="cf-dust" viewBox="0 0 30 20"><g fill="#d8c9a4"><circle cx="9" cy="12" r="6"/><circle cx="16" cy="9" r="7"/><circle cx="22" cy="12" r="5.5"/></g></svg>`}
+  </span>`;
+}
+/* working buildings: smoke from producers, blinking lights, a turning radar */
+function workFX(b, l) {
+  if (!l) return '';
+  const B = BLD[b], out = [];
+  if (B.res || b === 'treasury' || b === 'alloy' || b === 'forge') out.push('<i class="wf-smoke" style="left:62%;top:14%"></i><i class="wf-smoke d2" style="left:62%;top:14%"></i>');
+  if (b === 'radar') out.push('<i class="wf-radar" style="left:44%;top:6%"></i>');
+  out.push(`<i class="wf-led" style="left:${b === 'power' ? 30 : 74}%;top:${b === 'power' ? 40 : 34}%"></i>`);
+  return `<span class="wfx" aria-hidden="true">${out.join('')}</span>`;
+}
