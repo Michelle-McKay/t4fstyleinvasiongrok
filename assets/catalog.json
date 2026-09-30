@@ -1,6 +1,6 @@
 {
  "v": 2,
- "count": 214,
+ "count": 219,
  "groups": [
   {
    "id": "bld",
@@ -29,7 +29,7 @@
   },
   {
    "id": "map",
-   "title": "Map features (32)",
+   "title": "Map features (37)",
    "note": "Sprites for the world map, transparent. Shown small, so bold shapes and strong colour. The map is made of diamond (isometric) tiles, so every camp, base, citadel and resource site sits on a square patch that reads as a diamond. Nothing is round, hexagonal or octagonal."
   },
   {
@@ -1181,6 +1181,46 @@
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 512
+  },
+  {
+   "group": "map",
+   "key": "base_1",
+   "name": "Commander base level 1",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "map",
+   "key": "base_2",
+   "name": "Commander base level 2",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "map",
+   "key": "base_3",
+   "name": "Commander base level 3",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "map",
+   "key": "base_4",
+   "name": "Commander base level 4",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "map",
+   "key": "base_5",
+   "name": "Commander base level 5",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
   },
   {
    "group": "map",

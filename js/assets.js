@@ -26,7 +26,7 @@ const spriteKey = name => {
   let m;
   if ((m = /^nd_([a-z]+)(\d)$/.exec(name))) return 'node_' + m[1] + '_' + m[2];
   if ((m = /^mn_(\d)$/.exec(name))) return 'mon_' + m[1];
-  if ((m = /^hq_(\d+)$/.exec(name))) return 'bld_cc_t' + Math.max(1, tierOf(+m[1]));
+  if ((m = /^hq_(\d+)$/.exec(name))) { const t = Math.max(1, tierOf(+m[1])); return ART.file('base_' + t) ? 'base_' + t : 'bld_cc_t' + t; }
   return { camp2: 'camp', cit2: 'citadel' }[name] || null;
 };
 const canvasFrom = (key, path, size) => {

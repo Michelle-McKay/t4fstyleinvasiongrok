@@ -19,7 +19,7 @@ The game ships with code-drawn vector art. Painted images replace it one piece a
 | `hero_<ada,ivo,ren>` | hero portraits | HUD, hero screen |
 | `mon_1..6`, `camp`, `citadel`, `node_<food,oil,energy,steel>_1..6` | map sprites | world map |
 
-Map bases (yours and every enemy's) are drawn from the Command Center building art `bld_cc_t1..5`, so they look identical; an enemy's rank 1-5 picks the tier.
+Map bases (yours and every enemy's) use `base_1..5`, one base growing over five levels on a diamond footprint, so they look identical for player and enemy; an enemy's rank 1-5 picks the level. Until `base_N` is painted, the map falls back to the Command Center building art `bld_cc_t1..5`.
 | `tile_wild_1..3`, `tile_forest_1..2`, `tile_plaza_1` | flat top-down ground textures | world map |
 | `pack_<name>` | 16 store pack banners | pack store, pack pop-out |
 | `gem_1..6` | diamond piles | diamond packs |
