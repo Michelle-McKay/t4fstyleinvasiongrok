@@ -3,6 +3,7 @@
  "_comment": "Written by tools/ingest.py. files maps an asset key from assets/catalog.json to its image; clean lists the keys made in the current bright clean-industrial look (the rest are the old dark look, kept until replaced).",
  "files": {
   "head_alloy": "assets/backdrops/head_alloy.webp",
+  "head_cc": "assets/backdrops/head_cc.webp",
   "head_defense": "assets/backdrops/head_defense.webp",
   "head_depot": "assets/backdrops/head_depot.webp",
   "head_embassy": "assets/backdrops/head_embassy.webp",
@@ -207,6 +208,7 @@
   "bld_treasury_t4",
   "bld_treasury_t5",
   "head_alloy",
+  "head_cc",
   "head_defense",
   "head_depot",
   "head_embassy",
