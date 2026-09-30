@@ -1,6 +1,6 @@
 {
  "v": 2,
- "count": 492,
+ "count": 498,
  "groups": [
   {
    "id": "bld",
@@ -109,8 +109,8 @@
   },
   {
    "id": "city",
-   "title": "City backdrop, ground and decor (28)",
-   "note": "Replaces the flat dark background and square street grid: three full-screen backdrops, a horizon strip, three organic ground islands, three plot pads, four winding road pieces and fourteen scenery pieces that make the base feel like one place."
+   "title": "City backdrop, ground and decor (34)",
+   "note": "Replaces the flat dark background and square street grid: three full-screen backdrops, a horizon strip, three organic ground islands, three plot pads, six construction-site pieces (scaffold wrap, crane, hanging load, beacon, sparks, dust) that the game animates over a plot being built, four winding road pieces and fourteen scenery pieces that make the base feel like one place."
   }
  ],
  "items": [
@@ -3921,6 +3921,54 @@
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
+  },
+  {
+   "group": "city",
+   "key": "city_build_scaffold",
+   "name": "Build: scaffold wrap",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "city",
+   "key": "city_build_crane",
+   "name": "Build: tower crane",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "city",
+   "key": "city_build_load",
+   "name": "Build: hanging load",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 192
+  },
+  {
+   "group": "city",
+   "key": "city_build_beacon",
+   "name": "Build: warning beacon",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 96
+  },
+  {
+   "group": "city",
+   "key": "city_build_sparks",
+   "name": "Build: weld sparks",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "city",
+   "key": "city_build_dust",
+   "name": "Build: dust puff",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
   },
   {
    "group": "city",
