@@ -425,3 +425,9 @@ button{-webkit-touch-callout:none}
 #kgo .r3{grid-template-columns:minmax(0,1fr) minmax(0,1.4fr) minmax(0,1.4fr)}
 .kdlg input,#kgo input{box-sizing:border-box}
 #kgo input{width:100%;min-width:0;height:34px;background:rgba(0,0,0,.45);border:1px solid var(--line);color:var(--bone);padding:0 8px;font:600 15px/1 var(--head);letter-spacing:.05em}
+
+.pkfh{display:flex;align-items:center;gap:8px;width:100%;padding:10px 12px;background:none;border:0;color:inherit;font:inherit;text-align:left;cursor:pointer;min-height:44px}
+.pkfh b{font:600 13px/1 var(--head);letter-spacing:.06em;text-transform:uppercase;flex:1}.pkcar{font-style:normal;color:var(--brass)}
+.pkfl{max-height:min(46vh,340px);overflow-y:auto;overscroll-behavior:contain;border-top:1px solid var(--line);-webkit-overflow-scrolling:touch}
+.pkfr{display:flex;align-items:center;gap:8px;padding:5px 12px;border-bottom:1px solid var(--line);min-height:40px}
+.pkfr .pico .pi,.pkfr .pico svg{width:24px;height:24px}.pkfn{width:22px;flex:none;font-size:10px;color:var(--mute);text-align:right}.pkfr .pt2{flex:1}.pkfr .pq{font-size:14px}

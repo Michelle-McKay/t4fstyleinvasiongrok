@@ -60,6 +60,25 @@ function packRows(p) {
   if (g.gear) g.gear.forEach(x => r.push({ ico: 'gear', q: '×1', t: `${SETS[x.set].n} ${x.slot}`, n: `Grade ${x.grade}, ready to wear` }));
   return r;
 }
+/* Every single item in the pack as its own line, for the "Full contents" dropdown. Same totals as packRows, just unbundled:
+   supplies as crates, slips, bars, shards and gear one by one. */
+function packItems(p) {
+  const g = p.give || {}, r = [];
+  if (p.dia) r.push({ ico: 'dia', q: fmtN((p.dia || 0) + (p.bonus || 0)), t: 'Diamonds' });
+  for (const k of RES) if (g[k]) {
+    const sz = [1000, 2000, 5000, 10000, 20000, 50000, 100000], size = sz.find(z => g[k] / z <= 12 && g[k] % z === 0) || sz.find(z => g[k] / z <= 12) || 100000;
+    for (let left = g[k]; left > 0; left -= size) r.push({ ico: k, q: fmtN(Math.min(size, left)), t: RESN[k] + ' crate' });
+  }
+  for (const k in PK_SLIP) for (let i = 0; i < (g[k] || 0); i++) r.push({ ico: k, q: '×1', t: PK_SLIP[k][0], n: 'Speeds up any timer' });
+  for (let i = 0; i < (g.tokens || 0); i++) r.push({ ico: 'tokens', q: '×1', t: 'Coordination token', n: 'Extra march column' });
+  for (let i = 0; i < (g.orders || 0); i++) r.push({ ico: 'orders', q: '×1', t: 'Operational order', n: 'Start a rally' });
+  for (let i = 0; i < (g.seals || 0); i++) r.push({ ico: 'seals', q: '×1', t: 'Restraint seal', n: 'Ransom a captured hero' });
+  if (g.builder) r.push({ ico: 'builder', q: '+1', t: 'Second builder', n: 'Permanent' });
+  if (g.bars) for (const gg in g.bars) for (let i = 0; i < g.bars[gg]; i++) r.push({ ico: 'bars', q: '×1', t: `Grade ${gg} bar`, n: 'Forge material' });
+  if (g.shards) for (const sh in g.shards) for (let i = 0; i < g.shards[sh]; i++) r.push({ ico: 'shard:' + sh, q: '×1', t: SETS[sh].n + ' shard', n: SETS[sh].d });
+  if (g.gear) g.gear.forEach(x => r.push({ ico: 'gear', q: '×1', t: `${SETS[x.set].n} ${x.slot}`, n: `Grade ${x.grade}, ready to wear` }));
+  return r;
+}
 /* Value at this game's own diamond-store rates, so the figure is checkable in the Store tab. */
 function packValue(p) {
   const g = p.give || {}; let v = (p.dia || 0) + (p.bonus || 0);
@@ -149,16 +168,19 @@ function sheetIap(id) {
   const p = iapProduct(id); if (!p) return ''; const sb = IAP.mode() === 'sandbox', dia = p.group === 'dia', d = UI.iapDone === id, rows = packRows(p), v = packValue(p);
   const head = `<div class="pohead tier${p.tier || 2}">${dia ? `<div class="gmw big">${gemSVG(p.gem)}</div>` : packArtLarge(p)}<button class="btn sm line pox" data-a="closesheet">Close</button>${!dia ? `<span class="pr">${PACK_TIER[p.tier || 2]}</span>` : ''}</div><div class="h1 pot">${p.n}</div><div class="sub">${dia ? 'Diamond pack' : 'Themed pack'}${p.once ? ' · one per commander' : ''}${p.blurb ? ' · ' + p.blurb : ''}</div>`;
   const list = `<div class="panel mt"><div class="hd"><h3>${d ? 'Delivered' : 'You receive'}</h3>${!dia && v ? `<span class="sub">Worth about ${fmtN(v)}◆ at store rates</span>` : ''}</div><div class="bd pgrid">${rows.map(r => `<div class="pit"><span class="pico">${pkIco(r.ico)}</span><span class="pq num">${r.q}</span><span class="pt2"><b>${r.t}</b>${r.n ? `<small>${r.n}</small>` : ''}</span></div>`).join('')}</div></div>`;
-  if (d) return `${head}${list}<div class="sub mt">Added to your stores, racks and forge. Supplies from paid packs are not capped by StoreHouse room.</div><div class="pobuy mt"><button class="btn pri tall wide" data-a="closesheet">Done</button></div>`;
-  return `${head}${list}<div class="sub mt">Contents are fixed. Nothing here is random.${rows.some(r => RES.includes(r.ico)) ? ' Supplies are added over StoreHouse room.' : ''}</div><div class="flex sp mt pobuy"><b class="big num">${IAP.price(p)}</b><button class="btn pri tall" data-a="iapbuy" data-id="${p.id}">${sb ? 'Confirm · no charge' : 'Buy'}</button></div>
+  const its = dia ? [] : packItems(p), open = UI.pkFull === id;
+  const full = its.length ? `<div class="panel mt pkfull"><button class="pkfh" data-a="pkfull" data-id="${id}" aria-expanded="${open}"><b>Full contents</b><span class="sub">${its.length} items</span><i class="pkcar">${open ? '▴' : '▾'}</i></button>${open ? `<div class="pkfl">${its.map((x, i) => `<div class="pkfr"><span class="pkfn num">${i + 1}</span><span class="pico">${pkIco(x.ico)}</span><span class="pt2"><b>${x.t}</b>${x.n ? `<small>${x.n}</small>` : ''}</span><span class="pq num">${x.q}</span></div>`).join('')}</div>` : ''}</div>` : '';
+  if (d) return `${head}${list}${full}<div class="sub mt">Added to your stores, racks and forge. Supplies from paid packs are not capped by StoreHouse room.</div><div class="pobuy mt"><button class="btn pri tall wide" data-a="closesheet">Done</button></div>`;
+  return `${head}${list}${full}<div class="sub mt">Contents are fixed. Nothing here is random.${rows.some(r => RES.includes(r.ico)) ? ' Supplies are added over StoreHouse room.' : ''}</div><div class="flex sp mt pobuy"><b class="big num">${IAP.price(p)}</b><button class="btn pri tall" data-a="iapbuy" data-id="${p.id}">${sb ? 'Confirm · no charge' : 'Buy'}</button></div>
   <div class="sub mt">${sb ? 'Demo build: nothing is charged.' : 'Payment and taxes are handled by your store account.'} Purchases are final except where the store or local law provides refunds. <a href="${IAP_CONFIG.termsUrl}" class="br">Terms</a> · <a href="${IAP_CONFIG.privacyUrl}" class="br">Privacy</a> · <a href="${IAP_CONFIG.refundUrl}" class="br">Refunds</a></div>`;
 }
 function iapHistHTML() { const h = iapEnsure().hist; return `<div class="panel"><div class="hd"><h3>Purchase history</h3></div><div class="bd">${h.map(x => `<div class="rr"><span>${x.n}${x.src === 'sandbox' ? ' (sandbox)' : ''}</span><span class="num">${new Date(x.t).toLocaleDateString()} · +${fmtN(x.dia)}◆</span></div>`).join('') || '<div class="sub">No purchases yet.</div>'}</div></div>`; }
 Object.assign(A, {
   packcat(d) { UI.packCat = d.k; UI.dirty = true; D(); },
-  iapopen(d) { UI.iapDone = null; sheetOpen({ type: 'iap', id: d.id }); },
+  iapopen(d) { UI.iapDone = null; UI.pkFull = null; sheetOpen({ type: 'iap', id: d.id }); },
   iapbuy(d) { IAP.buy(d.id).then(e => { if (e) toast(e, 'warn'); else { hap([16, 50, 16]); beep(760, .12, .05); beep(1140, .18, .05); UI.iapDone = d.id; } UI.dirty = true; D(); }); },
   iaprestore() { IAP.restore().then(e => { toast(e || 'Restore requested. Purchases will re-apply.', e ? 'info' : 'good'); }); },
+  pkfull(d) { UI.pkFull = UI.pkFull === d.id ? null : d.id; UI.dirty = true; D(); },
   iaphist() { UI.iapHist = !UI.iapHist; UI.dirty = true; D(); },
   closesheet() { UI.iapDone = null; UI.sheet = null; UI.sel = null; D(); }
 });
