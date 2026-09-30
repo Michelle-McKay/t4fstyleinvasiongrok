@@ -431,3 +431,33 @@ button{-webkit-touch-callout:none}
 .pkfl{max-height:min(46vh,340px);overflow-y:auto;overscroll-behavior:contain;border-top:1px solid var(--line);-webkit-overflow-scrolling:touch}
 .pkfr{display:flex;align-items:center;gap:8px;padding:5px 12px;border-bottom:1px solid var(--line);min-height:40px}
 .pkfr .pico .pi,.pkfr .pico svg{width:24px;height:24px}.pkfn{width:22px;flex:none;font-size:10px;color:var(--mute);text-align:right}.pkfr .pt2{flex:1}.pkfr .pq{font-size:14px}
+
+/* ---- organic city scene (js/city.js) ---- */
+#pg-base{background:var(--bd,linear-gradient(#e3ebe4 0,#cdd9c8 120px,#8d9c6a 300px,#77855a 100%))}
+.cityscape{position:relative;margin:0 -10px;padding:0 10px 8px}
+.chz{display:block;width:calc(100% + 20px);margin:-2px -10px -22px;height:96px;object-fit:cover}
+.chz img{width:100%;height:100%;object-fit:cover;display:block}
+.isle{position:relative;padding:34px 20px 22px;margin:0 0 26px;filter:drop-shadow(0 8px 10px rgba(30,38,20,.45))}
+.irim,.ifill{position:absolute;inset:0;pointer-events:none}
+.isle.cnc .irim{background:#7e9a5a}.isle.cnc .ifill{background:radial-gradient(ellipse at 30% 25%,#8b979d,#6f7c84 60%,#5f6b72)}
+.isle.fld .irim{background:#6d8a4a}.isle.fld .ifill{background:radial-gradient(ellipse at 60% 30%,#a08a5c,#8a7548 60%,#776339)}
+.croads{position:absolute;inset:34px 8px 14px;width:calc(100% - 16px);height:calc(100% - 48px);pointer-events:none;opacity:.9}
+.cd{position:absolute;display:block;pointer-events:none;transform:translate(-50%,-50%);z-index:1}
+.cd img{width:100%;height:100%;object-fit:contain;display:block}
+.cd.v{border-radius:50%}
+.cd.tree,.cd.bush{background:radial-gradient(circle at 38% 34%,#8fc06a,#4f8a3a 60%,#2f5a26);box-shadow:0 5px 0 -1px rgba(0,0,0,.28)}
+.cd.bush{height:16px!important;border-radius:50% 50% 45% 45%;background:radial-gradient(circle at 40% 30%,#93c76f,#4a8038)}
+.cd.rock{border-radius:46% 54% 50% 50%/55% 50% 50% 45%;background:radial-gradient(circle at 35% 30%,#c4ccd0,#8b969b 70%,#5f6a6f);height:18px!important}
+.cd.lamp{width:4px!important;height:26px!important;border-radius:2px;background:linear-gradient(#e9e1a8 0 20%,#59646a 20%)}
+.cd.flag{width:4px!important;height:30px!important;border-radius:0;background:linear-gradient(#5ec4d4 0 35%,#59646a 35%)}
+.cd.sandbag,.cd.crates,.cd.barrel,.cd.fence,.cd.water{border-radius:4px;height:14px!important;background:linear-gradient(#c8b48a,#a08a5c)}
+.cd.barrel{background:linear-gradient(#e08a4a,#b8622a)}.cd.water{width:14px!important;height:24px!important;background:linear-gradient(#9ab0b8,#5f7480)}
+.isle .zt{z-index:3;left:50%;transform:translateX(-50%);top:8px;background:rgba(20,26,29,.82);border:1px solid rgba(224,164,74,.6);padding:3px 10px;white-space:nowrap;border-radius:3px}
+.isle .grid5{position:relative;z-index:2;gap:8px 2px}
+.isle .plot{background:none;border:0;translate:var(--dx,0) var(--dy,0)}
+.isle .plot::before{content:'';position:absolute;inset:6% 2% -4%;border-radius:44% 56% 50% 50%/56% 44% 56% 44%;background:radial-gradient(closest-side,rgba(20,26,28,.5),rgba(20,26,28,.16) 78%,transparent);z-index:-1}
+.isle .plot.empty{opacity:.9}
+.isle .plot.empty::before{background:var(--pad);inset:4%}
+.isle .plot.busy{box-shadow:none}.isle .plot.busy::before{background:radial-gradient(closest-side,rgba(224,164,74,.55),rgba(224,164,74,.18) 75%,transparent)}
+.isle .plot.empty .bsvg rect{display:none}
+.isle .plot.empty .bsvg path{stroke:rgba(255,255,255,.75);stroke-width:2.4;stroke-linecap:round}
