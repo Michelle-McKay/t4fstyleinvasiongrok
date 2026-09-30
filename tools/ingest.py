@@ -30,7 +30,9 @@ def flat_bg(im, tol=80):
     """Return (r,g,b) if the four corners share one flat colour, else None."""
     w, h = im.size; px = im.convert('RGB').load(); pts = [(2, 2), (w - 3, 2), (2, h - 3), (w - 3, h - 3)]
     cs = [px[p] for p in pts]
-    if all(max(abs(a - b) for a, b in zip(cs[0], c)) <= tol for c in cs): return tuple(sum(c[i] for c in cs) // 4 for i in range(3))
+    for skip in [None, 0, 1, 2, 3]:  # allow one smudged corner
+        use = [c for i, c in enumerate(cs) if i != skip]
+        if all(max(abs(a - b) for a, b in zip(use[0], c)) <= tol for c in use): return tuple(sum(c[i] for c in use) // len(use) for i in range(3))
     return None
 
 def cut_out(im, bg, tol=64):
