@@ -187,6 +187,7 @@ const NODES = {
     'the giant mine: a very deep stepped pit, two cranes, two conveyors, tall ore stacks, three trucks and a glowing furnace'
   ]]
 };
+const SETS_N = { vanguard: 'Vanguard', outrider: 'Outrider', battery: 'Battery' };
 const NODEFP = 'Every one of the six levels of a resource uses the IDENTICAL compound: one square fenced compound of packed sand-brown earth with a low fence of pale warm-grey panels and small brass posts (no pink, red or magenta trim), exactly the same size, angle and corner positions in every image, filling the frame width. Only what stands inside the compound changes, and each level clearly holds more, bigger and more advanced equipment than the level before, with the exact counts given';
 const ICONS = {
   map: 'a folded map with a brass pin', base: 'a small clean fortified base building', train: 'crossed rifles with a chevron', lab: 'a glass flask with a glowing blue liquid',
@@ -256,7 +257,7 @@ function build() {
     key: `heroframe_${r}`, name: `Hero portrait frame: ${r}`, size: '1:1, 1024 x 1024', transparent: true, hollow: true, out: 256,
     prompt: make(`A square hero portrait frame border in ${RFR[r]}, front view, straight edges, even thickness, ornament on the four corners. The whole inside of the frame is one flat solid magenta (#FF00FF) so it can be cut out, and the outside is the same magenta`, STYLE_GEN, BG_T)
   });
-  G('map', 'Map features (37)', 'Sprites for the world map, transparent. Shown small, so bold shapes and strong colour. The map is made of diamond (isometric) tiles, so every camp, base, citadel and resource site sits on a square patch that reads as a diamond. Nothing is round, hexagonal or octagonal.');
+  G('map', 'Map features (30)', 'Sprites for the world map, transparent. REWORKED: each resource has ONE gathering-tile image (the level is a number drawn in code, so the picture never changes with level), and every monster, including one set monster for each gear set, has a loot tile. Old six-level resource pictures are retired. Shown small, so bold shapes and strong colour. The map is made of diamond (isometric) tiles, so every camp, base, citadel and resource site sits on a square patch that reads as a diamond. Nothing is round, hexagonal or octagonal.');
   for (const [key, n, d] of MONSTERS) add('map', { key, name: n, size: '1:1, 1024 x 1024', transparent: true, out: 384, prompt: make(`${d.replace(/^./, c => c.toUpperCase())}. Original monster design. Only the creature, centred, with a soft shadow`, STYLE_GEN, CAM, BG_T) });
   add('map', { key: 'camp', name: 'Raider camp', size: '1:1, 1024 x 1024', transparent: true, out: 384, prompt: make('A hostile raider camp on the same kind of square compound as the commander bases: one square fenced pad of packed sand-brown earth with a low straight barricade of grey panels along all four edges (NOT a circle, NOT an oval), four dark red-brown tents around a campfire in the middle, a red pennant on a pole and two crates', STYLE_GEN, CAM, DIA, BG_T) });
   add('map', { key: 'citadel', name: 'Central citadel', size: '1:1, 1024 x 1024', transparent: true, out: 512, prompt: make('The Iron Citadel, a giant white-and-steel fortress with a brass-edged plinth, square walls following the plinth edges, four tall towers one at each corner of the square and a central spire with a bright warm beacon at the top', STYLE_GEN, CAM, DIA, BG_T) });
@@ -268,10 +269,34 @@ function build() {
     'The same commander base at its greatest: a huge fortified command city filling the whole square, a very tall central command tower with a bright beacon on top, a big hangar, two radar domes, rows of barracks, four tall corner towers, thick double walls with brass trim along the square edges, lavish and glowing, clearly the most impressive version'
   ];
   BASES.forEach((d, i) => add('map', { key: `base_${i + 1}`, name: `Commander base level ${i + 1}`, size: '1:1, 1024 x 1024', transparent: true, out: 384, prompt: make(`${d}. Commander base, level ${i + 1} of 5. It is the same base design and the same footprint at every level, only grander, so the five images read as one base growing. Neutral white, grey and warm sand colours with no player colour, the same base is used for the player and for enemy commanders`, STYLE_GEN, CAM, DIA, BG_T) }));
-  for (const nk of Object.keys(NODES)) {
-    const [n, d, tiers] = NODES[nk];
-    tiers.forEach((tx, i) => add('map', { key: `node_${nk}_${i + 1}`, name: `${n} tier ${i + 1}`, size: '1:1, 1024 x 1024', transparent: true, out: 256, prompt: make(`${d.replace(/^./, c => c.toUpperCase())}. Richness level ${i + 1} of 6, containing exactly: ${tx}. ${NODEFP}`, STYLE_GEN, CAM, DIA, BG_T) }));
-  }
+  /* One image per resource: the level is shown by a number drawn in code, so the art never changes with level. */
+  const NODE_MID = {
+    food: 'FOUR plots of tall green-gold wheat in a two-by-two grid with a dirt cross path, one round grain silo, a small farm truck and a tractor',
+    oil: 'a tall steel derrick tower in the centre, two pumpjacks, three round storage tanks and connecting pipes, an orange barrel stack',
+    energy: 'ONE large glowing blue crystal formation in the centre, a harvester rig with a short arm, two small generators and a ring of glowing cables',
+    steel: 'a large stepped open-cast pit with an excavator, a conveyor belt running to an ore stack and two dump trucks',
+    cash: 'a cash depot: a squat armoured steel cash vault with a brass door in the centre, three pallets of banknote bundles wrapped in brass bands, a small armoured cash truck and two sealed steel cash cases'
+  };
+  const NODE_NAME = { food: 'Food field', oil: 'Oil field', energy: 'Energy vein', steel: 'Steel vein', cash: 'Cash depot' };
+  for (const nk of Object.keys(NODE_MID)) add('map', { key: `node_${nk}`, name: NODE_NAME[nk], size: '1:1, 1024 x 1024', transparent: true, out: 256, prompt: make(`A ${NODE_NAME[nk].toLowerCase()} resource gathering site on the world map, containing exactly: ${NODE_MID[nk]}. This ONE picture is used for every level of this resource, so it is a medium, typical site, neither tiny nor huge, and nothing in it shows a level or number. ${NODEFP.replace(/^Every one of the six levels of a resource uses the IDENTICAL compound: /, 'Use this compound, the same in all five resource images: ')}`, STYLE_GEN, CAM, DIA, BG_T) });
+  /* Monster loot: what a defeated monster leaves behind on the map. */
+  const LOOTC = 'Use the same square fenced compound as the resource sites: packed sand-brown earth, a low fence of pale warm-grey panels with small brass posts, the same size, angle and corner positions, filling the frame width. In the centre lies a heap of that monster\'s remains and spoils: ';
+  const MLOOT = [
+    ['mon_1', 'Ash Hound', 'a few pale grey armour plates, a small jawbone and a small open supply case spilling a little rations and fuel'],
+    ['mon_2', 'Dune Raptor', 'sand-coloured armour plates, one long tail spine and two open supply cases spilling rations and fuel'],
+    ['mon_3', 'Rust Brute', 'orange-brown hide plates, two bone-white spurs and three supply cases and an orange barrel'],
+    ['mon_4', 'Slate Crawler', 'a big slate-blue claw, curved armour plates, the stinger with its orange tip dark and dull, and four supply cases with a steel ingot stack'],
+    ['mon_5', 'Ember Colossus', 'cracked grey-blue stone armour plates, one curved horn, a small glowing ember core on a brass stand and five supply cases, ingots and a cash case'],
+    ['mon_6', 'Iron Wyrm', 'huge white and brass armour plates, a curved horn crest, a glowing ember jaw trophy and a big pile of six supply cases, ingots, cash cases and one glowing blue crystal']
+  ];
+  const SETMON = {
+    vanguard: ['Vanguard Warden', '#e0a44a gold', 'a heavy hostile creature, a broad armoured boar-like beast with thick brass-gold shoulder plates, short curved tusks, a ridge of gold-edged armour down its back, glowing orange eyes, stomping forward, clean stylized design, the same style and size as the other monsters'],
+    outrider: ['Outrider Stalker', '#5ec4d4 cyan', 'a fast hostile creature, a long-legged stag-like beast with pale armour plates, tall antlers lined with glowing cyan light strips, a lean body leaping forward, glowing orange eyes, clean stylized design, the same style and size as the other monsters'],
+    battery: ['Battery Beetle', '#8ea36a green', 'a hostile creature, a big armoured beetle-like beast with a row of glowing green energy cells fixed along its back, short thick legs, two small pincers, glowing orange eyes, clean stylized design, the same style and size as the other monsters']
+  };
+  for (const k of Object.keys(SETMON)) add('map', { key: `mon_set_${k}`, name: `${SETMON[k][0]} (${SETS_N[k]} set monster)`, size: '1:1, 1024 x 1024', transparent: true, out: 384, prompt: make(`${SETMON[k][2].replace(/^./, c => c.toUpperCase())}. This monster drops the ${SETS_N[k]} gear set, so it carries one clear accent of ${SETMON[k][1]} and is otherwise pale grey and slate like the other monsters. Original monster design. Only the creature, centred`, STYLE_GEN, CAM, BG_T) });
+  for (const [mk, n, d] of MLOOT) add('map', { key: mk.replace('mon_', 'monloot_'), name: `${n} loot tile`, size: '1:1, 1024 x 1024', transparent: true, out: 256, prompt: make(`The loot tile a defeated ${n} leaves behind on the world map. ${LOOTC}${d}. Nothing in it shows a level or number`, STYLE_GEN, CAM, DIA, BG_T) });
+  for (const k of Object.keys(SETMON)) add('map', { key: `monloot_set_${k}`, name: `${SETMON[k][0]} loot tile`, size: '1:1, 1024 x 1024', transparent: true, out: 256, prompt: make(`The loot tile a defeated ${SETMON[k][0]} leaves behind on the world map. ${LOOTC}armour plates and spoils of that monster with one clear ${SETMON[k][1]} accent, a glowing gear-set shard on a small brass stand and three supply cases. Nothing in it shows a level or number`, STYLE_GEN, CAM, DIA, BG_T) });
   G('tile', 'Ground tiles (6)', 'Flat, straight top-down textures with NO perspective and NO objects. The game bends them onto the map, so edges must tile seamlessly.');
   const tileStyle = 'Flat top-down view, no perspective, no shadows from tall objects, even bright lighting, seamless tileable texture where the left edge matches the right and the top matches the bottom. Soft, clean, low-contrast so buildings stand out on top of it. ' + BG_O + ' Style: clean stylized-realistic game texture, bright daylight, no text or logos.';
   for (let v = 1; v <= 3; v++) add('tile', { key: `tile_wild_${v}`, name: `Open ground ${v}`, size: '1:1, 1024 x 1024', transparent: false, out: 256, prompt: `Ground texture seen straight from above: ${['warm golden desert sand with fine wind ripples running diagonally and a few tiny pebbles', 'pale grey packed dust and fine gravel with scattered small flat stones, no ripples', 'dry sun-baked tan earth with a fine network of shallow cracks and a few tiny dry tufts'][v - 1]}. The three open-ground textures must clearly differ from each other in colour and pattern. ${tileStyle}` });

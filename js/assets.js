@@ -24,7 +24,7 @@ bldSVG = function (kind, level) { const f = artFile(kind, Math.max(1, level)); r
 /* ---- map sprites, drawn to canvas once the image has loaded ---- */
 const spriteKey = name => {
   let m;
-  if ((m = /^nd_([a-z]+)(\d)$/.exec(name))) return 'node_' + m[1] + '_' + m[2];
+  if ((m = /^nd_([a-z]+)(\d)$/.exec(name))) return 'node_' + m[1];   // one picture per resource, the level is a number drawn in code
   if ((m = /^mn_(\d)$/.exec(name))) return 'mon_' + m[1];
   if ((m = /^hq_(\d+)$/.exec(name))) { const t = Math.max(1, tierOf(+m[1])); return ART.file('base_' + t) ? 'base_' + t : 'bld_cc_t' + t; }
   return { camp2: 'camp', cit2: 'citadel' }[name] || null;
