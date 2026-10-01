@@ -27,6 +27,7 @@ function iapFulfill(id, txId, src) {
   if (p.once && st.once[id]) return 'That pack is one per commander.';
   let dia = (p.dia || 0) + (p.bonus || 0); if (p.group === 'dia' && !st.first[id]) { dia += p.dia; st.first[id] = 1; }
   st.tx[txId] = Date.now(); if (p.once) st.once[id] = 1;
+  if (VIP_COUNT_DIAMONDS || p.group !== 'dia') vipAdd(Math.round(p.usd * VIP_PER_USD), p.n);
   dchg(dia, `${src === 'sandbox' ? 'Sandbox ' : ''}Purchase: ${p.n}`); if (p.give) packGrant(p.give);
   st.hist.unshift({ t: Date.now(), id, n: p.n, tx: txId, src, dia }); if (st.hist.length > 40) st.hist.length = 40;
   note(dia ? `${p.n} delivered: ${fmtN(dia)} diamonds.` : `${p.n} delivered.`, 'good'); return null;
