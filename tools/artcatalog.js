@@ -13,7 +13,7 @@ const root = path.join(__dirname, '..');
 function loadData() {
   const src = fs.readFileSync(path.join(root, 'js/data.js'), 'utf8').replace(/^'use strict';/, '');
   const ctx = vm.createContext({});
-  return vm.runInContext(src + '\n;({CLSD,WCLSD,BLD,CC_LEVELS,HEROES,XPI,SETS,HOLIDAYS,HSETS,BASIC,BASIC_ORDER,BASIC_ITEMS,SET_ITEMS,basicOf,setItemOf,SLOTS,BASIC_GEMS,GEMS,GEM_SETS})', ctx);
+  return vm.runInContext(src + '\n;({CLSD,WCLSD,BLD,CC_LEVELS,HEROES,XPI,SETS,HOLIDAYS,HSETS,BASIC,BASIC_ORDER,BASIC_ITEMS,SET_ITEMS,basicOf,setItemOf,SLOTS,BASIC_GEMS,GEMS,GEM_SETS,GEM_DESC})', ctx);
 }
 function loadPacks() {
   const s = fs.readFileSync(path.join(root, 'js/packs.js'), 'utf8'), out = [];
@@ -523,7 +523,7 @@ function build() {
   add('forge', { key: 'chest_gift', name: 'Alliance gift chest (pack gift)', size: '1:1, 1024 x 1024', transparent: true, out: 256, prompt: make('The identical chest shape, size, camera and materials as the alliance store mystery chest, but richer: polished gold-and-brass trim, a small diamond set in the lock and a ribbon-less gold bow-free band across the lid, warm gold glow from the seam. Front three-quarter view, centred, only the chest', STYLE_GEN, BG_T) });
   ICOADD('forge', 'icon_apoint', 'Alliance points icon', 'a chunky glossy brass coin stamped with a small shield and a star', 128);
   G('mgem', 'Set gems (72)', 'Four gems for each of the 12 weekly monster sets and the 6 holiday sets. ALL 72 share the identical stone shape, size, facet layout, camera and lighting as the Basic gems (a brilliant-cut stone with a flat octagonal table on a tiny brass setting); within a set the four stones share the set colour, and only ONE tiny etched pictogram on the table changes. The fourth gem of every set is its synergy gem: the same stone with a tiny etched four-pointed star. Transparent, centred. The tier 1 to 6 glow ring and pips are drawn in code, so draw one clean stone each.');
-  for (const sid of Object.keys(D.GEM_SETS)) D.GEM_SETS[sid].forEach((gid, i) => { const g = D.GEMS[gid]; add('mgem', { key: `gem_${gid}`, name: `Set gem: ${g.n} (${D.SETS[sid].n}, ${g.lab})`, size: '1:1, 1024 x 1024', transparent: true, out: 128, prompt: make(`${GSHAPE}, in the colour ${g.col} (the ${D.SETS[sid].n} set colour) with one tiny etched pictogram that means "${g.lab}" (a simple symbol, no text or numbers)${g.syn ? ', for this gem a tiny etched four-pointed star' : ''}. Front three-quarter view, centred, only the stone`, STYLE_GEN, BG_T) }); });
+  for (const sid of Object.keys(D.GEM_SETS)) D.GEM_SETS[sid].forEach((gid, i) => { const g = D.GEMS[gid]; add('mgem', { key: `gem_${gid}`, name: `Set gem: ${g.n} (${D.SETS[sid].n}, ${g.lab})`, size: '1:1, 1024 x 1024', transparent: true, out: 128, prompt: make(`${GSHAPE}, in the colour ${g.col} (the ${D.SETS[sid].n} set colour) with one tiny etched pictogram that means "${D.GEM_DESC[gid] || g.lab}" (a simple symbol, no text or numbers)${g.syn ? ', for this gem a tiny etched four-pointed star' : ''}. Front three-quarter view, centred, only the stone`, STYLE_GEN, BG_T) }); });
 
   G('quest', 'Quest tab art (22)', 'Four quest-list headers, ten quest category icons, four reward chests that grow with rank, and four small status pieces.');
   HEADADD('quest', 'questhead_main', 'Header: Main quest', 'A big commander campaign table with a huge rolled objective map, a brass compass and a glowing flag pin marking the goal');

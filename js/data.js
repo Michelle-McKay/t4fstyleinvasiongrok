@@ -455,6 +455,15 @@ const SET_GEMS = {
 /* scale (percent, Grey to Gold): see SET_GEM_CURVES */
 /* Exact Grey to Gold tier values per set gem family (Michelle, 2026-10-01 19:04); the four gems of a set share one curve */
 const SET_GEM_CURVES = { std: [2, 4.5, 8, 12.5, 18, 25], training: [2, 4.5, 8, 12.5, 18, 24], construction: [2, 4.5, 8, 12.5, 18, 24], research: [2, 4.5, 8, 12.5, 18, 24], wrally: [2.5, 5.5, 9.5, 15, 22, 30], wsolo: [2.5, 5.5, 9.5, 15, 22, 30], wdef: [2.5, 5.5, 9.5, 15, 22, 30], holiday: [3, 6.5, 11, 17, 25, 35] };
+/* Full effect text of the holiday gems (Michelle, 2026-10-01 19:05). Mechanics still use the nearest stat in SET_GEMS; the synergy core works with the matching holiday gear. */
+const GEM_DESC = {
+  hs_rpd_1: 'Targeted defense boost for Rock and Paper troops.', hs_rpd_2: 'High-tier troop health boost during base defense.', hs_rpd_3: 'Garrison capacity boost to hold more defending reinforcements.', hs_rpd_4: 'Full-set bonus: extra multiplier to wall defense and trap survival with the matching Yule-Garrison gear.',
+  hs_rsd_1: 'Targeted defense boost for Rock and Scissors troops.', hs_rsd_2: 'High-tier troop health boost during base defense.', hs_rsd_3: 'Speeds up reinforcement travel from alliance members.', hs_rsd_4: 'Full-set bonus: more damage mitigation against incoming enemy rallies with the Solstice-Bulwark gear.',
+  hs_psd_1: 'Targeted defense boost for Paper and Scissors troops.', hs_psd_2: 'High-tier troop health boost during base defense.', hs_psd_3: 'Extends the duration or effectiveness of active Base Shield items.', hs_psd_4: 'Full-set bonus: reduces enemy troop attack when your base is targeted.',
+  hs_rpa_1: 'Targeted attack boost for Rock and Paper troops.', hs_rpa_2: 'Troop health boost to sustain combat momentum.', hs_rpa_3: 'Boosts hero march speed across the world map.', hs_rpa_4: 'Full-set bonus: critical damage chance for Rock and Paper troops with the Spring-Strike gear.',
+  hs_rsa_1: 'Targeted attack boost for Rock and Scissors troops.', hs_rsa_2: 'Troop health boost for heavy combat engagements.', hs_rsa_3: 'Boosts rally speed and assembly speed against targets.', hs_rsa_4: 'Full-set bonus: more troop lethality in player-versus-player combat with the Summer-Assault gear.',
+  hs_psa_1: 'Targeted attack boost for Paper and Scissors troops.', hs_psa_2: 'Troop health boost for rapid strike operations.', hs_psa_3: 'Increases overall troop lethality to maximize enemy casualties.', hs_psa_4: 'Full-set bonus: a stacking attack speed or damage aura for each successful tile hit or skirmish with the Equinox-Blitz gear.'
+};
 const GEMS = {};
 const BASIC_GEM_IDS = BASIC_GEMS.map(g => g[0]);
 const GEM_STAT_COL = { atk: '#e0603a', hp: '#3a64c8', wallHp: '#8a98a8', wallAtk: '#c84a4a', march: '#e0c030', load: '#b98a52', build: '#e07a3a', research: '#a07ad6', train: '#8ea36a', trap: '#c8a04a', huntCost: '#e0c84a', heroAtk: '#d4654a', yld: '#4fb868' };
