@@ -1,6 +1,6 @@
 {
  "v": 2,
- "count": 516,
+ "count": 518,
  "groups": [
   {
    "id": "bld",
@@ -29,7 +29,7 @@
   },
   {
    "id": "map",
-   "title": "Map features (30)",
+   "title": "Map features (32)",
    "note": "Sprites for the world map, transparent. REWORKED: each resource has ONE gathering-tile image (the level is a number drawn in code, so the picture never changes with level), and every monster, including one set monster for each gear set, has a loot tile. Old six-level resource pictures are retired. Shown small, so bold shapes and strong colour. The map is made of diamond (isometric) tiles, so every camp, base, citadel and resource site sits on a square patch that reads as a diamond. Nothing is round, hexagonal or octagonal."
   },
   {
@@ -1354,6 +1354,22 @@
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 512
+  },
+  {
+   "group": "map",
+   "key": "map_cell_decor",
+   "name": "Map cell: sparse ground details (layer 2, repeats)",
+   "size": "1:1, 2048 x 2048",
+   "transparent": true,
+   "out": 2048
+  },
+  {
+   "group": "map",
+   "key": "map_cell_center",
+   "name": "Map cell: central citadel and deep forest (layer 2, placed once)",
+   "size": "1:1, 4096 x 4096",
+   "transparent": true,
+   "out": 3000
   },
   {
    "group": "map",
