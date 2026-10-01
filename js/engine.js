@@ -39,8 +39,9 @@ function newState() {
     titles: {}, roster: ['Ada Voss', 'Ivo Hale', 'Ren Kade', 'Tobin Mace', 'Sera Quill', 'Dov Marek', 'Lio Hart'],
     al: [{ n: 'Iron March', tag: 'IRM', color: 'brass' }].concat(bots.map(b => ({ n: b.n, tag: b.tag, color: b.color }))), bots,
     reports: [], log: [], score: 0, view: { x: 120, y: 220 }, market: { day: -1, offers: [] }, daily: '', kills: 0,
-    next: { expand: now + 8000, atk: now + 100000, scout: now + 50000, throne: now + 360000, orders: now + 120000 },
-    scoutStamps: [], prod: {}, reinf: [], nid: 1
+    next: { chest: now + 30000, expand: now + 8000, atk: now + 100000, scout: now + 50000, throne: now + 360000, orders: now + 120000 },
+    scoutStamps: [], prod: {}, reinf: [], nid: 1,
+    stam: { v: STAM_MAX, at: now, spent: 0, refunded: 0, mats: 0, hunts: 0, wins: 0 }, streak: { n: 0, at: 0, best: 0 }, chests: [], frags: 0
   };
   const A = st.al; // starter territory blobs
   st.own = {};
@@ -50,7 +51,7 @@ function newState() {
   return st;
 }
 function save() { try { S.last = Date.now(); localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) { } }
-function load() { try { const s = localStorage.getItem(SAVE_KEY); if (s) { const o = JSON.parse(s); if (o && o.v === 1) { if (o.hero && o.hero.level == null) { o.hero.level = 1; o.hero.xp = 0; delete o.hero.rank; } o.xpi = o.xpi || {}; for (const k of Object.keys(o.wall || {})) if (/^garr/.test(k)) delete o.wall[k]; o.jobs = (o.jobs || []).filter(j => !(j.kind === 'wall' && j.cls === 'garr')); return o; } } } catch (e) { } return null; }
+function load() { try { const s = localStorage.getItem(SAVE_KEY); if (s) { const o = JSON.parse(s); if (o && o.v === 1) { if (o.hero && o.hero.level == null) { o.hero.level = 1; o.hero.xp = 0; delete o.hero.rank; } o.xpi = o.xpi || {}; o.stam = o.stam || { v: STAM_MAX, at: Date.now(), spent: 0, refunded: 0, mats: 0, hunts: 0, wins: 0 }; o.streak = o.streak || { n: 0, at: 0, best: 0 }; o.chests = o.chests || []; o.frags = o.frags || 0; o.next = o.next || {}; if (!o.next.chest) o.next.chest = Date.now() + 30000; for (const k of Object.keys(o.wall || {})) if (/^garr/.test(k)) delete o.wall[k]; o.jobs = (o.jobs || []).filter(j => !(j.kind === 'wall' && j.cls === 'garr')); return o; } } } catch (e) { } return null; }
 function resetGame() { try { localStorage.removeItem(SAVE_KEY); } catch (e) { } S = newState(); terrDirty = true; UIH.dirty(); }
 function note(m, kind) { S.log.unshift({ t: Date.now(), m, k: kind || 'info' }); if (S.log.length > 80) S.log.length = 80; UIH.toast(m, kind); }
 function dchg(n, why) { S.dia += n; S.ledger.unshift({ t: Date.now(), n, why, bal: S.dia }); if (S.ledger.length > 120) S.ledger.length = 120; }
@@ -87,7 +88,7 @@ function tileInfo(x, y) {
   if (terr === 'plaza' || terr === 'throne') return t;
   const nn = nodeAt(x, y);
   if (nn) { t.kind = 'node'; t.node = nn; t.nk = nn.nk || (nn.res === 'rations' ? 'food' : nn.res === 'fuel' ? 'oil' : nn.res === 'power' ? 'energy' : 'steel'); return t; }
-  if (!S.dead[k]) { const f = featAt(x, y, terr); if (f && f.t === 'mon') t.kind = 'monster'; else if (f && f.t === 'camp') t.kind = 'camp'; }
+  if (!S.dead[k]) { const f = featAt(x, y, terr); if (f && f.t === 'mon') { t.kind = 'monster'; t.mon = monsterIdAt(x, y); } else if (f && f.t === 'camp') t.kind = 'camp'; }
   return t;
 }
 function forestTiles(x0, y0, x1, y1) {
@@ -159,7 +160,7 @@ function setCounts() { const c = {}; for (const sl of SLOTS) { const p = slotPie
 function setBest() { const c = setCounts(); let best = null; for (const k in c) if (c[k] >= 3 && (!best || c[k] > c[best])) best = k; return best; }
 function setBonus() { return setBest(); }
 function setFull() { const b = setBest(); return b && setCounts()[b] >= 7 ? b : null; }
-function setStats(set, n) { const r = { atk: 0, march: 0, yld: 0 }; if (!set) return r; const t = SETS[set].b; for (const k of [3, 5, 7]) if (n >= k) for (const st in t[k]) r[st] += t[k][st]; return r; }
+function setStats(set, n) { const r = { atk: 0, march: 0, yld: 0, gather: 0, build: 0, train: 0, heal: 0, wallHp: 0, refund: 0 }; if (!set) return r; const t = SETS[set].b; for (const k of [3, 5, 7]) if (n >= k) for (const st in t[k]) r[st] += t[k][st]; return r; }
 function setWorn() { const b = setBest(); return b ? setStats(b, setCounts()[b]) : setStats(null, 0); }
 /* Hero: levels from XP. Items and free XP go through heroGain; nothing is lost past level 50. */
 function heroLv() { return S.hero.level || 1; }
@@ -198,6 +199,7 @@ function mods(withHero) {
   m.train = rv('logi') + rv('trainspd') + (T === 'drillmaster' ? 0.08 : 0);
   if (ap) { const p = piecePct('accessory', ap.grade); if (ap.stat === 'training') m.train += p; else yAdd += p; }
   m.wallHp += heroOn() ? heroStat('def') : 0; m.load += heroOn() && withHero ? heroStat('lead') : 0;
+  m.train += ST.train; m.build += ST.build; m.heal += ST.heal; m.wallHp += ST.wallHp; m.gather += ST.gather;
   m.hp = 1 + hpAdd;
   for (const c of CLS) m.atk[c] = (1 + rv('atk_' + c)) * (1 + (wp ? piecePct('weapon', wp.grade) : 0) + (gp ? piecePct('gauntlets', gp.grade) : 0)) * (1 + ST.atk) * (1 + marchAtk);
   for (const r of RES) m.yld[r] = 1 + (RS['y_' + r] ? rv('y_' + r) : 0) + yAdd;
@@ -436,7 +438,7 @@ function launchMarch(kind, tx, ty, comp, hero, opts) {
   const e = marchCheck(comp, hero); if (e) return e;
   const t = tileInfo(tx, ty); let off = false, sub = null;
   if (kind === 'gather') { if (t.kind !== 'node') return 'No vein there.'; if (t.owner != null && t.owner !== 0) { /* gathering on rival ground allowed */ } }
-  else if (kind === 'hunt') { if (t.kind !== 'monster' && t.kind !== 'camp') return 'Nothing to hunt there.'; off = true; }
+  else if (kind === 'hunt') { if (t.kind !== 'monster' && t.kind !== 'camp') return 'Nothing to hunt there.'; stamTick(Date.now()); if (t.kind === 'monster' && S.stam.v < stamCost(t.grade)) return 'Not enough stamina: a level ' + t.grade + ' monster costs ' + stamCost(t.grade) + ', you have ' + Math.floor(S.stam.v) + '.'; off = true; }
   else if (kind === 'encamp') {
     if (!(t.kind === 'wild' || t.kind === 'forest')) return 'Cannot encamp there.';
     if (t.owner === 0) return 'Your alliance already owns that tile.';
@@ -452,14 +454,48 @@ function launchMarch(kind, tx, ty, comp, hero, opts) {
   if (kind === 'field') { outMs = Math.max(4000, Math.round(3600 / st.speed * 1000)); backMs = Math.max(3000, Math.round(outMs * 0.6)); tx = S.base.x; ty = S.base.y; }
   else { const dist = Math.hypot(tx - S.base.x, ty - S.base.y), f = forestTiles(S.base.x, S.base.y, tx, ty); outMs = legMs(dist, st.speed, f); backMs = Math.max(3000, Math.round(outMs * 0.6)); }
   const mm = { id: S.nid++, kind, tx, ty, col, hero: !!hero, off, sub, phase: 'out', start: Date.now(), end: Date.now() + outMs, outMs, backMs, loot: { res: {}, bars: {}, gem: 0, shard: null, dia: 0 }, wound: {}, dead: {}, grade: opts.grade || 0 };
+  if (kind === 'hunt' && t.kind === 'monster') { const c = stamCost(t.grade); S.stam.v -= c; S.stam.spent += c; mm.stam = c; }
   S.marches.push(mm); return null;
 }
 function marchName(m) { return { gather: 'Gather', hunt: 'Hunt', encamp: 'Encamp', throne: 'Throne', attack: 'Strike', field: 'Field', rally: 'Rally', scout: 'Scout' }[m.kind] || m.kind; }
 function rollGrade(L) { const w = []; let tot = 0; for (let d = 1; d <= L; d++) { const x = Math.pow(4, L - d); w.push(x); tot += x; } let r = Math.random() * tot; for (let d = 1; d <= L; d++) { r -= w[d - 1]; if (r <= 0) return d; } return 1; }
 function addLootBar(m, g) { m.loot.bars[g] = (m.loot.bars[g] || 0) + 1; }
-/* One monster per gear set: the pack's tile fixes which set it guards, and only that set's shard drops from it. */
-function monsterSet(x, y) { const ks = Object.keys(SETS); return ks[Math.abs((x * 73856093) ^ (y * 19349663)) % ks.length]; }
+/* One monster per gear set (monsterIdAt in data.js picks it from this week's three, or a holiday monster). Each leaves its own resource tile. */
+function monsterSet(x, y) { return monsterIdAt(x, y); }
 function rollShard(m, L, set) { if (Math.random() < Math.min(0.35, 0.04 * L)) m.loot.shard = set || pick(Object.keys(SETS)); }
+function rollDrop(L) { const o = dropOdds(L, S.research.hunt || 0); let r = Math.random(); for (let i = 0; i < o.length; i++) { r -= o[i]; if (r <= 0) return i + 1; } return 1; }
+/* ---- hunt stamina, streak, alliance chests ---- */
+function stamTick(now) { const s = S.stam; if (s.v >= STAM_MAX) { s.at = now; return; } const n = Math.floor((now - s.at) / STAM_REGEN_MS); if (n > 0) { s.v = Math.min(STAM_MAX, s.v + n); s.at = s.v >= STAM_MAX ? now : s.at + n * STAM_REGEN_MS; } }
+function pushChest(lv, from) { S.chests.push({ id: S.nid++, lv, from, t: Date.now() }); if (S.chests.length > CHEST_MAX) S.chests.shift(); }
+function chestBars(lv) { return 1 + Math.floor(lv / 2); }
+function claimChest(id) {
+  const i = S.chests.findIndex(c => c.id === id); if (i < 0) return 'That chest is gone.';
+  const c = S.chests[i], got = []; S.chests.splice(i, 1);
+  for (const r of [pick(RES.slice(0, 4)), pick(RES)]) { const a = addRes(r, Math.round(c.lv * rnd(900, 1600))); if (a > 0) got.push(fmtN(a) + ' ' + RESN[r]); }
+  const n = chestBars(c.lv), by = {}; for (let k = 0; k < n; k++) { const g = rollDrop(c.lv); by[g] = (by[g] || 0) + 1; S.bars[g] = (S.bars[g] || 0) + 1; }
+  for (const g in by) got.push(by[g] + ' ' + qName(g) + ' material' + (by[g] > 1 ? 's' : ''));
+  if (Math.random() < 0.3 + 0.05 * c.lv) { const x = ['tiny', 'tiny', 'small', 'small', 'medium', 'medium'][c.lv - 1]; xpiGive(x, 1); got.push(XPI.find(q => q.id === x).n); }
+  note('Alliance chest (Lv ' + c.lv + ', ' + c.from + '): ' + got.join(', ') + '.', 'good'); return null;
+}
+function claimAllChests() { const ids = S.chests.map(c => c.id); if (!ids.length) return 'No chests to open.'; for (const id of ids) claimChest(id); return null; }
+function huntXpItem(g) { return ['tiny', 'tiny', 'small', 'small', 'medium', 'medium'][g - 1]; }
+/* Called once per victorious monster hunt: every reward of the report except the carried loot lands here. Returns the report block. */
+function huntSpoils(m, t, g) {
+  const id = t.mon, hol = id && id.indexOf('h_') === 0, now = Date.now(), st = S.streak, sm = S.stam, sp = SETS[id];
+  st.n = st.n > 0 && now - st.at <= STREAK_MS ? st.n + 1 : 1; st.at = now; st.best = Math.max(st.best || 0, st.n);
+  const extra = Math.min(3, Math.floor(st.n / 3)), base = 1 + Math.floor(g / 2), mats = {};
+  for (let i = 0; i < base + extra; i++) { const q = rollDrop(g); addLootBar(m, q); mats[q] = (mats[q] || 0) + 1; }
+  const cost = m.stam || 0, refund = Math.floor(cost * setWorn().refund);
+  sm.v = Math.min(STAM_MAX, sm.v + refund); sm.refunded += refund; sm.mats += base + extra; sm.hunts++; sm.wins++;
+  const pk = pick(RES), pa = addRes(pk, Math.round(g * rnd(250, 600)));
+  const items = []; if (Math.random() < 0.2 + 0.05 * g) { const x = huntXpItem(g); xpiGive(x, 1); items.push(XPI.find(q => q.id === x).n); }
+  const fr = 1 + g; S.frags += fr; let fused = 0; while (S.frags >= 10) { S.frags -= 10; xpiGive('tiny', 1); fused++; }
+  const xp = XP_FREE.hunt * g; heroGain(xp);
+  pushChest(g, 'You');
+  if (hol) { const reg = pick(activeSets()); rollShard(m, g, reg); if (Math.random() < Math.min(0.6, 0.2 + 0.07 * g)) { m.loot.shards = m.loot.shards || {}; m.loot.shards[id] = 1; } }
+  else rollShard(m, g, id);
+  return { mon: sp ? sp.mon : 'Monster', hol: !!hol, lv: g, stam: { cost, refund, net: cost - refund }, mats, streak: st.n, extra, pocket: pa ? [pk, pa] : null, items, frags: fr, fused, xp, chest: g, eff: sm.hunts ? sm.mats / Math.max(1, sm.spent - sm.refunded) * 10 : 0 };
+}
 function survivors(m) { return sumCol(m.col); }
 function wipe(m, why) {
   S.marches = S.marches.filter(x => x !== m);
@@ -499,13 +535,13 @@ function arrive(m) {
     const fr = fightMarch(m, D, (camp ? 'Camp' : 'Monster pack') + ' grade ' + g + ' at ' + m.tx + ',' + m.ty, { rightName: camp ? 'Camp' : 'Pack', rightRows: [[camp ? 'Camp garrison' : 'Monster pack', '—', 0, 0]] });
     if (fr.r.win) {
       S.dead[key(m.tx, m.ty)] = 1; S.kills++; const vg = rollGrade(g), res = pick(RES.slice(0, 4));
-      S.nodes[key(m.tx, m.ty)] = { res, nk: Object.keys(NODE_RES).find(k => NODE_RES[k] === res), grade: vg, stock: 600 * vg, max: 600 * vg, rich: true };
-      for (let i = 0, n = 1 + Math.floor(g / 2); i < n; i++) addLootBar(m, rollGrade(g)); rollShard(m, g, monsterSet(m.tx, m.ty)); if (Math.random() < 0.3) m.loot.dia += g * 2;
+      S.nodes[key(m.tx, m.ty)] = { res, nk: Object.keys(NODE_RES).find(k => NODE_RES[k] === res), grade: vg, stock: 600 * vg, max: 600 * vg, rich: true, from: t.mon || null };
+      if (!camp) { const hs = huntSpoils(m, t, g); if (fr.rep) fr.rep.hunt = hs; } else { for (let i = 0, n = 1 + Math.floor(g / 2); i < n; i++) addLootBar(m, rollGrade(g)); rollShard(m, g, pick(Object.keys(SETS))); heroGain(XP_FREE.hunt * g); }
+      if (Math.random() < 0.3) m.loot.dia += g * 2;
       for (const r of [pick(RES.slice(0, 4)), pick(RES)]) m.loot.res[r] = (m.loot.res[r] || 0) + Math.round(g * rnd(500, 1100));
-      heroGain(XP_FREE.hunt * g);
       if (fr.wiped) { S.marches = S.marches.filter(x => x !== m); if (m.hero) S.hero.captured = true; note('Pack dead, column gone. Rich vein left at ' + m.tx + ',' + m.ty + '.', 'warn'); return; }
       note('Pack dead at ' + m.tx + ',' + m.ty + '. A rich vein is open.', 'good');
-    } else { if (fr.wiped) return wipe(m, 'on the hunt'); note('Hunt failed. Column falls back.', 'warn'); }
+    } else { S.streak.n = 0; S.stam.hunts++; if (fr.wiped) return wipe(m, 'on the hunt'); note('Hunt failed. Column falls back.', 'warn'); }
     return startBack(m);
   }
   if (m.kind === 'field') {
@@ -558,6 +594,7 @@ function landMarch(m) {
   for (const g in m.loot.bars) { S.bars[g] = (S.bars[g] || 0) + m.loot.bars[g]; got.push(m.loot.bars[g] + ' ' + qName(g) + ' material' + (m.loot.bars[g] > 1 ? 's' : '')); }
   if (m.loot.gem) { S.gems += m.loot.gem; got.push('a gem'); }
   if (m.loot.shard) { S.shards[m.loot.shard] = (S.shards[m.loot.shard] || 0) + 1; got.push(SETS[m.loot.shard].n + ' shard'); }
+  for (const hs in (m.loot.shards || {})) { S.shards[hs] = (S.shards[hs] || 0) + 1; got.push(SETS[hs].n + ' event shard'); }
   if (m.loot.dia) { dchg(m.loot.dia, 'Loot'); got.push(m.loot.dia + ' diamonds'); }
   note(marchName(m) + ' column is home' + (got.length ? ': ' + got.join(', ') : '') + (over ? '. ' + over + ' wounded died, beds full' : '') + '.', 'good');
 }
@@ -591,6 +628,7 @@ function recall(id) {
   const m = S.marches.find(x => x.id === id); if (!m) return 'No such column.';
   if (m.phase === 'back') return 'Already walking home.'; if (m.kind === 'rally') { if (m.phase !== 'wait') return 'A launched column cannot be recalled.'; return cancelRally(m); }
   const now = Date.now(); let back = m.backMs;
+  if (m.phase === 'out' && m.stam) { S.stam.v = Math.min(STAM_MAX, S.stam.v + m.stam); S.stam.spent -= m.stam; m.stam = 0; }
   if (m.phase === 'out') { const f = clamp((now - m.start) / m.outMs, 0, 1); back = Math.max(3000, Math.round(m.backMs * f)); m.loot = { res: {}, bars: {}, gem: 0, shard: null, dia: 0 }; }
   if (m.phase === 'sit') { m.loot = { res: {}, bars: {}, gem: 0, shard: null, dia: 0 }; }
   if (m.holdKind === 'tile' && m.phase === 'hold') { const e = S.encs[key(m.tx, m.ty)]; if (e && e.mid === m.id) delete S.encs[key(m.tx, m.ty)]; terrDirty = true; }
@@ -811,6 +849,7 @@ function pieceText(p) { const pc = (piecePct(p.slot, p.grade) * 100).toFixed(1).
 function setHero(id) { if (heroLocked()) return 'The hero is out.'; if (S.hero.captured) return 'The hero is captured.'; S.hero.id = id; return null; }
 
 /* ---------------- tick ---------------- */
+let HUNT_EP = null;
 function tick() {
   const now = Date.now(); let dt = S.last2 ? Math.min(5, (now - S.last2) / 1000) : 0.25; S.last2 = now; let ch = false;
   produce(dt);
@@ -822,6 +861,10 @@ function tick() {
     if (m.kind === 'rally' && m.phase === 'wait') { for (const j of m.joiners) if (!j.in && now >= j.at) { j.in = true; ch = true; } }
     if (now >= m.end) { stepMarch(m); ch = true; }
   }
+  stamTick(now);
+  { const ep = huntCycle(now) + ':' + activeHolidays(now).join(','); if (ep !== HUNT_EP) { if (HUNT_EP != null) { terrDirty = true; ch = true; } HUNT_EP = ep; } }
+  if (S.chests.length && S.chests.some(c => now - c.t > CHEST_LIFE_MS)) { S.chests = S.chests.filter(c => now - c.t <= CHEST_LIFE_MS); ch = true; }
+  if (now > (S.next.chest || 0)) { S.next.chest = now + rint(45000, 90000); pushChest(1 + Math.floor(Math.random() * Math.random() * 5.99), pick(S.roster.slice(3))); ch = true; }
   if (tickEmbassy(now)) ch = true;
   for (const inc of S.incoming.slice()) if (now >= inc.end) { hitBase(inc); ch = true; }
   for (const k in S.encs) { const e = S.encs[k]; if (e.o !== 0 && now >= e.end) { const cur = S.own[k]; if (cur == null || cur === e.o) S.own[k] = e.o; delete S.encs[k]; terrDirty = true; ch = true; } }

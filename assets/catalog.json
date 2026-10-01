@@ -1,6 +1,6 @@
 {
  "v": 2,
- "count": 551,
+ "count": 616,
  "groups": [
   {
    "id": "bld",
@@ -29,8 +29,13 @@
   },
   {
    "id": "map",
-   "title": "Map features (32)",
+   "title": "Map features",
    "note": "Sprites for the world map, transparent. REWORKED: each resource has ONE gathering-tile image (the level is a number drawn in code, so the picture never changes with level), and every monster, including one set monster for each gear set, has a loot tile. Old six-level resource pictures are retired. Shown small, so bold shapes and strong colour. The map is made of diamond (isometric) tiles, so every camp, base, citadel and resource site sits on a square patch that reads as a diamond. Nothing is round, hexagonal or octagonal."
+  },
+  {
+   "id": "holiday",
+   "title": "Holiday monsters, event sets and alliance chests",
+   "note": "One monster, one loot tile and one event shard for each of the 15 holidays, plus the alliance gift chest. Holiday monsters use the same pale grey and slate body style, size and camera as the regular monsters with ONE clear festive accent each (colour and prop), so they read as the same creature family. Nothing may show text, numbers, real flags or real logos. Every one must be built so it can be animated later: separate head, body and limbs, and the glowing parts kept as clean separate shapes."
   },
   {
    "id": "tile",
@@ -1492,6 +1497,78 @@
   },
   {
    "group": "map",
+   "key": "mon_set_marksman",
+   "name": "Marksman Shrike (Marksman set monster)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "map",
+   "key": "mon_set_prospector",
+   "name": "Prospector Mole (Prospector set monster)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "map",
+   "key": "mon_set_caravan",
+   "name": "Caravan Behemoth (Caravan set monster)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "map",
+   "key": "mon_set_foundry",
+   "name": "Foundry Golem (Foundry set monster)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "map",
+   "key": "mon_set_academy",
+   "name": "Academy Mantis (Academy set monster)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "map",
+   "key": "mon_set_medic",
+   "name": "Medic Moth (Medic set monster)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "map",
+   "key": "mon_set_bulwark",
+   "name": "Bulwark Tortoise (Bulwark set monster)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "map",
+   "key": "mon_set_breaker",
+   "name": "Breaker Ram (Breaker set monster)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "map",
+   "key": "mon_set_tracker",
+   "name": "Tracker Lynx (Tracker set monster)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "map",
    "key": "monloot_1",
    "name": "Ash Hound loot tile",
    "size": "1:1, 1024 x 1024",
@@ -1558,6 +1635,454 @@
    "group": "map",
    "key": "monloot_set_battery",
    "name": "Battery Beetle loot tile",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "map",
+   "key": "monloot_set_marksman",
+   "name": "Marksman Shrike loot tile",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "map",
+   "key": "monloot_set_prospector",
+   "name": "Prospector Mole loot tile",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "map",
+   "key": "monloot_set_caravan",
+   "name": "Caravan Behemoth loot tile",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "map",
+   "key": "monloot_set_foundry",
+   "name": "Foundry Golem loot tile",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "map",
+   "key": "monloot_set_academy",
+   "name": "Academy Mantis loot tile",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "map",
+   "key": "monloot_set_medic",
+   "name": "Medic Moth loot tile",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "map",
+   "key": "monloot_set_bulwark",
+   "name": "Bulwark Tortoise loot tile",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "map",
+   "key": "monloot_set_breaker",
+   "name": "Breaker Ram loot tile",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "map",
+   "key": "monloot_set_tracker",
+   "name": "Tracker Lynx loot tile",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "holiday",
+   "key": "mon_hol_newyear",
+   "name": "Countdown Colossus (New Year's Day monster)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "holiday",
+   "key": "mon_hol_valentine",
+   "name": "Heartforge Hound (Valentine's Day monster)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "holiday",
+   "key": "mon_hol_stpat",
+   "name": "Clover Golem (St. Patrick's Day monster)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "holiday",
+   "key": "mon_hol_memorial",
+   "name": "Poppy Sentinel (Memorial / Victoria Day monster)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "holiday",
+   "key": "mon_hol_canada",
+   "name": "Maple Moose (Canada Day monster)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "holiday",
+   "key": "mon_hol_july4",
+   "name": "Sparkler Bison (Independence Day monster)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "holiday",
+   "key": "mon_hol_thanks",
+   "name": "Harvest Gobbler (Thanksgiving monster)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "holiday",
+   "key": "mon_hol_halloween",
+   "name": "Lantern Wraith (Halloween monster)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "holiday",
+   "key": "mon_hol_xmas",
+   "name": "Frostback Yeti (Christmas / Winter Holidays monster)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "holiday",
+   "key": "mon_hol_cny",
+   "name": "Festival Lion (Chinese New Year / Spring Festival monster)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "holiday",
+   "key": "mon_hol_diwali",
+   "name": "Lamp Phoenix (Diwali monster)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "holiday",
+   "key": "mon_hol_eid",
+   "name": "Crescent Oryx (Eid al-Fitr / Eid al-Adha monster)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "holiday",
+   "key": "mon_hol_holi",
+   "name": "Pigment Chameleon (Holi monster)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "holiday",
+   "key": "mon_hol_muertos",
+   "name": "Marigold Spirit-Hound (Día de los Muertos monster)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "holiday",
+   "key": "mon_hol_midautumn",
+   "name": "Moonlit Hare (Mid-Autumn / Moon Festival monster)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "holiday",
+   "key": "monloot_hol_newyear",
+   "name": "Countdown Colossus loot tile",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "holiday",
+   "key": "monloot_hol_valentine",
+   "name": "Heartforge Hound loot tile",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "holiday",
+   "key": "monloot_hol_stpat",
+   "name": "Clover Golem loot tile",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "holiday",
+   "key": "monloot_hol_memorial",
+   "name": "Poppy Sentinel loot tile",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "holiday",
+   "key": "monloot_hol_canada",
+   "name": "Maple Moose loot tile",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "holiday",
+   "key": "monloot_hol_july4",
+   "name": "Sparkler Bison loot tile",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "holiday",
+   "key": "monloot_hol_thanks",
+   "name": "Harvest Gobbler loot tile",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "holiday",
+   "key": "monloot_hol_halloween",
+   "name": "Lantern Wraith loot tile",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "holiday",
+   "key": "monloot_hol_xmas",
+   "name": "Frostback Yeti loot tile",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "holiday",
+   "key": "monloot_hol_cny",
+   "name": "Festival Lion loot tile",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "holiday",
+   "key": "monloot_hol_diwali",
+   "name": "Lamp Phoenix loot tile",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "holiday",
+   "key": "monloot_hol_eid",
+   "name": "Crescent Oryx loot tile",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "holiday",
+   "key": "monloot_hol_holi",
+   "name": "Pigment Chameleon loot tile",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "holiday",
+   "key": "monloot_hol_muertos",
+   "name": "Marigold Spirit-Hound loot tile",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "holiday",
+   "key": "monloot_hol_midautumn",
+   "name": "Moonlit Hare loot tile",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "holiday",
+   "key": "shard_hol_newyear",
+   "name": "Countdown event shard",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "holiday",
+   "key": "shard_hol_valentine",
+   "name": "Heartstring event shard",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "holiday",
+   "key": "shard_hol_stpat",
+   "name": "Clover event shard",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "holiday",
+   "key": "shard_hol_memorial",
+   "name": "Poppy event shard",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "holiday",
+   "key": "shard_hol_canada",
+   "name": "Maple event shard",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "holiday",
+   "key": "shard_hol_july4",
+   "name": "Sparkler event shard",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "holiday",
+   "key": "shard_hol_thanks",
+   "name": "Harvest event shard",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "holiday",
+   "key": "shard_hol_halloween",
+   "name": "Hollow event shard",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "holiday",
+   "key": "shard_hol_xmas",
+   "name": "Evergreen event shard",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "holiday",
+   "key": "shard_hol_cny",
+   "name": "Festival event shard",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "holiday",
+   "key": "shard_hol_diwali",
+   "name": "Diya event shard",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "holiday",
+   "key": "shard_hol_eid",
+   "name": "Crescent event shard",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "holiday",
+   "key": "shard_hol_holi",
+   "name": "Gulal event shard",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "holiday",
+   "key": "shard_hol_muertos",
+   "name": "Marigold event shard",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "holiday",
+   "key": "shard_hol_midautumn",
+   "name": "Moonlight event shard",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "holiday",
+   "key": "chest_closed",
+   "name": "Alliance gift chest (closed)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "holiday",
+   "key": "chest_open",
+   "name": "Alliance gift chest (open)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256

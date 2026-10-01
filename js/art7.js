@@ -64,7 +64,13 @@ function emberColossus() {
 }
 const monsterArt3 = g => g >= 5 ? emberColossus() : g >= 3 ? rustBrute() : ashHound();
 monsterArt = monsterArt3;
-FEAT.monster = FEAT2.monster = g => svgSprite('mn_' + clamp(g || 1, 1, 6), monsterArt3(g), 96);
+/* Each gear-set and holiday monster is the level-shaped body plus an accent in its set colour (placeholder until its painted image lands). */
+function monsterVec(g, id) {
+  const sp = SETS[id], base = monsterArt3(g); if (!sp) return base; const c = sp.aura, ev = !!sp.hol;
+  return base + EL(32, 56, 24, 4, c, 'opacity=".5"') + P([[29, 31], [32, 26], [35, 31], [32, 36]], c, KI, .7) + CI(32, 31, 1.2, 'rgba(255,255,255,.7)')
+    + P([[14, 24], [17, 16], [20, 24]], c, KI, .5) + P([[44, 24], [47, 16], [50, 24]], c, KI, .5) + (ev ? P([[32, 3], [33.6, 6.6], [37.4, 7], [34.6, 9.6], [35.4, 13.4], [32, 11.4], [28.6, 13.4], [29.4, 9.6], [26.6, 7], [30.4, 6.6]], '#ffe27a', KI, .5) : '');
+}
+FEAT.monster = FEAT2.monster = (g, id) => id && SETS[id] ? svgSprite('mnx_' + id + '_' + clamp(g || 1, 1, 6), monsterVec(g, id), 96) : svgSprite('mn_' + clamp(g || 1, 1, 6), monsterArt3(g), 96);
 
 /* ================= RAIDER CAMP ================= */
 function campArt3() {

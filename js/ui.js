@@ -166,6 +166,32 @@ function missionHTML() {
   }).join('');
   return `<div class="panel"><div class="hd"><h3>Missions</h3><span class="sub">${MISSIONS.filter(m => m.d() >= m.t && !(m.daily ? S.missions[m.id] === day : S.missions[m.id])).length} ready</span></div><div class="bd">${rows}</div></div>`;
 }
+const dfmt = t => new Date(t).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+function monImg(id, g) { try { const c = FEAT.monster(g, id); return `<img class="mimg" src="${c.toDataURL()}" alt="" width="44" height="44">`; } catch (e) { return ''; } }
+function setProgress(id) { const have = new Set(S.gear.pieces.filter(p => p.set === id).map(p => p.slot)).size; return `${have}/7 pieces · ${S.shards[id] || 0} shards`; }
+function huntHTML() {
+  const now = Date.now(); stamTick(now); const sm = S.stam, st = S.streak, live = st.n > 0 && now - st.at <= STREAK_MS ? st.n : 0, net = Math.max(1, sm.spent - sm.refunded), act = activeSets(now), hol = activeHolidays(now), rs = S.research.hunt || 0;
+  const regen = sm.v >= STAM_MAX ? 'Full' : 'Next point ' + fmtT((sm.at + STAM_REGEN_MS - now) / 1000);
+  let h = `<div class="panel"><div class="hd"><h3>Hunt stamina</h3><span class="tag br">${Math.floor(sm.v)}/${STAM_MAX}</span></div><div class="bd"><div class="bar"><i style="width:${sm.v / STAM_MAX * 100}%"></i></div>
+  <div class="sub mt">${regen}. A level 1 monster costs ${stamCost(1)}, a level 6 costs ${stamCost(6)}. Recalling a column before it arrives refunds it; Tracker gear refunds a share of every win.</div>
+  <div class="rr"><span>Spent / refunded</span><span class="num">${fmtN(sm.spent)} / ${fmtN(sm.refunded)}</span></div><div class="rr"><span>Efficiency</span><span class="num">${(sm.mats / net * 10).toFixed(1)} materials per 10 net stamina</span></div><div class="rr"><span>Hunts · wins</span><span class="num">${sm.hunts} · ${sm.wins}</span></div>
+  <div class="rr"><span>Hunt streak</span><span class="num ${live ? 'br' : 'mut'}">${live} now · best ${st.best || 0}</span></div><div class="sub">A win within ${STREAK_MS / 60000} minutes of the last keeps the streak. Every 3 in a row adds one extra material roll (up to +3). A loss resets it.</div>
+  <div class="rr"><span>Hero fragments</span><span class="num">${S.frags}/10 → 1 Tiny XP item</span></div></div></div>`;
+  h += `<div class="panel"><div class="hd"><h3>This week · ${CYCLE_NAMES[huntCycle(now)]}</h3><span class="tag">ends in ${fmtT((weekEnds(now) - now) / 1000)} real</span></div><div class="bd list">${act.map(id => `<div class="it">${monImg(id, 6)}<div class="grow"><b class="h" style="font-size:15px">${SETS[id].mon}</b><div class="sub">${SETS[id].n} set · ${SETS[id].cat} · ${setProgress(id)}</div></div></div>`).join('')}</div><div class="bd sub">Three of the 12 regular monsters are on the map all week, every week; the cycle repeats every four weeks. All twelve: ${SET_ORDER.map(i => SETS[i].mon).join(', ')}.</div></div>`;
+  h += `<div class="panel"><div class="hd"><h3>Drops</h3><span class="tag">Hunter's instinct ${rs}/10</span></div><div class="bd"><div class="sub">A monster drops its own tier or lower, never higher. Odds per material roll:</div>${[1, 2, 3, 4, 5, 6].map(L => `<div class="rr"><span>Level ${L} monster</span><span class="num">${dropOdds(L, rs).map((x, i) => `<span style="color:${QUALITY[i + 1].col}">${(x * 100).toFixed(1)}</span>`).join(' / ')}</span></div>`).join('')}<div class="sub">Basic / Common / Uncommon / Rare / Epic / Legendary, in percent. Max research at level 6 is 25 / 15 / 10 / 35 / 14.3 / 0.7.</div></div></div>`;
+  h += `<div class="panel"><div class="hd"><h3>Holiday monsters</h3><span class="tag ${hol.length ? 'br' : ''}">${hol.length ? hol.length + ' live' : 'none live'}</span></div><div class="bd">
+  <div class="sub">Each holiday brings its own monster for one full week, every year, in place of ${Math.round(HOL_SHARE * 100)}% of the map's packs. It drops regular loot plus an event shard for a limited gear set; unfinished sets carry over to next year.</div>
+  ${HOLIDAYS.map(q => { const on = hol.includes(q.id), nx = nextHolidayStart(q, now), cur = holidayWindows(q, now).find(t => now >= t && now < t + HOL_DAYS * 86400000), pv = HUNT_PREVIEW.holiday === q.id;
+    return `<div class="rwrow"><div class="grow"><b>${q.mon}</b> <span class="tag ${on ? 'br' : ''}">${on ? (cur ? 'live until ' + dfmt(cur + HOL_DAYS * 86400000 - 1) : 'preview') : nx ? dfmt(nx) : 'date not tabled'}</span><div class="sub">${q.n} · ${q.reg} · ${q.set} set ${setProgress('h_' + q.id)}</div></div><button class="btn sm ${pv ? 'pri' : 'line'}" data-a="hprev" data-id="${pv ? '' : q.id}">${pv ? 'Stop' : 'Preview'}</button></div>`; }).join('')}
+  <div class="sub mt">Preview puts that holiday's monster on the map now so you can see and hunt it. Demo only, it is not saved.</div></div></div>`;
+  return h;
+}
+function chestsHTML() {
+  const now = Date.now(), cs = S.chests.slice().sort((a, b) => b.lv - a.lv || b.t - a.t);
+  return `<div class="panel"><div class="hd"><h3>Alliance gift chests</h3><span class="tag ${cs.length ? 'br' : ''}">${cs.length}</span></div><div class="bd"><div class="sub">Every monster killed on the map drops a chest for the whole alliance. Bigger monsters, bigger chests. Chests are shared, so open them before they expire after 24 hours.</div>
+  <div class="flex mt"><button class="btn pri" data-a="chestall" ${cs.length ? '' : 'disabled'}>Open all</button></div></div></div>
+  <div class="panel"><div class="bd list">${cs.map(c => `<div class="it"><span class="num br" style="width:44px">Lv ${c.lv}</span><div class="grow"><b class="h" style="font-size:15px">${c.from}'s chest</b><div class="sub">${chestBars(c.lv)} material rolls · resources · maybe an XP item · expires in ${fmtT((c.t + CHEST_LIFE_MS - now) / 1000)}</div></div><button class="btn sm pri" data-a="chest" data-id="${c.id}">Open</button></div>`).join('') || '<div class="sub">No chests. Hunt a monster or wait for an ally.</div>'}</div></div>`;
+}
 function eventsHTML() {
   const now = Date.now(), fd = Math.max(0, (S.freeDiaAt || 0) + 4 * HOUR - now), sp = Math.max(0, (S.supplyAt || 0) + 0.5 * HOUR - now), dl = S.daily === new Date().toDateString();
   const row = (n, sub, btn) => `<div class="rwrow"><div class="grow"><b>${n}</b><div class="sub">${sub}</div></div>${btn}</div>`;
@@ -216,12 +242,13 @@ function compHTML(cn) {
 
 /* ---------------- tile sheet ---------------- */
 function tileLabel(t) {
+  if (t.kind === 'monster' && t.mon && SETS[t.mon]) return SETS[t.mon].mon;
   if (t.kind === 'node') return `${({ food: 'Food', oil: 'Oil', energy: 'Energy', steel: 'Steel' })[t.nk]} vein${t.node.rich ? ' · rich' : ''}`;
   return ({ wild: 'Wild plain', forest: 'Forest', plaza: 'Plaza', throne: 'Throne', monster: 'Monster pack', camp: 'Camp', base: 'Commander base', pbase: 'Your base' })[t.kind];
 }
 function sheetTile(x, y) {
   const t = tileInfo(x, y), c = UI.comp, tot = compTotal(c), col = previewCol(c);
-  const spr = t.kind === 'monster' ? FEAT.monster(t.grade) : t.kind === 'camp' ? FEAT.camp() : t.kind === 'node' ? FEAT[t.nk === 'food' ? 'food' : t.nk === 'oil' ? 'oil' : t.nk === 'energy' ? 'energy' : 'steel'](t.node.grade) : t.kind === 'base' ? FEAT.base(t.bot.p) : t.kind === 'pbase' ? FEAT.pbase(ccLevel()) : null;
+  const spr = t.kind === 'monster' ? FEAT.monster(t.grade, t.mon) : t.kind === 'camp' ? FEAT.camp() : t.kind === 'node' ? FEAT[t.nk === 'food' ? 'food' : t.nk === 'oil' ? 'oil' : t.nk === 'energy' ? 'energy' : 'steel'](t.node.grade) : t.kind === 'base' ? FEAT.base(t.bot.p) : t.kind === 'pbase' ? FEAT.pbase(ccLevel()) : null;
   let img = ''; try { if (spr) img = `<div class="tport"><img src="${spr.toDataURL()}" alt=""><i class="num">${t.grade ? 'Lv ' + t.grade : ''}</i></div>`; } catch (e) { }
   const dist = Math.hypot(x - S.base.x, y - S.base.y);
   let h = `<button class="xclose" data-a="closesheet" aria-label="Close">✕</button><div class="h1">${tileLabel(t)}</div><div class="sub">${t.kind === 'base' ? t.bot.cmd + ' · ' : ''}Grade ${t.grade}</div><div class="coord"><b class="num">X:${x} Y:${y}</b><button class="btn sm share" data-a="sharexy" data-x="${x}" data-y="${y}" aria-label="Copy coordinates">⧉</button></div><div class="tinfo">${img}<div class="grow"><div class="rr"><span class="mut">Ownership</span><span class="num">${ownerTxt(t.owner)}</span></div><div class="rr"><span class="mut">Distance</span><span class="num">${dist.toFixed(1)} tiles</span></div>${t.kind === 'base' ? `<div class="rr"><span class="mut">Owner</span><span class="num">${t.bot.cmd}</span></div><div class="rr"><span class="mut">Alliance</span><span class="num">${ownerTxt(t.bot.al)}</span></div><div class="rr"><span class="mut">Shield</span><span class="num">${t.bot.shieldUntil > Date.now() ? 'Up' : 'Down'}</span></div>` : ''}${t.enc ? '<div class="rr"><span class="mut">Status</span><span class="num">Encamping</span></div>' : ''}</div></div>`;
@@ -234,6 +261,8 @@ function sheetTile(x, y) {
     h += compHTML('comp') + eta('gather') + `<div class="flex mt"><button class="btn pri tall grow" data-a="launch" data-k="gather" ${tot ? '' : 'disabled'}>Send gather</button></div>`;
   } else if (t.kind === 'monster' || t.kind === 'camp') {
     const camp = t.kind === 'camp', Dd = mkSide({}, {}, 1, null, monsterSyn(t.grade, camp));
+    const ms = !camp && t.mon && SETS[t.mon], cost = camp ? 0 : stamCost(t.grade); stamTick(Date.now());
+    if (ms) h += `<div class="sub mt">${ms.hol ? '<span class="tag br">Event · ' + HOLIDAYS.find(q => q.id === ms.hol).n + '</span> ' : ''}Guards the <b>${ms.n}</b> set${ms.hol ? '' : ' (' + ms.cat + ')'} · level ${t.grade} drops tier ${t.grade} and lower</div><div class="sub">Stamina <b class="num ${S.stam.v >= cost ? '' : 'sg'}">${cost}</b> to hunt · you have <b class="num">${Math.floor(S.stam.v)}</b>/${STAM_MAX}${setWorn().refund ? ' · gear refunds ' + Math.round(setWorn().refund * 100) + '% on a win' : ''}</div>`;
     h += `<div class="sub mt">Odds ${oddsText(Dd, col, c.hero) || '—'} · a dead pack leaves a rich vein · hunting strips the shield</div>` + compHTML('comp') + eta('hunt') + `<div class="flex mt"><button class="btn pri tall grow" data-a="launch" data-k="hunt" ${tot ? '' : 'disabled'}>Send hunt</button></div>`;
   } else if (t.kind === 'wild' || t.kind === 'forest') {
     const tk = tpKind(x, y);
@@ -289,11 +318,20 @@ function sheetPlot(area, idx) {
   if (p.b === 'prison') h += `<div class="flex mt"><span class="sub">Seals ${S.seals}/${p.l}</span><button class="btn sm" data-a="buyseals">5 seals · 60◆</button></div>`;
   return h;
 }
+function huntReportHTML(h) {
+  const row = (a, b) => `<div class="rr"><span>${a}</span><span class="num">${b}</span></div>`, mats = Object.keys(h.mats).sort().map(g => `${h.mats[g]} <span style="color:${QUALITY[g].col}">${qName(g)}</span>`).join(', ');
+  return `<div class="lbl mt">${h.mon}${h.hol ? ' · event monster' : ''} · level ${h.lv}</div>`
+    + row('Stamina spent', h.stam.cost) + row('Gear refund', h.stam.refund ? '<span class="ox">+' + h.stam.refund + '</span> (net ' + h.stam.net + ')' : '—')
+    + row('Materials (ride home)', mats || '—') + row('Hunt streak', h.streak + ' in a row' + (h.extra ? ' · <span class="ox">+' + h.extra + ' extra roll' + (h.extra > 1 ? 's' : '') + '</span>' : ''))
+    + row('Commander XP', '+' + fmtN(h.xp)) + row('Hero upgrade items', (h.items.length ? h.items.join(', ') + ' · ' : '') + h.frags + ' fragments' + (h.fused ? ' → ' + h.fused + ' Tiny XP' : ''))
+    + row('Instant pocket', h.pocket ? '+' + fmtN(h.pocket[1]) + ' ' + RESN[h.pocket[0]] : 'StoreHouse full') + row('Alliance gift chest', 'Level ' + h.chest + ' · shared, see Guild › Chests')
+    + `<div class="sub">${h.eff.toFixed(1)} materials per 10 net stamina across all your hunts. Carried loot and shards are paid out when the column is home.</div>`;
+}
 function sheetReport(id) {
   const r = S.reports.find(x => x.id === id); if (!r) return '<div class="sub">Report gone.</div>';
   const side = (s, cl) => `<div class="${cl}"><div class="lbl">${s.name}</div>${s.rows.map(x => `<div class="rr"><span class="wi">${nameIcon(x[0])}${x[0]}</span><span class="num">${typeof x[1] === 'number' ? x[1] + (x[2] ? ' <span class="sg">−' + x[2] + '</span>' : '') : x[1]}</span></div>`).join('')}<div class="lbl mt">Boosts</div>${s.boosts.map(x => `<div class="rr"><span>${x[0]}</span><span class="num">${x[1]}</span></div>`).join('') || '<div class="sub">—</div>'}</div>`;
   let wtxt = ''; const wn = r.left.rows.reduce((a, x) => a + (x[3] || 0), 0); if (wn) wtxt = ` · wounded ${wn}`;
-  return `<div class="flex sp"><div><div class="h1">${r.title}</div><div class="sub">${r.win == null ? 'Intel' : r.win ? '<span class="ox">Victory</span>' : '<span class="sg">Defeat</span>'}${r.obl ? ' · obliterated' : ''}${wtxt}</div></div><button class="xclose" data-a="closesheet" aria-label="Close">✕</button></div><div class="sub">${new Date(r.t).toLocaleString()}</div><div class="split mt">${side(r.left, 'me')}${side(r.right, 'them')}</div>${r.joiners ? `<div class="lbl mt">Joiners</div>${r.joiners.map(j => `<div class="rr"><span>${j.name}</span><span class="num">${j.sent} sent · <span class="sg">−${j.lost}</span> · wounded ${j.wounded}</span></div>`).join('')}` : ''}<div class="flex sp mt"><button class="btn pri" data-a="rsave" data-id="${r.id}" data-close="1">${r.saved ? 'Saved ★' : 'Save'}</button><button class="btn dangr" data-a="rdel" data-id="${r.id}">Delete</button></div>`;
+  return `<div class="flex sp"><div><div class="h1">${r.title}</div><div class="sub">${r.win == null ? 'Intel' : r.win ? '<span class="ox">Victory</span>' : '<span class="sg">Defeat</span>'}${r.obl ? ' · obliterated' : ''}${wtxt}</div></div><button class="xclose" data-a="closesheet" aria-label="Close">✕</button></div><div class="sub">${new Date(r.t).toLocaleString()}</div><div class="split mt">${side(r.left, 'me')}${side(r.right, 'them')}</div>${r.joiners ? `<div class="lbl mt">Joiners</div>${r.joiners.map(j => `<div class="rr"><span>${j.name}</span><span class="num">${j.sent} sent · <span class="sg">−${j.lost}</span> · wounded ${j.wounded}</span></div>`).join('')}` : ''}${r.hunt ? huntReportHTML(r.hunt) : ''}<div class="flex sp mt"><button class="btn pri" data-a="rsave" data-id="${r.id}" data-close="1">${r.saved ? 'Saved ★' : 'Save'}</button><button class="btn dangr" data-a="rdel" data-id="${r.id}">Delete</button></div>`;
 }
 function renderSheet() {
   const el = $('#sheet'), s = UI.sheet, open = !!s && (!UI.drawer || s.type === 'tech');
@@ -514,11 +552,11 @@ function allyHTML() {
   <div class="panel"><div class="hd"><h3>Settings</h3></div><div class="bd flex wrap"><button class="btn sm ${setOn('snd') ? 'on' : 'line'}" data-a="setopt" data-k="snd">Sound ${setOn('snd') ? 'on' : 'off'}</button><button class="btn sm ${setOn('hap') ? 'on' : 'line'}" data-a="setopt" data-k="hap">Haptics ${setOn('hap') ? 'on' : 'off'}</button><button class="btn bad sm" data-a="reset">Reset save</button></div></div>`;
 }
 const DR = {
-  mission: { tabs: [['mis', 'Missions'], ['ev', 'Events']], body: t => t === 'ev' ? eventsHTML() : missionHTML() },
+  mission: { tabs: [['mis', 'Missions'], ['ev', 'Events'], ['hunt', 'Hunt']], body: t => t === 'ev' ? eventsHTML() : t === 'hunt' ? huntHTML() : missionHTML() },
   item: { tabs: [['bag', 'Bag'], ['boost', 'Boosts']], body: itemHTML },
   desk: { tabs: [['train', 'Train'], ['lab', 'Lab'], ['med', 'Med']], body: renderDesk_ },
   hero: { tabs: [['hero', 'Hero'], ['forge', 'Forge'], ['store', 'Store'], ['market', 'Market'], ['ledger', 'Ledger']], body: t => ({ hero: heroScreenHTML, forge: forgeHTML, store: storeHTML, market: marketHTML, ledger: ledgerHTML })[t]() },
-  alliance: { tabs: [['throne', 'Throne'], ['rally', 'Rally'], ['emb', 'Embassy'], ['ally', 'Alliance']], body: t => ({ throne: throneHTML, rally: marchRally, emb: embassyHTML, ally: allyHTML })[t]() },
+  alliance: { tabs: [['throne', 'Throne'], ['rally', 'Rally'], ['emb', 'Embassy'], ['chest', 'Chests'], ['ally', 'Alliance']], body: t => ({ throne: throneHTML, rally: marchRally, emb: embassyHTML, chest: chestsHTML, ally: allyHTML })[t]() },
   mail: { tabs: [['rep', 'Reports'], ['sav', 'Saved'], ['log', 'Log'], ['ctc', 'Contacts']], body: t => ({ rep: reportsHTML, sav: () => reportsHTML(true), log: logHTML, ctc: contactsHTML })[t]() },
   more: { tabs: [['menu', 'More'], ['rw', 'Rewards'], ['inv', 'Invite'], ['help', 'Help']], body: t => ({ menu: moreHTML, rw: rewardsHTML, inv: inviteHTML, help: helpHTML })[t]() },
   march: { tabs: [['cols', 'Columns'], ['field', 'Field']], body: t => t === 'cols' ? marchCols() : marchField() }
@@ -570,7 +608,7 @@ function forgeHTML() {
   return fhead + `<div class="panel"><div class="hd"><h3>Materials</h3><span class="tag">Gems ${S.gems}</span></div><div class="bd"><div class="flex sp"><span class="lbl">Stockpile</span><b class="num">${u}/1024</b></div><div class="bar mt"><i style="width:${Math.min(100, u / 1024 * 100)}%"></i><u style="left:50%"></u></div><div class="flex sp sub"><span>0</span><span>512</span><span>1024 = Legendary</span></div><div class="mt">${bars}</div><div class="sub">Four of one tier refine into one of the next. Gear and materials share the same six tiers: Basic grey, Common white, Uncommon green, Rare blue, Epic purple, Legendary gold.</div></div></div>
   <div class="panel"><div class="hd"><h3>Craft</h3><span class="tag ${selN === 4 ? 'br' : ''}">${selN}/4 materials</span></div><div class="bd"><div class="tabs2">${SLOTS.map(s => `<button class="${C.slot === s ? 'on' : ''}" data-a="crslot" data-s="${s}"><i class="tic">${gearSVG(s, 3)}</i>${s}</button>`).join('')}</div>
   ${C.slot === 'accessory' ? `<div class="flex mb"><span class="lbl">Stamp</span><button class="btn sm ${C.stat === 'training' ? 'on' : 'line'}" data-a="crstat" data-s="training">Training</button><button class="btn sm ${C.stat === 'yield' ? 'on' : 'line'}" data-a="crstat" data-s="yield">Yield</button></div>` : ''}
-  <div class="flex wrap mb"><span class="lbl">Shard</span><button class="btn sm ${!C.shard ? 'on' : 'line'}" data-a="crshard" data-s="">None</button>${Object.keys(SETS).map(s => `<button class="btn sm ${C.shard === s ? 'on' : 'line'}" data-a="crshard" data-s="${s}" ${S.shards[s] ? '' : 'disabled'}>${SETS[s].n} ${S.shards[s] || 0}</button>`).join('')}</div>
+  <div class="flex wrap mb"><span class="lbl">Shard</span><button class="btn sm ${!C.shard ? 'on' : 'line'}" data-a="crshard" data-s="">None</button>${Object.keys(SETS).filter(s => S.shards[s] > 0 || C.shard === s).map(s => `<button class="btn sm ${C.shard === s ? 'on' : 'line'}" data-a="crshard" data-s="${s}">${SETS[s].n} ${S.shards[s] || 0}</button>`).join('') || '<span class="sub">No shards yet. Hunt monsters for them.</span>'}</div>
   <div class="sub">${odds}</div><div class="sub">${C.slot}: ${C.slot === 'accessory' ? 'stamped stat' : SLOT_WHAT[C.slot]} +${SLOT_CURVE[C.slot][0]}% to +${SLOT_CURVE[C.slot][1]}%</div>
   <div class="flex mt"><button class="btn pri" data-a="craft" ${selN === 4 && hasF ? '' : 'disabled'}>Refine into gear</button><button class="btn line" data-a="crclear">Clear</button></div></div></div>
   <div class="panel"><div class="hd"><h3>Worn</h3><span class="tag ${setBonus() ? 'br' : ''}">${setBonus() ? SETS[setBonus()].n + ' set · ' + SETS[setBonus()].d : 'no full set'}</span></div><div class="bd">${worn}</div></div>
@@ -657,6 +695,8 @@ const A = {
   rallyto(d) { UI.rl.target = d.t; closeRadial(); openDrawer('alliance', 'rally'); },
   crsel(d) { const s = UI.cr.sel, g = +d.g, tot = sumCol(s); const n = clamp((s[g] || 0) + +d.d, 0, S.bars[g] || 0); if (+d.d > 0 && tot >= 4) return toast('A craft spends exactly four materials.', 'warn'); s[g] = n; if (!n) delete s[g]; D(); },
   crslot(d) { UI.cr.slot = d.s; D(); }, crstat(d) { UI.cr.stat = d.s; D(); }, crshard(d) { UI.cr.shard = d.s; D(); }, crclear() { UI.cr.sel = {}; D(); },
+  chest(d) { run(claimChest(+d.id)); }, chestall() { run(claimAllChests()); },
+  hprev(d) { HUNT_PREVIEW.holiday = d.id || null; terrDirty = true; D(); },
   embcall() { run(callAllies(false)); },
   embhome(d) { run(sendAlliesHome(d.id == null ? null : +d.id)); },
   craft() { const C = UI.cr; if (run(craft(C.slot, C.sel, C.shard || null, C.stat))) { C.sel = {}; C.shard = ''; } },
