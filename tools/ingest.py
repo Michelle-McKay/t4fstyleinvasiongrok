@@ -112,6 +112,15 @@ def drop_grey_shadow(im, warm=False):
     sh = free.point(lambda v: 255 if v == 128 else 0).filter(ImageFilter.MaxFilter(5))
     out = im.copy(); out.putalpha(ImageChops.subtract(a, sh)); return out
 
+NOHOLES = {'march_teleport'}   # art whose own colours (a pink-purple core) look like the key colour: keep everything inside the outline
+
+def fill_holes(keyed, orig):
+    a = keyed.getchannel('A'); t = a.point(lambda v: 0 if v < 20 else 255)
+    ImageDraw.floodfill(t, (0, 0), 128, thresh=0)
+    holes = t.point(lambda v: 255 if v == 0 else 0)                 # transparent pixels not reachable from the outside
+    rgb = Image.composite(orig.convert('RGB'), keyed.convert('RGB'), holes)
+    out = rgb.convert('RGBA'); out.putalpha(ImageChops.lighter(a, holes)); return out
+
 def has_alpha(im):
     return im.mode in ('RGBA', 'LA') and im.getchannel('A').getextrema()[0] < 250
 
@@ -124,7 +133,9 @@ def process(path):
         else:
             bg = flat_bg(im)
             if bg is None: note = 'WARNING background is not one flat colour, left as is'
-            else: im = cut_out(im, bg, hollow=bool(it.get('hollow'))); note = 'background removed'
+            else:
+                orig = im; im = cut_out(im, bg, hollow=bool(it.get('hollow'))); note = 'background removed'
+                if k in NOHOLES: im = fill_holes(im, orig); note += ', inner holes kept'
     else:
         im = im.convert('RGB')
         if it['size'].startswith('1:1') and im.width != im.height:  # not square: centre-crop so it does not stretch
