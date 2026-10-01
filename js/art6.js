@@ -124,6 +124,19 @@ function barSVG(g) {
     return svgU(s, 'unit bar');
   });
 }
+/* Gem icon: one cut stone per core type or monster set, the tier shown by the glow ring and a pip row (drawn in code). Painted override: core_<type>, mgem_<set id>. */
+function stoneSVG(kind, tier) {
+  return memo('s:' + kind + tier, () => {
+    const t = clamp(tier | 0, 1, 6), c = gemCol(kind), a = GRADE_C[t], mon = gemIsSet(kind);
+    let s = CI(32, 32, 30, a, 'opacity=".16"') + CI(32, 32, 27, 'none', `stroke="${a}" stroke-width="${t >= 5 ? 2.4 : 1.4}" opacity="${.35 + t * .1}"`) + EL(32, 55, 15, 3, 'rgba(0,0,0,.4)');
+    s += P([[32, 7], [51, 21], [45, 50], [19, 50], [13, 21]], c, KI, 1.2) + P([[32, 7], [51, 21], [32, 30], [13, 21]], 'rgba(255,255,255,.38)') + P([[13, 21], [32, 30], [19, 50]], 'rgba(0,0,0,.18)') + P([[51, 21], [32, 30], [45, 50]], 'rgba(0,0,0,.28)');
+    if (mon) s += P([[32, 34], [37, 40], [32, 46], [27, 40]], 'rgba(255,255,255,.55)');
+    s += Array.from({ length: t }, (_, i) => CI(32 + (i - (t - 1) / 2) * 5.2, 60, 1.6, a, `stroke="${KI}" stroke-width=".3"`)).join('');
+    return svgU(s, 'unit stone t' + t);
+  });
+}
+const lockedSocket = () => svgU(`<circle cx="32" cy="32" r="22" fill="rgba(0,0,0,.35)" stroke="#3c474e" stroke-width="2" stroke-dasharray="4 3"/><path d="M24 34h16v10H24z M27 34v-5a5 5 0 0 1 10 0v5" fill="none" stroke="#6b767c" stroke-width="2"/>`, 'unit sock lk');
+const emptySocket = () => svgU(`<circle cx="32" cy="32" r="22" fill="rgba(0,0,0,.35)" stroke="#e0a44a" stroke-width="2"/><circle cx="32" cy="32" r="14" fill="rgba(0,0,0,.4)" stroke="#8a6a2a" stroke-width="1.4"/>`, 'unit sock');
 const emptySlot = slot => svgU(`<rect x="2" y="2" width="60" height="60" rx="5" fill="rgba(0,0,0,.25)" stroke="#3c474e" stroke-width="1.4" stroke-dasharray="4 3"/><g transform="translate(6 6) scale(.81)" opacity=".22">${GEAR[slot](GEAR_TINT(1))}</g>`, 'unit gear g0');
 /* icon for a unit or wall crew by display name (used by battle reports, which store names, not keys) */
 function nameIcon(name) {

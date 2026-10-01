@@ -16,7 +16,7 @@ Spec: Michelle's "Monster Hunting, Global Holidays, and Drop Mechanics" brief. C
 ## 3. Victory report
 Every win adds this to the report (`huntReportHTML`):
 - stamina spent, gear refund and net cost
-- materials rolled (carried home with the column) and any shards
+- materials rolled (carried home with the column). Shards and Monster Gems are **not** carried by the kill: they sit in the monster's loot tile ([FORGE_GEMS.md](FORGE_GEMS.md) section 5)
 - **hunt streak**: a win within 10 minutes of the last keeps the streak; every 3 in a row adds one extra material roll (up to +3); a loss resets it
 - Commander XP (`XP_FREE.hunt x level`), hero upgrade items (XP item chance `20% + 5% x level`, size by level) and hero fragments (`1 + level`, 10 fragments fuse into a Tiny XP item)
 - an **instant resource pocket**, credited at once (the carried loot still rides home with the column)
@@ -27,7 +27,7 @@ Every kill drops a chest for the whole alliance (`S.chests`). Allies' kills add 
 
 ## 5. Holiday monsters
 Each holiday spawns its own monster for **one full week from the holiday date**, every year, replacing 30% of the map's monster packs (`HOL_SHARE`). Several holidays can overlap (Halloween and Día de los Muertos, for example); then each replaced pack picks one at random.
-A holiday monster drops regular loot (including a shard of one of the week's regular sets) **plus an event shard** (`20% + 7% x level`, max 60%) for that holiday's limited gear set (`SETS['h_' + id]`, 7 pieces). Event shards and crafted pieces persist, so an unfinished set is finished when the event returns. The Hunt tab shows each set's progress.
+A holiday monster's loot tile gives regular loot (including a shard of one of the week's regular sets) **plus an event shard** (`30% + 10% x level`, max 90%, scaled by how much of the tile one column takes) for that holiday's limited gear set (`SETS['h_' + id]`, 7 pieces). Event shards and crafted pieces persist, so an unfinished set is finished when the event returns. The Hunt tab shows each set's progress.
 
 | Holiday | Date rule | Monster | Event set |
 |---|---|---|---|
@@ -66,4 +66,4 @@ Design intent: Legendary stays rare and lucky, about one direct level 6 drop a w
 - Camps and gathering do not use this table.
 
 ## 8. Art
-Prompts are in the art checklist (`tools/artcatalog.js`): 9 new regular monsters (plus the original 3), 15 holiday monsters, 27 loot tiles, 15 event shards and the alliance chest (closed and open frames). Same rules as all art: one image per monster with the level drawn in code, same camera, light and size, built so it can be animated later. Until painted images land, the game draws the level-shaped body with an accent in the set colour.
+Monster Gems per set are in [FORGE_GEMS.md](FORGE_GEMS.md). Prompts are in the art checklist (`tools/artcatalog.js`): 9 new regular monsters (plus the original 3), 15 holiday monsters, 27 loot tiles, 15 event shards and the alliance chest (closed and open frames). Same rules as all art: one image per monster with the level drawn in code, same camera, light and size, built so it can be animated later. Until painted images land, the game draws the level-shaped body with an accent in the set colour.

@@ -94,9 +94,11 @@ const RS = {
   trainspd: { n: 'Training speed', tree: 'ops', max: 10, a: 2, b: 30, req: [], what: 'training time cut', c: 'rations' },
   beds: { n: 'Depot beds', tree: 'ops', max: 10, a: 3, b: 40, req: [], what: 'hospital beds', c: 'alloy' },
   restore: { n: 'Restoration', tree: 'ops', max: 10, a: 2, b: 30, req: [['beds', 1]], what: 'tier 2+ heal speed', c: 'power' },
-  wh: { n: 'Warehousing', tree: 'ops', max: 10, a: 3, b: 40, req: [], what: 'StoreHouse cap', c: 'alloy' }
+  wh: { n: 'Warehousing', tree: 'ops', max: 10, a: 3, b: 40, req: [], what: 'StoreHouse cap', c: 'alloy' },
+  gemology: { n: 'Gemology', tree: 'craft', max: 1, a: 0, b: 0, req: [], what: 'opens socket 4 on every gear piece, needed to finish a Gem Set bonus', c: 'power', big: 8 },
+  lapidary: { n: 'Lapidary', tree: 'craft', max: 5, a: 4, b: 20, req: [['gemology', 1]], what: 'gem power', c: 'alloy', big: 2 }
 };
-const TREES = [['combat', 'Combat'], ['field', 'Field'], ['defense', 'Defense'], ['troops', 'Troops'], ['econ', 'Economy'], ['ops', 'Operations']];
+const TREES = [['combat', 'Combat'], ['field', 'Field'], ['defense', 'Defense'], ['troops', 'Troops'], ['econ', 'Economy'], ['ops', 'Operations'], ['craft', 'Crafting']];
 function researchCost(id, lv) { const d = RS[id]; const base = 900 * (d.big || 1) * Math.pow(1.5, lv - 1); const c = {}; c[d.c] = Math.round(base); c.cash = Math.round(base * 0.25); if (d.c === 'cash') { delete c.rations; c.cash = Math.round(base * 0.7); } return c; }
 function researchSheetSec(id, lv) { const d = RS[id]; return Math.round(240 * (d.big || 1) * Math.pow(1.55, lv - 1)); }
 
@@ -309,3 +311,33 @@ const qFull = g => QUALITY[g].n + ' (' + QUALITY[g].c + ')';
 const MIX_ODDS = [0.75, 0.20, 0.049, 0.001];
 const REQ_COOLDOWN_SHEET = 1800;   // 30 sheet minutes between requisitions
 function reqAmounts(L) { return { rations: L * 500, fuel: L * 500, power: L * 400, alloy: L * 300, cash: L * 150 }; }
+
+/* ---------------- Gems, sockets and the Forge (docs/FORGE_GEMS.md) ----------------
+   Every piece has 4 sockets. Quality opens 1 to 3 (socketsNative); socket 4 opens with the Gemology research.
+   Gems use the same six tiers and the same 4-to-1 and mixed-craft rules as materials.
+   Regular gems (the six cores) give one generic stat. Monster gems are tied to one of the 27 gear sets (12 weekly + 15 holiday)
+   and give that set's stat; four gems of one monster set in the four sockets of ONE piece complete its Gem Set bonus.
+   OPEN ITEM: every value below is a placeholder. */
+const SOCKETS = 4, HERO_SET_LV = 30, STAR_MAX = 5, STAR_PCT = 0.08;
+const CORES = {
+  strike: { n: 'Strike core', stat: 'atk', col: '#e0603a' }, guard: { n: 'Guard core', stat: 'hp', col: '#3a64c8' }, bulwark: { n: 'Bulwark core', stat: 'wallHp', col: '#8a98a8' },
+  haste: { n: 'Haste core', stat: 'march', col: '#e0c030' }, yield: { n: 'Yield core', stat: 'yld', col: '#4fb868' }, mend: { n: 'Mend core', stat: 'heal', col: '#4fc8b8' }
+};
+const STAT_LAB = { atk: 'troop attack', hp: 'troop health', wallHp: 'wall HP', march: 'march speed', yld: 'yield', heal: 'heal speed', gather: 'gather speed', build: 'build speed', train: 'training speed', refund: 'hunt stamina refund' };
+const GEM_PCT = [0.004, 0.007, 0.011, 0.016, 0.022, 0.030];          // one gem, by tier
+const GEMSET_PCT = [0.01, 0.02, 0.03, 0.045, 0.065, 0.09];           // Gem Set bonus (4 monster gems in one piece), by the LOWEST tier of the four
+const socketsNative = grade => Math.min(3, Math.ceil(grade / 2));    // Basic 1, Common 1, Uncommon 2, Rare 2, Epic 3, Legendary 3
+const gemKey = (kind, tier) => kind + ':' + tier;
+const gemSplit = k => { const i = k.lastIndexOf(':'); return [k.slice(0, i), +k.slice(i + 1)]; };
+const gemIsSet = kind => !CORES[kind];
+const gemStatKey = kind => CORES[kind] ? CORES[kind].stat : Object.keys(SETS[kind].b[3])[0];
+const gemName = kind => CORES[kind] ? CORES[kind].n : SETS[kind].n + ' gem';
+const gemCol = kind => CORES[kind] ? CORES[kind].col : SETS[kind].aura;
+const gemMon = kind => gemIsSet(kind) ? SETS[kind].mon : null;
+const starMul = p => 1 + STAR_PCT * (p.stars || 0);
+function pPct(p) { return piecePct(p.slot, p.grade) * starMul(p); }
+/* Where gems and set materials come from (docs/FORGE_GEMS.md section 5) */
+const TILE_W = [40, 30, 20, 10];             // regular world tile: tier weights (Basic..Rare), cut off at the tile level
+const TILE_J5 = 0.05, TILE_J6 = 0.001;       // chance per gather: the weekly Level 5 jackpot (tiles 5-6, once a week), the 6-pack Level 6 jackpot (tile 6)
+const STORE_COST = 50, STORE_ROLLS = 3, STORE_TIER2 = 0.35;   // alliance store mystery chest: alliance points, rolls, chance a roll is Level 2 (else Level 1)
+const GIFT_ROLLS = 2, GIFT_TIER4 = 0.3;      // alliance gift chest from a member's pack purchase: rolls of each kind, chance of Level 4 (else Level 3)

@@ -1,6 +1,6 @@
 {
  "v": 2,
- "count": 616,
+ "count": 660,
  "groups": [
   {
    "id": "bld",
@@ -65,7 +65,7 @@
   {
    "id": "gear",
    "title": "Gear icons (42)",
-   "note": "Seven slots (helm, chest armor, gauntlets, greaves, boots, weapon, amulet) in six grades, transparent, front view. Higher grades look grander, and the number of visible round sockets matches the grade rule: grade 1 and 2 none, grade 3 one, grade 4 two, grade 5 three, grade 6 four. Do a whole slot (six grades) together."
+   "note": "Seven slots (helm, chest armor, gauntlets, greaves, boots, weapon, amulet) in six grades, transparent, front view. Higher grades look grander, and every piece shows FOUR round sockets in the same four places: the number of OPEN sockets follows the quality rule (Basic 1, Common 1, Uncommon 2, Rare 2, Epic 3, Legendary 3) and the rest are closed, and the fourth socket is ALWAYS drawn closed with a small brass research cap (it opens with Gemology research, drawn in code as a glowing ring). Do a whole slot (six grades) together."
   },
   {
    "id": "xpi",
@@ -121,6 +121,16 @@
    "id": "march",
    "title": "March and map-action art (20)",
    "note": "Two screen headers, ten march-type icons and six small march sprites for the world map (top-down-ish, transparent), plus a route end-marker and a dust puff."
+  },
+  {
+   "id": "forge",
+   "title": "Forge rooms, sockets and chests (17)",
+   "note": "The six Forge room interiors, the socket and star pieces, the blueprint cards and the alliance store and gift chests. Rooms are one building seen from one fixed camera so they read as one set; keep the central third of every room calm for the title. Pieces are transparent and built to be animated later (sockets glow and pulse, stars flare, chests open)."
+  },
+  {
+   "id": "mgem",
+   "title": "Monster Gems (27)",
+   "note": "One cut gemstone per monster set: the 12 weekly sets and the 15 holiday sets. ALL 27 share the identical stone shape, size, facet layout, camera and lighting (a brilliant-cut stone with a flat table on a tiny brass setting); only the colour and ONE small etched motif on the table change, so they read as one family and a glint can sweep across the same facets later. Transparent, centred. The tier 1 to 6 glow ring and pips are drawn in code, so draw one clean stone each. The six regular cores are in the Cores section."
   },
   {
    "id": "quest",
@@ -4431,6 +4441,358 @@
    "group": "march",
    "key": "march_dust",
    "name": "March dust puff",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "forge",
+   "key": "forge_room_sets",
+   "name": "Header: Gear Sets room",
+   "size": "16:5, 1600 x 500",
+   "transparent": false,
+   "out": 800
+  },
+  {
+   "group": "forge",
+   "key": "forge_room_equip",
+   "name": "Header: Equipment room",
+   "size": "16:5, 1600 x 500",
+   "transparent": false,
+   "out": 800
+  },
+  {
+   "group": "forge",
+   "key": "forge_room_bench",
+   "name": "Header: Workshop",
+   "size": "16:5, 1600 x 500",
+   "transparent": false,
+   "out": 800
+  },
+  {
+   "group": "forge",
+   "key": "forge_room_smelt",
+   "name": "Header: Smelter",
+   "size": "16:5, 1600 x 500",
+   "transparent": false,
+   "out": 800
+  },
+  {
+   "group": "forge",
+   "key": "forge_room_arch",
+   "name": "Header: Blueprint Archive",
+   "size": "16:5, 1600 x 500",
+   "transparent": false,
+   "out": 800
+  },
+  {
+   "group": "forge",
+   "key": "forge_room_vault",
+   "name": "Header: Enhancement Vault",
+   "size": "16:5, 1600 x 500",
+   "transparent": false,
+   "out": 800
+  },
+  {
+   "group": "forge",
+   "key": "socket_open",
+   "name": "Socket: open and empty",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "forge",
+   "key": "socket_locked_quality",
+   "name": "Socket: closed by gear quality",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "forge",
+   "key": "socket_locked_research",
+   "name": "Socket 4: closed, needs research",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "forge",
+   "key": "socket_set_ring",
+   "name": "Gem Set complete ring",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "forge",
+   "key": "star_empty",
+   "name": "Enhancement star: empty",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "forge",
+   "key": "star_full",
+   "name": "Enhancement star: filled",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "forge",
+   "key": "blueprint_known",
+   "name": "Blueprint card: discovered",
+   "size": "3:4, 900 x 1200",
+   "transparent": true,
+   "out": 300
+  },
+  {
+   "group": "forge",
+   "key": "blueprint_unknown",
+   "name": "Blueprint card: unknown",
+   "size": "3:4, 900 x 1200",
+   "transparent": true,
+   "out": 300
+  },
+  {
+   "group": "forge",
+   "key": "chest_astore",
+   "name": "Alliance store mystery chest",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "forge",
+   "key": "chest_gift",
+   "name": "Alliance gift chest (pack gift)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "forge",
+   "key": "icon_apoint",
+   "name": "Alliance points icon",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "mgem_vanguard",
+   "name": "Monster Gem: Vanguard (Vanguard Warden)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "mgem_outrider",
+   "name": "Monster Gem: Outrider (Outrider Stalker)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "mgem_marksman",
+   "name": "Monster Gem: Marksman (Marksman Shrike)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "mgem_battery",
+   "name": "Monster Gem: Battery (Battery Beetle)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "mgem_prospector",
+   "name": "Monster Gem: Prospector (Prospector Mole)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "mgem_caravan",
+   "name": "Monster Gem: Caravan (Caravan Behemoth)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "mgem_foundry",
+   "name": "Monster Gem: Foundry (Foundry Golem)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "mgem_academy",
+   "name": "Monster Gem: Academy (Academy Mantis)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "mgem_medic",
+   "name": "Monster Gem: Medic (Medic Moth)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "mgem_bulwark",
+   "name": "Monster Gem: Bulwark (Bulwark Tortoise)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "mgem_breaker",
+   "name": "Monster Gem: Breaker (Breaker Ram)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "mgem_tracker",
+   "name": "Monster Gem: Tracker (Tracker Lynx)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "mgem_h_newyear",
+   "name": "Monster Gem: Countdown (Countdown Colossus)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "mgem_h_valentine",
+   "name": "Monster Gem: Heartstring (Heartforge Hound)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "mgem_h_stpat",
+   "name": "Monster Gem: Clover (Clover Golem)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "mgem_h_memorial",
+   "name": "Monster Gem: Poppy (Poppy Sentinel)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "mgem_h_canada",
+   "name": "Monster Gem: Maple (Maple Moose)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "mgem_h_july4",
+   "name": "Monster Gem: Sparkler (Sparkler Bison)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "mgem_h_thanks",
+   "name": "Monster Gem: Harvest (Harvest Gobbler)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "mgem_h_halloween",
+   "name": "Monster Gem: Hollow (Lantern Wraith)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "mgem_h_xmas",
+   "name": "Monster Gem: Evergreen (Frostback Yeti)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "mgem_h_cny",
+   "name": "Monster Gem: Festival (Festival Lion)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "mgem_h_diwali",
+   "name": "Monster Gem: Diya (Lamp Phoenix)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "mgem_h_eid",
+   "name": "Monster Gem: Crescent (Crescent Oryx)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "mgem_h_holi",
+   "name": "Monster Gem: Gulal (Pigment Chameleon)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "mgem_h_muertos",
+   "name": "Monster Gem: Marigold (Marigold Spirit-Hound)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "mgem_h_midautumn",
+   "name": "Monster Gem: Moonlight (Moonlit Hare)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128
