@@ -19,7 +19,7 @@ Spec: Michelle's gear, gem, monster hunting and Forge messages of 2026-10-01 (16
 - **Gemology research removed** (nothing left for it to open). Lapidary (gem power) stays and no longer needs Gemology.
 - **Gem Set bonus removed.** The 4th gem of every set is now its **Set Synergy** gem (holiday sets: Full-Set Synergy).
 - **97 gem types, not 33**: 25 Basic gems (replace the 6 cores), 12 regular sets x 4 = 48, 6 holiday sets x 4 = 24. The 27 per-monster Monster Gems became the 18 set gem families (the 15 holiday monsters share the 6 holiday sets).
-- **Scaling** (Grey to Gold, linear): Basic gems have their own ranges (1 to 13, 1.5 to 18, 2 to 24 or 2 to 26 percent); standard sets 2 to 25; Wonder / high-tier sets (Lv 47+, i.e. Wonder Rally, Wonder Solo, Wonder Defense) 2.5 to 30; holiday sets 3 to 35.
+- **Scaling** (Grey to Gold): Basic gems have their own curves (1 to 13, 1.5 to 18, 2 to 24 or 2 to 26 percent). Set gems use exact curves from 19:04 (`SET_GEM_CURVES`): Rock, Paper, Scissors, Siege, Tile Hit and Rally 2 / 4.5 / 8 / 12.5 / 18 / 25; Training, Construction and Research top out at 24; the three Wonder sets 2.5 / 5.5 / 9.5 / 15 / 22 / 30; holiday sets 3 / 6.5 / 11 / 17 / 25 / 35. The earlier "high-tier = hero Lv 47+" guess is gone.
 
 ## 1. The Forge (six rooms)
 Tapping the Forge building opens Hero › Forge, a room bar with six rooms.
