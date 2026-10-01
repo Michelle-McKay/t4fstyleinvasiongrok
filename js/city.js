@@ -104,7 +104,7 @@ function cityHorizon() {
    (the outskirts 0.6 of one), all lying on one painted panorama when city_panorama_N exists. `grid(ar)` returns the plot buttons. */
 const CITY_PAN = { wst: .6, cnc: 1, fld: 1, est: .6 };
 function cityScene(grid) {
-  const t = cityTier(), bd = cityImg('city_backdrop_' + t), pano = cityImg('city_slab_' + (t < 3 ? 1 : 2)) || cityImg('city_slab_1');
+  const t = cityTier(), bd = cityImg('city_backdrop_' + t), pano = cityImg('city_slab');
   const vars = [bd ? `--bd:url(${bd}) center/cover no-repeat,#c9b48c` : ''].filter(Boolean).join(';');
   const isle = (kind, ar) => `<div class="isle ${kind}" style="aspect-ratio:${CITY_W}/${CITY[kind].vh}"><img class="ground" src="${cityGround(kind, !!pano)}" alt="">${cityDecor(kind)}<div class="grid5">${grid(ar)}</div></div>`;
   const side = kind => `<div class="isle side ${kind}" style="aspect-ratio:${CITY[kind].w}/${CITY[kind].vh};width:${CITY[kind].w}cqw"><img class="ground" src="${cityGround(kind, !!pano)}" alt="">${cityDecor(kind)}</div>`;
