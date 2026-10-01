@@ -174,6 +174,8 @@ function woundedTotal() { let s = 0; for (const k in S.wounded) s += S.wounded[k
 function sumCol(c) { let s = 0; for (const k in c) s += c[k]; return s; }
 function clsAvail(cls) { let s = 0; for (let t = 1; t <= 4; t++) s += S.troops[cls + t] || 0; return s; }
 function heroLocked() { return S.marches.some(m => m.hero); }
+const bufPct = k => { const b = S.buf && S.buf[k]; return b && b.until > Date.now() ? b.pct : 0; };
+const heroName = () => (S.names && S.names.hero) || HEROES[S.hero.id].n;
 function heroOn() { return !S.hero.captured; }
 
 function slotPiece(slot) { const id = S.gear.worn[slot]; return id ? S.gear.pieces.find(p => p.id === id) : null; }
@@ -199,18 +201,18 @@ function gemStats() { const r = zeroStats(); for (const p of wornPieces()) { con
 function wornBonus() { const a = setWorn(), g = gemStats(); for (const k in g) a[k] += g[k]; for (const p of wornPieces()) { const m = pieceStatMap(p); for (const k in m) a[k] += m[k]; } return a; }
 /* Hero: levels from XP. Items and free XP go through heroGain; nothing is lost past level 50. */
 function heroLv() { return S.hero.level || 1; }
-function heroGain(n) {
-  const h = S.hero; if (heroLv() >= HERO_MAX || n <= 0) return 0; const before = h.level; h.xp = (h.xp || 0) + Math.floor(n);
+function heroGain(n, raw) {
+  const h = S.hero; if (heroLv() >= HERO_MAX || n <= 0) return 0; if (!raw) n = n * (1 + bufPct('xp')); const before = h.level; h.xp = (h.xp || 0) + Math.floor(n);
   while (h.level < HERO_MAX && h.xp >= heroNeed(h.level)) { h.xp -= heroNeed(h.level); h.level++; }
   if (h.level >= HERO_MAX) h.xp = 0;
-  if (h.level > before) note(HEROES[h.id].n + ' reached level ' + h.level + '.', 'good'); return n;
+  if (h.level > before) note(heroName() + ' reached level ' + h.level + '.', 'good'); return n;
 }
 function heroXpLeft() { return heroLv() >= HERO_MAX ? 0 : heroNeed(heroLv()) - (S.hero.xp || 0) + heroTotal(HERO_MAX) - heroTotal(heroLv() + 1); }
 function useXpItem(id, n) {
   const it = XPI.find(x => x.id === id); if (!it) return 'No such item.'; if (heroLv() >= HERO_MAX) return 'The hero is at the level cap.';
   const have = S.xpi[id] || 0; if (have < 1) return 'None left.';
   const want = Math.min(have, Math.max(1, Math.ceil(heroXpLeft() / it.xp)), n === 'max' ? have : Math.max(1, n | 0));
-  S.xpi[id] = have - want; heroGain(want * it.xp); return null;
+  S.xpi[id] = have - want; heroGain(want * it.xp, true); return null;
 }
 function xpiGive(id, n) { S.xpi = S.xpi || {}; S.xpi[id] = (S.xpi[id] || 0) + n; }
 /* Skills: banked points buy nodes in the main and hunting trees. */
@@ -243,7 +245,7 @@ function mods(withHero) {
   if (T === 'sluggard') m.march -= 0.08;
   yAdd += G.yld;
   if (heroOn() && withHero) marchAtk += heroStat('atk') + G.heroAtk + (G.streakAtk || 0) * Math.min(10, (S.streak && S.streak.n) || 0);
-  m.gather += rv('gather') + G.gather; m.march += G.march; m.load += G.load;
+  m.gather += rv('gather') + G.gather + bufPct('gather'); m.march += G.march + bufPct('march'); m.load += G.load;
   m.train = rv('logi') + rv('trainspd') + (T === 'drillmaster' ? 0.08 : 0) + G.train;
   m.wallHp += (heroOn() ? heroStat('def') : 0) + G.wallHp; m.wallAtk += G.wallAtk; m.load += heroOn() && withHero ? heroStat('lead') : 0;
   m.build += G.build; m.heal += G.heal; m.research = G.research; m.trap = G.trap; m.huntCost = G.huntCost;
@@ -309,7 +311,7 @@ function unitRows(side, res) { return side.units.map(u => [tierName(u.c, u.t), u
 function boostRows(hero) {
   const m = mods(hero), avg = CLS.reduce((a, c) => a + m.atk[c], 0) / 4;
   const rows = [['Troop attack', '+' + Math.round((avg - 1) * 100) + '%'], ['Troop health', '+' + Math.round((m.hp - 1) * 100) + '%'], ['March speed', (m.march >= 0 ? '+' : '') + Math.round(m.march * 100) + '%']];
-  if (hero && heroOn()) rows.push(['Hero', HEROES[S.hero.id].n + ' Lv ' + heroLv()]);
+  if (hero && heroOn()) rows.push(['Hero', heroName() + ' Lv ' + heroLv()]);
   if (m.set) rows.push(['Set', SETS[m.set].n + ' ' + setCounts()[m.set] + '/5']);
   return rows;
 }
@@ -552,7 +554,7 @@ function huntSpoils(m, t, g) {
 function survivors(m) { return sumCol(m.col); }
 function wipe(m, why) {
   S.marches = S.marches.filter(x => x !== m);
-  if (m.hero) { S.hero.captured = true; note(HEROES[S.hero.id].n + ' is captured. Ransom is 2500 cash.', 'bad'); }
+  if (m.hero) { S.hero.captured = true; note(heroName() + ' is captured. Ransom is 2500 cash.', 'bad'); }
   note('Column lost ' + why + '. No report survived.', 'bad');
 }
 function absorb(m, res) { m.col = res.left; for (const k in res.wounded) m.wound[k] = (m.wound[k] || 0) + res.wounded[k]; for (const k in res.dead) m.dead[k] = (m.dead[k] || 0) + res.dead[k]; }
@@ -691,7 +693,7 @@ function endRule(why) { const th = S.throne; th.ruler = null; th.ruleUntil = 0; 
 function ransom(useSeal) {
   if (!S.hero.captured) return 'No one to ransom.';
   if (useSeal) { if (S.seals < 1) return 'No seals in the rack.'; S.seals--; } else { if (S.res.cash < 2500) return 'Short of cash. Ransom is 2500.'; S.res.cash -= 2500; }
-  S.hero.captured = false; note(HEROES[S.hero.id].n + ' is back.', 'good'); return null;
+  S.hero.captured = false; note(heroName() + ' is back.', 'good'); return null;
 }
 
 /* ---------------- rallies ---------------- */
@@ -735,7 +737,7 @@ function arriveRally(m, t) {
   // split casualties: leader and joiners take the same fraction
   const own = applyLoss(m.col, r.fa); absorb(m, own);
   const jrows = m.jl.map(j => { const jr = applyLoss(j.col, r.fa); const s = sumCol(j.col), l = sumCol(jr.lost); return { name: j.name, sent: s, lost: l, wounded: sumCol(jr.wounded) }; });
-  if (!survivors(m)) { S.marches = S.marches.filter(x => x !== m); if (m.hero) { S.hero.captured = true; note(HEROES[S.hero.id].n + ' is captured. Ransom is 2500 cash.', 'bad'); } note('Rally column is gone. No report survived.', 'bad'); return; }
+  if (!survivors(m)) { S.marches = S.marches.filter(x => x !== m); if (m.hero) { S.hero.captured = true; note(heroName() + ' is captured. Ransom is 2500 cash.', 'bad'); } note('Rally column is gone. No report survived.', 'bad'); return; }
   pushReport({ title: 'Rally on ' + rn, win: r.win, obl, kind: 'rally', left: { name: 'You + ' + m.jl.length + ' joiners', rows: A.units.map(u => [tierName(u.c, u.t), before[u.k], res.lost[u.k] || 0, res.wounded[u.k] || 0]), boosts: m.hero ? boostRows(true) : [['Hero', 'none: no hero, gear, gem or rank bonus']] }, right: { name: rn, rows: [['Defenders', '—', 0, 0]], boosts: [['Force ratio', (1 / Math.max(r.q, 0.01)).toFixed(2)]] }, joiners: jrows });
   if (r.win) {
     if (isC) { const th = S.throne; th.neutral = false; if (th.holder != null && th.holder !== 0) { th.ruler = null; th.ruleUntil = 0; th.officers = []; S.titles = {}; } th.holder = 0; th.holdEnd = Date.now() + 21600 / OCC * 1000; th.colMarch = m.id; m.kind = 'throne'; m.phase = 'hold'; m.start = Date.now(); m.end = th.holdEnd; m.holdKind = 'throne'; note('Rally took the throne. Hold six hours.', 'good'); return; }
@@ -825,7 +827,7 @@ function hitBase(inc, instant) {
   const emptied = sumCol(S.troops) === 0 && sumCol(S.wall) === 0;
   let capt = false; if (emptied && r.win && heroOn() && !heroLocked()) { S.hero.captured = true; capt = true; }
   pushReport({ title: (r.win ? 'Base hit by ' : 'Repelled ') + inc.name, win: !r.win, kind: 'defense', left: { name: 'You', rows: Object.keys(before).map(k => [ckName(k), before[k], (tres.lost[k]) || 0, (tres.wounded[k]) || 0]).concat(Object.keys(wallBefore).map(k => [ckName(k) + ' (wall)', wallBefore[k], (wl.lost[k]) || 0, 0])), boosts: [['Wall HP', fmtN(D.wall.hp)], ['Wall attack', fmtN(D.wall.atk)], ['Shield', 'down']].concat(embHosted() || allyLost ? [['Allied garrison lost', fmtN(allyLost)]] : []) }, right: { name: inc.name, rows: [['Hostile column', inc.n, 0, 0]], boosts: [['Force ratio', r.q.toFixed(2)]] } });
-  note(r.win ? 'Base hit by ' + inc.name + (stolen.length ? '. Raided: ' + stolen.join(', ') : '') + (capt ? '. ' + HEROES[S.hero.id].n + ' captured' : '') + '.' : 'Repelled ' + inc.name + '.', r.win ? 'bad' : 'good');
+  note(r.win ? 'Base hit by ' + inc.name + (stolen.length ? '. Raided: ' + stolen.join(', ') : '') + (capt ? '. ' + heroName() + ' captured' : '') + '.' : 'Repelled ' + inc.name + '.', r.win ? 'bad' : 'good');
   if (inForest() && !instant) { for (let i = 0; i < 400; i++) { const x = rint(20, W - 20), y = rint(20, H - 20); if (terrainAt(x, y) === 'wild' && legalSpot(x, y)) { S.base = { x, y }; S.view = { x, y }; note('Thrown from the forest to ' + x + ',' + y + '.', 'warn'); break; } } }
 }
 function botScout() {

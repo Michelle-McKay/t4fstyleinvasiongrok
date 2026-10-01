@@ -42,7 +42,7 @@ const DETAILS = {
     return stat('Tier 3 troops need', 'Tech Institute 8') + stat('Tier 4 troops need', 'Tech Institute 12') + stat('Current research', job ? job.why : 'idle') + (job ? `<div class="sub">${tm(job.end, false)}</div>` : '') + '<div class="lbl mt">Ready to research</div>' + (cand.map(id => `<div class="rr"><span>${RS[id].n} ${R(id) + 1}</span><span class="num">${RS[id].what}</span></div>`).join('') || '<div class="sub">Nothing ready. Check requirements in the Lab.</div>');
   },
   hall(p) { return stat('Rally size', fmtN(rallyCap())) + stat('Operational orders', `${S.orders} / ${p.l}`) + stat('Headcount bonus', '+' + (p.l * 4) + '% to march size') + stat('Tokens', S.tokens) + '<div class="sub mt">Leading a rally costs one order. Orders come back over time.</div>'; },
-  prison(p) { return stat('Restraint seals', `${S.seals} / ${p.l}`) + stat('Hero', S.hero.captured ? HEROES[S.hero.id].n + ' captured' : 'safe') + '<div class="sub mt">A seal frees a captured hero instead of paying 2500 cash.</div>'; },
+  prison(p) { return stat('Restraint seals', `${S.seals} / ${p.l}`) + stat('Hero', S.hero.captured ? heroName() + ' captured' : 'safe') + '<div class="sub mt">A seal frees a captured hero instead of paying 2500 cash.</div>'; },
   radar(p) {
     const w = wallStats(); return stat('Scan depth', `${R('recon')} / ${p.l}`) + stat('Wall base HP', fmtN(1400 * p.l * (1 + mods().wallHp))) + stat('Wall attack base', fmtN(90 * p.l * (1 + mods().wallAtk))) + stat('Anti-Scout', p.l >= 4 ? (S.anti ? 'on' : 'off') : 'needs level 4') + stat('Wall totals', `HP ${fmtN(w.hp)} · atk ${fmtN(w.atk)}`) + '<div class="sub mt">Scan 10 is the only scan that names a defending hero.</div>';
   },
