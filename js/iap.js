@@ -29,7 +29,7 @@ function iapFulfill(id, txId, src) {
   st.tx[txId] = Date.now(); if (p.once) st.once[id] = 1;
   dchg(dia, `${src === 'sandbox' ? 'Sandbox ' : ''}Purchase: ${p.n}`); if (p.give) packGrant(p.give);
   st.hist.unshift({ t: Date.now(), id, n: p.n, tx: txId, src, dia }); if (st.hist.length > 40) st.hist.length = 40;
-  note(`${p.n} delivered: ${fmtN(dia)} diamonds.`, 'good'); return null;
+  note(dia ? `${p.n} delivered: ${fmtN(dia)} diamonds.` : `${p.n} delivered.`, 'good'); return null;
 }
 /* ---------------- providers ---------------- */
 const IAP = {

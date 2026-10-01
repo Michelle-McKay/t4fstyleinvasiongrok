@@ -1,6 +1,6 @@
 {
  "v": 2,
- "count": 518,
+ "count": 545,
  "groups": [
   {
    "id": "bld",
@@ -39,7 +39,7 @@
   },
   {
    "id": "pack",
-   "title": "Pack banners (16)",
+   "title": "Pack banners (22)",
    "note": "The big picture at the top of each store pack: a clean, bright loot still life with a colour glow behind it. Rarity colours: 1 green, 2 teal, 3 indigo, 4 magenta, 5 gold."
   },
   {
@@ -59,8 +59,18 @@
   },
   {
    "id": "gear",
-   "title": "Gear icons (30)",
-   "note": "Five slots in six grades, transparent, front view. Higher grades look grander, and the number of visible round sockets matches the grade rule: grade 1 and 2 none, grade 3 one, grade 4 two, grade 5 three, grade 6 four. Do a whole slot (six grades) together."
+   "title": "Gear icons (42)",
+   "note": "Seven slots (helm, chest armor, gauntlets, greaves, boots, weapon, amulet) in six grades, transparent, front view. Higher grades look grander, and the number of visible round sockets matches the grade rule: grade 1 and 2 none, grade 3 one, grade 4 two, grade 5 three, grade 6 four. Do a whole slot (six grades) together."
+  },
+  {
+   "id": "xpi",
+   "title": "Hero XP items (6)",
+   "note": "Six sizes of XP item, transparent, front view. ALL SIX are the same object (a faceted round medal with a white star on a short ribbon) at growing size and richness, so they read as one family. Do all six together."
+  },
+  {
+   "id": "heroful",
+   "title": "Hero avatars, full body (3)",
+   "note": "The hero screen centre: a FULL-BODY standing character, front view, identical pose and proportions for every avatar so they can share one animation set (idle breathing, flex, attack). Transparent. Arms slightly away from the body, legs shoulder-width apart, feet flat on an invisible ground, nothing overlapping the silhouette, so the arms, head and torso can be cut out as separate layers and animated later. Same bare/base armour for all three so gear can be drawn on top; avatars differ only in face, hair and base colours."
   },
   {
    "id": "core",
@@ -1162,7 +1172,7 @@
   {
    "group": "hero",
    "key": "hero_ada",
-   "name": "Ada Voss, Quartermaster",
+   "name": "Ada Voss, Avatar",
    "size": "1:1, 1024 x 1024",
    "transparent": false,
    "out": 512
@@ -1170,7 +1180,7 @@
   {
    "group": "hero",
    "key": "hero_ivo",
-   "name": "Ivo Hale, Surgeon",
+   "name": "Ivo Hale, Avatar",
    "size": "1:1, 1024 x 1024",
    "transparent": false,
    "out": 512
@@ -1178,7 +1188,7 @@
   {
    "group": "hero",
    "key": "hero_ren",
-   "name": "Ren Kade, Marshal",
+   "name": "Ren Kade, Avatar",
    "size": "1:1, 1024 x 1024",
    "transparent": false,
    "out": 512
@@ -1724,6 +1734,54 @@
    "out": 800
   },
   {
+   "group": "pack",
+   "key": "pack_xptiny",
+   "name": "Tiny XP Pack",
+   "size": "4:3, 1600 x 1200",
+   "transparent": false,
+   "out": 800
+  },
+  {
+   "group": "pack",
+   "key": "pack_xpsmall",
+   "name": "Small XP Pack",
+   "size": "4:3, 1600 x 1200",
+   "transparent": false,
+   "out": 800
+  },
+  {
+   "group": "pack",
+   "key": "pack_xpmedium",
+   "name": "Medium XP Pack",
+   "size": "4:3, 1600 x 1200",
+   "transparent": false,
+   "out": 800
+  },
+  {
+   "group": "pack",
+   "key": "pack_xplarge",
+   "name": "Large XP Pack",
+   "size": "4:3, 1600 x 1200",
+   "transparent": false,
+   "out": 800
+  },
+  {
+   "group": "pack",
+   "key": "pack_xphuge",
+   "name": "Huge XP Pack",
+   "size": "4:3, 1600 x 1200",
+   "transparent": false,
+   "out": 800
+  },
+  {
+   "group": "pack",
+   "key": "pack_xpgrand",
+   "name": "Grand XP Pack",
+   "size": "4:3, 1600 x 1200",
+   "transparent": false,
+   "out": 800
+  },
+  {
    "group": "gem",
    "key": "gem_1",
    "name": "Diamond pile 1",
@@ -2229,6 +2287,102 @@
   },
   {
    "group": "gear",
+   "key": "gear_gauntlets_g1",
+   "name": "Gear: gauntlets, grade 1",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "gear",
+   "key": "gear_gauntlets_g2",
+   "name": "Gear: gauntlets, grade 2",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "gear",
+   "key": "gear_gauntlets_g3",
+   "name": "Gear: gauntlets, grade 3",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "gear",
+   "key": "gear_gauntlets_g4",
+   "name": "Gear: gauntlets, grade 4",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "gear",
+   "key": "gear_gauntlets_g5",
+   "name": "Gear: gauntlets, grade 5",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "gear",
+   "key": "gear_gauntlets_g6",
+   "name": "Gear: gauntlets, grade 6",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "gear",
+   "key": "gear_greaves_g1",
+   "name": "Gear: greaves, grade 1",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "gear",
+   "key": "gear_greaves_g2",
+   "name": "Gear: greaves, grade 2",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "gear",
+   "key": "gear_greaves_g3",
+   "name": "Gear: greaves, grade 3",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "gear",
+   "key": "gear_greaves_g4",
+   "name": "Gear: greaves, grade 4",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "gear",
+   "key": "gear_greaves_g5",
+   "name": "Gear: greaves, grade 5",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "gear",
+   "key": "gear_greaves_g6",
+   "name": "Gear: greaves, grade 6",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "gear",
    "key": "gear_accessory_g1",
    "name": "Gear: accessory, grade 1",
    "size": "1:1, 1024 x 1024",
@@ -2274,6 +2428,78 @@
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
+  },
+  {
+   "group": "xpi",
+   "key": "xpi_tiny",
+   "name": "XP item: Tiny XP Item (10,000 XP)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "xpi",
+   "key": "xpi_small",
+   "name": "XP item: Small XP Item (50,000 XP)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "xpi",
+   "key": "xpi_medium",
+   "name": "XP item: Medium XP Item (100,000 XP)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "xpi",
+   "key": "xpi_large",
+   "name": "XP item: Large XP Item (250,000 XP)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "xpi",
+   "key": "xpi_huge",
+   "name": "XP item: Huge XP Item (500,000 XP)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "xpi",
+   "key": "xpi_grand",
+   "name": "XP item: Grand XP Item (1,000,000 XP)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "heroful",
+   "key": "heroful_ada",
+   "name": "Hero avatar full body: Ada Voss",
+   "size": "3:4, 1200 x 1600",
+   "transparent": true,
+   "out": 600
+  },
+  {
+   "group": "heroful",
+   "key": "heroful_ivo",
+   "name": "Hero avatar full body: Ivo Hale",
+   "size": "3:4, 1200 x 1600",
+   "transparent": true,
+   "out": 600
+  },
+  {
+   "group": "heroful",
+   "key": "heroful_ren",
+   "name": "Hero avatar full body: Ren Kade",
+   "size": "3:4, 1200 x 1600",
+   "transparent": true,
+   "out": 600
   },
   {
    "group": "core",

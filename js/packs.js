@@ -3,7 +3,7 @@
    Every pack is a fixed bundle (no random contents). Purchases go through iap.js and stay in SANDBOX mode until server validation exists. */
 
 /* ---------------- catalog ---------------- */
-const PACK_CATS = [['all', 'All'], ['start', 'Starter'], ['res', 'Supplies'], ['speed', 'Speed-ups'], ['cmd', 'Command'], ['gear', 'Armoury'], ['epic', 'Legendary'], ['dia', 'Diamonds']];
+const PACK_CATS = [['all', 'All'], ['start', 'Starter'], ['res', 'Supplies'], ['speed', 'Speed-ups'], ['cmd', 'Command'], ['xp', 'Hero XP'], ['gear', 'Armoury'], ['epic', 'Legendary'], ['dia', 'Diamonds']];
 const PACK_TIER = { 1: 'Common', 2: 'Uncommon', 3: 'Rare', 4: 'Epic', 5: 'Legendary' };
 const PACK_RARE = { 1: ['#2b3a2a', '#8ea36a'], 2: ['#1c3340', '#5ec4d4'], 3: ['#2a2a4a', '#8f9cf0'], 4: ['#3f2a44', '#d98be0'], 5: ['#45300f', '#ffc86a'] };
 IAP_CATALOG.push(
@@ -22,7 +22,13 @@ IAP_CATALOG.push(
   { id: 'com.ironmarch.pack.vanguard', group: 'pack', cat: 'gear', tier: 3, n: 'Vanguard Armoury', usd: 14.99, dia: 300, give: { shards: { vanguard: 3 }, bars: { 2: 8, 3: 4 }, gear: [{ slot: 'weapon', grade: 3, set: 'vanguard' }] }, art: 'vanguard', blurb: 'A forged grade-3 weapon, Vanguard shards and bars.' },
   { id: 'com.ironmarch.pack.outrider', group: 'pack', cat: 'gear', tier: 3, n: 'Outrider Kit', usd: 14.99, dia: 300, give: { shards: { outrider: 3 }, bars: { 2: 8, 3: 4 }, gear: [{ slot: 'boots', grade: 3, set: 'outrider' }] }, art: 'outrider', blurb: 'A forged grade-3 pair of boots, Outrider shards and bars.' },
   { id: 'com.ironmarch.pack.warlord', group: 'pack', cat: 'epic', tier: 4, n: "Warlord's Chest", usd: 49.99, dia: 2000, give: { rations: 200000, fuel: 180000, power: 180000, alloy: 120000, cash: 100000, s480: 4, s60: 8, tokens: 6, orders: 10, bars: { 3: 6, 4: 3 }, shards: { vanguard: 2, outrider: 2, battery: 2 } }, tag: 'Best value', art: 'warlord', blurb: 'A chest of everything a campaign needs.' },
-  { id: 'com.ironmarch.pack.sovereign', group: 'pack', cat: 'epic', tier: 5, n: "Sovereign's Vault", usd: 99.99, dia: 5000, give: { rations: 500000, fuel: 450000, power: 450000, alloy: 300000, cash: 250000, s480: 10, s60: 20, tokens: 12, orders: 25, seals: 15, bars: { 3: 10, 4: 6, 5: 2 }, shards: { vanguard: 4, outrider: 4, battery: 4 }, gear: [{ slot: 'chest', grade: 4, set: 'vanguard' }, { slot: 'helmet', grade: 4, set: 'outrider' }] }, art: 'sovereign', blurb: 'The whole vault: supplies, slips, gear and diamonds.' }
+  { id: 'com.ironmarch.pack.sovereign', group: 'pack', cat: 'epic', tier: 5, n: "Sovereign's Vault", usd: 99.99, dia: 5000, give: { rations: 500000, fuel: 450000, power: 450000, alloy: 300000, cash: 250000, s480: 10, s60: 20, tokens: 12, orders: 25, seals: 15, bars: { 3: 10, 4: 6, 5: 2 }, shards: { vanguard: 4, outrider: 4, battery: 4 }, gear: [{ slot: 'chest', grade: 4, set: 'vanguard' }, { slot: 'helmet', grade: 4, set: 'outrider' }] }, art: 'sovereign', blurb: 'The whole vault: supplies, slips, gear and diamonds.' },
+  { id: 'com.ironmarch.pack.xptiny', group: 'pack', cat: 'xp', tier: 1, n: 'Tiny XP Pack', usd: 1.49, dia: 0, give: { xpi: { tiny: 5 } }, art: 'xptiny', blurb: 'Five Tiny XP items, a small boost for the hero.' },
+  { id: 'com.ironmarch.pack.xpsmall', group: 'pack', cat: 'xp', tier: 2, n: 'Small XP Pack', usd: 6.99, dia: 0, give: { xpi: { small: 5 } }, art: 'xpsmall', blurb: 'Five Small XP items for the hero.' },
+  { id: 'com.ironmarch.pack.xpmedium', group: 'pack', cat: 'xp', tier: 3, n: 'Medium XP Pack', usd: 12.99, dia: 0, give: { xpi: { medium: 5 } }, art: 'xpmedium', blurb: 'Five Medium XP items for the hero.' },
+  { id: 'com.ironmarch.pack.xplarge', group: 'pack', cat: 'xp', tier: 4, n: 'Large XP Pack', usd: 29.99, dia: 0, give: { xpi: { large: 5 } }, art: 'xplarge', blurb: 'Five Large XP items for the hero.' },
+  { id: 'com.ironmarch.pack.xphuge', group: 'pack', cat: 'xp', tier: 5, n: 'Huge XP Pack', usd: 54.99, dia: 0, give: { xpi: { huge: 5 } }, art: 'xphuge', blurb: 'Five Huge XP items for the hero.' },
+  { id: 'com.ironmarch.pack.xpgrand', group: 'pack', cat: 'xp', tier: 5, n: 'Grand XP Pack', usd: 99.99, dia: 0, give: { xpi: { grand: 5 } }, art: 'xpgrand', blurb: 'Five Grand XP items, the best rate for the hero.' }
 );
 
 /* ---------------- fulfilment ---------------- */
@@ -34,6 +40,7 @@ function packGrant(g) {
     else if (k === 'tokens') S.tokens += v;
     else if (k === 'orders') S.orders += v;
     else if (k === 'seals') S.seals += v;
+    else if (k === 'xpi') for (const id in v) xpiGive(id, v[id]);
     else if (k === 'builder') S.builders = Math.max(S.builders, 2);
     else if (S.slips[k] != null) S.slips[k] += v;
     else if (k === 'bars') for (const gg in v) S.bars[gg] = (S.bars[gg] || 0) + v[gg];
@@ -46,7 +53,7 @@ function packGrant(g) {
 const PK_SLIP = { s5: ['5-minute slip', 300], s60: ['1-hour slip', 3600], s480: ['8-hour slip', 28800] };
 function packRows(p) {
   const r = [], first = p.group === 'dia' && !iapEnsure().first[p.id], base = (p.dia || 0) + (p.bonus || 0);
-  r.push({ ico: 'dia', q: fmtN(base), t: 'Diamonds', n: p.bonus ? `${fmtN(p.dia)} + ${fmtN(p.bonus)} bonus` : '' });
+  if (base) r.push({ ico: 'dia', q: fmtN(base), t: 'Diamonds', n: p.bonus ? `${fmtN(p.dia)} + ${fmtN(p.bonus)} bonus` : '' });
   if (first) r.push({ ico: 'dia', q: '+' + fmtN(p.dia), t: 'First purchase bonus', n: 'Once per pack size' });
   const g = p.give || {};
   for (const k of RES) if (g[k]) r.push({ ico: k, q: fmtN(g[k]), t: RESN[k] });
@@ -54,6 +61,7 @@ function packRows(p) {
   if (g.tokens) r.push({ ico: 'tokens', q: '×' + g.tokens, t: 'Coordination tokens', n: 'Extra march columns' });
   if (g.orders) r.push({ ico: 'orders', q: '×' + g.orders, t: 'Operational orders', n: 'Start rallies' });
   if (g.seals) r.push({ ico: 'seals', q: '×' + g.seals, t: 'Restraint seals', n: 'Ransom captured heroes' });
+  if (g.xpi) for (const id in g.xpi) { const it = XPI.find(x => x.id === id); r.push({ ico: 'xpi:' + id, q: '×' + g.xpi[id], t: it.n + (g.xpi[id] > 1 ? 's' : ''), n: fmtN(it.xp) + ' hero XP each' }); }
   if (g.builder) r.push({ ico: 'builder', q: '+1', t: 'Second builder', n: 'Permanent' });
   if (g.bars) for (const gg in g.bars) r.push({ ico: 'bars', q: '×' + g.bars[gg], t: `Grade ${gg} bars`, n: 'Forge material' });
   if (g.shards) for (const sh in g.shards) r.push({ ico: 'shard:' + sh, q: '×' + g.shards[sh], t: SETS[sh].n + ' shards', n: SETS[sh].d });
@@ -73,6 +81,7 @@ function packItems(p) {
   for (let i = 0; i < (g.tokens || 0); i++) r.push({ ico: 'tokens', q: '×1', t: 'Coordination token', n: 'Extra march column' });
   for (let i = 0; i < (g.orders || 0); i++) r.push({ ico: 'orders', q: '×1', t: 'Operational order', n: 'Start a rally' });
   for (let i = 0; i < (g.seals || 0); i++) r.push({ ico: 'seals', q: '×1', t: 'Restraint seal', n: 'Ransom a captured hero' });
+  if (g.xpi) for (const id in g.xpi) for (let i = 0; i < g.xpi[id]; i++) { const it = XPI.find(x => x.id === id); r.push({ ico: 'xpi:' + id, q: '×1', t: it.n, n: fmtN(it.xp) + ' hero XP' }); }
   if (g.builder) r.push({ ico: 'builder', q: '+1', t: 'Second builder', n: 'Permanent' });
   if (g.bars) for (const gg in g.bars) for (let i = 0; i < g.bars[gg]; i++) r.push({ ico: 'bars', q: '×1', t: `Grade ${gg} bar`, n: 'Forge material' });
   if (g.shards) for (const sh in g.shards) for (let i = 0; i < g.shards[sh]; i++) r.push({ ico: 'shard:' + sh, q: '×1', t: SETS[sh].n + ' shard', n: SETS[sh].d });
@@ -102,7 +111,10 @@ function pkCog(x, y, r, n, c1, c2, hole) {
   const a = []; for (let i = 0; i < n; i++) { const t = i / n * Math.PI * 2, d = Math.PI / n * .5; a.push([x + Math.cos(t - d * 1.1) * r * .82, y + Math.sin(t - d * 1.1) * r * .82], [x + Math.cos(t - d * .7) * r, y + Math.sin(t - d * .7) * r], [x + Math.cos(t + d * .7) * r, y + Math.sin(t + d * .7) * r], [x + Math.cos(t + d * 1.1) * r * .82, y + Math.sin(t + d * 1.1) * r * .82]); }
   return P(a, c1, KI, .8) + CI(x, y, r * .62, c2, `stroke="${KI}" stroke-width=".7"`) + CI(x, y, r * hole, '#0e1113');
 }
+const pkXpi = (id, x, y, sz, rot) => `<g transform="rotate(${rot || 0} ${x + sz / 2} ${y + sz / 2})">${_vecXpi(id).replace('<svg ', `<svg x="${x}" y="${y}" width="${sz}" height="${sz}" `)}</g>`;
+const pkXp = id => () => `${EL(80, 104, 52, 5, 'rgba(0,0,0,.5)')}${[[14, 52, -14], [102, 52, 14], [30, 40, -7], [86, 40, 7], [54, 28, 0]].map(([x, y, r]) => pkXpi(id, x, y, 52, r)).join('')}`;
 const pkArt = {
+  xptiny: pkXp('tiny'), xpsmall: pkXp('small'), xpmedium: pkXp('medium'), xplarge: pkXp('large'), xphuge: pkXp('huge'), xpgrand: pkXp('grand'),
   recruit() { return `${EL(80, 98, 40, 6, 'rgba(0,0,0,.5)')}<path d="M40 60q0-22 40-22t40 22v30q0 8-8 8H48q-8 0-8-8z" fill="url(#pOl)" stroke="${KI}" stroke-width="1.4"/><path d="M40 60q0-22 40-22t40 22" fill="url(#pOlL)"/><path d="M52 44q0-16 28-16t28 16" fill="none" stroke="#2c331f" stroke-width="5" stroke-linecap="round"/><rect x="40" y="66" width="80" height="9" fill="#e0a44a" stroke="${KI}" stroke-width="1"/><rect x="72" y="64" width="16" height="13" rx="2" fill="url(#pBr)" stroke="${KI}" stroke-width="1"/><path d="M50 62v34M110 62v34" stroke="rgba(0,0,0,.3)" stroke-width="2"/>${pkGem(80, 40, 11)}<g transform="rotate(-14 126 82)"><rect x="112" y="72" width="26" height="18" rx="3" fill="#d9e0e2" stroke="${KI}" stroke-width="1"/><circle cx="118" cy="81" r="3" fill="#0e1113"/><path d="M124 78h9M124 82h9M124 86h6" stroke="#5a656a" stroke-width="1.2"/></g>`; },
   starter() { return `${pkCrate(42, 48, 66, 48, 'pWd', 'START')}<path d="M40 50l6-6h60l6 6" fill="none"/>${pkGem(60, 34, 12)}${pkGem(88, 30, 9, '#3aa3b8')}${RC(100, 20, 3, 34, '#b8c0c3', KI, .6)}<path d="M103 21l24 6-24 7z" fill="#d4654a" stroke="${KI}" stroke-width=".9"/><path d="M103 27l24 0" stroke="rgba(255,255,255,.4)" stroke-width=".8"/>${pkRes('cash', 112, 66, 30)}${pkRes('rations', 16, 66, 30)}`; },
   builder() { return `${pkCog(112, 78, 26, 10, '#7d8a90', '#a9b3b8', .28)}${pkCog(46, 84, 16, 8, '#5e6b71', '#8b979d', .3)}<g transform="rotate(-38 62 70)"><rect x="56" y="30" width="12" height="76" rx="3" fill="url(#pWd)" stroke="${KI}" stroke-width="1"/><rect x="42" y="24" width="40" height="18" rx="3" fill="url(#pMt)" stroke="${KI}" stroke-width="1"/></g><g transform="rotate(34 84 70)"><rect x="78" y="34" width="9" height="76" rx="3" fill="url(#pMt)" stroke="${KI}" stroke-width="1"/><path d="M73 26a14 14 0 0 1 24 0l-4 12h-16z" fill="url(#pMt)" stroke="${KI}" stroke-width="1"/><rect x="80" y="26" width="5" height="10" fill="#0e1113"/></g>${EL(80, 58, 32, 5, 'rgba(0,0,0,.4)')}<path d="M52 56a28 26 0 0 1 56 0z" fill="url(#pBr)" stroke="${KI}" stroke-width="1.4"/><path d="M76 30h8v26h-8z" fill="rgba(255,255,255,.3)"/><path d="M44 56h72a4 4 0 0 1 0 8H44a4 4 0 0 1 0-8z" fill="#c98e2c" stroke="${KI}" stroke-width="1.2"/><path d="M58 44a24 20 0 0 1 20-14" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".55" fill="none"/>`; },
@@ -144,16 +156,20 @@ function pkIco(k) {
     bars: `<path d="M3 18l3-7h12l3 7z" ${f('#8b979d')}/><path d="M3 18l3-7h5l-3 7z" fill="rgba(255,255,255,.35)"/><rect x="3" y="18" width="18" height="3" ${f('#4c5a62')}/>`,
     gear: `<path d="M12 2l8 3v6c0 5-3 9-8 11-5-2-8-6-8-11V5z" ${f('#9aa4a8')}/><path d="M12 6l4 1.6V11c0 3-1.6 5-4 6.4V6z" fill="rgba(255,255,255,.3)"/>`
   };
+  if (k.startsWith('xpi:')) return xpiSVG(k.slice(4));
   if (k.startsWith('shard:')) { const c = SETS[k.slice(6)].aura; return `<svg viewBox="0 0 24 24" class="pi"><polygon points="12,2 19,9 15,22 9,22 5,9" ${f(c)}/><polygon points="12,2 19,9 12,11 5,9" fill="rgba(255,255,255,.4)"/></svg>`; }
   if (RESICON[k]) return resSvg(k, 'pi');
   return `<svg viewBox="0 0 24 24" class="pi">${b[k] || ''}</svg>`;
 }
 
 /* ---------------- store tab ---------------- */
+/* XP in a pack, and the $ per 100k XP rate the pricing rules protect (never below XP_MIN_RATE). */
+function xpPackXp(p) { let t = 0; for (const id in p.give.xpi) t += p.give.xpi[id] * XPI.find(x => x.id === id).xp; return t; }
+function xpPackRate(p) { return p.usd / xpPackXp(p) * 100000; }
 function packCard(p) {
   const done = p.once && iapEnsure().once[p.id], dia = p.group === 'dia', first = dia && !iapEnsure().first[p.id], v = dia ? 0 : packValue(p);
   const rows = dia ? [] : packRows(p);
-  return `<button class="pk tier${p.tier || 2} ${p.tag === 'Best value' ? 'hot' : ''}" data-a="iapopen" data-id="${p.id}" ${done ? 'disabled' : ''}>${p.tag ? `<em class="pt">${p.tag}</em>` : ''}<div class="pv2">${dia ? `<div class="gmw">${gemSVG(p.gem)}</div>` : packArtLarge(p)}${!dia ? `<span class="pr">${PACK_TIER[p.tier || 2]}</span>` : ''}</div><b class="pn">${p.n}</b>${dia ? `<span class="pd num">${fmtN((p.dia || 0) + (p.bonus || 0))}◆</span><span class="ps">${first ? 'First buy ×2 bonus' : p.bonus ? `+${p.bonus} bonus` : 'Diamonds'}</span>` : `<span class="pch">${rows.slice(0, 4).map(r => `<i title="${r.t}">${pkIco(r.ico)}</i>`).join('')}${rows.length > 4 ? `<i class="mo">+${rows.length - 4}</i>` : ''}</span><span class="ps">${done ? 'Owned' : `Worth about ${fmtN(v)}◆`}</span>`}<span class="pp">${done ? 'Bought' : IAP.price(p)}</span></button>`;
+  return `<button class="pk tier${p.tier || 2} ${p.tag === 'Best value' ? 'hot' : ''}" data-a="iapopen" data-id="${p.id}" ${done ? 'disabled' : ''}>${p.tag ? `<em class="pt">${p.tag}</em>` : ''}<div class="pv2">${dia ? `<div class="gmw">${gemSVG(p.gem)}</div>` : packArtLarge(p)}${!dia ? `<span class="pr">${PACK_TIER[p.tier || 2]}</span>` : ''}</div><b class="pn">${p.n}</b>${dia ? `<span class="pd num">${fmtN((p.dia || 0) + (p.bonus || 0))}◆</span><span class="ps">${first ? 'First buy ×2 bonus' : p.bonus ? `+${p.bonus} bonus` : 'Diamonds'}</span>` : `<span class="pch">${rows.slice(0, 4).map(r => `<i title="${r.t}">${pkIco(r.ico)}</i>`).join('')}${rows.length > 4 ? `<i class="mo">+${rows.length - 4}</i>` : ''}</span><span class="ps">${done ? 'Owned' : (p.give && p.give.xpi) ? fmtN(xpPackXp(p)) + ' hero XP' : `Worth about ${fmtN(v)}◆`}</span>`}<span class="pp">${done ? 'Bought' : IAP.price(p)}</span></button>`;
 }
 function iapHTML() {
   IAP.init(); const sb = IAP.mode() === 'sandbox', cat = UI.packCat || 'all', all = IAP_CATALOG.slice().sort((a, b) => a.usd - b.usd);
@@ -167,7 +183,7 @@ function iapHTML() {
 function sheetIap(id) {
   const p = iapProduct(id); if (!p) return ''; const sb = IAP.mode() === 'sandbox', dia = p.group === 'dia', d = UI.iapDone === id, rows = packRows(p), v = packValue(p);
   const head = `<div class="pohead tier${p.tier || 2}">${dia ? `<div class="gmw big">${gemSVG(p.gem)}</div>` : packArtLarge(p)}<button class="btn sm line pox" data-a="closesheet">Close</button>${!dia ? `<span class="pr">${PACK_TIER[p.tier || 2]}</span>` : ''}</div><div class="h1 pot">${p.n}</div><div class="sub">${dia ? 'Diamond pack' : 'Themed pack'}${p.once ? ' · one per commander' : ''}${p.blurb ? ' · ' + p.blurb : ''}</div>`;
-  const list = `<div class="panel mt"><div class="hd"><h3>${d ? 'Delivered' : 'You receive'}</h3>${!dia && v ? `<span class="sub">Worth about ${fmtN(v)}◆ at store rates</span>` : ''}</div><div class="bd pgrid">${rows.map(r => `<div class="pit"><span class="pico">${pkIco(r.ico)}</span><span class="pq num">${r.q}</span><span class="pt2"><b>${r.t}</b>${r.n ? `<small>${r.n}</small>` : ''}</span></div>`).join('')}</div></div>`;
+  const list = `<div class="panel mt"><div class="hd"><h3>${d ? 'Delivered' : 'You receive'}</h3>${!dia && v && !(p.give && p.give.xpi) ? `<span class="sub">Worth about ${fmtN(v)}◆ at store rates</span>` : ''}</div><div class="bd pgrid">${rows.map(r => `<div class="pit"><span class="pico">${pkIco(r.ico)}</span><span class="pq num">${r.q}</span><span class="pt2"><b>${r.t}</b>${r.n ? `<small>${r.n}</small>` : ''}</span></div>`).join('')}</div></div>`;
   const its = dia ? [] : packItems(p), open = UI.pkFull === id;
   const full = its.length ? `<div class="panel mt pkfull"><button class="pkfh" data-a="pkfull" data-id="${id}" aria-expanded="${open}"><b>Full contents</b><span class="sub">${its.length} items</span><i class="pkcar">${open ? '▴' : '▾'}</i></button>${open ? `<div class="pkfl">${its.map((x, i) => `<div class="pkfr"><span class="pkfn num">${i + 1}</span><span class="pico">${pkIco(x.ico)}</span><span class="pt2"><b>${x.t}</b>${x.n ? `<small>${x.n}</small>` : ''}</span><span class="pq num">${x.q}</span></div>`).join('')}</div>` : ''}</div>` : '';
   if (d) return `${head}${list}${full}<div class="sub mt">Added to your stores, racks and forge. Supplies from paid packs are not capped by StoreHouse room.</div><div class="pobuy mt"><button class="btn pri tall wide" data-a="closesheet">Done</button></div>`;
@@ -184,4 +200,4 @@ Object.assign(A, {
   iaphist() { UI.iapHist = !UI.iapHist; UI.dirty = true; D(); },
   closesheet() { UI.iapDone = null; UI.sheet = null; UI.sel = null; D(); }
 });
-DR.hero.body = t => ({ forge: forgeHTML, heroes: heroesHTML, store: () => iapHTML() + (UI.iapHist ? iapHistHTML() : '') + storeHTML().replace('<h3>Packs</h3>', '<h3>Spend diamonds: crates</h3>'), market: marketHTML, ledger: ledgerHTML })[t]();
+DR.hero.body = t => ({ hero: heroScreenHTML, forge: forgeHTML, store: () => iapHTML() + (UI.iapHist ? iapHistHTML() : '') + storeHTML().replace('<h3>Packs</h3>', '<h3>Spend diamonds: crates</h3>'), market: marketHTML, ledger: ledgerHTML })[t]();

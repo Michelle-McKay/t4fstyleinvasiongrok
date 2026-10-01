@@ -58,6 +58,11 @@ wallSVG = function (cls, tier) { const f = ART.file('wall_' + cls + '_t' + clamp
 const _vecHero = heroSVG;
 heroSVG = function (id, o) { const f = ART.file('hero_' + id); return f ? imgTag(f, 'unit hero h-' + id) : _vecHero(id, o); };
 
+const _vecXpi = xpiSVG;
+xpiSVG = function (id) { const f = ART.file('xpi_' + id); return f ? imgTag(f, 'unit xpi x' + id) : _vecXpi(id); };
+const _vecHF = heroFullSVG;
+heroFullSVG = function (id) { const f = ART.file('heroful_' + id); return f ? imgTag(f, 'hfull h-' + id) : _vecHF(id); };
+
 /* ---- HUD and resource icons: painted icons are slotted into the shared RESICON table, so every caller picks them up ---- */
 const _vecIcons = {};
 function applyIcons() {
