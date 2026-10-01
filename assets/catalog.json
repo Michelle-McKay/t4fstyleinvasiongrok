@@ -1,6 +1,6 @@
 {
  "v": 2,
- "count": 911,
+ "count": 917,
  "groups": [
   {
    "id": "bld",
@@ -89,7 +89,7 @@
   },
   {
    "id": "matn",
-   "title": "Named gear materials (54)",
+   "title": "Named gear materials (60)",
    "note": "The named ingredients listed on each gear recipe (Scrap Metal, Apex Beast Hide, Frost-Giant Shards...), one icon each, transparent. ALL share the identical camera, size, lighting and a single chunky raw-chunk silhouette on a small base, so they read as one family; only the material and colour change. The quality tier is NOT drawn (the game shows it with the six ingot tiers). Built to glint or shimmer later."
   },
   {
@@ -2942,7 +2942,7 @@
   {
    "group": "piece",
    "key": "piece_b_defense_chest",
-   "name": "General Defense / Traps chest · chest (General Defense / Traps)",
+   "name": "Barricaded Plating Vest · chest (General Defense / Traps)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -2982,7 +2982,7 @@
   {
    "group": "piece",
    "key": "piece_b_attack_chest",
-   "name": "General Attack chest · chest (General Attack)",
+   "name": "Standard-Issue Combat Harness · chest (General Attack)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3022,7 +3022,7 @@
   {
    "group": "piece",
    "key": "piece_b_food_chest",
-   "name": "Food Production chest · chest (Food Production)",
+   "name": "Hydroponic Overseer's Apron · chest (Food Production)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3062,7 +3062,7 @@
   {
    "group": "piece",
    "key": "piece_b_oil_chest",
-   "name": "Oil Production chest · chest (Oil Production)",
+   "name": "Refinery-Operator Gasket Suit · chest (Oil Production)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3102,7 +3102,7 @@
   {
    "group": "piece",
    "key": "piece_b_energy_chest",
-   "name": "Energy Production chest · chest (Energy Production)",
+   "name": "Power-Grid Tap Vest · chest (Energy Production)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3142,7 +3142,7 @@
   {
    "group": "piece",
    "key": "piece_b_steel_chest",
-   "name": "Steel Production chest · chest (Steel Production)",
+   "name": "Foundry-Worker Heat Apron · chest (Steel Production)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3182,7 +3182,7 @@
   {
    "group": "piece",
    "key": "piece_b_cash_chest",
-   "name": "Cash Production chest · chest (Cash Production)",
+   "name": "Ledger-Keeper's Vest · chest (Cash Production)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3222,7 +3222,7 @@
   {
    "group": "piece",
    "key": "piece_b_build_chest",
-   "name": "Construction chest · chest (Construction)",
+   "name": "Contractor's Utility Belt · chest (Construction)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3262,7 +3262,7 @@
   {
    "group": "piece",
    "key": "piece_b_gather_chest",
-   "name": "Gathering chest · chest (Gathering)",
+   "name": "Hauler's Cargo Harness · chest (Gathering)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3302,7 +3302,7 @@
   {
    "group": "piece",
    "key": "piece_b_research_chest",
-   "name": "Research chest · chest (Research)",
+   "name": "Data-Scribe Lab-Coat Harness · chest (Research)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3342,7 +3342,7 @@
   {
    "group": "piece",
    "key": "piece_b_train_chest",
-   "name": "Troop Training chest · chest (Troop Training)",
+   "name": "Drillmaster's Whistle Harness · chest (Troop Training)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3382,7 +3382,7 @@
   {
    "group": "piece",
    "key": "piece_b_trap_chest",
-   "name": "Wall Trap Training chest · chest (Wall Trap Training)",
+   "name": "Ordnance-Assembler Clamp Vest · chest (Wall Trap Training)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3422,7 +3422,7 @@
   {
    "group": "piece",
    "key": "piece_b_hunt_chest",
-   "name": "Monster Hunting chest · chest (Monster Hunting)",
+   "name": "Tracker's Field Holster · chest (Monster Hunting)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3454,7 +3454,7 @@
   {
    "group": "piece",
    "key": "piece_s_rock_helmet",
-   "name": "\"Rock\" Troop Set · helmet",
+   "name": "\"Rock\" Troop Set helmet · helmet (\"Rock\" Troop Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3462,7 +3462,7 @@
   {
    "group": "piece",
    "key": "piece_s_rock_chest",
-   "name": "\"Rock\" Troop Set · chest",
+   "name": "Titan-Plated Cuirass · chest (\"Rock\" Troop Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3470,7 +3470,7 @@
   {
    "group": "piece",
    "key": "piece_s_rock_weapon",
-   "name": "\"Rock\" Troop Set · weapon",
+   "name": "\"Rock\" Troop Set weapon · weapon (\"Rock\" Troop Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3478,7 +3478,7 @@
   {
    "group": "piece",
    "key": "piece_s_rock_boots",
-   "name": "\"Rock\" Troop Set · boots",
+   "name": "\"Rock\" Troop Set boots · boots (\"Rock\" Troop Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3486,7 +3486,7 @@
   {
    "group": "piece",
    "key": "piece_s_rock_accessory",
-   "name": "\"Rock\" Troop Set · accessory",
+   "name": "\"Rock\" Troop Set accessory · accessory (\"Rock\" Troop Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3494,7 +3494,7 @@
   {
    "group": "piece",
    "key": "piece_s_paper_helmet",
-   "name": "\"Paper\" Troop Set · helmet",
+   "name": "\"Paper\" Troop Set helmet · helmet (\"Paper\" Troop Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3502,7 +3502,7 @@
   {
    "group": "piece",
    "key": "piece_s_paper_chest",
-   "name": "\"Paper\" Troop Set · chest",
+   "name": "Gale-Weaver Mantle · chest (\"Paper\" Troop Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3510,7 +3510,7 @@
   {
    "group": "piece",
    "key": "piece_s_paper_weapon",
-   "name": "\"Paper\" Troop Set · weapon",
+   "name": "\"Paper\" Troop Set weapon · weapon (\"Paper\" Troop Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3518,7 +3518,7 @@
   {
    "group": "piece",
    "key": "piece_s_paper_boots",
-   "name": "\"Paper\" Troop Set · boots",
+   "name": "\"Paper\" Troop Set boots · boots (\"Paper\" Troop Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3526,7 +3526,7 @@
   {
    "group": "piece",
    "key": "piece_s_paper_accessory",
-   "name": "\"Paper\" Troop Set · accessory",
+   "name": "\"Paper\" Troop Set accessory · accessory (\"Paper\" Troop Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3534,7 +3534,7 @@
   {
    "group": "piece",
    "key": "piece_s_scissors_helmet",
-   "name": "\"Scissors\" Troop Set · helmet",
+   "name": "\"Scissors\" Troop Set helmet · helmet (\"Scissors\" Troop Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3542,7 +3542,7 @@
   {
    "group": "piece",
    "key": "piece_s_scissors_chest",
-   "name": "\"Scissors\" Troop Set · chest",
+   "name": "Stalker-Chitin Harness · chest (\"Scissors\" Troop Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3550,7 +3550,7 @@
   {
    "group": "piece",
    "key": "piece_s_scissors_weapon",
-   "name": "\"Scissors\" Troop Set · weapon",
+   "name": "\"Scissors\" Troop Set weapon · weapon (\"Scissors\" Troop Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3558,7 +3558,7 @@
   {
    "group": "piece",
    "key": "piece_s_scissors_boots",
-   "name": "\"Scissors\" Troop Set · boots",
+   "name": "\"Scissors\" Troop Set boots · boots (\"Scissors\" Troop Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3566,7 +3566,7 @@
   {
    "group": "piece",
    "key": "piece_s_scissors_accessory",
-   "name": "\"Scissors\" Troop Set · accessory",
+   "name": "\"Scissors\" Troop Set accessory · accessory (\"Scissors\" Troop Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3574,7 +3574,7 @@
   {
    "group": "piece",
    "key": "piece_s_training_helmet",
-   "name": "Higher Quality Training Set · helmet",
+   "name": "Higher Quality Training Set helmet · helmet (Higher Quality Training Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3582,7 +3582,7 @@
   {
    "group": "piece",
    "key": "piece_s_training_chest",
-   "name": "Higher Quality Training Set · chest",
+   "name": "Grand-Trainer Tunic · chest (Higher Quality Training Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3590,7 +3590,7 @@
   {
    "group": "piece",
    "key": "piece_s_training_weapon",
-   "name": "Higher Quality Training Set · weapon",
+   "name": "Higher Quality Training Set weapon · weapon (Higher Quality Training Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3598,7 +3598,7 @@
   {
    "group": "piece",
    "key": "piece_s_training_boots",
-   "name": "Higher Quality Training Set · boots",
+   "name": "Higher Quality Training Set boots · boots (Higher Quality Training Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3606,7 +3606,7 @@
   {
    "group": "piece",
    "key": "piece_s_training_accessory",
-   "name": "Higher Quality Training Set · accessory",
+   "name": "Higher Quality Training Set accessory · accessory (Higher Quality Training Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3614,7 +3614,7 @@
   {
    "group": "piece",
    "key": "piece_s_construction_helmet",
-   "name": "Higher Quality Construction Set · helmet",
+   "name": "Higher Quality Construction Set helmet · helmet (Higher Quality Construction Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3622,7 +3622,7 @@
   {
    "group": "piece",
    "key": "piece_s_construction_chest",
-   "name": "Higher Quality Construction Set · chest",
+   "name": "Master-Builder Vest · chest (Higher Quality Construction Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3630,7 +3630,7 @@
   {
    "group": "piece",
    "key": "piece_s_construction_weapon",
-   "name": "Higher Quality Construction Set · weapon",
+   "name": "Higher Quality Construction Set weapon · weapon (Higher Quality Construction Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3638,7 +3638,7 @@
   {
    "group": "piece",
    "key": "piece_s_construction_boots",
-   "name": "Higher Quality Construction Set · boots",
+   "name": "Higher Quality Construction Set boots · boots (Higher Quality Construction Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3646,7 +3646,7 @@
   {
    "group": "piece",
    "key": "piece_s_construction_accessory",
-   "name": "Higher Quality Construction Set · accessory",
+   "name": "Higher Quality Construction Set accessory · accessory (Higher Quality Construction Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3654,7 +3654,7 @@
   {
    "group": "piece",
    "key": "piece_s_research_helmet",
-   "name": "Higher Quality Research Set · helmet",
+   "name": "Higher Quality Research Set helmet · helmet (Higher Quality Research Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3662,7 +3662,7 @@
   {
    "group": "piece",
    "key": "piece_s_research_chest",
-   "name": "Higher Quality Research Set · chest",
+   "name": "Sage-Scholar Robe · chest (Higher Quality Research Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3670,7 +3670,7 @@
   {
    "group": "piece",
    "key": "piece_s_research_weapon",
-   "name": "Higher Quality Research Set · weapon",
+   "name": "Higher Quality Research Set weapon · weapon (Higher Quality Research Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3678,7 +3678,7 @@
   {
    "group": "piece",
    "key": "piece_s_research_boots",
-   "name": "Higher Quality Research Set · boots",
+   "name": "Higher Quality Research Set boots · boots (Higher Quality Research Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3686,7 +3686,7 @@
   {
    "group": "piece",
    "key": "piece_s_research_accessory",
-   "name": "Higher Quality Research Set · accessory",
+   "name": "Higher Quality Research Set accessory · accessory (Higher Quality Research Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3694,7 +3694,7 @@
   {
    "group": "piece",
    "key": "piece_s_siege_helmet",
-   "name": "Siege (Trap-Killer) Set · helmet",
+   "name": "Siege (Trap-Killer) Set helmet · helmet (Siege (Trap-Killer) Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3702,7 +3702,7 @@
   {
    "group": "piece",
    "key": "piece_s_siege_chest",
-   "name": "Siege (Trap-Killer) Set · chest",
+   "name": "Breaker-Harness · chest (Siege (Trap-Killer) Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3710,7 +3710,7 @@
   {
    "group": "piece",
    "key": "piece_s_siege_weapon",
-   "name": "Siege (Trap-Killer) Set · weapon",
+   "name": "Siege (Trap-Killer) Set weapon · weapon (Siege (Trap-Killer) Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3718,7 +3718,7 @@
   {
    "group": "piece",
    "key": "piece_s_siege_boots",
-   "name": "Siege (Trap-Killer) Set · boots",
+   "name": "Siege (Trap-Killer) Set boots · boots (Siege (Trap-Killer) Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3726,7 +3726,7 @@
   {
    "group": "piece",
    "key": "piece_s_siege_accessory",
-   "name": "Siege (Trap-Killer) Set · accessory",
+   "name": "Siege (Trap-Killer) Set accessory · accessory (Siege (Trap-Killer) Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3734,7 +3734,7 @@
   {
    "group": "piece",
    "key": "piece_s_tilehit_helmet",
-   "name": "Tile Hit Attack Set · helmet",
+   "name": "Tile Hit Attack Set helmet · helmet (Tile Hit Attack Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3742,7 +3742,7 @@
   {
    "group": "piece",
    "key": "piece_s_tilehit_chest",
-   "name": "Tile Hit Attack Set · chest",
+   "name": "Raid-Leader Jerkin · chest (Tile Hit Attack Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3750,7 +3750,7 @@
   {
    "group": "piece",
    "key": "piece_s_tilehit_weapon",
-   "name": "Tile Hit Attack Set · weapon",
+   "name": "Tile Hit Attack Set weapon · weapon (Tile Hit Attack Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3758,7 +3758,7 @@
   {
    "group": "piece",
    "key": "piece_s_tilehit_boots",
-   "name": "Tile Hit Attack Set · boots",
+   "name": "Tile Hit Attack Set boots · boots (Tile Hit Attack Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3766,7 +3766,7 @@
   {
    "group": "piece",
    "key": "piece_s_tilehit_accessory",
-   "name": "Tile Hit Attack Set · accessory",
+   "name": "Tile Hit Attack Set accessory · accessory (Tile Hit Attack Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3774,7 +3774,7 @@
   {
    "group": "piece",
    "key": "piece_s_rally_helmet",
-   "name": "General Rallying Set · helmet",
+   "name": "General Rallying Set helmet · helmet (General Rallying Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3782,7 +3782,7 @@
   {
    "group": "piece",
    "key": "piece_s_rally_chest",
-   "name": "General Rallying Set · chest",
+   "name": "Warlord's War-Harness · chest (General Rallying Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3790,7 +3790,7 @@
   {
    "group": "piece",
    "key": "piece_s_rally_weapon",
-   "name": "General Rallying Set · weapon",
+   "name": "General Rallying Set weapon · weapon (General Rallying Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3798,7 +3798,7 @@
   {
    "group": "piece",
    "key": "piece_s_rally_boots",
-   "name": "General Rallying Set · boots",
+   "name": "General Rallying Set boots · boots (General Rallying Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3806,7 +3806,7 @@
   {
    "group": "piece",
    "key": "piece_s_rally_accessory",
-   "name": "General Rallying Set · accessory",
+   "name": "General Rallying Set accessory · accessory (General Rallying Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3814,7 +3814,7 @@
   {
    "group": "piece",
    "key": "piece_s_wrally_helmet",
-   "name": "Wonder Rally Set · helmet",
+   "name": "Wonder Rally Set helmet · helmet (Wonder Rally Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3822,7 +3822,7 @@
   {
    "group": "piece",
    "key": "piece_s_wrally_chest",
-   "name": "Wonder Rally Set · chest",
+   "name": "Sovereign Vanguard Plate · chest (Wonder Rally Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3830,7 +3830,7 @@
   {
    "group": "piece",
    "key": "piece_s_wrally_weapon",
-   "name": "Wonder Rally Set · weapon",
+   "name": "Wonder Rally Set weapon · weapon (Wonder Rally Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3838,7 +3838,7 @@
   {
    "group": "piece",
    "key": "piece_s_wrally_boots",
-   "name": "Wonder Rally Set · boots",
+   "name": "Wonder Rally Set boots · boots (Wonder Rally Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3846,7 +3846,7 @@
   {
    "group": "piece",
    "key": "piece_s_wrally_accessory",
-   "name": "Wonder Rally Set · accessory",
+   "name": "Wonder Rally Set accessory · accessory (Wonder Rally Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3854,7 +3854,7 @@
   {
    "group": "piece",
    "key": "piece_s_wsolo_helmet",
-   "name": "Wonder Solo Set · helmet",
+   "name": "Wonder Solo Set helmet · helmet (Wonder Solo Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3862,7 +3862,7 @@
   {
    "group": "piece",
    "key": "piece_s_wsolo_chest",
-   "name": "Wonder Solo Set · chest",
+   "name": "Phantom Apex Cloak · chest (Wonder Solo Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3870,7 +3870,7 @@
   {
    "group": "piece",
    "key": "piece_s_wsolo_weapon",
-   "name": "Wonder Solo Set · weapon",
+   "name": "Wonder Solo Set weapon · weapon (Wonder Solo Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3878,7 +3878,7 @@
   {
    "group": "piece",
    "key": "piece_s_wsolo_boots",
-   "name": "Wonder Solo Set · boots",
+   "name": "Wonder Solo Set boots · boots (Wonder Solo Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3886,7 +3886,7 @@
   {
    "group": "piece",
    "key": "piece_s_wsolo_accessory",
-   "name": "Wonder Solo Set · accessory",
+   "name": "Wonder Solo Set accessory · accessory (Wonder Solo Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3894,7 +3894,7 @@
   {
    "group": "piece",
    "key": "piece_s_wdef_helmet",
-   "name": "Wonder Defense Set · helmet",
+   "name": "Wonder Defense Set helmet · helmet (Wonder Defense Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3902,7 +3902,7 @@
   {
    "group": "piece",
    "key": "piece_s_wdef_chest",
-   "name": "Wonder Defense Set · chest",
+   "name": "Bastion Wall Bulwark · chest (Wonder Defense Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3910,7 +3910,7 @@
   {
    "group": "piece",
    "key": "piece_s_wdef_weapon",
-   "name": "Wonder Defense Set · weapon",
+   "name": "Wonder Defense Set weapon · weapon (Wonder Defense Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3918,7 +3918,7 @@
   {
    "group": "piece",
    "key": "piece_s_wdef_boots",
-   "name": "Wonder Defense Set · boots",
+   "name": "Wonder Defense Set boots · boots (Wonder Defense Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3926,7 +3926,7 @@
   {
    "group": "piece",
    "key": "piece_s_wdef_accessory",
-   "name": "Wonder Defense Set · accessory",
+   "name": "Wonder Defense Set accessory · accessory (Wonder Defense Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3934,7 +3934,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_rpd_helmet",
-   "name": "Rock + Paper Defense Set · helmet",
+   "name": "Rock + Paper Defense Set helmet · helmet (Rock + Paper Defense Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3942,7 +3942,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_rpd_chest",
-   "name": "Rock + Paper Defense Set · chest",
+   "name": "Yule-Garrison Cuirass · chest (Rock + Paper Defense Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3950,7 +3950,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_rpd_weapon",
-   "name": "Rock + Paper Defense Set · weapon",
+   "name": "Rock + Paper Defense Set weapon · weapon (Rock + Paper Defense Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3958,7 +3958,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_rpd_boots",
-   "name": "Rock + Paper Defense Set · boots",
+   "name": "Rock + Paper Defense Set boots · boots (Rock + Paper Defense Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3966,7 +3966,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_rpd_accessory",
-   "name": "Rock + Paper Defense Set · accessory",
+   "name": "Rock + Paper Defense Set accessory · accessory (Rock + Paper Defense Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3974,7 +3974,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_rsd_helmet",
-   "name": "Rock + Scissors Defense Set · helmet",
+   "name": "Rock + Scissors Defense Set helmet · helmet (Rock + Scissors Defense Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3982,7 +3982,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_rsd_chest",
-   "name": "Rock + Scissors Defense Set · chest",
+   "name": "Solstice-Bulwark Plate · chest (Rock + Scissors Defense Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3990,7 +3990,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_rsd_weapon",
-   "name": "Rock + Scissors Defense Set · weapon",
+   "name": "Rock + Scissors Defense Set weapon · weapon (Rock + Scissors Defense Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3998,7 +3998,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_rsd_boots",
-   "name": "Rock + Scissors Defense Set · boots",
+   "name": "Rock + Scissors Defense Set boots · boots (Rock + Scissors Defense Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -4006,7 +4006,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_rsd_accessory",
-   "name": "Rock + Scissors Defense Set · accessory",
+   "name": "Rock + Scissors Defense Set accessory · accessory (Rock + Scissors Defense Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -4014,7 +4014,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_psd_helmet",
-   "name": "Paper + Scissors Defense Set · helmet",
+   "name": "Paper + Scissors Defense Set helmet · helmet (Paper + Scissors Defense Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -4022,7 +4022,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_psd_chest",
-   "name": "Paper + Scissors Defense Set · chest",
+   "name": "Harvest-Aegis Mantle · chest (Paper + Scissors Defense Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -4030,7 +4030,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_psd_weapon",
-   "name": "Paper + Scissors Defense Set · weapon",
+   "name": "Paper + Scissors Defense Set weapon · weapon (Paper + Scissors Defense Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -4038,7 +4038,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_psd_boots",
-   "name": "Paper + Scissors Defense Set · boots",
+   "name": "Paper + Scissors Defense Set boots · boots (Paper + Scissors Defense Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -4046,7 +4046,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_psd_accessory",
-   "name": "Paper + Scissors Defense Set · accessory",
+   "name": "Paper + Scissors Defense Set accessory · accessory (Paper + Scissors Defense Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -4054,7 +4054,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_rpa_helmet",
-   "name": "Rock + Paper Attack Set · helmet",
+   "name": "Rock + Paper Attack Set helmet · helmet (Rock + Paper Attack Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -4062,7 +4062,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_rpa_chest",
-   "name": "Rock + Paper Attack Set · chest",
+   "name": "Spring-Strike Harness · chest (Rock + Paper Attack Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -4070,7 +4070,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_rpa_weapon",
-   "name": "Rock + Paper Attack Set · weapon",
+   "name": "Rock + Paper Attack Set weapon · weapon (Rock + Paper Attack Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -4078,7 +4078,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_rpa_boots",
-   "name": "Rock + Paper Attack Set · boots",
+   "name": "Rock + Paper Attack Set boots · boots (Rock + Paper Attack Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -4086,7 +4086,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_rpa_accessory",
-   "name": "Rock + Paper Attack Set · accessory",
+   "name": "Rock + Paper Attack Set accessory · accessory (Rock + Paper Attack Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -4094,7 +4094,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_rsa_helmet",
-   "name": "Rock + Scissors Attack Set · helmet",
+   "name": "Rock + Scissors Attack Set helmet · helmet (Rock + Scissors Attack Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -4102,7 +4102,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_rsa_chest",
-   "name": "Rock + Scissors Attack Set · chest",
+   "name": "Summer-Assault Vest · chest (Rock + Scissors Attack Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -4110,7 +4110,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_rsa_weapon",
-   "name": "Rock + Scissors Attack Set · weapon",
+   "name": "Rock + Scissors Attack Set weapon · weapon (Rock + Scissors Attack Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -4118,7 +4118,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_rsa_boots",
-   "name": "Rock + Scissors Attack Set · boots",
+   "name": "Rock + Scissors Attack Set boots · boots (Rock + Scissors Attack Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -4126,7 +4126,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_rsa_accessory",
-   "name": "Rock + Scissors Attack Set · accessory",
+   "name": "Rock + Scissors Attack Set accessory · accessory (Rock + Scissors Attack Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -4134,7 +4134,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_psa_helmet",
-   "name": "Paper + Scissors Attack Set · helmet",
+   "name": "Paper + Scissors Attack Set helmet · helmet (Paper + Scissors Attack Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -4142,7 +4142,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_psa_chest",
-   "name": "Paper + Scissors Attack Set · chest",
+   "name": "Equinox-Blitz Jerkin · chest (Paper + Scissors Attack Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -4150,7 +4150,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_psa_weapon",
-   "name": "Paper + Scissors Attack Set · weapon",
+   "name": "Paper + Scissors Attack Set weapon · weapon (Paper + Scissors Attack Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -4158,7 +4158,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_psa_boots",
-   "name": "Paper + Scissors Attack Set · boots",
+   "name": "Paper + Scissors Attack Set boots · boots (Paper + Scissors Attack Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -4166,7 +4166,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_psa_accessory",
-   "name": "Paper + Scissors Attack Set · accessory",
+   "name": "Paper + Scissors Attack Set accessory · accessory (Paper + Scissors Attack Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -4285,6 +4285,14 @@
   },
   {
    "group": "matn",
+   "key": "matn_tough_chitin",
+   "name": "Material: Tough Chitin (\"Rock\" Troop Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
    "key": "matn_gale_wing_feathers",
    "name": "Material: Gale-Wing Feathers (\"Paper\" Troop Set)",
    "size": "1:1, 1024 x 1024",
@@ -4295,6 +4303,14 @@
    "group": "matn",
    "key": "matn_hollow_quill",
    "name": "Material: Hollow Quill (\"Paper\" Troop Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_beast_sinew",
+   "name": "Material: Beast Sinew (\"Paper\" Troop Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128
@@ -4317,48 +4333,8 @@
   },
   {
    "group": "matn",
-   "key": "matn_alpha_predator_bone",
-   "name": "Material: Alpha-Predator Bone (Higher Quality Training Set)",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 128
-  },
-  {
-   "group": "matn",
-   "key": "matn_iron_sinew",
-   "name": "Material: Iron-Sinew (Higher Quality Training Set)",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 128
-  },
-  {
-   "group": "matn",
-   "key": "matn_mason_beast_granite_shards",
-   "name": "Material: Mason-Beast Granite Shards (Higher Quality Construction Set)",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 128
-  },
-  {
-   "group": "matn",
-   "key": "matn_adamantite_rivets",
-   "name": "Material: Adamantite Rivets (Higher Quality Construction Set)",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 128
-  },
-  {
-   "group": "matn",
-   "key": "matn_sage_beast_brain_matter",
-   "name": "Material: Sage-Beast Brain-Matter (Higher Quality Research Set)",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 128
-  },
-  {
-   "group": "matn",
-   "key": "matn_luminous_crystal",
-   "name": "Material: Luminous Crystal (Higher Quality Research Set)",
+   "key": "matn_sharp_claws",
+   "name": "Material: Sharp Claws (\"Scissors\" Troop Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128
@@ -4381,32 +4357,8 @@
   },
   {
    "group": "matn",
-   "key": "matn_nomad_hide",
-   "name": "Material: Nomad Hide (Tile Hit Attack Set)",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 128
-  },
-  {
-   "group": "matn",
-   "key": "matn_quick_stride_tendon",
-   "name": "Material: Quick-Stride Tendon (Tile Hit Attack Set)",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 128
-  },
-  {
-   "group": "matn",
-   "key": "matn_war_chief_sinew",
-   "name": "Material: War-Chief Sinew (General Rallying Set)",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 128
-  },
-  {
-   "group": "matn",
-   "key": "matn_banner_cloth",
-   "name": "Material: Banner-Cloth (General Rallying Set)",
+   "key": "matn_thick_hide",
+   "name": "Material: Thick Hide (Siege (Trap-Killer) Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128
@@ -4429,6 +4381,14 @@
   },
   {
    "group": "matn",
+   "key": "matn_hollow_horns",
+   "name": "Material: Hollow Horns (Wonder Rally Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
    "key": "matn_phantom_stalker_pelt",
    "name": "Material: Phantom-Stalker Pelt (Wonder Solo Set)",
    "size": "1:1, 1024 x 1024",
@@ -4445,6 +4405,14 @@
   },
   {
    "group": "matn",
+   "key": "matn_raw_muscle_tissue",
+   "name": "Material: Raw Muscle Tissue (Wonder Solo Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
    "key": "matn_bastion_behemoth_shell",
    "name": "Material: Bastion-Behemoth Shell (Wonder Defense Set)",
    "size": "1:1, 1024 x 1024",
@@ -4455,6 +4423,86 @@
    "group": "matn",
    "key": "matn_basalt_core",
    "name": "Material: Basalt Core (Wonder Defense Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_war_chief_sinew",
+   "name": "Material: War-Chief Sinew (General Rallying Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_banner_cloth",
+   "name": "Material: Banner-Cloth (General Rallying Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_nomad_hide",
+   "name": "Material: Nomad Hide (Tile Hit Attack Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_quick_stride_tendon",
+   "name": "Material: Quick-Stride Tendon (Tile Hit Attack Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_sage_beast_brain_matter",
+   "name": "Material: Sage-Beast Brain-Matter (Higher Quality Research Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_luminous_crystal",
+   "name": "Material: Luminous Crystal (Higher Quality Research Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_mason_beast_granite_shards",
+   "name": "Material: Mason-Beast Granite Shards (Higher Quality Construction Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_adamantite_rivets",
+   "name": "Material: Adamantite Rivets (Higher Quality Construction Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_alpha_predator_bone",
+   "name": "Material: Alpha-Predator Bone (Higher Quality Training Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_iron_sinew",
+   "name": "Material: Iron-Sinew (Higher Quality Training Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128

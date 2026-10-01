@@ -160,6 +160,21 @@ const BASIC_ORDER = Object.keys(BASIC);
    [category]: [name, [4 required materials, a repeat means 2x]]. Optional 3rd element overrides { lv, st, vals } when a slot differs from its category.
    A slot or category not listed here falls back to the category's generic name, recipe text and curve. ADD THE NEXT SLOT LISTS HERE. */
 const BASIC_ITEMS = {
+  chest: {
+    defense: ['Barricaded Plating Vest', ['Scrap Metal', 'Rivets and Fasteners', 'Reinforced Polymer', 'Industrial Lubricant']],
+    attack: ['Standard-Issue Combat Harness', ['Scrap Metal', 'Scrap Metal', 'Hardened Carbon Rods', 'High-Tension Webbing']],
+    food: ["Hydroponic Overseer's Apron", ['Reinforced Polymer', 'Compressed Rubber Gaskets', 'Industrial Lubricant', 'Electrical Wiring Spools']],
+    oil: ['Refinery-Operator Gasket Suit', ['Compressed Rubber Gaskets', 'Compressed Rubber Gaskets', 'Industrial Lubricant', 'Tempered Alloy Ingots']],
+    energy: ['Power-Grid Tap Vest', ['Electrical Wiring Spools', 'Reinforced Polymer', 'Precision Springs', 'Hardened Carbon Rods']],
+    steel: ['Foundry-Worker Heat Apron', ['Tempered Alloy Ingots', 'Scrap Metal', 'Rivets and Fasteners', 'Composite Ceramic Plates']],
+    cash: ["Ledger-Keeper's Vest", ['Hardened Carbon Rods', 'Rivets and Fasteners', 'Reinforced Polymer', 'Electrical Wiring Spools']],
+    build: ["Contractor's Utility Belt", ['Reinforced Polymer', 'Reinforced Polymer', 'Tempered Alloy Ingots', 'Scrap Metal']],
+    gather: ["Hauler's Cargo Harness", ['High-Tension Webbing', 'Reinforced Polymer', 'Rivets and Fasteners', 'Industrial Lubricant']],
+    research: ['Data-Scribe Lab-Coat Harness', ['Electrical Wiring Spools', 'Electrical Wiring Spools', 'Composite Ceramic Plates', 'Precision Springs']],
+    train: ["Drillmaster's Whistle Harness", ['Precision Springs', 'Tempered Alloy Ingots', 'High-Tension Webbing', 'Industrial Lubricant']],
+    trap: ['Ordnance-Assembler Clamp Vest', ['Precision Springs', 'Precision Springs', 'Composite Ceramic Plates', 'Rivets and Fasteners']],
+    hunt: ["Tracker's Field Holster", ['High-Tension Webbing', 'Master-Grade Core Alloy', 'Composite Ceramic Plates', 'Electrical Wiring Spools']]
+  },
   helmet: {
     defense: ['Barricaded Face-Plate', ['Scrap Metal', 'Rivets and Fasteners', 'Reinforced Polymer', 'Industrial Lubricant']],
     attack: ['Standard-Issue Combat Helmet', ['Scrap Metal', 'Scrap Metal', 'Hardened Carbon Rods', 'High-Tension Webbing']],
@@ -435,7 +450,38 @@ const MAT_NAMES = [null, 'Composite Alloy', 'Carbon Fiber', 'Ballistic Polymer',
 const GEM_TIERS = [null, 'Raw Shard', 'Calibrated Core', 'Prism Matrix', 'Hyper-Lens', 'Singularity Crystal', 'Omega Diamond'];
 const matName = t => MAT_NAMES[t], gemTierName = t => GEM_TIERS[t];
 /* One piece: the value of each of its stats (a fraction), by tier (and stars). Basic gear uses its category, set gear its set. */
-function pieceLv(p) { return p.set ? SETS[p.set].lv : basicOf(p.cat, p.slot).lv; }
+
+/* Set gear, named items per slot (Michelle, 2026-10-01 19:02: Armor list). SET_ITEMS[slot][set id] = [name, recipe string, optional {lv}]; "2x Name" repeats.
+   Shared monster materials (Tough Chitin, Beast Sinew, Sharp Claws...) are plain names in the recipe. A slot not listed keeps the set's generic name and recipe. ADD THE NEXT SLOT LISTS HERE. */
+const parseRecipe = s => s.split(', ').flatMap(x => { const m = /^(\d+)x (.+)$/.exec(x); return m ? Array(+m[1]).fill(m[2]) : [x]; });
+const SET_ITEMS = {
+  chest: {
+    rock: ['Titan-Plated Cuirass', '2x Apex Beast Hide, Chitin Scales, Tough Chitin'],
+    paper: ['Gale-Weaver Mantle', 'Gale-Wing Feathers, 2x Hollow Quill, Beast Sinew'],
+    scissors: ['Stalker-Chitin Harness', 'Venom-Sac Residue, Mandible Shards, 2x Sharp Claws'],
+    siege: ['Breaker-Harness', '2x Behemoth Iron-Plate, Pyre-Core Shard, Thick Hide'],
+    wrally: ['Sovereign Vanguard Plate', '2x Sovereign Crown Shard, Dragon-Blood Ember, Hollow Horns'],
+    wsolo: ['Phantom Apex Cloak', 'Phantom-Stalker Pelt, 2x Void-Core Shard, Raw Muscle Tissue'],
+    wdef: ['Bastion Wall Bulwark', '2x Bastion-Behemoth Shell, Basalt Core, Tough Chitin'],
+    rally: ["Warlord's War-Harness", 'War-Chief Sinew, 2x Banner-Cloth, Sharp Claws'],
+    tilehit: ['Raid-Leader Jerkin', '2x Nomad Hide, Quick-Stride Tendon, Thick Hide'],
+    research: ['Sage-Scholar Robe', 'Sage-Beast Brain-Matter, 2x Luminous Crystal, Beast Sinew'],
+    construction: ['Master-Builder Vest', '2x Mason-Beast Granite Shards, Adamantite Rivets, Hollow Horns'],
+    training: ['Grand-Trainer Tunic', 'Alpha-Predator Bone, 2x Iron-Sinew, Raw Muscle Tissue'],
+    hs_rpd: ['Yule-Garrison Cuirass', '2x Frost-Giant Shards, Winter-Festival Ribbons, Holiday Tinsel Wire'],
+    hs_rsd: ['Solstice-Bulwark Plate', 'Solstice Stone, 2x Festival Bell Metal, Holiday Pine Resin'],
+    hs_psd: ['Harvest-Aegis Mantle', '2x Autumn-Harvest Gold, Harvest-Festival Silk, Holiday Leaf Veins'],
+    hs_rpa: ['Spring-Strike Harness', 'Spring-Blossom Amber, 2x Festival Firecracker Ash, Holiday Silk Threads'],
+    hs_rsa: ['Summer-Assault Vest', '2x Summer-Solstice Flare, Festival Spark Core, Holiday Ember Glass'],
+    hs_psa: ['Equinox-Blitz Jerkin', 'Equinox Shadow-Weave, 2x Festival Lantern Paper, Holiday Wax Seal']
+  }
+};
+/* One set item = set x slot: its name, hero level and recipe */
+function setItemOf(set, slot) {
+  const s = SETS[set], it = ((SET_ITEMS[slot] || {})[set]) || null;
+  return { n: it ? it[0] : null, lv: (it && it[2] && it[2].lv) || s.lv, mats: it ? recipeText(parseRecipe(it[1])) : s.mats, recipe: it ? parseRecipe(it[1]) : null };
+}
+function pieceLv(p) { return p.set ? setItemOf(p.set, p.slot).lv : basicOf(p.cat, p.slot).lv; }
 function pieceStatMap(p) {
   const r = {}; let v, sts;
   if (p.set) { v = (SET_RANGE[0] + (SET_RANGE[1] - SET_RANGE[0]) * (p.grade - 1) / 5) / 100 * starMul(p); sts = SETS[p.set].st; }
@@ -445,7 +491,7 @@ function pieceStatMap(p) {
 const pieceScore = p => { const m = pieceStatMap(p); let t = 0; for (const k in m) t += m[k]; return t; };
 const pieceKind = p => p.set ? SETS[p.set].n : basicOf(p.cat, p.slot).kind;
 /* display name without the quality: a named Basic item, else '<kind> <slot>' */
-const pieceTitle = p => { const n = !p.set && basicOf(p.cat, p.slot).n; return n || pieceKind(p) + ' ' + SLOT_NAME[p.slot]; };
+const pieceTitle = p => { const n = p.set ? setItemOf(p.set, p.slot).n : basicOf(p.cat, p.slot).n; return n || pieceKind(p) + ' ' + SLOT_NAME[p.slot]; };
 /* Where gems and set materials come from (docs/FORGE_GEMS.md section 5) */
 const TILE_W = [40, 30, 20, 10];             // regular world tile: tier weights (Basic..Rare), cut off at the tile level
 const TILE_J5 = 0.05, TILE_J6 = 0.001;       // chance per gather: the weekly Level 5 jackpot (tiles 5-6, once a week), the 6-pack Level 6 jackpot (tile 6)
