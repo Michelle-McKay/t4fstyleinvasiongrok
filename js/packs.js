@@ -44,7 +44,8 @@ function packGrant(g) {
     else if (k === 'builder') S.builders = Math.max(S.builders, 2);
     else if (S.slips[k] != null) S.slips[k] += v;
     else if (k === 'bars') for (const gg in v) S.bars[gg] = (S.bars[gg] || 0) + v[gg];
-    else if (k === 'shards') for (const sh in v) S.shards[sh] = (S.shards[sh] || 0) + v[sh];
+    else if (k === 'shards') for (const sh in v) shardAdd(sh, v[sh]);
+    else if (k === 'gems') for (const gk in v) gemAdd(gk, v[gk]);
     else if (k === 'gear') v.forEach(p => S.gear.pieces.push({ id: S.nid++, slot: p.slot, grade: p.grade, set: p.set || null, stat: p.slot === 'accessory' ? 'training' : null }));
   }
 }

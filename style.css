@@ -579,3 +579,9 @@ html.editing #main{will-change:transform}
 @keyframes harmup{0%{transform:rotate(0)}40%{transform:rotate(-70deg)}100%{transform:rotate(0)}}
 @media (prefers-reduced-motion:reduce){.hs-fig svg,.hs-fig img{animation:none!important}}
 .mimg{flex:none;width:44px;height:44px;object-fit:contain;background:radial-gradient(circle at 50% 40%,#5a2018,#150808);border:1px solid var(--line);margin-right:8px}
+.sock{flex:none;width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center;background:rgba(0,0,0,.3);border:1px solid var(--line);padding:0}
+.sock .ui{width:30px;height:30px;margin:0}
+.sock.on{border-color:var(--brass)}
+.sock.lk{opacity:.6}
+button.sock{cursor:pointer}
+.linkish{background:none;border:0;padding:0;color:inherit;font:inherit;text-decoration:underline dotted;cursor:pointer}

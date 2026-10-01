@@ -32,7 +32,7 @@ function newState() {
     troops: { inf1: 160, arm1: 70, air1: 45, siege1: 24, inf2: 36 },
     wounded: { inf1: 40, siege1: 8, inf2: 18 }, wall: { sent1: 12, bast1: 8 },
     jobs: [], marches: [], incoming: [], own: {}, encs: {}, nodes: {}, dead: {},
-    research: {}, bars: { 1: 6, 2: 2, 3: 1, 4: 0, 5: 0, 6: 0 }, gems: 0, shards: { vanguard: 1, outrider: 0, battery: 1 },
+    research: {}, bars: { 1: 6, 2: 2, 3: 1, 4: 0, 5: 0, 6: 0 }, gems: { 'strike:1': 4, 'guard:1': 4, 'yield:1': 2, 'strike:2': 1 }, codex: {}, ap: 60, j5: 0, shards: { vanguard: 1, outrider: 0, battery: 1 },
     gear: { pieces: [], worn: {} }, slips: { s5: 2, s60: 0, s480: 0 }, tokens: 1, orders: 3, seals: 1,
     hero: { id: 'ren', level: 1, xp: 0, captured: false }, xpi: {}, shield: { until: 0 }, anti: false,
     throne: { neutral: true, holder: null, holdEnd: 0, ruler: null, ruleUntil: 0, officers: [], colMarch: 0 },
@@ -51,7 +51,7 @@ function newState() {
   return st;
 }
 function save() { try { S.last = Date.now(); localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) { } }
-function load() { try { const s = localStorage.getItem(SAVE_KEY); if (s) { const o = JSON.parse(s); if (o && o.v === 1) { if (o.hero && o.hero.level == null) { o.hero.level = 1; o.hero.xp = 0; delete o.hero.rank; } o.xpi = o.xpi || {}; o.stam = o.stam || { v: STAM_MAX, at: Date.now(), spent: 0, refunded: 0, mats: 0, hunts: 0, wins: 0 }; o.streak = o.streak || { n: 0, at: 0, best: 0 }; o.chests = o.chests || []; o.frags = o.frags || 0; o.next = o.next || {}; if (!o.next.chest) o.next.chest = Date.now() + 30000; for (const k of Object.keys(o.wall || {})) if (/^garr/.test(k)) delete o.wall[k]; o.jobs = (o.jobs || []).filter(j => !(j.kind === 'wall' && j.cls === 'garr')); return o; } } } catch (e) { } return null; }
+function load() { try { const s = localStorage.getItem(SAVE_KEY); if (s) { const o = JSON.parse(s); if (o && o.v === 1) { if (o.hero && o.hero.level == null) { o.hero.level = 1; o.hero.xp = 0; delete o.hero.rank; } o.xpi = o.xpi || {}; o.stam = o.stam || { v: STAM_MAX, at: Date.now(), spent: 0, refunded: 0, mats: 0, hunts: 0, wins: 0 }; o.streak = o.streak || { n: 0, at: 0, best: 0 }; o.chests = o.chests || []; if (typeof o.gems !== 'object' || !o.gems) { const n = +o.gems || 0; o.gems = n ? { 'strike:1': n } : {}; } o.codex = o.codex || {}; o.ap = o.ap || 0; o.j5 = o.j5 || 0; o.frags = o.frags || 0; o.next = o.next || {}; if (!o.next.chest) o.next.chest = Date.now() + 30000; for (const k of Object.keys(o.wall || {})) if (/^garr/.test(k)) delete o.wall[k]; o.jobs = (o.jobs || []).filter(j => !(j.kind === 'wall' && j.cls === 'garr')); return o; } } } catch (e) { } return null; }
 function resetGame() { try { localStorage.removeItem(SAVE_KEY); } catch (e) { } S = newState(); terrDirty = true; UIH.dirty(); }
 function note(m, kind) { S.log.unshift({ t: Date.now(), m, k: kind || 'info' }); if (S.log.length > 80) S.log.length = 80; UIH.toast(m, kind); }
 function dchg(n, why) { S.dia += n; S.ledger.unshift({ t: Date.now(), n, why, bal: S.dia }); if (S.ledger.length > 120) S.ledger.length = 120; }
@@ -156,11 +156,21 @@ function heroOn() { return !S.hero.captured; }
 
 function slotPiece(slot) { const id = S.gear.worn[slot]; return id ? S.gear.pieces.find(p => p.id === id) : null; }
 /* Worn pieces per set. Bonuses stack at 3, 5 and 7 pieces of the same set. */
-function setCounts() { const c = {}; for (const sl of SLOTS) { const p = slotPiece(sl); if (p && p.set) c[p.set] = (c[p.set] || 0) + 1; } return c; }
+function setCounts() { const c = {}; for (const sl of SLOTS) { const p = slotPiece(sl); if (p && p.set && heroLv() >= HERO_SET_LV) c[p.set] = (c[p.set] || 0) + 1; } return c; }
 function setBest() { const c = setCounts(); let best = null; for (const k in c) if (c[k] >= 3 && (!best || c[k] > c[best])) best = k; return best; }
 function setBonus() { return setBest(); }
 function setFull() { const b = setBest(); return b && setCounts()[b] >= 7 ? b : null; }
 function setStats(set, n) { const r = { atk: 0, march: 0, yld: 0, gather: 0, build: 0, train: 0, heal: 0, wallHp: 0, refund: 0 }; if (!set) return r; const t = SETS[set].b; for (const k of [3, 5, 7]) if (n >= k) for (const st in t[k]) r[st] += t[k][st]; return r; }
+/* ---- gems: sockets, bonuses (placeholders, see data.js) ---- */
+/* sockets 1-3 open by quality, socket 4 only with the Gemology research (so a Gem Set needs Epic or Legendary gear plus Gemology) */
+function socketOpen(p, i) { return i < 3 ? i < socketsNative(p.grade) : R('gemology') >= 1; }
+const GEM_STATS = () => ({ atk: 0, hp: 0, march: 0, yld: 0, gather: 0, build: 0, train: 0, heal: 0, wallHp: 0, refund: 0 });
+function gemPower(kind, tier) { return GEM_PCT[tier - 1] * (1 + rv('lapidary')) * (gemStatKey(kind) === 'refund' ? 4 : 1); }
+function gemSetDone(p) { const g = p.gems || []; for (let i = 0; i < SOCKETS; i++) if (!socketOpen(p, i) || !g[i]) return null; const k = g.map(gemSplit); return gemIsSet(k[0][0]) && k.every(x => x[0] === k[0][0]) ? { kind: k[0][0], tier: Math.min(...k.map(x => x[1])) } : null; }
+function pieceGems(p) { const r = GEM_STATS(), g = p.gems || []; for (let i = 0; i < SOCKETS; i++) if (g[i] && socketOpen(p, i)) { const [kd, t] = gemSplit(g[i]); r[gemStatKey(kd)] += gemPower(kd, t); }
+  const d = gemSetDone(p); if (d) r[gemStatKey(d.kind)] += GEMSET_PCT[d.tier - 1] * (gemStatKey(d.kind) === 'refund' ? 4 : 1); return r; }
+function gemStats() { const r = GEM_STATS(); for (const sl of SLOTS) { const p = slotPiece(sl); if (p) { const q = pieceGems(p); for (const k in q) r[k] += q[k]; } } return r; }
+function wornBonus() { const a = setWorn(), g = gemStats(); for (const k in g) a[k] = (a[k] || 0) + g[k]; return a; }
 function setWorn() { const b = setBest(); return b ? setStats(b, setCounts()[b]) : setStats(null, 0); }
 /* Hero: levels from XP. Items and free XP go through heroGain; nothing is lost past level 50. */
 function heroLv() { return S.hero.level || 1; }
@@ -184,8 +194,8 @@ function mods(withHero) {
   const T = TITLES[S.titles.you] ? S.titles.you : null;
   const set = setBonus();
   const wp = slotPiece('weapon'), cp = slotPiece('chest'), hp = slotPiece('helmet'), bp = slotPiece('boots'), ap = slotPiece('accessory');
-  const gp = slotPiece('gauntlets'), rp = slotPiece('greaves'), ST = setWorn();
-  let hpAdd = rv('plating') + (cp ? piecePct('chest', cp.grade) : 0) + (rp ? piecePct('greaves', rp.grade) : 0) + (heroOn() ? heroStat('hp') : 0);
+  const gp = slotPiece('gauntlets'), rp = slotPiece('greaves'), ST = wornBonus();
+  let hpAdd = rv('plating') + (cp ? pPct(cp) : 0) + (rp ? pPct(rp) : 0) + (heroOn() ? heroStat('hp') : 0) + ST.hp;
   let marchAtk = 0, yAdd = 0;
   if (T === 'blade') marchAtk += 0.08; if (T === 'coward') marchAtk -= 0.08;
   if (T === 'bulwark') hpAdd += 0.08; if (T === 'brittle') hpAdd -= 0.08;
@@ -193,15 +203,15 @@ function mods(withHero) {
   if (T === 'sluggard') m.march -= 0.08;
   yAdd += ST.yld;
   if (heroOn() && withHero) marchAtk += heroStat('atk');
-  if (bp) { const p = piecePct('boots', bp.grade); m.march += p; m.gather += p; }
+  if (bp) { const p = pPct(bp); m.march += p; m.gather += p; }
   m.gather += rv('gather'); m.march += ST.march;
-  if (hp) m.helmet = piecePct('helmet', hp.grade);
+  if (hp) m.helmet = pPct(hp);
   m.train = rv('logi') + rv('trainspd') + (T === 'drillmaster' ? 0.08 : 0);
-  if (ap) { const p = piecePct('accessory', ap.grade); if (ap.stat === 'training') m.train += p; else yAdd += p; }
+  if (ap) { const p = pPct(ap); if (ap.stat === 'training') m.train += p; else yAdd += p; }
   m.wallHp += heroOn() ? heroStat('def') : 0; m.load += heroOn() && withHero ? heroStat('lead') : 0;
   m.train += ST.train; m.build += ST.build; m.heal += ST.heal; m.wallHp += ST.wallHp; m.gather += ST.gather;
   m.hp = 1 + hpAdd;
-  for (const c of CLS) m.atk[c] = (1 + rv('atk_' + c)) * (1 + (wp ? piecePct('weapon', wp.grade) : 0) + (gp ? piecePct('gauntlets', gp.grade) : 0)) * (1 + ST.atk) * (1 + marchAtk);
+  for (const c of CLS) m.atk[c] = (1 + rv('atk_' + c)) * (1 + (wp ? pPct(wp) : 0) + (gp ? pPct(gp) : 0)) * (1 + ST.atk) * (1 + marchAtk);
   for (const r of RES) m.yld[r] = 1 + (RS['y_' + r] ? rv('y_' + r) : 0) + yAdd;
   m.marchAtk = marchAtk; m.hpAdd = hpAdd; m.set = set;
   return m;
@@ -462,15 +472,20 @@ function rollGrade(L) { const w = []; let tot = 0; for (let d = 1; d <= L; d++) 
 function addLootBar(m, g) { m.loot.bars[g] = (m.loot.bars[g] || 0) + 1; }
 /* One monster per gear set (monsterIdAt in data.js picks it from this week's three, or a holiday monster). Each leaves its own resource tile. */
 function monsterSet(x, y) { return monsterIdAt(x, y); }
-function rollShard(m, L, set) { if (Math.random() < Math.min(0.35, 0.04 * L)) m.loot.shard = set || pick(Object.keys(SETS)); }
 function rollDrop(L) { const o = dropOdds(L, S.research.hunt || 0); let r = Math.random(); for (let i = 0; i < o.length; i++) { r -= o[i]; if (r <= 0) return i + 1; } return 1; }
 /* ---- hunt stamina, streak, alliance chests ---- */
 function stamTick(now) { const s = S.stam; if (s.v >= STAM_MAX) { s.at = now; return; } const n = Math.floor((now - s.at) / STAM_REGEN_MS); if (n > 0) { s.v = Math.min(STAM_MAX, s.v + n); s.at = s.v >= STAM_MAX ? now : s.at + n * STAM_REGEN_MS; } }
-function pushChest(lv, from) { S.chests.push({ id: S.nid++, lv, from, t: Date.now() }); if (S.chests.length > CHEST_MAX) S.chests.shift(); }
+function pushChest(lv, from, kind) { S.chests.push({ id: S.nid++, lv, from, t: Date.now(), kind: kind || 'kill' }); if (S.chests.length > CHEST_MAX) S.chests.shift(); }
 function chestBars(lv) { return 1 + Math.floor(lv / 2); }
 function claimChest(id) {
   const i = S.chests.findIndex(c => c.id === id); if (i < 0) return 'That chest is gone.';
-  const c = S.chests[i], got = []; S.chests.splice(i, 1);
+  const c = S.chests[i], got = []; S.chests.splice(i, 1); S.ap = (S.ap || 0) + (c.kind === 'gift' ? 15 : 5 * c.lv);
+  if (c.kind === 'gift') {   // an ally's pack purchase (sandbox: no real money): mid-tier cache, Level 3 or 4 materials and cores
+    const mats = {}, gems = {}; for (let i = 0; i < GIFT_ROLLS; i++) { const a = Math.random() < GIFT_TIER4 ? 4 : 3, b = Math.random() < GIFT_TIER4 ? 4 : 3; mats[a] = (mats[a] || 0) + 1; matAdd(a, 1); const k = gemKey(coreKind(), b); gems[k] = (gems[k] || 0) + 1; gemAdd(k, 1); }
+    for (const t in mats) got.push(mats[t] + ' ' + qName(t) + ' material' + (mats[t] > 1 ? 's' : '')); for (const k in gems) got.push(gems[k] + ' ' + qName(gemSplit(k)[1]) + ' ' + gemName(gemSplit(k)[0]));
+    const a = addRes(pick(RES), Math.round(rnd(4000, 7000))); if (a > 0) got.push(fmtN(a) + ' supplies');
+    note('Alliance gift from ' + c.from + ' (pack purchase): ' + got.join(', ') + '.', 'good'); return null;
+  }
   for (const r of [pick(RES.slice(0, 4)), pick(RES)]) { const a = addRes(r, Math.round(c.lv * rnd(900, 1600))); if (a > 0) got.push(fmtN(a) + ' ' + RESN[r]); }
   const n = chestBars(c.lv), by = {}; for (let k = 0; k < n; k++) { const g = rollDrop(c.lv); by[g] = (by[g] || 0) + 1; S.bars[g] = (S.bars[g] || 0) + 1; }
   for (const g in by) got.push(by[g] + ' ' + qName(g) + ' material' + (by[g] > 1 ? 's' : ''));
@@ -485,15 +500,13 @@ function huntSpoils(m, t, g) {
   st.n = st.n > 0 && now - st.at <= STREAK_MS ? st.n + 1 : 1; st.at = now; st.best = Math.max(st.best || 0, st.n);
   const extra = Math.min(3, Math.floor(st.n / 3)), base = 1 + Math.floor(g / 2), mats = {};
   for (let i = 0; i < base + extra; i++) { const q = rollDrop(g); addLootBar(m, q); mats[q] = (mats[q] || 0) + 1; }
-  const cost = m.stam || 0, refund = Math.floor(cost * setWorn().refund);
+  const cost = m.stam || 0, refund = Math.floor(cost * wornBonus().refund);
   sm.v = Math.min(STAM_MAX, sm.v + refund); sm.refunded += refund; sm.mats += base + extra; sm.hunts++; sm.wins++;
   const pk = pick(RES), pa = addRes(pk, Math.round(g * rnd(250, 600)));
   const items = []; if (Math.random() < 0.2 + 0.05 * g) { const x = huntXpItem(g); xpiGive(x, 1); items.push(XPI.find(q => q.id === x).n); }
   const fr = 1 + g; S.frags += fr; let fused = 0; while (S.frags >= 10) { S.frags -= 10; xpiGive('tiny', 1); fused++; }
   const xp = XP_FREE.hunt * g; heroGain(xp);
   pushChest(g, 'You');
-  if (hol) { const reg = pick(activeSets()); rollShard(m, g, reg); if (Math.random() < Math.min(0.6, 0.2 + 0.07 * g)) { m.loot.shards = m.loot.shards || {}; m.loot.shards[id] = 1; } }
-  else rollShard(m, g, id);
   return { mon: sp ? sp.mon : 'Monster', hol: !!hol, lv: g, stam: { cost, refund, net: cost - refund }, mats, streak: st.n, extra, pocket: pa ? [pk, pa] : null, items, frags: fr, fused, xp, chest: g, eff: sm.hunts ? sm.mats / Math.max(1, sm.spent - sm.refunded) * 10 : 0 };
 }
 function survivors(m) { return sumCol(m.col); }
@@ -536,7 +549,7 @@ function arrive(m) {
     if (fr.r.win) {
       S.dead[key(m.tx, m.ty)] = 1; S.kills++; const vg = rollGrade(g), res = pick(RES.slice(0, 4));
       S.nodes[key(m.tx, m.ty)] = { res, nk: Object.keys(NODE_RES).find(k => NODE_RES[k] === res), grade: vg, stock: 600 * vg, max: 600 * vg, rich: true, from: t.mon || null };
-      if (!camp) { const hs = huntSpoils(m, t, g); if (fr.rep) fr.rep.hunt = hs; } else { for (let i = 0, n = 1 + Math.floor(g / 2); i < n; i++) addLootBar(m, rollGrade(g)); rollShard(m, g, pick(Object.keys(SETS))); heroGain(XP_FREE.hunt * g); }
+      if (!camp) { const hs = huntSpoils(m, t, g); if (fr.rep) fr.rep.hunt = hs; } else { for (let i = 0, n = 1 + Math.floor(g / 2); i < n; i++) addLootBar(m, rollGrade(g)); heroGain(XP_FREE.hunt * g); }
       if (Math.random() < 0.3) m.loot.dia += g * 2;
       for (const r of [pick(RES.slice(0, 4)), pick(RES)]) m.loot.res[r] = (m.loot.res[r] || 0) + Math.round(g * rnd(500, 1100));
       if (fr.wiped) { S.marches = S.marches.filter(x => x !== m); if (m.hero) S.hero.captured = true; note('Pack dead, column gone. Rich vein left at ' + m.tx + ',' + m.ty + '.', 'warn'); return; }
@@ -592,9 +605,8 @@ function landMarch(m) {
   for (const k in m.wound) { const a = Math.min(free, m.wound[k]); if (a > 0) { S.wounded[k] = (S.wounded[k] || 0) + a; free -= a; } over += m.wound[k] - a; }
   const got = []; for (const r in m.loot.res) { const a = addRes(r, m.loot.res[r]); if (a > 0) got.push(fmtN(a) + ' ' + RESN[r]); }
   for (const g in m.loot.bars) { S.bars[g] = (S.bars[g] || 0) + m.loot.bars[g]; got.push(m.loot.bars[g] + ' ' + qName(g) + ' material' + (m.loot.bars[g] > 1 ? 's' : '')); }
-  if (m.loot.gem) { S.gems += m.loot.gem; got.push('a gem'); }
-  if (m.loot.shard) { S.shards[m.loot.shard] = (S.shards[m.loot.shard] || 0) + 1; got.push(SETS[m.loot.shard].n + ' shard'); }
-  for (const hs in (m.loot.shards || {})) { S.shards[hs] = (S.shards[hs] || 0) + 1; got.push(SETS[hs].n + ' event shard'); }
+  for (const gk in (m.loot.gems || {})) { const [kd, t] = gemSplit(gk), n = m.loot.gems[gk]; gemAdd(gk, n); got.push(n + ' ' + qName(t) + ' ' + gemName(kd) + (n > 1 ? 's' : '')); }
+  for (const hs in (m.loot.shards || {})) { shardAdd(hs, m.loot.shards[hs]); got.push((m.loot.shards[hs] > 1 ? m.loot.shards[hs] + ' ' : '') + SETS[hs].n + (SETS[hs].hol ? ' event shard' : ' shard')); }
   if (m.loot.dia) { dchg(m.loot.dia, 'Loot'); got.push(m.loot.dia + ' diamonds'); }
   note(marchName(m) + ' column is home' + (got.length ? ': ' + got.join(', ') : '') + (over ? '. ' + over + ' wounded died, beds full' : '') + '.', 'good');
 }
@@ -605,11 +617,8 @@ function stepMarch(m) {
   if (m.phase === 'sit') {
     const nn = nodeAt(m.tx, m.ty), k = key(m.tx, m.ty);
     if (nn) {
-      const h = Math.min(nn.stock, m.haul); nn.stock -= h; m.loot.res[nn.res] = (m.loot.res[nn.res] || 0) + h; S.nodes[k] = nn;
+      const h = Math.min(nn.stock, m.haul); nn.stock -= h; m.loot.res[nn.res] = (m.loot.res[nn.res] || 0) + h; S.nodes[k] = nn; tileLoot(m, nn, h / nn.max);
       if (nn.stock <= 0) {
-        const L = nn.grade, drain = Math.min(1, h / nn.max * (nn.rich ? 1 : 1));
-        if (Math.random() < (0.33 + (0.73 - 0.33) * (L - 1) / 5) * drain) addLootBar(m, rollGrade(L));
-        if (Math.random() < Math.min(0.2, 0.02 * L) * drain) m.loot.gem++;
         if (nn.rich) { delete S.nodes[k]; S.dead[k] = 1; } else nn.emptyUntil = Date.now() + 90000;
       }
     }
@@ -816,7 +825,7 @@ function buyMarket(i) {
   const it = MARKET_CAT.find(x => x.id === o.id); if (S.dia < it.cost) return 'Short of diamonds.';
   dchg(-it.cost, 'Black Market: ' + it.n); grant(it.give); o.sold = true; return null;
 }
-function grant(g) { for (const k in g) { if (RES.includes(k)) addRes(k, g[k]); else if (k === 'tokens') S.tokens += g[k]; else if (S.slips[k] != null) S.slips[k] += g[k]; else if (k === 'dia') dchg(g[k], 'Grant'); else if (k === 'bars') for (const gg in g[k]) S.bars[gg] = (S.bars[gg] || 0) + g[k][gg]; else if (k === 'shard') S.shards[g[k]]++; } }
+function grant(g) { for (const k in g) { if (RES.includes(k)) addRes(k, g[k]); else if (k === 'tokens') S.tokens += g[k]; else if (S.slips[k] != null) S.slips[k] += g[k]; else if (k === 'dia') dchg(g[k], 'Grant'); else if (k === 'bars') for (const gg in g[k]) S.bars[gg] = (S.bars[gg] || 0) + g[k][gg]; else if (k === 'shard') S.shards[g[k]]++; else if (k === 'gems') for (const gk in g[k]) gemAdd(gk, g[k][gk]); } }
 function buyPack(id) {
   const p = DIA_PACKS.find(x => x.id === id); if (S.dia < p.cost) return 'Short of diamonds.'; dchg(-p.cost, p.n);
   const g = { drop: { rations: 12000, fuel: 9000, power: 9000 }, field: { rations: 30000, fuel: 24000, power: 24000, alloy: 16000, cash: 8000, s60: 2 }, chest: { rations: 70000, fuel: 60000, power: 60000, alloy: 40000, cash: 20000, s60: 3, s480: 1, tokens: 3, bars: { 2: 4, 3: 2 } }, reserve: { rations: 160000, fuel: 140000, power: 140000, alloy: 100000, cash: 60000, s480: 4, s60: 6, tokens: 6, bars: { 3: 4, 4: 2 }, shard: 'vanguard' } }[id];
@@ -841,11 +850,93 @@ function craft(slot, sel, shard, stat) {
   const ins = []; for (const g in sel) for (let i = 0; i < sel[g]; i++) ins.push(+g); ins.sort((x, y) => x - y);
   const mixed = ins[0] !== ins[3]; let grade = ins[0];
   if (mixed) { let r = Math.random(), i = 0; for (; i < 3; i++) { r -= MIX_ODDS[i]; if (r < 0) break; } grade = ins[i]; }
-  const p = { id: S.nid++, slot, grade, set: shard || null, stat: slot === 'accessory' ? stat : null }; S.gear.pieces.push(p); note('Forged ' + qName(grade) + ' ' + slot + (mixed ? (grade > ins[0] ? ' from a mixed craft: you beat the odds.' : ' from a mixed craft: the floor, as usual.') : ' (four of a kind, guaranteed).'), mixed && grade === ins[0] ? 'warn' : 'good'); return null;
+  const p = { id: S.nid++, slot, grade, set: shard || null, stat: slot === 'accessory' ? stat : null, gems: [], stars: 0 }; S.gear.pieces.push(p); if (shard) S.codex[shard] = 1; note('Forged ' + qName(grade) + ' ' + slot + (mixed ? (grade > ins[0] ? ' from a mixed craft: you beat the odds.' : ' from a mixed craft: the floor, as usual.') : ' (four of a kind, guaranteed).'), mixed && grade === ins[0] ? 'warn' : 'good'); return null;
 }
-function wear(id) { const p = S.gear.pieces.find(x => x.id === id); if (!p) return 'No such piece.'; S.gear.worn[p.slot] = id; return null; }
+function wear(id) { const p = S.gear.pieces.find(x => x.id === id); if (!p) return 'No such piece.'; if (p.set && heroLv() < HERO_SET_LV) return 'Set gear needs hero level ' + HERO_SET_LV + '. Basic gear has no gate.'; S.gear.worn[p.slot] = id; return null; }
 function rack(id) { const p = S.gear.pieces.find(x => x.id === id); if (!p) return 'No such piece.'; if (S.gear.worn[p.slot] === id) delete S.gear.worn[p.slot]; return null; }
-function pieceText(p) { const pc = (piecePct(p.slot, p.grade) * 100).toFixed(1).replace(/\.0$/, ''); return p.slot === 'accessory' ? '+' + pc + '% ' + (p.stat === 'training' ? 'training speed' : 'yield') : '+' + pc + '% ' + SLOT_WHAT[p.slot]; }
+function pieceText(p) { const pc = (pPct(p) * 100).toFixed(1).replace(/\.0$/, ''); return p.slot === 'accessory' ? '+' + pc + '% ' + (p.stat === 'training' ? 'training speed' : 'yield') : '+' + pc + '% ' + SLOT_WHAT[p.slot]; }
+
+/* ---------------- Gems: stock, 4-to-1, mixed craft, sockets ---------------- */
+const rcount = x => Math.floor(x) + (Math.random() < x - Math.floor(x) ? 1 : 0);
+function gemAdd(k, n) { S.gems[k] = (S.gems[k] || 0) + n; if (!S.gems[k]) delete S.gems[k]; }
+function matAdd(t, n) { S.bars[t] = (S.bars[t] || 0) + n; }
+function shardAdd(id, n) { S.shards[id] = (S.shards[id] || 0) + n; S.codex[id] = 1; }
+function gemTotal() { let n = 0; for (const k in S.gems) n += S.gems[k]; return n; }
+function pickTier(w) { const t = w.reduce((a, b) => a + b, 0); let r = Math.random() * t; for (let i = 0; i < w.length; i++) { r -= w[i]; if (r <= 0) return i + 1; } return 1; }
+const tileTier = L => pickTier(TILE_W.slice(0, Math.min(L, TILE_W.length)));
+const coreKind = () => pick(Object.keys(CORES));
+/* loot of a gathering column: regular tiles drop generic materials and cores; a monster tile (node.from) is the ONLY source of the monster's set shards and Monster Gems. `frac` = share of the tile just gathered. */
+function tileLoot(m, nn, frac) {
+  const L = nn.grade, L_ = m.loot; L_.gems = L_.gems || {}; L_.shards = L_.shards || {};
+  const add = (k, n) => { L_.gems[k] = (L_.gems[k] || 0) + (n || 1); };
+  const rolls = rcount((0.5 + 0.25 * L) * frac);
+  for (let i = 0; i < rolls; i++) { const t = tileTier(L); if (Math.random() < 0.5) addLootBar(m, t); else add(gemKey(coreKind(), t)); }
+  const wk = weekEnds();
+  if (!nn.from) {
+    if (L >= 5 && S.j5 !== wk && Math.random() < TILE_J5 * frac) { S.j5 = wk; if (Math.random() < 0.5) addLootBar(m, 5); else add(gemKey(coreKind(), 5)); note('Weekly jackpot! An Epic find in the tile.', 'good'); }
+    if (L >= 6 && Math.random() < TILE_J6 * frac) { for (let i = 0; i < 3; i++) { addLootBar(m, 6); add(gemKey(coreKind(), 6)); } note('LEGENDARY JACKPOT: a 6-pack of Gold finds in the tile!', 'good'); }
+    return;
+  }
+  const id = nn.from, hol = id.indexOf('h_') === 0;
+  for (let i = 0, n = rcount((0.6 + 0.3 * L) * frac); i < n; i++) add(gemKey(id, rollDrop(L)));
+  if (Math.random() < Math.min(0.9, 0.3 + 0.1 * L) * frac) L_.shards[id] = (L_.shards[id] || 0) + 1;
+  if (hol && Math.random() < Math.min(0.9, 0.3 + 0.1 * L) * frac) { const reg = pick(activeSets()); L_.shards[reg] = (L_.shards[reg] || 0) + 1; }
+}
+/* quest pouches, store chests, gifts: all regular (core) gems and plain materials; Monster Gems never come from these */
+function pouch(mats, gems, tiers) {
+  const got = [], by = {};
+  for (const t in (mats || {})) { matAdd(t, mats[t]); got.push(mats[t] + ' ' + qName(t) + ' material' + (mats[t] > 1 ? 's' : '')); }
+  for (let i = 0; i < (gems || 0); i++) { const t = pick(tiers || [1, 1, 2]), k = gemKey(coreKind(), t); gemAdd(k, 1); by[t] = (by[t] || 0) + 1; }
+  for (const t in by) got.push(by[t] + ' ' + qName(t) + ' core' + (by[t] > 1 ? 's' : ''));
+  return got;
+}
+function storeChestBuy() {
+  if ((S.ap || 0) < STORE_COST) return 'Short of alliance points.';
+  S.ap -= STORE_COST; const mats = {}, got = [], by = {};
+  for (let i = 0; i < STORE_ROLLS; i++) { const t = Math.random() < STORE_TIER2 ? 2 : 1; if (Math.random() < 0.5) { matAdd(t, 1); mats[t] = (mats[t] || 0) + 1; } else { gemAdd(gemKey(coreKind(), t), 1); by[t] = (by[t] || 0) + 1; } }
+  for (const t in mats) got.push(mats[t] + ' ' + qName(t) + ' material' + (mats[t] > 1 ? 's' : ''));
+  for (const t in by) got.push(by[t] + ' ' + qName(t) + ' core' + (by[t] > 1 ? 's' : ''));
+  note('Alliance store chest: ' + got.join(', ') + '.', 'good'); return null;
+}
+function gemCombine(k) {
+  const [kd, t] = gemSplit(k); if (!hasB('forge')) return 'Build a Forge first.'; if (t >= 6) return 'Legendary is the top tier.';
+  if (lvlMax('forge') < forgeGate(t)) return 'Forge ' + forgeGate(t) + ' needed to combine ' + qName(t) + ' gems.'; if ((S.gems[k] || 0) < 4) return 'Four ' + qName(t) + ' ' + gemName(kd) + 's needed.';
+  gemAdd(k, -4); gemAdd(gemKey(kd, t + 1), 1); return null;
+}
+/* mixed gem craft: same casino as gear. The four gems are sorted by tier; the result is the gem in position 1/2/3/4 with 75 / 20 / 4.9 / 0.1 percent */
+function gemMix(sel) {
+  if (!hasB('forge')) return 'Build a Forge first.'; if (sumCol(sel) !== 4) return 'A mix spends exactly four gems.';
+  for (const k in sel) if ((S.gems[k] || 0) < sel[k]) return 'Not enough of those gems.';
+  const ins = []; for (const k in sel) for (let i = 0; i < sel[k]; i++) ins.push(k); ins.sort((a, b) => gemSplit(a)[1] - gemSplit(b)[1]);
+  if (ins.every(k => k === ins[0])) return 'Four of a kind combine for free and guaranteed: use Combine.';
+  for (const k in sel) gemAdd(k, -sel[k]);
+  let r = Math.random(), i = 0; for (; i < 3; i++) { r -= MIX_ODDS[i]; if (r < 0) break; }
+  gemAdd(ins[i], 1); const [kd, t] = gemSplit(ins[i]); note('Mixed gem craft gave a ' + qName(t) + ' ' + gemName(kd) + (i ? ': you beat the odds.' : ': the floor, as usual.'), i ? 'good' : 'warn'); return null;
+}
+function socketGem(pid, k) {
+  const p = S.gear.pieces.find(x => x.id === pid); if (!p) return 'No such piece.'; if (!(S.gems[k] > 0)) return 'You have none of that gem.';
+  p.gems = p.gems || []; let i = 0; while (i < SOCKETS && (!socketOpen(p, i) || p.gems[i])) i++;
+  if (i >= SOCKETS) return R('gemology') >= 1 ? 'Every open socket is full.' : 'Every open socket is full. Socket 4 needs the Gemology research.';
+  gemAdd(k, -1); p.gems[i] = k; return null;
+}
+function unsocketGem(pid, i) { const p = S.gear.pieces.find(x => x.id === pid); if (!p || !p.gems || !p.gems[i]) return 'Empty socket.'; gemAdd(p.gems[i], 1); p.gems[i] = null; return null; }
+/* Smelter: melts an unworn piece into one material of its own tier (a quarter of the four it cost) and returns its gems */
+function smelt(id) {
+  if (!hasB('forge')) return 'Build a Forge first.'; const p = S.gear.pieces.find(x => x.id === id); if (!p) return 'No such piece.'; if (S.gear.worn[p.slot] === id) return 'Take it off first.';
+  for (let i = 0; i < SOCKETS; i++) if ((p.gems || [])[i]) gemAdd(p.gems[i], 1);
+  S.gear.pieces = S.gear.pieces.filter(x => x !== p); matAdd(p.grade, 1); note('Smelted ' + qName(p.grade) + ' ' + p.slot + ' into one ' + qName(p.grade) + ' material.', 'info'); return null;
+}
+/* Enhancement Vault: star a piece with duplicates (same slot, set and tier, unworn). Star N+1 needs N+1 duplicates, alloy and Forge 3 + N. */
+function dupes(p) { return S.gear.pieces.filter(x => x !== p && x.slot === p.slot && x.grade === p.grade && (x.set || null) === (p.set || null) && S.gear.worn[x.slot] !== x.id); }
+const starCost = n => ({ alloy: 2000 * (n + 1) });
+function starUp(id) {
+  if (!hasB('forge')) return 'Build a Forge first.'; const p = S.gear.pieces.find(x => x.id === id); if (!p) return 'No such piece.'; const n = p.stars || 0;
+  if (n >= STAR_MAX) return 'Five stars is the top.'; if (lvlMax('forge') < 3 + n) return 'Forge ' + (3 + n) + ' needed for star ' + (n + 1) + '.';
+  const d = dupes(p); if (d.length < n + 1) return 'Star ' + (n + 1) + ' needs ' + (n + 1) + ' duplicate' + (n ? 's' : '') + ' (same slot, set and tier, not worn).';
+  const e = pay(starCost(n), false, 'Enhancement'); if (e) return e;
+  for (const x of d.slice(0, n + 1)) { for (let i = 0; i < SOCKETS; i++) if ((x.gems || [])[i]) gemAdd(x.gems[i], 1); S.gear.pieces = S.gear.pieces.filter(y => y !== x); }
+  p.stars = n + 1; note(qName(p.grade) + ' ' + p.slot + ' is now ' + p.stars + ' star' + (p.stars > 1 ? 's' : '') + '.', 'good'); return null;
+}
 function setHero(id) { if (heroLocked()) return 'The hero is out.'; if (S.hero.captured) return 'The hero is captured.'; S.hero.id = id; return null; }
 
 /* ---------------- tick ---------------- */
@@ -864,7 +955,7 @@ function tick() {
   stamTick(now);
   { const ep = huntCycle(now) + ':' + activeHolidays(now).join(','); if (ep !== HUNT_EP) { if (HUNT_EP != null) { terrDirty = true; ch = true; } HUNT_EP = ep; } }
   if (S.chests.length && S.chests.some(c => now - c.t > CHEST_LIFE_MS)) { S.chests = S.chests.filter(c => now - c.t <= CHEST_LIFE_MS); ch = true; }
-  if (now > (S.next.chest || 0)) { S.next.chest = now + rint(45000, 90000); pushChest(1 + Math.floor(Math.random() * Math.random() * 5.99), pick(S.roster.slice(3))); ch = true; }
+  if (now > (S.next.chest || 0)) { S.next.chest = now + rint(45000, 90000); if (Math.random() < 1 / 6) pushChest(Math.random() < GIFT_TIER4 ? 4 : 3, pick(S.roster.slice(3)), 'gift'); else pushChest(1 + Math.floor(Math.random() * Math.random() * 5.99), pick(S.roster.slice(3))); ch = true; }
   if (tickEmbassy(now)) ch = true;
   for (const inc of S.incoming.slice()) if (now >= inc.end) { hitBase(inc); ch = true; }
   for (const k in S.encs) { const e = S.encs[k]; if (e.o !== 0 && now >= e.end) { const cur = S.own[k]; if (cur == null || cur === e.o) S.own[k] = e.o; delete S.encs[k]; terrDirty = true; ch = true; } }

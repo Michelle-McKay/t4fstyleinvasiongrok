@@ -153,15 +153,17 @@ const MISSIONS = [
   { id: 'm2', n: 'Muster 5,000 troops', d: () => Math.min(headcount(), 5000), t: 5000, dia: 80, slips: { s60: 1 } },
   { id: 'm3', n: 'Hold 40 tiles of land', d: () => Math.min(Object.values(S.own).filter(o => o === 0).length, 40), t: 40, dia: 50 },
   { id: 'm4', n: 'Read your first report', d: () => Math.min(S.reports.length, 1), t: 1, res: { rations: 5000, fuel: 5000 } },
-  { id: 'm5', n: 'Forge a piece of gear', d: () => Math.min(S.gear.pieces.length, 1), t: 1, dia: 40 },
-  { id: 'm6', n: 'Run the daily exercise', d: () => S.daily === new Date().toDateString() ? 1 : 0, t: 1, slips: { s5: 2 }, daily: 1 },
-  { id: 'm7', n: 'Raise the Command Center to 10', d: () => Math.min(ccLevel(), 10), t: 10, dia: 120, tokens: 1 }
+  { id: 'm5', n: 'Forge a piece of gear', d: () => Math.min(S.gear.pieces.length, 1), t: 1, dia: 40, gembag: 2 },
+  { id: 'm6', n: 'Run the daily exercise', d: () => S.daily === new Date().toDateString() ? 1 : 0, t: 1, slips: { s5: 2 }, daily: 1, mats: { 1: 4, 2: 1 }, gembag: 2 },
+  { id: 'm7', n: 'Raise the Command Center to 10', d: () => Math.min(ccLevel(), 10), t: 10, dia: 120, tokens: 1 },
+  { id: 'm8', n: 'Win 3 monster hunts', d: () => Math.min(S.stam.wins, 3), t: 3, mats: { 1: 6, 2: 2 }, gembag: 3 },
+  { id: 'm9', n: 'Socket a gem into a gear piece', d: () => S.gear.pieces.some(p => (p.gems || []).some(Boolean)) ? 1 : 0, t: 1, mats: { 2: 3 }, gembag: 2 }
 ];
 const HOUR = 3600e3;
 function missionHTML() {
   S.missions = S.missions || {}; const day = new Date().toDateString();
   const rows = MISSIONS.map(m => {
-    const done = m.daily ? S.missions[m.id] === day : !!S.missions[m.id], cur = m.d(), ok = cur >= m.t, pr = [m.dia ? `${m.dia}◆` : '', m.tokens ? `${m.tokens} token` : '', ...(m.slips ? Object.keys(m.slips).map(k => `${m.slips[k]}× slip`) : []), ...(m.res ? Object.keys(m.res).map(k => `${fmtN(m.res[k])} ${RESN[k]}`) : [])].filter(Boolean).join(' · ');
+    const done = m.daily ? S.missions[m.id] === day : !!S.missions[m.id], cur = m.d(), ok = cur >= m.t, pr = [m.dia ? `${m.dia}◆` : '', m.tokens ? `${m.tokens} token` : '', ...(m.slips ? Object.keys(m.slips).map(k => `${m.slips[k]}× slip`) : []), ...(m.res ? Object.keys(m.res).map(k => `${fmtN(m.res[k])} ${RESN[k]}`) : []), ...(m.mats ? Object.keys(m.mats).map(t => `${m.mats[t]}× ${qName(t)} material`) : []), m.gembag ? `${m.gembag} basic cores` : ''].filter(Boolean).join(' · ');
     return `<div class="rwrow"><div class="grow"><b>${m.n}</b><div class="sub">${fmtN(cur)}/${fmtN(m.t)} · ${pr}</div><div class="bar"><i style="width:${cur / m.t * 100}%"></i></div></div><button class="btn sm ${ok && !done ? 'pri' : 'line'}" data-a="mclaim" data-id="${m.id}" ${ok && !done ? '' : 'disabled'}>${done ? 'Claimed' : 'Claim'}</button></div>`;
   }).join('');
   return `<div class="panel"><div class="hd"><h3>Missions</h3><span class="sub">${MISSIONS.filter(m => m.d() >= m.t && !(m.daily ? S.missions[m.id] === day : S.missions[m.id])).length} ready</span></div><div class="bd">${rows}</div></div>`;
@@ -188,9 +190,9 @@ function huntHTML() {
 }
 function chestsHTML() {
   const now = Date.now(), cs = S.chests.slice().sort((a, b) => b.lv - a.lv || b.t - a.t);
-  return `<div class="panel"><div class="hd"><h3>Alliance gift chests</h3><span class="tag ${cs.length ? 'br' : ''}">${cs.length}</span></div><div class="bd"><div class="sub">Every monster killed on the map drops a chest for the whole alliance. Bigger monsters, bigger chests. Chests are shared, so open them before they expire after 24 hours.</div>
+  return `<div class="panel"><div class="hd"><h3>Alliance gift chests</h3><span class="tag ${cs.length ? 'br' : ''}">${cs.length}</span></div><div class="bd"><div class="sub">Every monster killed on the map drops a chest for the whole alliance. Bigger monsters, bigger chests. When an ally buys a pack, a mid-tier gift chest drops for everyone too. Opening a chest earns alliance points for the Store tab. Chests are shared, so open them before they expire after 24 hours.</div>
   <div class="flex mt"><button class="btn pri" data-a="chestall" ${cs.length ? '' : 'disabled'}>Open all</button></div></div></div>
-  <div class="panel"><div class="bd list">${cs.map(c => `<div class="it"><span class="num br" style="width:44px">Lv ${c.lv}</span><div class="grow"><b class="h" style="font-size:15px">${c.from}'s chest</b><div class="sub">${chestBars(c.lv)} material rolls · resources · maybe an XP item · expires in ${fmtT((c.t + CHEST_LIFE_MS - now) / 1000)}</div></div><button class="btn sm pri" data-a="chest" data-id="${c.id}">Open</button></div>`).join('') || '<div class="sub">No chests. Hunt a monster or wait for an ally.</div>'}</div></div>`;
+  <div class="panel"><div class="bd list">${cs.map(c => `<div class="it"><span class="num br" style="width:44px">Lv ${c.lv}</span><div class="grow"><b class="h" style="font-size:15px">${c.from}'s ${c.kind === 'gift' ? 'pack gift' : 'chest'}</b><div class="sub">${c.kind === 'gift' ? 'a member bought a pack (sandbox): Level ' + c.lv + ' materials and cores' : chestBars(c.lv) + ' material rolls · resources · maybe an XP item'} · expires in ${fmtT((c.t + CHEST_LIFE_MS - now) / 1000)}</div></div><button class="btn sm pri" data-a="chest" data-id="${c.id}">Open</button></div>`).join('') || '<div class="sub">No chests. Hunt a monster or wait for an ally.</div>'}</div></div>`;
 }
 function eventsHTML() {
   const now = Date.now(), fd = Math.max(0, (S.freeDiaAt || 0) + 4 * HOUR - now), sp = Math.max(0, (S.supplyAt || 0) + 0.5 * HOUR - now), dl = S.daily === new Date().toDateString();
@@ -325,7 +327,7 @@ function huntReportHTML(h) {
     + row('Materials (ride home)', mats || '—') + row('Hunt streak', h.streak + ' in a row' + (h.extra ? ' · <span class="ox">+' + h.extra + ' extra roll' + (h.extra > 1 ? 's' : '') + '</span>' : ''))
     + row('Commander XP', '+' + fmtN(h.xp)) + row('Hero upgrade items', (h.items.length ? h.items.join(', ') + ' · ' : '') + h.frags + ' fragments' + (h.fused ? ' → ' + h.fused + ' Tiny XP' : ''))
     + row('Instant pocket', h.pocket ? '+' + fmtN(h.pocket[1]) + ' ' + RESN[h.pocket[0]] : 'StoreHouse full') + row('Alliance gift chest', 'Level ' + h.chest + ' · shared, see Guild › Chests')
-    + `<div class="sub">${h.eff.toFixed(1)} materials per 10 net stamina across all your hunts. Carried loot and shards are paid out when the column is home.</div>`;
+    + `<div class="sub">${h.eff.toFixed(1)} materials per 10 net stamina across all your hunts. Carried loot is paid out when the column is home. Set shards and Monster Gems are not carried by the monster: they sit in the loot tile it leaves behind, so send a column to gather it.</div>`;
 }
 function sheetReport(id) {
   const r = S.reports.find(x => x.id === id); if (!r) return '<div class="sub">Report gone.</div>';
@@ -397,7 +399,7 @@ function renderTrain() {
   h += `<div class="panel"><div class="hd"><h3>Garrison</h3></div><div class="bd">${CLS.map(k => [1, 2, 3, 4].filter(x => S.troops[k + x]).map(x => `<div class="rr"><span class="wi"><i class="ui">${unitSVG(k, x, { plate: false })}</i>${tierName(k, x)}</span><span class="num">${S.troops[k + x]}</span></div>`).join('')).join('') || '<div class="sub">Empty.</div>'}</div></div>`;
   return h;
 }
-const TCOL = { combat: '#c0543c', field: '#5b7f9a', defense: '#7a8a52', troops: '#a8863a', econ: '#4f9a86', ops: '#8a6aa8' };
+const TCOL = { combat: '#c0543c', field: '#5b7f9a', defense: '#7a8a52', troops: '#a8863a', econ: '#4f9a86', ops: '#8a6aa8', craft: '#c88a3a' };
 const TGLYPH = { y_rations: 'rations', y_power: 'power', y_alloy: 'alloy', y_fuel: 'fuel', wh: 'vault', build: 'base', load: 'cash', gather: 'rations', march: 'march', logi: 'train', trainspd: 'train', recon: 'lab', beds: 'med', restore: 'med', repair: 'med' };
 function techArt(id) {
   const d = RS[id], c = TCOL[d.tree] || '#5b7f9a'; let art = '';
@@ -506,19 +508,20 @@ function heroesHTML() {
 /* ---------------- hero screen: avatar centre, 4 slots left, 3 slots and set progress right, stats, tabs ---------------- */
 const dotEm = '<em class="dot"></em>';
 function heroPower() { let g = 0; for (const sl of SLOTS) { const pc = slotPiece(sl); if (pc) g += pc.grade * 120; } return heroLv() * 300 + g; }
-function betterGear(slot) { const w = slotPiece(slot), best = S.gear.pieces.filter(p => p.slot === slot).reduce((a, p) => Math.max(a, p.grade), 0); return best > (w ? w.grade : 0); }
+function setLocked(p) { return !!p.set && heroLv() < HERO_SET_LV; }
+function betterGear(slot) { const w = slotPiece(slot), best = S.gear.pieces.filter(p => p.slot === slot && !setLocked(p)).reduce((a, p) => Math.max(a, p.grade), 0); return best > (w ? w.grade : 0); }
 function heroGearBonus() {
-  const g = sl => { const p = slotPiece(sl); return p ? piecePct(sl, p.grade) : 0; }, ST = setWorn();
-  return { atk: g('weapon') + g('gauntlets') + ST.atk, def: g('helmet'), hp: g('chest') + g('greaves'), lead: g('boots') };
+  const g = sl => { const p = slotPiece(sl); return p ? pPct(p) : 0; }, ST = wornBonus();
+  return { atk: g('weapon') + g('gauntlets') + ST.atk, def: g('helmet'), hp: g('chest') + g('greaves') + ST.hp, lead: g('boots') };
 }
 function heroSlotBtn(sl) {
   const p = slotPiece(sl);
   return `<button class="hslot ${UI.hs === sl ? 'on' : ''}" data-a="hslot" data-s="${sl}"><i class="ui big">${p ? gearSVG(sl, p.grade, p.set) : emptySlot(sl)}</i><span>${SLOT_NAME[sl]}</span>${betterGear(sl) ? dotEm : ''}</button>`;
 }
 function heroSlotPanel(sl) {
-  const w = slotPiece(sl), own = S.gear.pieces.filter(p => p.slot === sl).sort((a, b) => b.grade - a.grade), wp = w ? piecePct(sl, w.grade) : 0;
-  const row = p => { const on = S.gear.worn[sl] === p.id, d = piecePct(sl, p.grade) - wp, ar = on ? '' : d > 0 ? '<b class="up">▲</b>' : d < 0 ? '<b class="dn">▼</b>' : '<b class="eq">＝</b>';
-    return `<div class="it"><i class="ui big">${gearSVG(sl, p.grade, p.set)}</i><div class="grow"><b class="h" style="font-size:15px">${qName(p.grade)} ${p.set ? SETS[p.set].n : ''} ${SLOT_NAME[sl]}</b> ${ar}<div class="sub">${pieceText(p)}</div></div><button class="btn sm ${on ? 'line' : 'pri'}" data-a="${on ? 'rack' : 'wear'}" data-id="${p.id}">${on ? 'Remove' : 'Equip'}</button></div>`; };
+  const w = slotPiece(sl), own = S.gear.pieces.filter(p => p.slot === sl).sort((a, b) => b.grade - a.grade), wp = w ? pPct(w) : 0;
+  const row = p => { const on = S.gear.worn[sl] === p.id, d = pPct(p) - wp, ar = on ? '' : d > 0 ? '<b class="up">▲</b>' : d < 0 ? '<b class="dn">▼</b>' : '<b class="eq">＝</b>';
+    return `<div class="it"><i class="ui big">${gearSVG(sl, p.grade, p.set)}</i><div class="grow"><b class="h" style="font-size:15px">${qName(p.grade)} ${p.set ? SETS[p.set].n : ''} ${SLOT_NAME[sl]}</b> ${ar}<div class="sub">${pieceText(p)}</div></div><button class="btn sm ${on ? 'line' : 'pri'}" data-a="${on ? 'rack' : 'wear'}" data-id="${p.id}" ${!on && setLocked(p) ? 'disabled' : ''}>${on ? 'Remove' : setLocked(p) ? 'Hero Lv ' + HERO_SET_LV : 'Equip'}</button></div>`; };
   return `<div class="panel"><div class="hd"><h3>${SLOT_NAME[sl]}</h3><span class="tag">${w ? qName(w.grade) + (w.set ? ' ' + SETS[w.set].n : '') : 'empty'}</span></div><div class="bd"><div class="flex sp"><div class="sub">${w ? pieceText(w) : 'Nothing equipped.'}</div><button class="btn sm" data-a="hupg" data-s="${sl}">Upgrade</button></div><div class="lbl mt">Owned</div><div class="list">${own.map(row).join('') || '<div class="sub">None yet. Craft some in the Forge.</div>'}</div></div></div>`;
 }
 function heroScreenHTML() {
@@ -556,7 +559,7 @@ const DR = {
   item: { tabs: [['bag', 'Bag'], ['boost', 'Boosts']], body: itemHTML },
   desk: { tabs: [['train', 'Train'], ['lab', 'Lab'], ['med', 'Med']], body: renderDesk_ },
   hero: { tabs: [['hero', 'Hero'], ['forge', 'Forge'], ['store', 'Store'], ['market', 'Market'], ['ledger', 'Ledger']], body: t => ({ hero: heroScreenHTML, forge: forgeHTML, store: storeHTML, market: marketHTML, ledger: ledgerHTML })[t]() },
-  alliance: { tabs: [['throne', 'Throne'], ['rally', 'Rally'], ['emb', 'Embassy'], ['chest', 'Chests'], ['ally', 'Alliance']], body: t => ({ throne: throneHTML, rally: marchRally, emb: embassyHTML, chest: chestsHTML, ally: allyHTML })[t]() },
+  alliance: { tabs: [['throne', 'Throne'], ['rally', 'Rally'], ['emb', 'Embassy'], ['chest', 'Chests'], ['astore', 'Store'], ['ally', 'Alliance']], body: t => ({ throne: throneHTML, rally: marchRally, emb: embassyHTML, chest: chestsHTML, astore: allianceStoreHTML, ally: allyHTML })[t]() },
   mail: { tabs: [['rep', 'Reports'], ['sav', 'Saved'], ['log', 'Log'], ['ctc', 'Contacts']], body: t => ({ rep: reportsHTML, sav: () => reportsHTML(true), log: logHTML, ctc: contactsHTML })[t]() },
   more: { tabs: [['menu', 'More'], ['rw', 'Rewards'], ['inv', 'Invite'], ['help', 'Help']], body: t => ({ menu: moreHTML, rw: rewardsHTML, inv: inviteHTML, help: helpHTML })[t]() },
   march: { tabs: [['cols', 'Columns'], ['field', 'Field']], body: t => t === 'cols' ? marchCols() : marchField() }
@@ -598,21 +601,6 @@ function craftOddsText(sel) {
   if (ins[0] === ins[3]) return `Four of a kind: ${qName(ins[0])} gear, 100% guaranteed.`;
   const m = {}; ins.slice(0, 4).forEach((g, i) => m[g] = (m[g] || 0) + MIX_ODDS[i]);
   return `Mixed craft, the gamble: ` + Object.keys(m).map(g => `${qName(g)} ${+(m[g] * 100).toFixed(1)}%`).join(' · ') + `. Hoard four of a kind instead.`;
-}
-function forgeHTML() {
-  const u = gradeUnits(), C = UI.cr, sel = C.sel, selN = sumCol(sel), fl = lvlMax('forge'), hasF = hasB('forge');
-  const fhead = hasF ? `<div class="panel"><div class="hd"><h3>Forge ${fl}</h3><span class="tag br">up to ${qName(Math.min(6, Math.floor(fl / 3) + 1))}</span></div><div class="bd"><div class="sub">Four materials of one tier refine into one of the next tier up, and the next tier needs Forge 3 × the tier below. Four of a kind craft gear of that exact tier, guaranteed. Mixing tiers is a gamble that lands on your lowest piece most of the time.</div></div></div>` : `<div class="panel" style="border-color:var(--signal)"><div class="bd"><div class="h1">No Forge</div><div class="sub mt">Build a Forge on an empty inner plot to refine bars and craft gear.</div></div></div>`;
-  const bars = [1, 2, 3, 4, 5, 6].map(g => `<div class="flex sp" style="margin:4px 0"><i class="ui">${barSVG(g)}</i><span class="lbl" style="width:96px;white-space:nowrap;color:${QUALITY[g].col}">${qName(g)}</span><b class="num grow">${S.bars[g] || 0}</b><div class="step"><button data-a="crsel" data-g="${g}" data-d="-1">−</button><b class="num">${sel[g] || 0}</b><button data-a="crsel" data-g="${g}" data-d="1">+</button></div><button class="btn sm" data-a="refine" data-g="${g}" ${g < 6 && (S.bars[g] || 0) >= 4 && hasF && fl >= forgeGate(g) ? '' : 'disabled'}>${hasF && g < 6 && fl < forgeGate(g) ? 'Forge ' + forgeGate(g) : 'Refine'}</button></div>`).join('');
-  const odds = craftOddsText(sel);
-  const worn = SLOTS.map(s => { const p = slotPiece(s); return `<div class="rr"><span class="wi"><i class="ui">${p ? gearSVG(s, p.grade, p.set) : emptySlot(s)}</i>${s}</span><span class="num ${p ? 'br' : 'mut'}">${p ? qName(p.grade) + ' ' + (p.set ? SETS[p.set].n : '') + ' ' + pieceText(p) : 'empty'}</span></div>`; }).join('');
-  return fhead + `<div class="panel"><div class="hd"><h3>Materials</h3><span class="tag">Gems ${S.gems}</span></div><div class="bd"><div class="flex sp"><span class="lbl">Stockpile</span><b class="num">${u}/1024</b></div><div class="bar mt"><i style="width:${Math.min(100, u / 1024 * 100)}%"></i><u style="left:50%"></u></div><div class="flex sp sub"><span>0</span><span>512</span><span>1024 = Legendary</span></div><div class="mt">${bars}</div><div class="sub">Four of one tier refine into one of the next. Gear and materials share the same six tiers: Basic grey, Common white, Uncommon green, Rare blue, Epic purple, Legendary gold.</div></div></div>
-  <div class="panel"><div class="hd"><h3>Craft</h3><span class="tag ${selN === 4 ? 'br' : ''}">${selN}/4 materials</span></div><div class="bd"><div class="tabs2">${SLOTS.map(s => `<button class="${C.slot === s ? 'on' : ''}" data-a="crslot" data-s="${s}"><i class="tic">${gearSVG(s, 3)}</i>${s}</button>`).join('')}</div>
-  ${C.slot === 'accessory' ? `<div class="flex mb"><span class="lbl">Stamp</span><button class="btn sm ${C.stat === 'training' ? 'on' : 'line'}" data-a="crstat" data-s="training">Training</button><button class="btn sm ${C.stat === 'yield' ? 'on' : 'line'}" data-a="crstat" data-s="yield">Yield</button></div>` : ''}
-  <div class="flex wrap mb"><span class="lbl">Shard</span><button class="btn sm ${!C.shard ? 'on' : 'line'}" data-a="crshard" data-s="">None</button>${Object.keys(SETS).filter(s => S.shards[s] > 0 || C.shard === s).map(s => `<button class="btn sm ${C.shard === s ? 'on' : 'line'}" data-a="crshard" data-s="${s}">${SETS[s].n} ${S.shards[s] || 0}</button>`).join('') || '<span class="sub">No shards yet. Hunt monsters for them.</span>'}</div>
-  <div class="sub">${odds}</div><div class="sub">${C.slot}: ${C.slot === 'accessory' ? 'stamped stat' : SLOT_WHAT[C.slot]} +${SLOT_CURVE[C.slot][0]}% to +${SLOT_CURVE[C.slot][1]}%</div>
-  <div class="flex mt"><button class="btn pri" data-a="craft" ${selN === 4 && hasF ? '' : 'disabled'}>Refine into gear</button><button class="btn line" data-a="crclear">Clear</button></div></div></div>
-  <div class="panel"><div class="hd"><h3>Worn</h3><span class="tag ${setBonus() ? 'br' : ''}">${setBonus() ? SETS[setBonus()].n + ' set · ' + SETS[setBonus()].d : 'no full set'}</span></div><div class="bd">${worn}</div></div>
-  <div class="panel"><div class="hd"><h3>Rack</h3></div><div class="bd list">${S.gear.pieces.map(p => { const w = S.gear.worn[p.slot] === p.id; return `<div class="it"><i class="ui big">${gearSVG(p.slot, p.grade, p.set)}</i><div class="grow"><b class="h" style="font-size:15px">${qName(p.grade)} ${p.slot} ${p.set ? SETS[p.set].n : ''}</b><div class="sub">${pieceText(p)}</div></div><button class="btn sm ${w ? 'line' : 'pri'}" data-a="${w ? 'rack' : 'wear'}" data-id="${p.id}">${w ? 'Rack' : 'Wear'}</button></div>`; }).join('') || '<div class="sub">Nothing forged.</div>'}</div></div>`;
 }
 function storeHTML() {
   return `<div class="panel"><div class="hd"><h3>Packs</h3><b class="num br">${S.dia}◆</b></div><div class="bd list">${DIA_PACKS.map(p => `<div class="it"><div class="grow"><b class="h" style="font-size:16px">${p.n}</b><div class="sub">${p.d}</div></div><button class="btn sm" data-a="pack" data-id="${p.id}" ${S.dia < p.cost ? 'disabled' : ''}>${p.cost}◆</button></div>`).join('')}</div></div>
@@ -703,7 +691,7 @@ const A = {
   refine(d) { run(refine(+d.g)); }, wear(d) { run(wear(+d.id)); }, rack(d) { run(rack(+d.id)); },
   pack(d) { run(buyPack(d.id)); }, slipbuy(d) { run(buySlip(d.id), 'Slips racked.'); }, crate(d) { run(buyRes(d.r, +d.n), 'Crate opened.'); },
   buyorders() { run(buyOrders(), 'Five orders.'); }, buyseals() { run(buySeals(), 'Five seals.'); }, buytoken() { run(buyToken(false), 'Token bought.'); }, buycrate() { run(buyToken(true), 'Three tokens.'); }, daily() { run(daily()); },
-  mclaim(d) { S.missions = S.missions || {}; const m = MISSIONS.find(x => x.id === d.id); if (!m || m.d() < m.t) return; S.missions[m.id] = m.daily ? new Date().toDateString() : 1; if (m.dia) dchg(m.dia, 'Mission'); if (m.tokens) S.tokens += m.tokens; if (m.slips) grant(m.slips); if (m.res) grant(m.res); toast('Mission complete: ' + m.n, 'good'); hap(14); D(); },
+  mclaim(d) { S.missions = S.missions || {}; const m = MISSIONS.find(x => x.id === d.id); if (!m || m.d() < m.t) return; S.missions[m.id] = m.daily ? new Date().toDateString() : 1; if (m.dia) dchg(m.dia, 'Mission'); if (m.tokens) S.tokens += m.tokens; if (m.slips) grant(m.slips); if (m.res) grant(m.res); const pg = (m.mats || m.gembag) ? pouch(m.mats, m.gembag, [1, 1, 2]) : []; toast('Mission complete: ' + m.n + (pg.length ? ' · ' + pg.join(', ') : ''), 'good'); hap(14); D(); },
   freedia() { if (Date.now() < (S.freeDiaAt || 0) + 4 * HOUR) return toast('Free diamonds are cooling down.', 'warn'); S.freeDiaAt = Date.now(); dchg(20, 'Free diamonds'); toast('+20 diamonds', 'good'); hap(14); D(); },
   supply() { if (Date.now() < (S.supplyAt || 0) + 0.5 * HOUR) return toast('The next drop is not ready.', 'warn'); S.supplyAt = Date.now(); const g = {}; for (const r of RES) g[r] = Math.round(storeCap() * 0.02); grant(g); toast('Supply drop: ' + fmtN(g[RES[0]]) + ' of each resource', 'good'); hap(14); D(); },
   mrefresh() { if (S.dia < 15) return run('Short of diamonds.'); dchg(-15, 'Market refresh'); rollMarket(true); D(); }, mbuy(d) { run(buyMarket(+d.i), 'Bought.'); },
