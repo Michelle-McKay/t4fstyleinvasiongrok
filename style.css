@@ -585,3 +585,15 @@ html.editing #main{will-change:transform}
 .sock.lk{opacity:.6}
 button.sock{cursor:pointer}
 .linkish{background:none;border:0;padding:0;color:inherit;font:inherit;text-decoration:underline dotted;cursor:pointer}
+
+/* ---- skill trees ---- */
+.skt{display:flex;align-items:stretch;gap:6px;margin:6px 0}
+.skl{flex:none;width:44px;font:600 11px var(--head);text-transform:uppercase;letter-spacing:.05em;color:var(--mute);display:flex;align-items:center}
+.skr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;flex:1;min-width:0}
+.skn{min-width:0;overflow-wrap:anywhere;display:flex;flex-direction:column;align-items:flex-start;gap:1px;padding:5px 6px;min-height:58px;border:1px solid var(--line);background:rgba(0,0,0,.25);color:var(--bone);text-align:left;font-size:11px;line-height:1.15}
+.skn b{font:600 12px var(--head);text-transform:uppercase;letter-spacing:.03em}
+.skn.on{border-color:var(--brass);background:rgba(224,164,74,.18)}
+.skn.can{border-color:#8ef0b0}
+.skn.lock{opacity:.45}
+.sk-ic{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;margin-bottom:2px;border-radius:50%;background:var(--raised);font:700 10px var(--head);font-style:normal;color:var(--brass)}
+.sk-ic img{width:22px;height:22px}

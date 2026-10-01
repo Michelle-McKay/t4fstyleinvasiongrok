@@ -142,8 +142,15 @@ Cost by stretch at $2.00 per 100k: levels 1-30 about $235, 30-45 about $1,855, 4
 ## 11. Open items still placeholders
 - Level cap: flat 50 (`HERO_MAX`), not tied to player or base level.
 - Set bonus values (`SETS[...].b`) and gear rarity tiers: placeholder values; rarity is the existing grades 1 to 6.
-- Skill tree: not built. One skill point per level is banked and shown.
+- Skill tree: built (section 12), values are placeholders.
 - Starter pack and limited-time offers: not added.
 - Gem pack lineup: unchanged. Gems (25 Basic and 72 set gems, one per piece) are now built, see FORGE_GEMS.md.
 - Avatar switching: free (`AVATAR_SWITCH_COST = 0`).
 - Full-body avatars are vector placeholders until painted art arrives (prompts are in the art checklist).
+
+## 12. Skill trees (built)
+- One point per level (49 at level 50). Main tree: 14 tiers, 40 nodes. Hunting tree: root, two branches, three advanced nodes (6 nodes). Everything fits in 46 points.
+- A node needs one learned node in the tier above; II and III need the lower level of the same skill. Reset is free (open item).
+- Mapping from the reference game: Wood/Stone/Iron/Silver production become Oil/Energy/Steel/Cash; Infantry/Cavalry/Ranged attack become Rock/Paper/Scissors; Troop Defense becomes wall HP; Trap Attack becomes wall trap attack. Hunting "Energy" is our hunt stamina.
+- Hunting nodes: Monster Target Debuff (weaker monsters), Energy Cost Reduction (stacks with gear, capped at 50% total), Energy Recovery, Maximum Energy Limit, Hero Attack, Hero Attack Streak (per hunt streak step, up to 10). Hunter's instinct research only affects drops, so nothing overlaps.
+- Node values are placeholders (`SK_VAL` in data.js).

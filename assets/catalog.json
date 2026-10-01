@@ -1,6 +1,6 @@
 {
  "v": 2,
- "count": 917,
+ "count": 941,
  "groups": [
   {
    "id": "bld",
@@ -61,6 +61,11 @@
    "id": "skill",
    "title": "Hero skill icons (12)",
    "note": "Small glossy icons for hero skills and skill tree nodes, front view, transparent, bold shapes that read at 32 pixels."
+  },
+  {
+   "id": "skillnode",
+   "title": "Hero skill node icons (24)",
+   "note": "One icon per skill family in the hero skill trees (18 main, 6 hunting). Small glossy icons, front view, transparent, bold shapes that read at 28 pixels, one flat colour theme per family so the tree reads at a glance: gold for production, orange for attack, blue for defence and health, green for economy. Same style, outline and light as the other skill icons."
   },
   {
    "id": "gear",
@@ -2567,6 +2572,198 @@
    "group": "skill",
    "key": "skill_air",
    "name": "Skill icon: air",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "skillnode",
+   "key": "skillnode_atk",
+   "name": "Skill node: atk",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "skillnode",
+   "key": "skillnode_food",
+   "name": "Skill node: food",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "skillnode",
+   "key": "skillnode_oil",
+   "name": "Skill node: oil",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "skillnode",
+   "key": "skillnode_energy",
+   "name": "Skill node: energy",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "skillnode",
+   "key": "skillnode_steel",
+   "name": "Skill node: steel",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "skillnode",
+   "key": "skillnode_cash",
+   "name": "Skill node: cash",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "skillnode",
+   "key": "skillnode_build",
+   "name": "Skill node: build",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "skillnode",
+   "key": "skillnode_research",
+   "name": "Skill node: research",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "skillnode",
+   "key": "skillnode_train",
+   "name": "Skill node: train",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "skillnode",
+   "key": "skillnode_rock",
+   "name": "Skill node: rock",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "skillnode",
+   "key": "skillnode_paper",
+   "name": "Skill node: paper",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "skillnode",
+   "key": "skillnode_scissors",
+   "name": "Skill node: scissors",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "skillnode",
+   "key": "skillnode_siege",
+   "name": "Skill node: siege",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "skillnode",
+   "key": "skillnode_gather",
+   "name": "Skill node: gather",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "skillnode",
+   "key": "skillnode_trapb",
+   "name": "Skill node: trapb",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "skillnode",
+   "key": "skillnode_trapa",
+   "name": "Skill node: trapa",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "skillnode",
+   "key": "skillnode_hp",
+   "name": "Skill node: hp",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "skillnode",
+   "key": "skillnode_def",
+   "name": "Skill node: def",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "skillnode",
+   "key": "skillnode_debuff",
+   "name": "Skill node: debuff",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "skillnode",
+   "key": "skillnode_hcost",
+   "name": "Skill node: hcost",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "skillnode",
+   "key": "skillnode_hregen",
+   "name": "Skill node: hregen",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "skillnode",
+   "key": "skillnode_hatk",
+   "name": "Skill node: hatk",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "skillnode",
+   "key": "skillnode_hmax",
+   "name": "Skill node: hmax",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "skillnode",
+   "key": "skillnode_hstreak",
+   "name": "Skill node: hstreak",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128

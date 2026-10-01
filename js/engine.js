@@ -213,11 +213,27 @@ function useXpItem(id, n) {
   S.xpi[id] = have - want; heroGain(want * it.xp); return null;
 }
 function xpiGive(id, n) { S.xpi = S.xpi || {}; S.xpi[id] = (S.xpi[id] || 0) + n; }
+/* Skills: banked points buy nodes in the main and hunting trees. */
+function skNode(id) { return SKILL_ALL.find(n => n.id === id); }
+function skHas(id) { return !!(S.hero.sk && S.hero.sk[id]); }
+function skSpent() { return S.hero.sk ? Object.keys(S.hero.sk).length : 0; }
+function skPoints() { return Math.max(0, heroLv() - 1 - skSpent()); }
+function skTier(id) { for (const t of ['main', 'hunt']) { const i = SKILL_TREES[t].findIndex(r => r.some(n => n.id === id)); if (i >= 0) return [t, i]; } return [null, -1]; }
+function skCan(id) {
+  const n = skNode(id); if (!n) return 'No such skill.'; if (skHas(id)) return 'Already learned.'; if (skPoints() < 1) return 'No skill points left.';
+  const [t, i] = skTier(id); if (i > 0 && !SKILL_TREES[t][i - 1].some(x => skHas(x.id))) return 'Learn a skill in the tier above first.';
+  if (n.lv > 1 && !skHas(n.fam + (n.lv - 1))) return 'Learn ' + SK_FAM[n.fam][0] + ' ' + SK_RN[n.lv - 2] + ' first.'; return null;
+}
+function skBuy(id) { const e = skCan(id); if (e) return e; S.hero.sk = S.hero.sk || {}; S.hero.sk[id] = 1; return null; }
+function skReset() { S.hero.sk = {}; return null; }   // OPEN ITEM: respec is free for now
+function skillBonus() { const K = {}; for (const id in (S.hero.sk || {})) { const n = skNode(id); if (n) K[n.stat] = (K[n.stat] || 0) + n.v; } return K; }
+const stamMax = () => STAM_MAX + Math.round(STAM_MAX * (skillBonus().stamMax || 0));
+const stamRegen = () => Math.round(STAM_REGEN_MS / (1 + (skillBonus().stamRegen || 0)));
 function heroStat(k) { return HERO_STAT[k] * heroLv(); }
 function mods(withHero) {
   const m = { atk: {}, hp: 1, hpc: {}, yld: {}, gather: 0, load: rv('load'), march: rv('march'), train: 0, build: rv('build'), heal: rv('restore'), wallAtk: rv('perim'), wallHp: rv('bulk'), helmet: 0, research: 0, trap: 0, huntCost: 0 };
   const T = TITLES[S.titles.you] ? S.titles.you : null;
-  const set = setBonus(), G = wornBonus();
+  const set = setBonus(), G = wornBonus(), K = skillBonus(); for (const k in K) G[k] = (G[k] || 0) + K[k];
   let hpAdd = rv('plating') + (heroOn() ? heroStat('hp') : 0) + G.hp;
   let marchAtk = 0, yAdd = 0;
   if (T === 'blade') marchAtk += 0.08; if (T === 'coward') marchAtk -= 0.08;
@@ -225,7 +241,7 @@ function mods(withHero) {
   if (T === 'provisioner') { yAdd += 0.10; m.gather += 0.10; } if (T === 'burden') { yAdd -= 0.10; m.gather -= 0.10; }
   if (T === 'sluggard') m.march -= 0.08;
   yAdd += G.yld;
-  if (heroOn() && withHero) marchAtk += heroStat('atk') + G.heroAtk;
+  if (heroOn() && withHero) marchAtk += heroStat('atk') + G.heroAtk + (G.streakAtk || 0) * Math.min(10, (S.streak && S.streak.n) || 0);
   m.gather += rv('gather') + G.gather; m.march += G.march; m.load += G.load;
   m.train = rv('logi') + rv('trainspd') + (T === 'drillmaster' ? 0.08 : 0) + G.train;
   m.wallHp += (heroOn() ? heroStat('def') : 0) + G.wallHp; m.wallAtk += G.wallAtk; m.load += heroOn() && withHero ? heroStat('lead') : 0;
@@ -274,7 +290,7 @@ function applyLoss(col, frac) {
   return { left, lost, wounded, dead };
 }
 function synDef(S_, H_) { return { S: S_, H: H_ }; }
-function monsterSyn(g, camp) { const f = camp ? 0.5 : 1; return synDef(150 * Math.pow(g, 1.8) * f, 1500 * Math.pow(g, 1.8) * f); }
+function monsterSyn(g, camp) { const f = (camp ? 0.5 : 1) * (1 - Math.min(0.5, skillBonus().monDebuff || 0)); return synDef(150 * Math.pow(g, 1.8) * f, 1500 * Math.pow(g, 1.8) * f); }
 function botScale() { return 1 + (Date.now() - S.t0) / 60000 * 0.012; }
 function botSyn(b, f) { f = f || 1; const s = botScale(); return synDef(900 * Math.pow(b.p, 1.5) * s * f, 11000 * Math.pow(b.p, 1.5) * s * f); }
 function citadelSide() { return mkSide({ inf3: 700, arm3: 500, air3: 500 }, {}, 1.5); }
@@ -496,7 +512,7 @@ function addLootBar(m, g) { m.loot.bars[g] = (m.loot.bars[g] || 0) + 1; }
 function monsterSet(x, y) { return monsterIdAt(x, y); }
 function rollDrop(L) { const o = dropOdds(L, S.research.hunt || 0); let r = Math.random(); for (let i = 0; i < o.length; i++) { r -= o[i]; if (r <= 0) return i + 1; } return 1; }
 /* ---- hunt stamina, streak, alliance chests ---- */
-function stamTick(now) { const s = S.stam; if (s.v >= STAM_MAX) { s.at = now; return; } const n = Math.floor((now - s.at) / STAM_REGEN_MS); if (n > 0) { s.v = Math.min(STAM_MAX, s.v + n); s.at = s.v >= STAM_MAX ? now : s.at + n * STAM_REGEN_MS; } }
+function stamTick(now) { const s = S.stam; if (s.v >= stamMax()) { s.at = now; return; } const n = Math.floor((now - s.at) / stamRegen()); if (n > 0) { s.v = Math.min(stamMax(), s.v + n); s.at = s.v >= stamMax() ? now : s.at + n * stamRegen(); } }
 function pushChest(lv, from, kind) { S.chests.push({ id: S.nid++, lv, from, t: Date.now(), kind: kind || 'kill' }); if (S.chests.length > CHEST_MAX) S.chests.shift(); }
 function chestBars(lv) { return 1 + Math.floor(lv / 2); }
 function claimChest(id) {
@@ -523,7 +539,7 @@ function huntSpoils(m, t, g) {
   const extra = Math.min(3, Math.floor(st.n / 3)), base = 1 + Math.floor(g / 2), mats = {};
   for (let i = 0; i < base + extra; i++) { const q = rollDrop(g); addLootBar(m, q); mats[q] = (mats[q] || 0) + 1; }
   const cost = m.stam || 0, refund = Math.floor(cost * wornBonus().refund);
-  sm.v = Math.min(STAM_MAX, sm.v + refund); sm.refunded += refund; sm.mats += base + extra; sm.hunts++; sm.wins++;
+  sm.v = Math.min(stamMax(), sm.v + refund); sm.refunded += refund; sm.mats += base + extra; sm.hunts++; sm.wins++;
   const pk = pick(RES), pa = addRes(pk, Math.round(g * rnd(250, 600)));
   const items = []; if (Math.random() < 0.2 + 0.05 * g) { const x = huntXpItem(g); xpiGive(x, 1); items.push(XPI.find(q => q.id === x).n); }
   const fr = 1 + g; S.frags += fr; let fused = 0; while (S.frags >= 10) { S.frags -= 10; xpiGive('tiny', 1); fused++; }
@@ -659,7 +675,7 @@ function recall(id) {
   const m = S.marches.find(x => x.id === id); if (!m) return 'No such column.';
   if (m.phase === 'back') return 'Already walking home.'; if (m.kind === 'rally') { if (m.phase !== 'wait') return 'A launched column cannot be recalled.'; return cancelRally(m); }
   const now = Date.now(); let back = m.backMs;
-  if (m.phase === 'out' && m.stam) { S.stam.v = Math.min(STAM_MAX, S.stam.v + m.stam); S.stam.spent -= m.stam; m.stam = 0; }
+  if (m.phase === 'out' && m.stam) { S.stam.v = Math.min(stamMax(), S.stam.v + m.stam); S.stam.spent -= m.stam; m.stam = 0; }
   if (m.phase === 'out') { const f = clamp((now - m.start) / m.outMs, 0, 1); back = Math.max(3000, Math.round(m.backMs * f)); m.loot = { res: {}, bars: {}, gem: 0, shard: null, dia: 0 }; }
   if (m.phase === 'sit') { m.loot = { res: {}, bars: {}, gem: 0, shard: null, dia: 0 }; }
   if (m.holdKind === 'tile' && m.phase === 'hold') { const e = S.encs[key(m.tx, m.ty)]; if (e && e.mid === m.id) delete S.encs[key(m.tx, m.ty)]; terrDirty = true; }
