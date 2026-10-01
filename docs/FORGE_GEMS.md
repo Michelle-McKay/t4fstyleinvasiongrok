@@ -122,6 +122,8 @@ Set pieces give every stat of their set at 1 to 8 percent per piece (placeholder
 - A gem's effect is its percent for its tier, times (1 + Lapidary research), added to the stats listed in `GEMS[id].as` (`js/data.js`). Effects the game has no stat for yet (capacity, cost reduction, lethality, reinforcement speed, shield duration, critical damage...) feed the **nearest existing stat** and the label shows the spec's wording. **OPEN ITEM:** build those stats for real.
 - **Set Synergy**: adds its percent to every stat of its set while 2 or more pieces of the set are worn (Full-Set Synergy of a holiday set: all 5 worn). **Placeholder** activation rule.
 
+- Holiday gems carry Michelle's fuller effect text (`GEM_DESC`, 19:05), shown in the Workshop and Gear Sets and used in the art prompts. Mechanics are unchanged (nearest stat). The synergy core currently needs all 5 pieces of the holiday set worn; her text says "with the matching gear", which may mean fewer. OPEN ITEM.
+
 ## 4. The gem socket
 - A piece with **1 star** (`GEM_SOCKET_STARS`, placeholder for "fully upgraded") has **one socket** holding **one gem of one type**. Below that the socket is locked and shown capped.
 - Gems come out for free (tap the socketed gem in the Workshop's socket bench); a new gem swaps the old one back to stock. A smelted or consumed piece returns its gem.
