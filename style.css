@@ -505,3 +505,23 @@ button{-webkit-touch-callout:none}
 .laygrid img{width:100%;height:100%;object-fit:contain;display:block}
 .laying .isle .cd.sel{outline:2px solid var(--brass)}
 .cd.wired{pointer-events:auto;cursor:pointer}
+
+/* game-wide editor (js/editor.js) */
+.edpill{position:fixed;left:6px;bottom:calc(env(safe-area-inset-bottom) + 64px);z-index:9999;min-height:36px;padding:0 12px;border-radius:18px;border:1px solid rgba(224,164,74,.7);background:rgba(20,26,29,.92);color:#e7e4da;font:600 12px/1 var(--head);letter-spacing:.1em;text-transform:uppercase;display:flex;align-items:center;gap:6px}
+.edpill.on{background:var(--brass);color:#1a1408}
+.edbar{position:fixed;left:6px;right:6px;bottom:calc(env(safe-area-inset-bottom) + 104px);z-index:9998;max-height:46vh;overflow-y:auto;padding:6px 8px;background:rgba(20,26,29,.96);border:1px solid var(--brass);border-radius:6px;display:flex;flex-direction:column;gap:6px;color:#e7e4da}
+.edbar[hidden]{display:none}
+.edrow{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.edrow b{font:600 12px/1 var(--head);letter-spacing:.08em;text-transform:uppercase;color:var(--brass);flex:1 1 auto}
+.edrow b.edsel{color:#e7e4da;flex:0 1 auto;max-width:40%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.edrow.ed-hint{font-size:11px;color:var(--mute)}
+.edbar button,.edbar select{min-height:34px;padding:0 10px;background:#0e1113;color:#e7e4da;border:1px solid var(--line);border-radius:3px;font:inherit;font-size:12px}
+.edbar button.pri{background:var(--brass);color:#1a1408;border-color:var(--brass)}
+.edgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(56px,1fr));gap:6px;max-height:26vh;overflow-y:auto;overscroll-behavior:contain}
+.edgrid button{aspect-ratio:1;padding:3px}.edgrid img{width:100%;height:100%;object-fit:contain;display:block}
+.edhost{position:relative}
+.edlayer{position:absolute;left:0;top:0;width:100%;height:0;z-index:6;pointer-events:none}
+.edpiece{position:absolute;display:block;height:auto;pointer-events:none;-webkit-user-drag:none;user-select:none}
+.edpiece.wired{pointer-events:auto;cursor:pointer}
+html.editing .edpiece{pointer-events:auto;outline:1px dashed rgba(255,255,255,.5);outline-offset:2px}
+html.editing .edpiece.sel{outline:2px solid #e0a44a;touch-action:none}

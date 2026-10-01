@@ -323,7 +323,7 @@ function renderBase() {
   const hr = hourly(), firsts = {}; for (const ar of ['in', 'out']) S.plots[ar].forEach((p, i) => { if (p && p.l > 0 && !firsts[p.b]) firsts[p.b] = ar + i; });
   const grid = ar => S.plots[ar].map((_, i) => plotHTML(ar, i, firsts)).join(''), f = shieldOn(), fs = inForest();
   $('#pg-base').innerHTML = `
-  <div class="qs"><button class="btn sm" data-a="drawer" data-id="desk" data-tab="train">${icoStroke('train')}Train</button><button class="btn sm" data-a="drawer" data-id="desk" data-tab="lab">${icoStroke('lab')}Lab</button><button class="btn sm" data-a="wing" data-w="med">${icoStroke('med')}Med</button><button class="btn sm" data-a="wing" data-w="wall">Wall</button><button class="btn sm" data-a="wing" data-w="rally">Rally</button><button class="btn sm ${LAY.on ? 'on' : 'line'}" data-a="layout">Layout</button></div>
+  <div class="qs"><button class="btn sm" data-a="drawer" data-id="desk" data-tab="train">${icoStroke('train')}Train</button><button class="btn sm" data-a="drawer" data-id="desk" data-tab="lab">${icoStroke('lab')}Lab</button><button class="btn sm" data-a="wing" data-w="med">${icoStroke('med')}Med</button><button class="btn sm" data-a="wing" data-w="wall">Wall</button><button class="btn sm" data-a="wing" data-w="rally">Rally</button></div>
   ${LAY.on ? layBarHTML() : ''}
   ${cityScene(grid)}
   <div class="panel"><div class="hd"><h3>Command Center ${ccLevel()}</h3><span class="tag br">${S.al[0].tag}</span></div><div class="bd">
@@ -636,14 +636,14 @@ const A = {
 let tapDown = null, lastTap = 0;
 const tapSig = b => b.dataset.a + '|' + JSON.stringify(b.dataset);
 function fire(b) { const f = A[b.dataset.a]; if (f) { hap(6); snd(); f(b.dataset, b); } }
-document.addEventListener('pointerdown', e => { const b = e.target.closest('[data-a]'); tapDown = b && b.tagName !== 'SELECT' && !b.disabled ? { sig: tapSig(b), x: e.clientX, y: e.clientY, id: e.pointerId, t: Date.now() } : null; }, true);
+document.addEventListener('pointerdown', e => { if (typeof ED !== 'undefined' && ED.on && !e.target.closest('.edui')) { tapDown = null; return; } const b = e.target.closest('[data-a]'); tapDown = b && b.tagName !== 'SELECT' && !b.disabled ? { sig: tapSig(b), x: e.clientX, y: e.clientY, id: e.pointerId, t: Date.now() } : null; }, true);
 document.addEventListener('pointerup', e => {
-  const d = tapDown; tapDown = null; if (!d || d.id !== e.pointerId || Math.hypot(e.clientX - d.x, e.clientY - d.y) > 14 || Date.now() - d.t > 900) return;
+  const d = tapDown; tapDown = null; if (typeof ED !== 'undefined' && ED.on) return; if (!d || d.id !== e.pointerId || Math.hypot(e.clientX - d.x, e.clientY - d.y) > 14 || Date.now() - d.t > 900) return;
   const el = document.elementFromPoint(e.clientX, e.clientY), b = el && el.closest('[data-a]'); if (!b || b.disabled || tapSig(b) !== d.sig) return;
   lastTap = Date.now(); if (!b.closest('#bradial') && !b.closest('.plot')) closeBRadial(); fire(b);
 }, true);
 document.addEventListener('pointercancel', () => { tapDown = null; }, true);
-document.addEventListener('click', e => { if (Date.now() - lastTap < 700) { e.stopPropagation(); return; } if (!e.target.closest('#bradial') && !e.target.closest('.plot')) closeBRadial(); const b = e.target.closest('[data-a]'); if (!b || b.tagName === 'SELECT') return; fire(b); }, true);
+document.addEventListener('click', e => { if (typeof ED !== 'undefined' && ED.on && !e.target.closest('.edui')) return; if (Date.now() - lastTap < 700) { e.stopPropagation(); return; } if (!e.target.closest('#bradial') && !e.target.closest('.plot')) closeBRadial(); const b = e.target.closest('[data-a]'); if (!b || b.tagName === 'SELECT') return; fire(b); }, true);
 document.addEventListener('change', e => { const b = e.target.closest('select[data-a]'); if (b && A[b.dataset.a]) A[b.dataset.a](b.dataset, b); });
 document.addEventListener('pointerdown', () => { try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); if (actx.state === 'suspended') actx.resume(); } catch (e) { } }, { once: true });
 $('#scrim').addEventListener('click', () => A.scrim());
@@ -651,6 +651,7 @@ $('#scrim').addEventListener('click', () => A.scrim());
 /* ---------------- loop ---------------- */
 function showPage() { for (const p of ['map', 'base']) $('#pg-' + p).className = 'page' + (UI.page === p ? ' on' : ''); }
 function renderAll() {
+  if (typeof ED !== 'undefined' && ED.drag && ED.drag.started) { UI.dirty = true; return; }
   UI.dirty = false; if (typeof CH !== 'undefined') CH.fver++; renderTop(); renderQueues(); renderDock(); showPage(); renderFloat();
   if (UI.page === 'base') renderBase();
   renderDrawer(); renderSheet();
