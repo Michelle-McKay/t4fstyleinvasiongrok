@@ -166,17 +166,16 @@ Her updated list, recorded as written. Reference only, nothing here is built. Pr
 ## 5. Chests
 Prices and the other chests are still to come. Drop tables received so far (per item chance, as Michelle sent them; the number of items in each level is not given yet, so the chances are not yet checked to add up to 100%):
 
-| Chest | Level 1 / Tier 1 | Level 2 / Tier 2 | Level 3 / Tier 3 | Tier 4 | Tier 5 | Tier 6 |
-|---|---|---|---|---|---|---|
-| Normal Material Chest | 2.5% | 1.458% | 0.208% | n/a | n/a | n/a |
-| Special Material Chest | 2.5% | 1.458% | 0.208% | n/a | n/a | n/a |
-| Rare Material Chest | 2.5% | 1.458% | 0.208% | n/a | n/a | n/a |
-| Epic Material Chest | 2.083% | 1.042% | 0.625% | 0.292% | 0.104% | 0.021% (top-tier legendary crafting items) |
+Michelle confirmed which material levels each chest covers (2026-10-01): the three tiers of each chest map to three levels, and the chances are per item inside each tier.
 
-Notes: the first three chests are given with the same three figures, so it is not yet clear how Special and Rare differ from Normal (probably which item levels sit in each tier); to confirm with Michelle. In our game the nearest match is the forge material grades (Basic to Legendary, six grades), see `STORE_TIER2` and `pouch()` in `js/engine.js` for the current alliance-store chest rolls.
+| Chest | Levels covered | Tier 1 | Tier 2 | Tier 3 | Tier 4 | Tier 5 | Tier 6 |
+|---|---|---|---|---|---|---|---|
+| Normal Material Chest | 1 to 3 | Level 1, 2.5% each | Level 2, 1.458% each | Level 3, 0.208% each | n/a | n/a | n/a |
+| Special Material Chest | **unconfirmed**, suggested 2 to 4 (same tiers as Rare) | 2.5% each | 1.458% each | 0.208% each | n/a | n/a | n/a |
+| Rare Material Chest | 2 to 4 | Level 2, 2.5% each | Level 3, 1.458% each | Level 4, 0.208% each | n/a | n/a | n/a |
+| Epic Material Chest | 1 to 6, every level including the highest (Legendary, Aether-Core) | Level 1, 2.083% each | Level 2, 1.042% each | Level 3, 0.625% each | Level 4, 0.292% each | Level 5, 0.104% each | Level 6, 0.021% each |
 
-## Notes for the later build (things her list needs that the game lacks)
-Upkeep (no upkeep system today), Hero Resurrection and Captured Hero Rename (heroes are captured, not killed, and enemy heroes are not captured), Torch, Iron fetters and Code of War, Gear Bag (no gear storage limit), Gem tools, March presets, Fake Army, and Default Hero Energy (the game has stamina, shown as Chips in her mapping). Per-hero XP items from the reference are already dropped from her list.
+Open: Michelle did not say which levels the Special Material Chest covers. Suggested default is levels 2 to 4, which would make it a cheaper twin of the Rare chest; her prices (Special 2,000, Rare 5,000 Gold in the original screenshots) hint it should sit below Rare, so levels 1 to 3 shifted or 1 to 4 are the other options. To confirm. The number of items per level is still not given, so the Material chest chances are not checked against 100%. In our game the materials per level are the six forge material grades (Composite Alloy to Aether-Core); see `STORE_TIER2` and `pouch()` in `js/engine.js` for the current alliance-store chest rolls.
 
 ### Gem Chests (drop tables received 2026-10-01)
 Per-item chances as Michelle sent them. Troop names map to ours: Infantry = Rock, Cavalry = Paper, Ranged = Scissors. "Level" is the gem quality tier (1 Raw Shard to 6 Omega Diamond in our forge). The Normal Gem Chest's per-level lists were given with kinds: Level 1 has 7 gem kinds (Rock, Paper, Scissors, Siege, Traps, Defense, Health), Level 2 has 5 (Scissors, Siege, Traps, Defense, Health), Level 3 has 7 (same kinds as Level 1). The other three chests are given per level only.
