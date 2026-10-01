@@ -1,6 +1,6 @@
 {
  "v": 2,
- "count": 517,
+ "count": 520,
  "groups": [
   {
    "id": "bld",
@@ -109,7 +109,7 @@
   },
   {
    "id": "city",
-   "title": "City backdrop, ground and decor (37)",
+   "title": "City backdrop, ground and decor (41)",
    "note": "Replaces the flat dark background and square street grid: three full-screen backdrops, three 21:9 panoramas that the base lies on and the player swipes across, a horizon strip, three organic ground islands, three plot pads, six construction-site pieces (scaffold wrap, crane, hanging load, beacon, sparks, dust) that the game animates over a plot being built, four winding road pieces and fourteen scenery pieces that make the base feel like one place."
   },
   {
@@ -3827,25 +3827,49 @@
    "group": "city",
    "key": "city_panorama_1",
    "name": "City panorama 1",
-   "size": "21:9, 2100 x 900",
+   "size": "2:1, 4096 x 2048",
    "transparent": false,
-   "out": 2000
+   "out": 3000
   },
   {
    "group": "city",
    "key": "city_panorama_2",
    "name": "City panorama 2",
-   "size": "21:9, 2100 x 900",
+   "size": "2:1, 4096 x 2048",
    "transparent": false,
-   "out": 2000
+   "out": 3000
   },
   {
    "group": "city",
    "key": "city_panorama_3",
    "name": "City panorama 3",
-   "size": "21:9, 2100 x 900",
+   "size": "2:1, 4096 x 2048",
    "transparent": false,
-   "out": 2000
+   "out": 3000
+  },
+  {
+   "group": "city",
+   "key": "city_floor",
+   "name": "City grid floor",
+   "size": "2:1, 4096 x 2048",
+   "transparent": false,
+   "out": 3000
+  },
+  {
+   "group": "city",
+   "key": "city_floor_edge",
+   "name": "City floor edge",
+   "size": "2:1, 4096 x 1024",
+   "transparent": false,
+   "out": 3000
+  },
+  {
+   "group": "city",
+   "key": "map_panorama",
+   "name": "World map panorama",
+   "size": "2:1, 4096 x 2048",
+   "transparent": false,
+   "out": 3000
   },
   {
    "group": "city",

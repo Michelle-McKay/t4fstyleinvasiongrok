@@ -441,6 +441,9 @@ button{-webkit-touch-callout:none}
 .cpan::-webkit-scrollbar{display:none}
 .cworld{position:relative;display:flex;width:max-content;background-size:cover;background-position:center}
 .cworld.pano{background-size:100% 100%}
+.cworld{zoom:var(--cz,1)}.cpan.zoomed{overflow-y:auto;touch-action:pan-x pan-y}.cpan{touch-action:pan-x pan-y}
+.cworld.floor{background-size:100cqw auto;background-repeat:repeat;background-position:0 0}
+.cworld .cedge{position:absolute;left:0;bottom:0;width:100%;height:auto;pointer-events:none;z-index:0}
 .cworld .isle{flex:0 0 auto;width:100cqw}
 .cworld .isle.side{width:60cqw}
 .zbar{display:flex;align-items:center;gap:6px;margin:6px 10px}

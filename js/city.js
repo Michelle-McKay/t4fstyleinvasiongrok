@@ -104,16 +104,26 @@ function cityHorizon() {
    (the outskirts 0.6 of one), all lying on one painted panorama when city_panorama_N exists. `grid(ar)` returns the plot buttons. */
 const CITY_PAN = { wst: .6, cnc: 1, fld: 1, est: .6 };
 function cityScene(grid) {
-  const t = cityTier(), bd = cityImg('city_backdrop_' + t), pano = cityImg('city_panorama_' + t);
+  const t = cityTier(), bd = cityImg('city_backdrop_' + t), floor = cityImg('city_floor'), edge = cityImg('city_floor_edge'), pano = cityImg('city_panorama_' + t) || floor;
   const vars = [bd ? `--bd:url(${bd}) center/cover no-repeat,#c9b48c` : ''].filter(Boolean).join(';');
   const isle = (kind, ar) => `<div class="isle ${kind}" style="aspect-ratio:${CITY_W}/${CITY[kind].vh}"><img class="ground" src="${cityGround(kind, !!pano)}" alt="">${cityDecor(kind)}<div class="grid5">${grid(ar)}</div></div>`;
   const side = kind => `<div class="isle side ${kind}" style="aspect-ratio:${CITY[kind].w}/${CITY[kind].vh};width:${CITY[kind].w}cqw"><img class="ground" src="${cityGround(kind, !!pano)}" alt="">${cityDecor(kind)}</div>`;
   return `<div class="cityscape" style="${vars}">${pano ? '' : cityHorizon()}<div class="zbar"><button data-a="pan" data-z="cnc" class="on">Command zone</button><button data-a="pan" data-z="fld">Fields and industry</button><span>swipe ◂ ▸</span></div>
-  <div class="cpan" ontouchstart="UI.panTouch=true" ontouchend="UI.panTouch=false" ontouchcancel="UI.panTouch=false"><div class="cworld ${pano ? 'pano' : ''}" ${pano ? `style="background-image:url(${pano})"` : ''}>${side('wst')}${isle('cnc', 'in')}${isle('fld', 'out')}${side('est')}<div class="cclouds" aria-hidden="true"></div></div></div></div>`;
+  <div class="cpan" ontouchstart="UI.panTouch=true" ontouchend="UI.panTouch=false" ontouchcancel="UI.panTouch=false"><div class="cworld ${pano ? 'pano' : ''} ${floor ? 'floor' : ''}" style="--cz:${UI.cz || 1};${pano ? `background-image:url(${pano})` : ''}">${edge ? `<img class="cedge" src="${edge}" alt="">` : ''}${side('wst')}${isle('cnc', 'in')}${isle('fld', 'out')}${side('est')}<div class="cclouds" aria-hidden="true"></div></div></div></div>`;
 }
 /* the swipe position survives repaints: remember it on every scroll and put it back after the page is rebuilt */
 function cityPanBar(p) { const x = p.scrollLeft + p.clientWidth * .5, z = x < p.clientWidth * (CITY_PAN.wst + CITY_PAN.cnc) ? 'cnc' : 'fld'; document.querySelectorAll('.zbar button').forEach(b => b.classList.toggle('on', b.dataset.z === z)); }
-function cityPanRestore() { const p = document.querySelector('#pg-base .cpan'); if (!p) return; if (typeof UI.panX !== 'number') UI.panX = Math.round(p.clientWidth * CITY_PAN.wst); p.scrollLeft = UI.panX; cityPanBar(p); }
+function cityPanRestore() { const p = document.querySelector('#pg-base .cpan'); if (!p) return; if (typeof UI.panX !== 'number') UI.panX = Math.round(p.clientWidth * CITY_PAN.wst); p.scrollLeft = UI.panX; p.classList.toggle('zoomed', (UI.cz || 1) > 1.01); cityPanBar(p); }
+/* pinch to zoom the base: two fingers scale the whole world (CSS zoom keeps the scroll position meaningful) */
+(function () {
+  let d0 = 0, z0 = 1;
+  const dist = t => Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY), pan = () => document.querySelector('#pg-base .cpan');
+  const apply = (z, p) => { const w = p.querySelector('.cworld'); if (!w) return; const o = UI.cz || 1, cx = p.scrollLeft + p.clientWidth / 2, cy = p.scrollTop + p.clientHeight / 2; UI.cz = z; w.style.setProperty('--cz', z); p.classList.toggle('zoomed', z > 1.01); const r = z / o; p.scrollLeft = cx * r - p.clientWidth / 2; p.scrollTop = cy * r - p.clientHeight / 2; UI.panX = p.scrollLeft; };
+  document.addEventListener('touchstart', e => { const p = e.target.closest && e.target.closest('.cpan'); if (!p || e.touches.length !== 2 || (typeof ED !== 'undefined' && ED.on)) return; d0 = dist(e.touches); z0 = UI.cz || 1; UI.panTouch = true; }, { passive: true });
+  document.addEventListener('touchmove', e => { if (!d0 || e.touches.length !== 2) return; const p = pan(); if (!p) return; e.preventDefault(); apply(Math.max(1, Math.min(2.4, z0 * dist(e.touches) / d0)), p); }, { passive: false });
+  document.addEventListener('touchend', e => { if (e.touches.length < 2) d0 = 0; }, { passive: true });
+  document.addEventListener('wheel', e => { const p = e.target.closest && e.target.closest('.cpan'); if (!p || !e.ctrlKey || (typeof ED !== 'undefined' && ED.on)) return; e.preventDefault(); apply(Math.max(1, Math.min(2.4, (UI.cz || 1) * (e.deltaY < 0 ? 1.08 : 1 / 1.08))), p); }, { passive: false });
+})();
 document.addEventListener('scroll', e => { const t = e.target; if (t && t.classList && t.classList.contains('cpan')) { UI.panX = t.scrollLeft; UI.panAt = Date.now(); cityPanBar(t); } }, true);
 /* ---------- moving parts: construction site over a plot being built, working effects on finished buildings ---------- */
 /* Painted layers (city_build_scaffold, city_build_crane, city_build_load, city_build_beacon, city_build_sparks, city_build_dust) replace the drawn ones as soon as they are in the manifest. */
