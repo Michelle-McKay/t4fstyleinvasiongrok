@@ -104,12 +104,12 @@ function cityHorizon() {
    (the outskirts 0.6 of one), all lying on one painted panorama when city_panorama_N exists. `grid(ar)` returns the plot buttons. */
 const CITY_PAN = { wst: .6, cnc: 1, fld: 1, est: .6 };
 function cityScene(grid) {
-  const t = cityTier(), bd = cityImg('city_backdrop_' + t), floor = cityImg('city_floor'), edge = cityImg('city_floor_edge'), pano = cityImg('city_panorama_' + t) || floor;
+  const t = cityTier(), bd = cityImg('city_backdrop_' + t), pano = cityImg('city_slab');
   const vars = [bd ? `--bd:url(${bd}) center/cover no-repeat,#c9b48c` : ''].filter(Boolean).join(';');
   const isle = (kind, ar) => `<div class="isle ${kind}" style="aspect-ratio:${CITY_W}/${CITY[kind].vh}"><img class="ground" src="${cityGround(kind, !!pano)}" alt="">${cityDecor(kind)}<div class="grid5">${grid(ar)}</div></div>`;
   const side = kind => `<div class="isle side ${kind}" style="aspect-ratio:${CITY[kind].w}/${CITY[kind].vh};width:${CITY[kind].w}cqw"><img class="ground" src="${cityGround(kind, !!pano)}" alt="">${cityDecor(kind)}</div>`;
   return `<div class="cityscape" style="${vars}">${pano ? '' : cityHorizon()}<div class="zbar"><button data-a="pan" data-z="cnc" class="on">Command zone</button><button data-a="pan" data-z="fld">Fields and industry</button><span>swipe ◂ ▸</span></div>
-  <div class="cpan" ontouchstart="UI.panTouch=true" ontouchend="UI.panTouch=false" ontouchcancel="UI.panTouch=false"><div class="cworld ${pano ? 'pano' : ''} ${floor ? 'floor' : ''}" style="--cz:${UI.cz || 1};${pano ? `background-image:url(${pano})` : ''}">${edge ? `<img class="cedge" src="${edge}" alt="">` : ''}${side('wst')}${isle('cnc', 'in')}${isle('fld', 'out')}${side('est')}<div class="cclouds" aria-hidden="true"></div></div></div></div>`;
+  <div class="cpan" ontouchstart="UI.panTouch=true" ontouchend="UI.panTouch=false" ontouchcancel="UI.panTouch=false"><div class="cworld ${pano ? 'pano' : ''} " style="--cz:${UI.cz || 1};${pano ? `background-image:url(${pano})` : ''}">${side('wst')}${isle('cnc', 'in')}${isle('fld', 'out')}${side('est')}<div class="cclouds" aria-hidden="true"></div></div></div></div>`;
 }
 /* the swipe position survives repaints: remember it on every scroll and put it back after the page is rebuilt */
 function cityPanBar(p) { const x = p.scrollLeft + p.clientWidth * .5, z = x < p.clientWidth * (CITY_PAN.wst + CITY_PAN.cnc) ? 'cnc' : 'fld'; document.querySelectorAll('.zbar button').forEach(b => b.classList.toggle('on', b.dataset.z === z)); }
