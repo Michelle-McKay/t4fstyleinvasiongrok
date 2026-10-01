@@ -81,7 +81,7 @@ function itmUse(id) {
 }
 /* ---------------- screen ---------------- */
 function itmIcon(it) {
-  const f = typeof ART !== 'undefined' && ART.file('sitem_' + it.id);
+  const f = typeof ART !== 'undefined' && ART.file('sitem_' + (it.ico || it.id));
   if (f) return `<div class="rwic itic"><img class="iticon" src="${f}" alt="" draggable="false"></div>`;
   return `<div class="rwic itic"><svg viewBox="0 0 48 48"><rect x="4" y="4" width="40" height="40" rx="8" fill="${it.vip ? '#2e4d7a' : it.buf ? '#7a5a1c' : '#3a4a52'}" stroke="#d9b45a" stroke-width="2"/><text x="24" y="30" text-anchor="middle" font-size="${it.g.length > 3 ? 11 : 15}" font-weight="700" fill="#f1ead2" font-family="sans-serif">${it.g}</text></svg></div>`;
 }

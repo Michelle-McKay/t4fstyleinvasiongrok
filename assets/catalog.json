@@ -1,6 +1,6 @@
 {
  "v": 2,
- "count": 1012,
+ "count": 997,
  "groups": [
   {
    "id": "bld",
@@ -3215,160 +3215,40 @@
   },
   {
    "group": "sitem",
-   "key": "sitem_res_rations_1",
-   "name": "Item: 10,000 Rations",
+   "key": "sitem_res_rations",
+   "name": "Item: rations (all sizes)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
   },
   {
    "group": "sitem",
-   "key": "sitem_res_rations_2",
-   "name": "Item: 50,000 Rations",
+   "key": "sitem_res_fuel",
+   "name": "Item: fuel (all sizes)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
   },
   {
    "group": "sitem",
-   "key": "sitem_res_rations_3",
-   "name": "Item: 150,000 Rations",
+   "key": "sitem_res_power",
+   "name": "Item: power (all sizes)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
   },
   {
    "group": "sitem",
-   "key": "sitem_res_rations_4",
-   "name": "Item: 500,000 Rations",
+   "key": "sitem_res_alloy",
+   "name": "Item: alloy (all sizes)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
   },
   {
    "group": "sitem",
-   "key": "sitem_res_fuel_1",
-   "name": "Item: 10,000 Fuel",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 256
-  },
-  {
-   "group": "sitem",
-   "key": "sitem_res_fuel_2",
-   "name": "Item: 50,000 Fuel",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 256
-  },
-  {
-   "group": "sitem",
-   "key": "sitem_res_fuel_3",
-   "name": "Item: 150,000 Fuel",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 256
-  },
-  {
-   "group": "sitem",
-   "key": "sitem_res_fuel_4",
-   "name": "Item: 500,000 Fuel",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 256
-  },
-  {
-   "group": "sitem",
-   "key": "sitem_res_power_1",
-   "name": "Item: 10,000 Power",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 256
-  },
-  {
-   "group": "sitem",
-   "key": "sitem_res_power_2",
-   "name": "Item: 50,000 Power",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 256
-  },
-  {
-   "group": "sitem",
-   "key": "sitem_res_power_3",
-   "name": "Item: 150,000 Power",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 256
-  },
-  {
-   "group": "sitem",
-   "key": "sitem_res_power_4",
-   "name": "Item: 500,000 Power",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 256
-  },
-  {
-   "group": "sitem",
-   "key": "sitem_res_alloy_1",
-   "name": "Item: 10,000 Alloy",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 256
-  },
-  {
-   "group": "sitem",
-   "key": "sitem_res_alloy_2",
-   "name": "Item: 50,000 Alloy",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 256
-  },
-  {
-   "group": "sitem",
-   "key": "sitem_res_alloy_3",
-   "name": "Item: 150,000 Alloy",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 256
-  },
-  {
-   "group": "sitem",
-   "key": "sitem_res_alloy_4",
-   "name": "Item: 500,000 Alloy",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 256
-  },
-  {
-   "group": "sitem",
-   "key": "sitem_res_cash_1",
-   "name": "Item: 10,000 Cash",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 256
-  },
-  {
-   "group": "sitem",
-   "key": "sitem_res_cash_2",
-   "name": "Item: 50,000 Cash",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 256
-  },
-  {
-   "group": "sitem",
-   "key": "sitem_res_cash_3",
-   "name": "Item: 150,000 Cash",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 256
-  },
-  {
-   "group": "sitem",
-   "key": "sitem_res_cash_4",
-   "name": "Item: 500,000 Cash",
+   "key": "sitem_res_cash",
+   "name": "Item: cash (all sizes)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256

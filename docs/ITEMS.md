@@ -17,4 +17,4 @@ Opened from the Item dock tab (Bag, Special, Resources, Speed Up, War, Chests). 
 Timed VIP passes and VIP Chance (VIP is permanent, no daily chests), per-hero XP items and hero renames (one hero per player), upkeep reduction (the game has no upkeep), Rally Token (Tactical Coordination Tokens already exist), captured-hero war items, Fake Army and Disguise (no enemy hero capture or scouting disguise), per-hero Energy items and the 15/30-minute Heroes Attack Boost (one hero, covered by the Attack boosts), the Uncommon XP Stone, gem tools, march presets and evolution reset (the systems do not exist yet).
 
 ## Art
-One icon per item, group `sitem` in `tools/artcatalog.js`, keys `sitem_<id>`. Until painted files exist the game draws a labelled placeholder plate.
+One icon per item (one per resource for the resource lots), group `sitem` in `tools/artcatalog.js`, keys `sitem_<id>`. Until painted files exist the game draws a labelled placeholder plate.
