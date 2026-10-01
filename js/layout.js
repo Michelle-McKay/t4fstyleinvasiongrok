@@ -16,6 +16,7 @@
     return h + '</div>';
   };
   Object.assign(A, {
+    pan(d) { const p = document.querySelector('#pg-base .cpan'); if (!p) return; const f = d.z === 'fld' ? CITY_PAN.wst + CITY_PAN.cnc : CITY_PAN.wst; p.scrollTo({ left: Math.round(p.clientWidth * f), behavior: 'smooth' }); },
     layout() { LAY.on = !LAY.on; LAY.drag = null; LAY.sel = null; LAY.pal = false; document.documentElement.classList.toggle('laying', LAY.on); D(); if (LAY.on) toast('Layout mode: drag things where you want them.', 'info'); },
     layreset() { if (!confirm('Put everything back to how it started and remove added pieces?')) return; LAY.data = { slots: { cnc: {}, fld: {} }, decor: { cnc: {}, fld: {} }, extra: { cnc: [], fld: [] }, hide: { cnc: {}, fld: {} } }; LAY.sel = null; layApply(); CITY_GROUND.cnc = CITY_GROUND.fld = null; save(); },
     laycopy() {

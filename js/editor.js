@@ -19,8 +19,9 @@ const ED = { on: false, drag: null, cand: null, sel: null, piece: null, pal: fal
   }
   const elOf = p => { try { return p && document.querySelector(p); } catch (e) { return null; } };
   const ov = p => ED.data.o[p] || (ED.data.o[p] = {});
-  const screenKey = () => UI.sheet ? ['sheet:' + UI.sheet.type, '#sheet'] : UI.drawer ? ['drawer:' + UI.drawer + ':' + (UI.dt[UI.drawer] || ''), '#dbody'] : ['page:' + UI.page, '#pg-' + UI.page];
-  const hosts = () => { const l = [['page:' + UI.page, '#pg-' + UI.page]]; if (UI.drawer) l.push(['drawer:' + UI.drawer + ':' + (UI.dt[UI.drawer] || ''), '#dbody']); if (UI.sheet) l.push(['sheet:' + UI.sheet.type, '#sheet']); return l; };
+  const pageHost = () => UI.page === 'base' ? '#pg-base .cworld' : '#pg-' + UI.page;
+  const screenKey = () => UI.sheet ? ['sheet:' + UI.sheet.type, '#sheet'] : UI.drawer ? ['drawer:' + UI.drawer + ':' + (UI.dt[UI.drawer] || ''), '#dbody'] : ['page:' + UI.page, pageHost()];
+  const hosts = () => { const l = [['page:' + UI.page, pageHost()]]; if (UI.drawer) l.push(['drawer:' + UI.drawer + ':' + (UI.dt[UI.drawer] || ''), '#dbody']); if (UI.sheet) l.push(['sheet:' + UI.sheet.type, '#sheet']); return l; };
   const piece = (k, id) => (ED.data.add[k] || []).find(p => p.id === id);
   /* ---------- styles from overrides ---------- */
   function css() {
@@ -150,7 +151,7 @@ const ED = { on: false, drag: null, cand: null, sel: null, piece: null, pal: fal
     copy() { const json = JSON.stringify({ ed: ED.data, lay: LAY.data }), ok = () => toast('Layout copied. Paste it into the chat.', 'good'); if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(json).then(ok, () => prompt('Copy this layout:', json)); else prompt('Copy this layout:', json); },
     paste() { const t = prompt('Paste a copied layout here:'); if (!t) return; try { const d = JSON.parse(t); if (d.ed && d.ed.o) { ED.hist.push(ED.last); fromJson(JSON.stringify(d.ed)); } if (d.lay && d.lay.slots) { LAY.data = Object.assign({ extra: { cnc: [], fld: [] }, hide: { cnc: {}, fld: {} } }, d.lay); laySave(); layApply(); CITY_GROUND.cnc = CITY_GROUND.fld = null; } document.querySelectorAll('.edlayer').forEach(x => x.remove()); if (typeof D === 'function') D(); apply(); bar(); toast('Layout loaded.', 'good'); } catch (e) { toast('That does not look like a layout.', 'warn'); } },
     reset() { if (!confirm('Put every screen back how it started and remove added pieces? (Undo can bring it back.)')) return; ED.hist.push(ED.last); fromJson(JSON.stringify({ o: {}, add: {} })); LAY.data = { slots: { cnc: {}, fld: {} }, decor: { cnc: {}, fld: {} }, extra: { cnc: [], fld: [] }, hide: { cnc: {}, fld: {} } }; laySave(); layApply(); CITY_GROUND.cnc = CITY_GROUND.fld = null; document.querySelectorAll('.edlayer').forEach(x => x.remove()); if (typeof D === 'function') D(); apply(); bar(); },
-    put(b) { const [key, sel] = screenKey(), host = $1(sel); if (!host) return; const id = 'p' + Date.now().toString(36); (ED.data.add[key] = ED.data.add[key] || []).push({ id, k: b.dataset.k, x: 30, y: Math.round(host.scrollTop + 80), s: 64, a: '', z: 0 }); ED.piece = { key, id }; ED.sel = null; ED.pal = false; persist(); apply(); bar(); }
+    put(b) { const [key, sel] = screenKey(), host = $1(sel); if (!host) return; const id = 'p' + Date.now().toString(36); const pan = host.classList.contains('cworld') ? host.parentElement : null, px = pan ? +((pan.scrollLeft + pan.clientWidth / 2) / host.scrollWidth * 100 - 6).toFixed(1) : 30; (ED.data.add[key] = ED.data.add[key] || []).push({ id, k: b.dataset.k, x: px, y: Math.round(host.scrollTop + 80), s: 64, a: '', z: 0 }); ED.piece = { key, id }; ED.sel = null; ED.pal = false; persist(); apply(); bar(); }
   };
   panel.addEventListener('click', e => { const b = e.target.closest('button[data-ed]'); if (b && act[b.dataset.ed]) act[b.dataset.ed](b); });
   panel.addEventListener('change', e => {
