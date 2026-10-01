@@ -46,10 +46,27 @@ Our resources: Food / Oil / Energy / Steel / Cash. Troops: Rock / Paper / Scisso
 
 - Store hub: alliance-points balance at top, three rows: **Store**, **Catalog**, **Store History**.
 - Store page: tip line ("ask the leader or an R4 to get a special item from the Catalog"), then **Basic Boosts** (24-hour +25% production for each of the five resources, unlimited purchases) and **Store Items** (7-day +25% production, teleports, hero skill reset, gem helper, 4-hour +25% march size boost). Each card: item picture, duration badge (24H / 7D / 4H), name, price in alliance points, purchase limit.
-- Catalog: leaders and R4 members stock special items for everyone to buy (inferred from the tip text, not shown).
-- Store History: log of purchases (inferred from the row icon).
 
-Mapped to us: ours is one mystery-chest button (50 points, `STORE_COST`, `storeChestBuy`) with no shop list. Gaps: a real item list with limits, resource boosts (+25% Food/Oil/Energy/Steel/Cash for 24h and 7d), a march size boost, teleport and reset items, a Catalog the leader stocks, and a purchase history. VIP points still come from points spent here (`VIP_AP_RATE`). Chests stay as one of the items. Boost prices must be balanced against how fast alliance points arrive (5 x chest level, 15 per gift), and nothing here touches real money.
+### Catalog (leader and R4 stock the Store)
+- Header shows the alliance **funds** balance (a shared pool, separate from each member's own points). Tip: "Star your favorite item to let your Alliance Leader and Rank 4 Members know what you need."
+- Every item has a star counter (members' wishes) so leaders see what is most wanted. Leaders and R4 spend alliance funds to put items in the Store for members to buy.
+- Sections and items:
+  - **Special**: VIP points (100), hero XP (50K), 7-day +25% production for each of the five resources, 24h and 7d +50% gathering speed, random / advanced / epic teleport, rename player, hero skill reset, hunting skill reset, hero resurrection, daily chance, alliance rename, building move, gem apprentice, equip hero preset.
+  - **Resources**: stamina packs (7K, 30K).
+  - **Speed Up**: 1m, 15m, 60m, 3h.
+  - **War**: 8h peace shield, 12h +20% attack, 12h +20% defense, 4h +25% march size, fake army, disguise, march recall, 15m +25% heroes attack.
+  - **Chests**: normal material chest, normal gem chest.
+- Prices run from 5,000 (rename, march recall, 1-minute speed up) to 500,000 (hero resurrection) funds.
+
+### Store History
+- Two tabs. **Total**: per member, Funds Earned (contributed to the alliance) and Loyalty Spent (their own points spent in the store). **History**: who bought what, quantity, and how long ago.
+
+### Mapped to us (catalog and history)
+- Fits our one-hero, single-player build only partly: allies are simulated, so a leader-stocked catalog means the player (as R5) stocks the store from funds earned by simulated members. A simple version: funds fill from chests and gifts, the player stocks the store, simulated allies "buy" and show in History.
+- Items that map cleanly: production boosts for Food/Oil/Energy/Steel/Cash, speed ups, peace shield, attack/defense boosts, march size boost, march recall, teleports, VIP points (already tied to `VIP_AP_RATE`), material and gem chests (we already have `storeChestBuy`). Items with no equivalent yet: stamina packs (hunt stamina exists, `docs/MONSTER_HUNTING.md`), hero resurrection, skill resets, rename, building move, fake army, disguise, equip preset.
+- Star counters and Total/History tables only mean something with other members, so they would run on simulated allies.
+
+Mapped to us (store): ours is one mystery-chest button (50 points, `STORE_COST`, `storeChestBuy`) with no shop list. Gaps: a real item list with limits, resource boosts (+25% Food/Oil/Energy/Steel/Cash for 24h and 7d), a march size boost, teleport and reset items, a Catalog the leader stocks, and a purchase history. VIP points still come from points spent here (`VIP_AP_RATE`). Chests stay as one of the items. Boost prices must be balanced against how fast alliance points arrive (5 x chest level, 15 per gift), and nothing here touches real money.
 
 New art needed if built: store hub icons (Store, Catalog, History), one boost icon per resource with an up-arrow (five), a march size boost icon, and duration badges drawn in code. Teleport and hero reset reuse existing item art.
 
