@@ -10,9 +10,10 @@ const ART = {
   /* returns a loaded Image or null; starts loading and asks for a redraw when it lands */
   img(path) {
     const c = ART.ims[path]; if (c) return c.complete && c.naturalWidth ? c : null;
-    const im = ART.ims[path] = new Image(); im.onload = () => { terrDirty = true; if (typeof UI !== 'undefined') UI.dirty = true; }; im.src = path; return null;
+    const im = ART.ims[path] = new Image(); im.onload = () => { terrDirty = true; if (/map_slab/.test(path) && typeof CH !== 'undefined') { CH.map.forEach(c => c.stale = true); if (typeof GR !== 'undefined') GR.dirty = true; } if (typeof UI !== 'undefined') UI.dirty = true; }; im.src = path; return null;
   },
-  head: kind => ART.file('head_' + kind)
+  head: kind => ART.file('head_' + kind),
+  slabReady() { const f = ART.file('map_slab'), c = f && ART.ims[f]; if (f && !c) ART.img(f); return c && c.complete && c.naturalWidth ? 's' : ''; }
 };
 const artFile = (kind, level) => ART.file('bld_' + kind + '_t' + Math.max(1, tierOf(level)));
 const imgTag = (path, cls) => `<img class="${cls}" src="${path}" alt="" draggable="false" decoding="async">`;
@@ -45,6 +46,7 @@ const TILE_N = { wild: 3, forest: 2, plaza: 1 };
 const _vecTerrain = terrainSprite;
 terrainSprite = function (t, v) {
   const n = TILE_N[t], k = n && 'tile_' + t + '_' + (v % n + 1), f = k && ART.file(k);
+  if (t === 'wild') { const sf = ART.file('map_slab'), im = sf && ART.img(sf); if (im) { const sk = 'slab:' + (v % 4); if (!SP[sk]) { const c = document.createElement('canvas'); c.width = c.height = 256; const w = im.width / 2, h = im.height / 2, i = v % 4; c.getContext('2d').drawImage(im, (i & 1) * w, (i >> 1) * h, w, h, 0, 0, 256, 256); SP[sk] = c; } return SP[sk]; } }
   return (f && canvasFrom(k, f, 256)) || _vecTerrain(t, v);
 };
 
