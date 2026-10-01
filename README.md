@@ -29,9 +29,6 @@ Open `index.html` (or serve the folder statically). Barlow Condensed and Source 
 ## VIP
 `js/vip.js` holds the 15 permanent VIP levels, points and bonuses (read by `mods()`), `js/vipui.js` the VIP screen. See `docs/VIP.md`.
 
-## Items
-`js/items.js` holds the Special and Speed Up store tabs, the item bag and boosts. See `docs/ITEMS.md`.
-
 ## Purchases
 `js/iap.js` holds the diamond-pack store, bundles and purchase layer. The browser build is sandbox only (no money). See `docs/IAP.md` for the native wrapper, server validation and compliance steps.
 

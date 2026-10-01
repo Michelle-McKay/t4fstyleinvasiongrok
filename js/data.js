@@ -125,65 +125,6 @@ const XPI = [
   { id: 'medium', n: 'Medium XP Item', xp: 100000, usd: 12.99 }, { id: 'large', n: 'Large XP Item', xp: 250000, usd: 29.99 },
   { id: 'huge', n: 'Huge XP Item', xp: 500000, usd: 54.99 }, { id: 'grand', n: 'Grand XP Item', xp: 1000000, usd: 99.99 }
 ];
-/* Store items (Items drawer > Special and Speed Up). Spec: docs/ITEMS.md. cost = diamonds, usd = real money through js/iap.js (sandbox until server validation exists).
-   VIP points are sold ONLY for real money, never for diamonds, and there are no timed VIP passes: VIP stays permanent (docs/VIP.md).
-   buf items are timed boosts; sheet is the sheet time in seconds, the drill clock divides it by DRILL. art is the prompt subject for tools/artcatalog.js; g is the short label on the placeholder icon. */
-const ITEMS = [
-  { id: 'vip100', n: '100 VIP Points', cat: 'special', usd: 1, vip: 100, g: 'VIP', d: 'Adds 100 VIP points. Real money only, never diamonds.', art: 'a brass shield-shaped VIP badge with a laurel wreath and a small cut cyan gem, the smallest size' },
-  { id: 'vip300', n: '300 VIP Points', cat: 'special', usd: 3, vip: 300, g: 'VIP', d: 'Adds 300 VIP points. Real money only, never diamonds.', art: 'the same VIP shield badge and laurel wreath, a little larger, with two small cut cyan gems' },
-  { id: 'vip1000', n: '1,000 VIP Points', cat: 'special', usd: 10, vip: 1000, g: 'VIP', d: 'Adds 1,000 VIP points. Real money only, never diamonds.', art: 'the same VIP shield badge and laurel wreath, the largest, with three cut cyan gems and a faint golden glow' },
-  { id: 'xp25', n: '25% Hero XP Bonus', cat: 'special', cost: 1200, buf: 'xp', pct: 0.25, sheet: 86400, g: 'XP+', d: '+25% hero XP from hunts, battles and building for 24 sheet hours. XP items are not boosted.', art: 'a faceted round XP medal with a white star on a short ribbon, with a small green up arrow beside it' },
-  { id: 'gath24', n: '24-Hour +50% Gathering', cat: 'special', cost: 600, buf: 'gather', pct: 0.5, sheet: 86400, g: '+50%', d: 'Columns gather 50% faster for 24 sheet hours.', art: 'a loaded supply cart with crates and a pickaxe, with a small green up arrow beside it' },
-  { id: 'gath7', n: '7-Day +50% Gathering', cat: 'special', cost: 5000, buf: 'gather', pct: 0.5, sheet: 604800, g: '+50%', d: 'Columns gather 50% faster for 7 sheet days.', art: 'the same loaded supply cart as the 24-hour gathering boost, with a small brass 7 plate fixed to the cart and a green up arrow' },
-  { id: 'tp_rand', n: 'Random Teleport', cat: 'special', cost: 500, g: 'TP?', d: 'Moves your base to a random open spot in your kingdom. Every teleport needs one.', art: 'a folded map of a small base with a cyan swirl and a question-mark pin on it' },
-  { id: 'tp_adv', n: 'Advanced Teleport', cat: 'special', cost: 1500, g: 'TP', d: 'Moves your base to any open spot you pick, including alliance and rival territory.', art: 'the same folded map as the random teleport, with a cyan swirl and a bold target-ring pin instead of the question mark' },
-  { id: 'rn_cmd', n: 'Commander Rename', cat: 'special', cost: 400, g: 'ABC', d: 'Gives your commander a new name.', art: 'a rolled parchment scroll with a quill pen and a brass seal, no writing on it' },
-  { id: 'rn_ally', n: 'Alliance Rename', cat: 'special', cost: 200, g: 'ABC', d: 'Renames your alliance.', art: 'a steel alliance shield banner with a quill pen crossing it, no writing' },
-  { id: 'tag_card', n: 'Alliance Tag Card', cat: 'special', cost: 100, g: 'TAG', d: 'Changes the three letters of your alliance tag.', art: 'a small brass-edged identity card with an empty name plate and a cyan shield emblem, no writing' },
-  { id: 'sk_reset', n: 'Skill Reset', cat: 'special', cost: 1000, g: '↺', d: 'Refunds every learned skill so the points can be spent again.', art: 'an open skill-tree book with a curved blue refund arrow around it' },
-  { id: 'sk_hunt', n: 'Hunting Skill Reset', cat: 'special', cost: 1000, g: '↺', d: 'Refunds only the hunting skills.', art: 'a coiled steel hunting snare with a curved orange refund arrow around it' },
-  { id: 'rescue', n: 'Hero Rescue', cat: 'special', cost: 3000, g: '✚', d: 'Frees a captured hero at once. No seal or ransom needed.', art: 'a golden winged cross-shaped medal with a soft warm glow' },
-  { id: 'daily_chance', n: 'Daily Exercise Chance', cat: 'special', cost: 800, g: '+1', d: 'Lets you run the daily exercise one more time today.', art: 'a rolled orders scroll with a blue circular refresh arrow and a small brass 1 plate' },
-  { id: 'bookmarks', n: 'Bookmarks', cat: 'special', cost: 1000, g: '+5', d: 'Five more map bookmark slots, up to 30.', art: 'a folded map with a red location pin stuck in it' },
-  { id: 'bmove', n: 'Building Move', cat: 'special', cost: 500, g: '⇄', d: 'Moves one building to an empty plot of the same kind. Not while it is being built.', art: 'a small modular base building on a square pad with a brass four-way arrow beneath it' },
-  { id: 'march25', n: '25% March Speed Up', cat: 'speed', cost: 500, buf: 'march', pct: 0.25, sheet: 86400, g: '+25%', d: 'Marches move 25% faster for 24 sheet hours.', art: 'a pair of sturdy steel-toed boots with small wings, light green trim' },
-  { id: 'march50', n: '50% March Speed Up', cat: 'speed', cost: 900, buf: 'march', pct: 0.5, sheet: 86400, g: '+50%', d: 'Marches move 50% faster for 24 sheet hours.', art: 'the same pair of winged boots, with violet trim and brighter wings' }
-];
-/* Resources, war and chest items, built from tables so the prices stay consistent. Amounts and chest contents are placeholders to tune (OPEN ITEM). */
-const RES_ART = { rations: 'a bundle of golden wheat ears in a woven basket', fuel: 'a steel fuel drum with a glowing amber drop', power: 'a glowing cyan power cell with a lightning bolt', alloy: 'a stack of grey steel ingots', cash: 'a stack of banknotes with a brass coin' };
-for (const r of RES) [[10000, 1], [50000, 0.95], [150000, 0.9], [500000, 0.85]].forEach(([amt, k], i) => ITEMS.push({ id: `res_${r}_${i + 1}`, n: `${amt.toLocaleString('en-US')} ${RESN[r]}`, cat: 'res', res: r, amt, ico: 'res_' + r, cost: Math.ceil(amt / DIA_RATE[r] * k), g: ['10K', '50K', '150K', '500K'][i], d: `Adds ${amt.toLocaleString('en-US')} ${RESN[r]}, as much as the StoreHouse has room for.`, art: `${RES_ART[r]}, the same picture at every size (the amount is drawn in code)` }));
-ITEMS.push(
-  { id: 'stam60', n: '60 Stamina', cat: 'res', stam: 60, cost: 150, g: '+60', d: 'Adds 60 hunting stamina, up to your maximum.', art: 'a clenched steel gauntlet fist with a crackling cyan lightning bolt, the smaller size' },
-  { id: 'stam120', n: '120 Stamina', cat: 'res', stam: 120, cost: 280, g: '+120', d: 'Adds 120 hunting stamina, up to your maximum.', art: 'the same gauntlet fist with a bigger crackling cyan lightning bolt and sparks' },
-  { id: 'shield24', n: '24-Hour Peace Shield', cat: 'war', cost: 1000, shield: 86400, g: '24H', d: 'Raises a peace shield for 24 sheet hours. Needs every column home. Attacking breaks it.', art: 'a white dove carrying an olive branch, with a small brass 24 plate' },
-  { id: 'shield3d', n: '3-Day Peace Shield', cat: 'war', cost: 2500, shield: 259200, g: '3D', d: 'Raises a peace shield for 3 sheet days. Needs every column home. Attacking breaks it.', art: 'the same white dove carrying an olive branch, with a small brass 3 plate and a faint blue glow' },
-  { id: 'anti24', n: '24-Hour Anti Scout', cat: 'war', cost: 600, buf: 'anti', pct: 1, sheet: 86400, g: 'ANTI', d: 'Blocks enemy scouts for 24 sheet hours. Works without Radar level 4.', art: 'a brass spyglass with a small red crossed-out ring beside it' },
-  { id: 'anti7d', n: '7-Day Anti Scout', cat: 'war', cost: 3000, buf: 'anti', pct: 1, sheet: 604800, g: 'ANTI', d: 'Blocks enemy scouts for 7 sheet days. Works without Radar level 4.', art: 'the same brass spyglass and red crossed-out ring, with a small brass 7 plate' },
-  { id: 'atk12', n: '12-Hour +20% Attack', cat: 'war', cost: 250, buf: 'atk', pct: 0.2, sheet: 43200, g: '+20%', d: 'Troop attack +20% for 12 sheet hours.', art: 'crossed steel blades with an orange flame and a small green up arrow' },
-  { id: 'atk24', n: '24-Hour +20% Attack', cat: 'war', cost: 400, buf: 'atk', pct: 0.2, sheet: 86400, g: '+20%', d: 'Troop attack +20% for 24 sheet hours.', art: 'the same crossed steel blades with an orange flame and green up arrow, with a brass 24 plate' },
-  { id: 'def12', n: '12-Hour +20% Defense', cat: 'war', cost: 250, buf: 'def', pct: 0.2, sheet: 43200, g: '+20%', d: 'Wall HP +20% for 12 sheet hours.', art: 'a steel shield with a brass boss and a small green up arrow' },
-  { id: 'def24', n: '24-Hour +20% Defense', cat: 'war', cost: 400, buf: 'def', pct: 0.2, sheet: 86400, g: '+20%', d: 'Wall HP +20% for 24 sheet hours.', art: 'the same steel shield with brass boss and green up arrow, with a brass 24 plate' },
-  { id: 'size25', n: '4-Hour 25% March Size', cat: 'war', cost: 2400, buf: 'size', pct: 0.25, sheet: 14400, g: '+25%', d: 'Columns can carry 25% more troops for 4 sheet hours.', art: 'a tight block of tiny soldier silhouettes on a banner, with a small green up arrow' },
-  { id: 'size50', n: '4-Hour 50% March Size', cat: 'war', cost: 5000, buf: 'size', pct: 0.5, sheet: 14400, g: '+50%', d: 'Columns can carry 50% more troops for 4 sheet hours.', art: 'the same block of tiny soldier silhouettes, larger, with a bigger green up arrow and a warm glow' },
-  { id: 'recall', n: 'March Recall', cat: 'war', cost: 40, recall: 1, g: '⟲', d: 'Recalls every column that has not yet fought.', art: 'a red marching banner flag with a curved green return arrow' }
-);
-/* chests: bought into the bag, opened with Use. open: mats [tier, n], gems [tier, n] (Basic gems), grant {resources, slips, tokens}, items {id: n}, xpi {id: n} */
-const CHEST_ART = 'a sturdy steel-and-brass chest with a rounded lid and a brass lock plate';
-['Basic', 'Common', 'Uncommon', 'Rare'].forEach((q, i) => {
-  ITEMS.push({ id: `chest_mat${i + 1}`, n: `${q} Material Chest`, cat: 'chest', cost: [600, 1000, 2000, 4000][i], open: { mats: [i + 1, [12, 8, 5, 3][i]] }, g: 'MAT', d: `${[12, 8, 5, 3][i]} ${q} forge materials.`, art: `${CHEST_ART}, with a small ingot emblem on the front plate, ${['plain grey', 'white', 'green', 'blue'][i]} trim` });
-  ITEMS.push({ id: `chest_gem${i + 1}`, n: `${q} Gem Chest`, cat: 'chest', cost: [600, 1000, 2000, 4000][i], open: { gems: [i + 1, [8, 5, 3, 2][i]] }, g: 'GEM', d: `${[8, 5, 3, 2][i]} ${q} Basic gems, random kinds.`, art: `${CHEST_ART}, with a small cut gem emblem on the front plate, ${['plain grey', 'white', 'green', 'blue'][i]} trim` });
-});
-ITEMS.push(
-  { id: 'chest_res', n: 'Resource Chest', cat: 'chest', cost: 1500, open: { grant: { rations: 30000, fuel: 24000, power: 24000, alloy: 16000, cash: 8000 } }, g: 'RES', d: 'A mixed lot of all five resources, as much as the StoreHouse has room for.', art: `${CHEST_ART}, with a small wheat emblem on the front plate` },
-  { id: 'chest_speed', n: 'Speed Up Chest', cat: 'chest', cost: 800, open: { grant: { s60: 3, s480: 1 } }, g: '»', d: 'Three 1-hour slips and one 8-hour slip.', art: `${CHEST_ART}, with a double forward-arrow emblem on the front plate` },
-  { id: 'chest_atk', n: 'Attack Chest', cat: 'chest', cost: 700, open: { items: { atk24: 2 } }, g: 'ATK', d: 'Two 24-Hour +20% Attack boosts.', art: `${CHEST_ART}, with a crossed-blades emblem on the front plate` },
-  { id: 'chest_def', n: 'Defense Chest', cat: 'chest', cost: 700, open: { items: { def24: 2 } }, g: 'DEF', d: 'Two 24-Hour +20% Defense boosts.', art: `${CHEST_ART}, with a shield emblem on the front plate` },
-  { id: 'chest_esc1', n: 'Basic Escape Chest', cat: 'chest', cost: 900, open: { items: { tp_rand: 2 } }, g: 'TP', d: 'Two Random Teleports.', art: `${CHEST_ART}, with a small folded-map emblem on the front plate` },
-  { id: 'chest_esc2', n: 'Escape Chest', cat: 'chest', cost: 2500, open: { items: { tp_adv: 1, tp_rand: 2 } }, g: 'TP', d: 'One Advanced Teleport and two Random Teleports.', art: `${CHEST_ART}, with a folded-map emblem and cyan swirl on the front plate, violet trim` },
-  { id: 'chest_esc3', n: 'Advanced Escape Chest', cat: 'chest', cost: 4000, open: { items: { tp_adv: 3 } }, g: 'TP', d: 'Three Advanced Teleports.', art: `${CHEST_ART}, with a folded-map emblem and bold target ring on the front plate, gold trim` },
-  { id: 'chest_xp', n: 'XP Chest', cat: 'chest', cost: 12000, open: { xpi: { grand: 1 } }, g: 'XP', d: 'One Grand XP Item (1,000,000 hero XP).', art: `${CHEST_ART}, with a faceted star medal emblem on the front plate, gold trim` }
-);
-const ITEM_BK = { base: 6, per: 5, max: 30 };   // bookmark slots
 const XPI_PACK = 5, XP_MIN_RATE = 2.0;         // items per pack, minimum dollars per 100k XP
 /* Free XP, kept roughly flat (about 100k a day in the real game; the drill clock here is faster). No catch-up bonus at higher levels. */
 const XP_FREE = { daily: [['tiny', 2], ['small', 1]], hunt: 3000, battle: 1500, buildPerLevel: 400 };
@@ -398,7 +339,7 @@ const DIA_PACKS = [
   { id: 'chest', n: 'War Chest', cost: 1600, d: 'Large lot, slips, tokens and bars' },
   { id: 'reserve', n: 'Sovereign Reserve', cost: 4200, d: 'Depot-filling lot, slips, tokens and a set shard' }
 ];
-const SLIPS = [{ id: 's15', n: 'One 15-minute slip', cost: 20, sec: 900, q: 1 }, { id: 's180', n: 'One 3-hour slip', cost: 110, sec: 10800, q: 1 }, { id: 's900', n: 'One 15-hour slip', cost: 330, sec: 54000, q: 1 }, { id: 's1440', n: 'One 24-hour slip', cost: 480, sec: 86400, q: 1 }, { id: 's4320', n: 'One 3-day slip', cost: 1300, sec: 259200, q: 1 }, { id: 's5', n: 'Five 5-minute slips', cost: 35, sec: 300, q: 5 }, { id: 's60', n: 'Two 1-hour slips', cost: 80, sec: 3600, q: 2 }, { id: 's480', n: 'One 8-hour slip', cost: 220, sec: 28800, q: 1 }];
+const SLIPS = [{ id: 's5', n: 'Five 5-minute slips', cost: 35, sec: 300, q: 5 }, { id: 's60', n: 'Two 1-hour slips', cost: 80, sec: 3600, q: 2 }, { id: 's480', n: 'One 8-hour slip', cost: 220, sec: 28800, q: 1 }];
 const MARKET_CAT = [
   { id: 'm_s5', n: 'Five 5-minute slips', cost: 30, give: { s5: 5 } }, { id: 'm_s60', n: 'Two 1-hour slips', cost: 70, give: { s60: 2 } },
   { id: 'm_s480', n: 'One 8-hour slip', cost: 190, give: { s480: 1 } }, { id: 'm_rat', n: 'Rations lot 24k', cost: 40, give: { rations: 24000 } },
