@@ -1,6 +1,6 @@
 {
  "v": 2,
- "count": 545,
+ "count": 551,
  "groups": [
   {
    "id": "bld",
@@ -66,6 +66,11 @@
    "id": "xpi",
    "title": "Hero XP items (6)",
    "note": "Six sizes of XP item, transparent, front view. ALL SIX are the same object (a faceted round medal with a white star on a short ribbon) at growing size and richness, so they read as one family. Do all six together."
+  },
+  {
+   "id": "mat",
+   "title": "Crafting materials (6)",
+   "note": "Six forge materials, one per quality tier, transparent, front view. ALL SIX are the same object (a chunky refined metal ingot bar with a bevelled top) at the same size and angle; only the metal finish and glow change, so they read as one family and can be shown as a 4-to-1 chain. Do all six together. Leave the ingot facets simple and symmetrical so a glint sweep can be animated across the top later."
   },
   {
    "id": "heroful",
@@ -2473,6 +2478,54 @@
    "group": "xpi",
    "key": "xpi_grand",
    "name": "XP item: Grand XP Item (1,000,000 XP)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "mat",
+   "key": "mat_1",
+   "name": "Material: Basic tier 1 of 6",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "mat",
+   "key": "mat_2",
+   "name": "Material: Common tier 2 of 6",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "mat",
+   "key": "mat_3",
+   "name": "Material: Uncommon tier 3 of 6",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "mat",
+   "key": "mat_4",
+   "name": "Material: Rare tier 4 of 6",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "mat",
+   "key": "mat_5",
+   "name": "Material: Epic tier 5 of 6",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "mat",
+   "key": "mat_6",
+   "name": "Material: Legendary tier 6 of 6",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256

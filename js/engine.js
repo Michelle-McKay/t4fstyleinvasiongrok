@@ -457,7 +457,9 @@ function launchMarch(kind, tx, ty, comp, hero, opts) {
 function marchName(m) { return { gather: 'Gather', hunt: 'Hunt', encamp: 'Encamp', throne: 'Throne', attack: 'Strike', field: 'Field', rally: 'Rally', scout: 'Scout' }[m.kind] || m.kind; }
 function rollGrade(L) { const w = []; let tot = 0; for (let d = 1; d <= L; d++) { const x = Math.pow(4, L - d); w.push(x); tot += x; } let r = Math.random() * tot; for (let d = 1; d <= L; d++) { r -= w[d - 1]; if (r <= 0) return d; } return 1; }
 function addLootBar(m, g) { m.loot.bars[g] = (m.loot.bars[g] || 0) + 1; }
-function rollShard(m, L) { if (Math.random() < Math.min(0.35, 0.04 * L)) m.loot.shard = pick(Object.keys(SETS)); }
+/* One monster per gear set: the pack's tile fixes which set it guards, and only that set's shard drops from it. */
+function monsterSet(x, y) { const ks = Object.keys(SETS); return ks[Math.abs((x * 73856093) ^ (y * 19349663)) % ks.length]; }
+function rollShard(m, L, set) { if (Math.random() < Math.min(0.35, 0.04 * L)) m.loot.shard = set || pick(Object.keys(SETS)); }
 function survivors(m) { return sumCol(m.col); }
 function wipe(m, why) {
   S.marches = S.marches.filter(x => x !== m);
@@ -498,7 +500,7 @@ function arrive(m) {
     if (fr.r.win) {
       S.dead[key(m.tx, m.ty)] = 1; S.kills++; const vg = rollGrade(g), res = pick(RES.slice(0, 4));
       S.nodes[key(m.tx, m.ty)] = { res, nk: Object.keys(NODE_RES).find(k => NODE_RES[k] === res), grade: vg, stock: 600 * vg, max: 600 * vg, rich: true };
-      addLootBar(m, rollGrade(g)); rollShard(m, g); if (Math.random() < 0.3) m.loot.dia += g * 2;
+      for (let i = 0, n = 1 + Math.floor(g / 2); i < n; i++) addLootBar(m, rollGrade(g)); rollShard(m, g, monsterSet(m.tx, m.ty)); if (Math.random() < 0.3) m.loot.dia += g * 2;
       for (const r of [pick(RES.slice(0, 4)), pick(RES)]) m.loot.res[r] = (m.loot.res[r] || 0) + Math.round(g * rnd(500, 1100));
       heroGain(XP_FREE.hunt * g);
       if (fr.wiped) { S.marches = S.marches.filter(x => x !== m); if (m.hero) S.hero.captured = true; note('Pack dead, column gone. Rich vein left at ' + m.tx + ',' + m.ty + '.', 'warn'); return; }
@@ -553,7 +555,7 @@ function landMarch(m) {
   let over = 0; const beds = bedCap(); let free = Math.max(0, beds - woundedTotal());
   for (const k in m.wound) { const a = Math.min(free, m.wound[k]); if (a > 0) { S.wounded[k] = (S.wounded[k] || 0) + a; free -= a; } over += m.wound[k] - a; }
   const got = []; for (const r in m.loot.res) { const a = addRes(r, m.loot.res[r]); if (a > 0) got.push(fmtN(a) + ' ' + RESN[r]); }
-  for (const g in m.loot.bars) { S.bars[g] = (S.bars[g] || 0) + m.loot.bars[g]; got.push(m.loot.bars[g] + ' grade-' + g + ' bar'); }
+  for (const g in m.loot.bars) { S.bars[g] = (S.bars[g] || 0) + m.loot.bars[g]; got.push(m.loot.bars[g] + ' ' + qName(g) + ' material' + (m.loot.bars[g] > 1 ? 's' : '')); }
   if (m.loot.gem) { S.gems += m.loot.gem; got.push('a gem'); }
   if (m.loot.shard) { S.shards[m.loot.shard] = (S.shards[m.loot.shard] || 0) + 1; got.push(SETS[m.loot.shard].n + ' shard'); }
   if (m.loot.dia) { dchg(m.loot.dia, 'Loot'); got.push(m.loot.dia + ' diamonds'); }
@@ -790,18 +792,18 @@ function buySeals() { if (S.dia < 60) return 'Short of diamonds.'; dchg(-60, 'Re
 function buyToken(crate) { const c = crate ? 260 : 100; if (S.dia < c) return 'Short of diamonds.'; dchg(-c, crate ? 'Coordination Crate' : 'Coordination token'); S.tokens += crate ? 3 : 1; return null; }
 function daily() { const d = new Date().toDateString(); if (S.daily === d) return 'Exercise already run today.'; S.daily = d; S.tokens++; dchg(60, 'Daily exercise'); if (typeof addReward === 'function') addReward('Daily exercise prize', '10 Minute Speed Up x 1, 2 Tiny and 1 Small XP item', { slips: { s5: 2 }, xpi: { tiny: 2, small: 1 } }); note('Daily exercise done: 1 token, 60 diamonds, a prize in the Rewards Center.', 'good'); return null; }
 function gradeUnits() { let u = 0; for (let g = 1; g <= 6; g++) u += (S.bars[g] || 0) * Math.pow(4, g - 1); return u; }
-function refine(g) { if (!hasB('forge')) return 'Build a Forge first.'; if (g >= 6) return 'Grade 6 is the top.'; if (lvlMax('forge') < forgeGate(g)) return 'Forge ' + forgeGate(g) + ' needed to refine grade ' + g + '.'; if ((S.bars[g] || 0) < 4) return 'Four bars of grade ' + g + ' needed.'; S.bars[g] -= 4; S.bars[g + 1] = (S.bars[g + 1] || 0) + 1; return null; }
+function refine(g) { if (!hasB('forge')) return 'Build a Forge first.'; if (g >= 6) return 'Legendary is the top tier.'; if (lvlMax('forge') < forgeGate(g)) return 'Forge ' + forgeGate(g) + ' needed to refine ' + qName(g) + '.'; if ((S.bars[g] || 0) < 4) return 'Four ' + qName(g) + ' materials needed.'; S.bars[g] -= 4; S.bars[g + 1] = (S.bars[g + 1] || 0) + 1; return null; }
 function craft(slot, sel, shard, stat) {
   if (!hasB('forge')) return 'Build a Forge first.';
-  const tot = sumCol(sel); if (tot !== 4) return 'A craft spends exactly four bars.';
-  for (const g in sel) if ((S.bars[g] || 0) < sel[g]) return 'Not enough grade ' + g + ' bars.';
+  const tot = sumCol(sel); if (tot !== 4) return 'A craft spends exactly four materials.';
+  for (const g in sel) if ((S.bars[g] || 0) < sel[g]) return 'Not enough ' + qName(g) + ' materials.';
   if (slot === 'accessory' && !stat) return 'Stamp Training or Yield.';
   if (shard && !(S.shards[shard] > 0)) return 'No such shard.';
   for (const g in sel) S.bars[g] -= sel[g]; if (shard) S.shards[shard]--;
-  let tw = 0; const ws = []; for (const g in sel) { const w = sel[g] * sel[g]; ws.push([+g, w]); tw += w; }
-  let r = Math.random() * tw, grade = ws[0][0]; for (const [g, w] of ws) { r -= w; if (r <= 0) { grade = g; break; } }
-  const up = grade < 6 && Math.random() < forgeUp(lvlMax('forge')); if (up) grade++;
-  const p = { id: S.nid++, slot, grade, set: shard || null, stat: slot === 'accessory' ? stat : null }; S.gear.pieces.push(p); note('Forged ' + slot + ' grade ' + grade + (up ? ' (the Forge lifted it a grade)' : '') + '.', 'good'); return null;
+  const ins = []; for (const g in sel) for (let i = 0; i < sel[g]; i++) ins.push(+g); ins.sort((x, y) => x - y);
+  const mixed = ins[0] !== ins[3]; let grade = ins[0];
+  if (mixed) { let r = Math.random(), i = 0; for (; i < 3; i++) { r -= MIX_ODDS[i]; if (r < 0) break; } grade = ins[i]; }
+  const p = { id: S.nid++, slot, grade, set: shard || null, stat: slot === 'accessory' ? stat : null }; S.gear.pieces.push(p); note('Forged ' + qName(grade) + ' ' + slot + (mixed ? (grade > ins[0] ? ' from a mixed craft: you beat the odds.' : ' from a mixed craft: the floor, as usual.') : ' (four of a kind, guaranteed).'), mixed && grade === ins[0] ? 'warn' : 'good'); return null;
 }
 function wear(id) { const p = S.gear.pieces.find(x => x.id === id); if (!p) return 'No such piece.'; S.gear.worn[p.slot] = id; return null; }
 function rack(id) { const p = S.gear.pieces.find(x => x.id === id); if (!p) return 'No such piece.'; if (S.gear.worn[p.slot] === id) delete S.gear.worn[p.slot]; return null; }

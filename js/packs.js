@@ -63,9 +63,9 @@ function packRows(p) {
   if (g.seals) r.push({ ico: 'seals', q: '×' + g.seals, t: 'Restraint seals', n: 'Ransom captured heroes' });
   if (g.xpi) for (const id in g.xpi) { const it = XPI.find(x => x.id === id); r.push({ ico: 'xpi:' + id, q: '×' + g.xpi[id], t: it.n + (g.xpi[id] > 1 ? 's' : ''), n: fmtN(it.xp) + ' hero XP each' }); }
   if (g.builder) r.push({ ico: 'builder', q: '+1', t: 'Second builder', n: 'Permanent' });
-  if (g.bars) for (const gg in g.bars) r.push({ ico: 'bars', q: '×' + g.bars[gg], t: `Grade ${gg} bars`, n: 'Forge material' });
+  if (g.bars) for (const gg in g.bars) r.push({ ico: 'bars', q: '×' + g.bars[gg], t: `${qName(gg)} materials`, n: 'Forge material' });
   if (g.shards) for (const sh in g.shards) r.push({ ico: 'shard:' + sh, q: '×' + g.shards[sh], t: SETS[sh].n + ' shards', n: SETS[sh].d });
-  if (g.gear) g.gear.forEach(x => r.push({ ico: 'gear', q: '×1', t: `${SETS[x.set].n} ${x.slot}`, n: `Grade ${x.grade}, ready to wear` }));
+  if (g.gear) g.gear.forEach(x => r.push({ ico: 'gear', q: '×1', t: `${SETS[x.set].n} ${x.slot}`, n: `${qName(x.grade)}, ready to wear` }));
   return r;
 }
 /* Every single item in the pack as its own line, for the "Full contents" dropdown. Same totals as packRows, just unbundled:
@@ -83,9 +83,9 @@ function packItems(p) {
   for (let i = 0; i < (g.seals || 0); i++) r.push({ ico: 'seals', q: '×1', t: 'Restraint seal', n: 'Ransom a captured hero' });
   if (g.xpi) for (const id in g.xpi) for (let i = 0; i < g.xpi[id]; i++) { const it = XPI.find(x => x.id === id); r.push({ ico: 'xpi:' + id, q: '×1', t: it.n, n: fmtN(it.xp) + ' hero XP' }); }
   if (g.builder) r.push({ ico: 'builder', q: '+1', t: 'Second builder', n: 'Permanent' });
-  if (g.bars) for (const gg in g.bars) for (let i = 0; i < g.bars[gg]; i++) r.push({ ico: 'bars', q: '×1', t: `Grade ${gg} bar`, n: 'Forge material' });
+  if (g.bars) for (const gg in g.bars) for (let i = 0; i < g.bars[gg]; i++) r.push({ ico: 'bars', q: '×1', t: `${qName(gg)} material`, n: 'Forge material' });
   if (g.shards) for (const sh in g.shards) for (let i = 0; i < g.shards[sh]; i++) r.push({ ico: 'shard:' + sh, q: '×1', t: SETS[sh].n + ' shard', n: SETS[sh].d });
-  if (g.gear) g.gear.forEach(x => r.push({ ico: 'gear', q: '×1', t: `${SETS[x.set].n} ${x.slot}`, n: `Grade ${x.grade}, ready to wear` }));
+  if (g.gear) g.gear.forEach(x => r.push({ ico: 'gear', q: '×1', t: `${SETS[x.set].n} ${x.slot}`, n: `${qName(x.grade)}, ready to wear` }));
   return r;
 }
 /* Value at this game's own diamond-store rates, so the figure is checkable in the Store tab. */

@@ -211,6 +211,12 @@ const EMB_PER_LEVEL = 1500;                    // allied troops hosted per Embas
 const EMB_CALL_MS = 45000;                     // cooldown between reinforcement calls (drill time)
 const embTier = L => clamp(1 + Math.floor(L / 8), 1, 3);   // best tier the allies send
 const forgeGate = g => 3 * g;                  // Forge level needed to refine grade g bars into g+1
-const forgeUp = L => Math.min(0.5, 0.02 * L);  // chance a crafted piece comes out one grade higher
+/* Quality tiers: the six named tiers ARE the gear/material grades 1-6 (no parallel system). */
+const QUALITY = [null, { n: 'Basic', c: 'Grey', col: '#9aa4a8' }, { n: 'Common', c: 'White', col: '#e6ebee' }, { n: 'Uncommon', c: 'Green', col: '#6fb35a' }, { n: 'Rare', c: 'Blue', col: '#4f9ae0' }, { n: 'Epic', c: 'Purple', col: '#9a6ad6' }, { n: 'Legendary', c: 'Gold', col: '#e0a44a' }];
+const qName = g => QUALITY[g].n;
+const qFull = g => QUALITY[g].n + ' (' + QUALITY[g].c + ')';
+/* 4-to-1: four identical materials make one of the next tier (4^5 = 1,024 Basic = 1 Legendary). Four identical materials craft gear of exactly that tier, 100% guaranteed.
+   Mixed craft ("casino"): the four inputs are sorted lowest to highest. Output is the lowest input 75%, second-lowest 20%, third 4.9%, highest 0.1%. */
+const MIX_ODDS = [0.75, 0.20, 0.049, 0.001];
 const REQ_COOLDOWN_SHEET = 1800;   // 30 sheet minutes between requisitions
 function reqAmounts(L) { return { rations: L * 500, fuel: L * 500, power: L * 400, alloy: L * 300, cash: L * 150 }; }

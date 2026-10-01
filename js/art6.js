@@ -95,7 +95,7 @@ function heroSVG(id, o) {
 }
 
 /* ================= GEAR AND BARS ================= */
-const GRADE_C = [null, '#9aa4a8', '#8ea36a', '#5ec4d4', '#8d78c9', '#e0a44a', '#e07a2f'];
+const GRADE_C = [null, '#9aa4a8', '#e6ebee', '#6fb35a', '#4f9ae0', '#9a6ad6', '#e0a44a'];   // Basic grey, Common white, Uncommon green, Rare blue, Epic purple, Legendary gold
 const GEAR = {
   weapon: c => `<g transform="rotate(-12 32 34)">${sr(6, 30, 44, 5, '#252c31', 1)}${sr(46, 28, 12, 9, '#3c474e', 1.4)}${sr(14, 34, 10, 11, c.d, 1.4)}${sr(26, 24.6, 14, 5, '#12171a', 1)}${RC(28, 26, 10, 1.4, c.g, null, 0, .4).replace('<rect', '<rect class="glw"')}${RC(8, 31.4, 36, 1, 'rgba(255,255,255,.5)')}${sr(2, 29, 7, 7, c.g, 1.4)}${RC(50, 30, 6, 1.6, c.g)}${CI(56, 32.6, 1.3, '#ffe9a8', 'class="blink"')}</g>`,
   chest: c => sp([[14, 16], [26, 12], [32, 15], [38, 12], [50, 16], [52, 30], [46, 54], [32, 58], [18, 54], [12, 30]], c.b) + sp([[24, 22], [40, 22], [40, 44], [32, 48], [24, 44]], c.d) + RC(24, 32, 16, 2, c.g) + RC(30, 22, 4, 26, c.g, null, 0, 1) + CI(32, 30, 3.4, '#0b1c22', `stroke="${c.g}" stroke-width=".9"`) + CI(32, 30, 1.7, c.g, 'class="glw"') + rivets(17, 26, 3, 3.6) + rivets(41, 26, 3, 3.6),
