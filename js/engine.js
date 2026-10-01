@@ -32,7 +32,7 @@ function newState() {
     troops: { inf1: 160, arm1: 70, air1: 45, siege1: 24, inf2: 36 },
     wounded: { inf1: 40, siege1: 8, inf2: 18 }, wall: { sent1: 12, bast1: 8 },
     jobs: [], marches: [], incoming: [], own: {}, encs: {}, nodes: {}, dead: {},
-    research: {}, bars: { 1: 6, 2: 2, 3: 1, 4: 0, 5: 0, 6: 0 }, gems: { 'vanguard:1': 4, 'vitality:1': 4, 'agri:1': 2, 'vanguard:2': 1 }, codex: {}, ap: 60, j5: 0, shards: { rock: 1, paper: 0, training: 1 },
+    research: {}, bars: { 1: 6, 2: 2, 3: 1, 4: 0, 5: 0, 6: 0 }, nm: Object.fromEntries(BASIC_MATS.map(k => [k, 4])), gems: { 'vanguard:1': 4, 'vitality:1': 4, 'agri:1': 2, 'vanguard:2': 1 }, codex: {}, ap: 60, j5: 0, shards: { rock: 1, paper: 0, training: 1 },
     gear: { pieces: [], worn: {} }, slips: { s5: 2, s60: 0, s480: 0 }, tokens: 1, orders: 3, seals: 1,
     hero: { id: 'ren', level: 1, xp: 0, captured: false }, xpi: {}, shield: { until: 0 }, anti: false,
     throne: { neutral: true, holder: null, holdEnd: 0, ruler: null, ruleUntil: 0, officers: [], colMarch: 0 },
@@ -51,7 +51,7 @@ function newState() {
   return st;
 }
 function save() { try { S.last = Date.now(); localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) { } }
-function load() { try { const s = localStorage.getItem(SAVE_KEY); if (s) { const o = JSON.parse(s); if (o && o.v === 1) { if (o.hero && o.hero.level == null) { o.hero.level = 1; o.hero.xp = 0; delete o.hero.rank; } o.xpi = o.xpi || {}; o.stam = o.stam || { v: STAM_MAX, at: Date.now(), spent: 0, refunded: 0, mats: 0, hunts: 0, wins: 0 }; o.streak = o.streak || { n: 0, at: 0, best: 0 }; o.chests = o.chests || []; if (typeof o.gems !== 'object' || !o.gems) { const n = +o.gems || 0; o.gems = n ? { 'strike:1': n } : {}; } o.codex = o.codex || {}; migrateGear(o); o.ap = o.ap || 0; o.j5 = o.j5 || 0; o.frags = o.frags || 0; o.next = o.next || {}; if (!o.next.chest) o.next.chest = Date.now() + 30000; for (const k of Object.keys(o.wall || {})) if (/^garr/.test(k)) delete o.wall[k]; o.jobs = (o.jobs || []).filter(j => !(j.kind === 'wall' && j.cls === 'garr')); return o; } } } catch (e) { } return null; }
+function load() { try { const s = localStorage.getItem(SAVE_KEY); if (s) { const o = JSON.parse(s); if (o && o.v === 1) { if (o.hero && o.hero.level == null) { o.hero.level = 1; o.hero.xp = 0; delete o.hero.rank; } o.xpi = o.xpi || {}; o.stam = o.stam || { v: STAM_MAX, at: Date.now(), spent: 0, refunded: 0, mats: 0, hunts: 0, wins: 0 }; o.streak = o.streak || { n: 0, at: 0, best: 0 }; o.chests = o.chests || []; if (typeof o.gems !== 'object' || !o.gems) { const n = +o.gems || 0; o.gems = n ? { 'strike:1': n } : {}; } o.codex = o.codex || {}; if (!o.nm) o.nm = Object.fromEntries(BASIC_MATS.map(k => [k, 4])); migrateGear(o); o.ap = o.ap || 0; o.j5 = o.j5 || 0; o.frags = o.frags || 0; o.next = o.next || {}; if (!o.next.chest) o.next.chest = Date.now() + 30000; for (const k of Object.keys(o.wall || {})) if (/^garr/.test(k)) delete o.wall[k]; o.jobs = (o.jobs || []).filter(j => !(j.kind === 'wall' && j.cls === 'garr')); return o; } } } catch (e) { } return null; }
 /* Old saves: seven slots became five, old sets became the 12 spec sets, holiday sets became the 6 shared ones. */
 const OLD_CORES = { strike: 'vanguard', guard: 'vitality', bulwark: 'ironplate', haste: 'marchgem', yield: 'agri', mend: 'vitality' };
 const OLD_SETS = { vanguard: 'rock', outrider: 'paper', marksman: 'scissors', battery: 'training', prospector: 'construction', caravan: 'research', foundry: 'siege', academy: 'tilehit', medic: 'rally', bulwark: 'wdef', breaker: 'wrally', tracker: 'wsolo' };
@@ -505,6 +505,7 @@ function claimChest(id) {
   if (c.kind === 'gift') {   // an ally's pack purchase (sandbox: no real money): mid-tier cache, Level 3 or 4 materials and Basic gems
     const mats = {}, gems = {}; for (let i = 0; i < GIFT_ROLLS; i++) { const a = Math.random() < GIFT_TIER4 ? 4 : 3, b = Math.random() < GIFT_TIER4 ? 4 : 3; mats[a] = (mats[a] || 0) + 1; matAdd(a, 1); const k = gemKey(coreKind(), b); gems[k] = (gems[k] || 0) + 1; gemAdd(k, 1); }
     for (const t in mats) got.push(mats[t] + ' ' + matName(t) + (mats[t] > 1 ? ' (x' + mats[t] + ')' : '')); for (const k in gems) got.push(gems[k] + ' ' + gemTierName(gemSplit(k)[1]) + ' · ' + gemName(gemSplit(k)[0]));
+    got.push(...nmGrant(2));
     const a = addRes(pick(RES), Math.round(rnd(4000, 7000))); if (a > 0) got.push(fmtN(a) + ' supplies');
     note('Alliance gift from ' + c.from + ' (pack purchase): ' + got.join(', ') + '.', 'good'); return null;
   }
@@ -626,6 +627,7 @@ function landMarch(m) {
   let over = 0; const beds = bedCap(); let free = Math.max(0, beds - woundedTotal());
   for (const k in m.wound) { const a = Math.min(free, m.wound[k]); if (a > 0) { S.wounded[k] = (S.wounded[k] || 0) + a; free -= a; } over += m.wound[k] - a; }
   const got = []; for (const r in m.loot.res) { const a = addRes(r, m.loot.res[r]); if (a > 0) got.push(fmtN(a) + ' ' + RESN[r]); }
+  for (const k in (m.loot.nm || {})) { nmAdd(k, m.loot.nm[k]); got.push(m.loot.nm[k] + ' ' + k); }
   for (const g in m.loot.bars) { S.bars[g] = (S.bars[g] || 0) + m.loot.bars[g]; got.push(m.loot.bars[g] + ' ' + matName(g)); }
   for (const gk in (m.loot.gems || {})) { const [kd, t] = gemSplit(gk), n = m.loot.gems[gk]; gemAdd(gk, n); got.push(n + ' ' + gemTierName(t) + ' · ' + gemName(kd)); }
   for (const hs in (m.loot.shards || {})) { shardAdd(hs, m.loot.shards[hs]); got.push((m.loot.shards[hs] > 1 ? m.loot.shards[hs] + ' ' : '') + SETS[hs].n + (SETS[hs].hgear ? ' event shard' : ' shard')); }
@@ -867,6 +869,9 @@ function craft(slot, sel, shard, cat) {
   const tot = sumCol(sel); if (tot !== 4) return 'A craft spends exactly four materials.';
   for (const g in sel) if ((S.bars[g] || 0) < sel[g]) return 'Not enough ' + matName(g) + '.';
   if (shard && !(S.shards[shard] > 0)) return 'No such shard.'; if (!shard && !BASIC[cat]) return 'Pick a Basic gear category.';
+  const rec = shard ? setItemOf(shard, slot).recipe : basicOf(cat, slot).recipe, need = rec ? nmNeed(rec) : {};
+  for (const k in need) if ((S.nm[k] || 0) < need[k]) return 'Short of ' + k + ' (need ' + need[k] + ', have ' + (S.nm[k] || 0) + ').';
+  for (const k in need) nmAdd(k, -need[k]);
   for (const g in sel) S.bars[g] -= sel[g]; if (shard) S.shards[shard]--;
   const ins = []; for (const g in sel) for (let i = 0; i < sel[g]; i++) ins.push(+g); ins.sort((x, y) => x - y);
   const mixed = ins[0] !== ins[3]; let grade = ins[0];
@@ -881,6 +886,10 @@ function pieceText(p) { const m = pieceStatMap(p); return Object.keys(m).map(k =
 /* ---------------- Gems: stock, 4-to-1, mixed craft, sockets ---------------- */
 const rcount = x => Math.floor(x) + (Math.random() < x - Math.floor(x) ? 1 : 0);
 function gemAdd(k, n) { S.gems[k] = (S.gems[k] || 0) + n; if (!S.gems[k]) delete S.gems[k]; }
+function nmAdd(name, n) { S.nm[name] = (S.nm[name] || 0) + n; if (!S.nm[name]) delete S.nm[name]; }
+function nmLoot(m, name, n) { m.loot.nm = m.loot.nm || {}; m.loot.nm[name] = (m.loot.nm[name] || 0) + (n || 1); }
+function nmNeed(rec) { const c = {}; rec.forEach(x => c[x] = (c[x] || 0) + 1); return c; }
+function nmGrant(n) { const by = {}; for (let i = 0; i < n; i++) { const k = pick(BASIC_MATS); nmAdd(k, 1); by[k] = (by[k] || 0) + 1; } return Object.keys(by).map(k => by[k] + ' ' + k); }
 function matAdd(t, n) { S.bars[t] = (S.bars[t] || 0) + n; }
 function shardAdd(id, n) { S.shards[id] = (S.shards[id] || 0) + n; S.codex[id] = 1; }
 function gemTotal() { let n = 0; for (const k in S.gems) n += S.gems[k]; return n; }
@@ -895,11 +904,13 @@ function tileLoot(m, nn, frac) {
   for (let i = 0; i < rolls; i++) { const t = tileTier(L); if (Math.random() < 0.5) addLootBar(m, t); else add(gemKey(coreKind(), t)); }
   const wk = weekEnds();
   if (!nn.from) {
+    for (let i = 0, n = rcount((0.4 + 0.2 * L) * frac); i < n; i++) nmLoot(m, pick(BASIC_MATS));
     if (L >= 5 && S.j5 !== wk && Math.random() < TILE_J5 * frac) { S.j5 = wk; if (Math.random() < 0.5) addLootBar(m, 5); else add(gemKey(coreKind(), 5)); note('Weekly jackpot! An Epic find in the tile.', 'good'); }
     if (L >= 6 && Math.random() < TILE_J6 * frac) { for (let i = 0; i < 3; i++) { addLootBar(m, 6); add(gemKey(coreKind(), 6)); } note('LEGENDARY JACKPOT: a 6-pack of Gold finds in the tile!', 'good'); }
     return;
   }
   const id = nn.from, hol = id.indexOf('h_') === 0;
+  for (let i = 0, n = rcount((0.8 + 0.3 * L) * frac); i < n; i++) nmLoot(m, hol || Math.random() < 0.7 ? pick(setMats(gearOf(id))) : pick(SHARED_MATS));
   for (let i = 0, n = rcount((0.6 + 0.3 * L) * frac); i < n; i++) add(gemKey(pick(GEM_SETS[gearOf(id)]), rollDrop(L)));
   if (Math.random() < Math.min(0.9, 0.3 + 0.1 * L) * frac) { const g = gearOf(id); L_.shards[g] = (L_.shards[g] || 0) + 1; }
   if (hol && Math.random() < Math.min(0.9, 0.3 + 0.1 * L) * frac) { const reg = pick(activeSets()); L_.shards[reg] = (L_.shards[reg] || 0) + 1; }
@@ -910,6 +921,7 @@ function pouch(mats, gems, tiers) {
   for (const t in (mats || {})) { matAdd(t, mats[t]); got.push(mats[t] + ' ' + matName(t) + (mats[t] > 1 ? ' (x' + mats[t] + ')' : '')); }
   for (let i = 0; i < (gems || 0); i++) { const t = pick(tiers || [1, 1, 2]), k = gemKey(coreKind(), t); gemAdd(k, 1); by[t] = (by[t] || 0) + 1; }
   for (const t in by) got.push(by[t] + ' ' + gemTierName(t) + ' (Basic gem)');
+  got.push(...nmGrant(2));
   return got;
 }
 function storeChestBuy() {
@@ -918,6 +930,7 @@ function storeChestBuy() {
   for (let i = 0; i < STORE_ROLLS; i++) { const t = Math.random() < STORE_TIER2 ? 2 : 1; if (Math.random() < 0.5) { matAdd(t, 1); mats[t] = (mats[t] || 0) + 1; } else { gemAdd(gemKey(coreKind(), t), 1); by[t] = (by[t] || 0) + 1; } }
   for (const t in mats) got.push(mats[t] + ' ' + matName(t) + (mats[t] > 1 ? ' (x' + mats[t] + ')' : ''));
   for (const t in by) got.push(by[t] + ' ' + gemTierName(t) + ' (Basic gem)');
+  got.push(...nmGrant(2));
   note('Alliance store chest: ' + got.join(', ') + '.', 'good'); return null;
 }
 function gemCombine(k) {

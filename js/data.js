@@ -455,6 +455,26 @@ const matName = t => MAT_NAMES[t], gemTierName = t => GEM_TIERS[t];
    Shared monster materials (Tough Chitin, Beast Sinew, Sharp Claws...) are plain names in the recipe. A slot not listed keeps the set's generic name and recipe. ADD THE NEXT SLOT LISTS HERE. */
 const parseRecipe = s => s.split(', ').flatMap(x => { const m = /^(\d+)x (.+)$/.exec(x); return m ? Array(+m[1]).fill(m[2]) : [x]; });
 const SET_ITEMS = {
+  helmet: {
+    rock: ['Titan-Plated Visor', '2x Apex Beast Hide, Chitin Scales, Tough Chitin'],
+    paper: ['Gale-Weaver Cowl', 'Gale-Wing Feathers, 2x Hollow Quill, Beast Sinew'],
+    scissors: ['Stalker-Chitin Mask', 'Venom-Sac Residue, Mandible Shards, 2x Sharp Claws'],
+    siege: ['Breaker-Goggles', '2x Behemoth Iron-Plate, Pyre-Core Shard, Thick Hide'],
+    wrally: ['Sovereign Vanguard Circlet', '2x Sovereign Crown Shard, Dragon-Blood Ember, Hollow Horns'],
+    wsolo: ['Phantom Apex Hood', 'Phantom-Stalker Pelt, 2x Void-Core Shard, Raw Muscle Tissue'],
+    wdef: ['Bastion Wall Mask', '2x Bastion-Behemoth Shell, Basalt Core, Tough Chitin'],
+    rally: ["Warlord's Crest Helm", 'War-Chief Sinew, 2x Banner-Cloth, Sharp Claws'],
+    tilehit: ['Raid-Leader Visage', '2x Nomad Hide, Quick-Stride Tendon, Thick Hide'],
+    research: ['Sage-Scholar Circlet', 'Sage-Beast Brain-Matter, 2x Luminous Crystal, Beast Sinew'],
+    construction: ['Master-Builder Hardhat', '2x Mason-Beast Granite Shards, Adamantite Rivets, Hollow Horns'],
+    training: ['Grand-Trainer Cap', 'Alpha-Predator Bone, 2x Iron-Sinew, Raw Muscle Tissue'],
+    hs_rpd: ['Yule-Garrison Helm', '2x Frost-Giant Shards, Winter-Festival Ribbons, Holiday Tinsel Wire'],
+    hs_rsd: ['Solstice-Bulwark Helm', 'Solstice Stone, 2x Festival Bell Metal, Holiday Pine Resin'],
+    hs_psd: ['Harvest-Aegis Hood', '2x Autumn-Harvest Gold, Harvest-Festival Silk, Holiday Leaf Veins'],
+    hs_rpa: ['Spring-Strike Circlet', 'Spring-Blossom Amber, 2x Festival Firecracker Ash, Holiday Silk Threads'],
+    hs_rsa: ['Summer-Assault Mask', '2x Summer-Solstice Flare, Festival Spark Core, Holiday Ember Glass'],
+    hs_psa: ['Equinox-Blitz Visage', 'Equinox Shadow-Weave, 2x Festival Lantern Paper, Holiday Wax Seal']
+  },
   chest: {
     rock: ['Titan-Plated Cuirass', '2x Apex Beast Hide, Chitin Scales, Tough Chitin'],
     paper: ['Gale-Weaver Mantle', 'Gale-Wing Feathers, 2x Hollow Quill, Beast Sinew'],
@@ -481,6 +501,13 @@ function setItemOf(set, slot) {
   const s = SETS[set], it = ((SET_ITEMS[slot] || {})[set]) || null;
   return { n: it ? it[0] : null, lv: (it && it[2] && it[2].lv) || s.lv, mats: it ? recipeText(parseRecipe(it[1])) : s.mats, recipe: it ? parseRecipe(it[1]) : null };
 }
+
+/* Named material economy (Michelle, 2026-10-01 19:03). Basic names drop from regular tiles, quests and alliance chests; a set's own names and the shared monster names
+   drop from monster-spawned tiles; a holiday set's names only from that holiday's monster. DEFAULT chosen, not specified: recipes are required in addition to the four tier materials. */
+const SHARED_MATS = ['Tough Chitin', 'Beast Sinew', 'Sharp Claws', 'Thick Hide', 'Hollow Horns', 'Raw Muscle Tissue'];
+const BASIC_MATS = [...new Set(Object.keys(BASIC).flatMap(k => BASIC[k].mats.split(', ')))];
+const setMats = id => SETS[id].mats.split(', ');
+const recipeOf = p => p.set ? setItemOf(p.set, p.slot).recipe : basicOf(p.cat, p.slot).recipe;
 function pieceLv(p) { return p.set ? setItemOf(p.set, p.slot).lv : basicOf(p.cat, p.slot).lv; }
 function pieceStatMap(p) {
   const r = {}; let v, sts;

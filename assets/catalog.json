@@ -3454,7 +3454,7 @@
   {
    "group": "piece",
    "key": "piece_s_rock_helmet",
-   "name": "\"Rock\" Troop Set helmet · helmet (\"Rock\" Troop Set)",
+   "name": "Titan-Plated Visor · helmet (\"Rock\" Troop Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3494,7 +3494,7 @@
   {
    "group": "piece",
    "key": "piece_s_paper_helmet",
-   "name": "\"Paper\" Troop Set helmet · helmet (\"Paper\" Troop Set)",
+   "name": "Gale-Weaver Cowl · helmet (\"Paper\" Troop Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3534,7 +3534,7 @@
   {
    "group": "piece",
    "key": "piece_s_scissors_helmet",
-   "name": "\"Scissors\" Troop Set helmet · helmet (\"Scissors\" Troop Set)",
+   "name": "Stalker-Chitin Mask · helmet (\"Scissors\" Troop Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3574,7 +3574,7 @@
   {
    "group": "piece",
    "key": "piece_s_training_helmet",
-   "name": "Higher Quality Training Set helmet · helmet (Higher Quality Training Set)",
+   "name": "Grand-Trainer Cap · helmet (Higher Quality Training Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3614,7 +3614,7 @@
   {
    "group": "piece",
    "key": "piece_s_construction_helmet",
-   "name": "Higher Quality Construction Set helmet · helmet (Higher Quality Construction Set)",
+   "name": "Master-Builder Hardhat · helmet (Higher Quality Construction Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3654,7 +3654,7 @@
   {
    "group": "piece",
    "key": "piece_s_research_helmet",
-   "name": "Higher Quality Research Set helmet · helmet (Higher Quality Research Set)",
+   "name": "Sage-Scholar Circlet · helmet (Higher Quality Research Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3694,7 +3694,7 @@
   {
    "group": "piece",
    "key": "piece_s_siege_helmet",
-   "name": "Siege (Trap-Killer) Set helmet · helmet (Siege (Trap-Killer) Set)",
+   "name": "Breaker-Goggles · helmet (Siege (Trap-Killer) Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3734,7 +3734,7 @@
   {
    "group": "piece",
    "key": "piece_s_tilehit_helmet",
-   "name": "Tile Hit Attack Set helmet · helmet (Tile Hit Attack Set)",
+   "name": "Raid-Leader Visage · helmet (Tile Hit Attack Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3774,7 +3774,7 @@
   {
    "group": "piece",
    "key": "piece_s_rally_helmet",
-   "name": "General Rallying Set helmet · helmet (General Rallying Set)",
+   "name": "Warlord's Crest Helm · helmet (General Rallying Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3814,7 +3814,7 @@
   {
    "group": "piece",
    "key": "piece_s_wrally_helmet",
-   "name": "Wonder Rally Set helmet · helmet (Wonder Rally Set)",
+   "name": "Sovereign Vanguard Circlet · helmet (Wonder Rally Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3854,7 +3854,7 @@
   {
    "group": "piece",
    "key": "piece_s_wsolo_helmet",
-   "name": "Wonder Solo Set helmet · helmet (Wonder Solo Set)",
+   "name": "Phantom Apex Hood · helmet (Wonder Solo Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3894,7 +3894,7 @@
   {
    "group": "piece",
    "key": "piece_s_wdef_helmet",
-   "name": "Wonder Defense Set helmet · helmet (Wonder Defense Set)",
+   "name": "Bastion Wall Mask · helmet (Wonder Defense Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3934,7 +3934,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_rpd_helmet",
-   "name": "Rock + Paper Defense Set helmet · helmet (Rock + Paper Defense Set)",
+   "name": "Yule-Garrison Helm · helmet (Rock + Paper Defense Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3974,7 +3974,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_rsd_helmet",
-   "name": "Rock + Scissors Defense Set helmet · helmet (Rock + Scissors Defense Set)",
+   "name": "Solstice-Bulwark Helm · helmet (Rock + Scissors Defense Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -4014,7 +4014,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_psd_helmet",
-   "name": "Paper + Scissors Defense Set helmet · helmet (Paper + Scissors Defense Set)",
+   "name": "Harvest-Aegis Hood · helmet (Paper + Scissors Defense Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -4054,7 +4054,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_rpa_helmet",
-   "name": "Rock + Paper Attack Set helmet · helmet (Rock + Paper Attack Set)",
+   "name": "Spring-Strike Circlet · helmet (Rock + Paper Attack Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -4094,7 +4094,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_rsa_helmet",
-   "name": "Rock + Scissors Attack Set helmet · helmet (Rock + Scissors Attack Set)",
+   "name": "Summer-Assault Mask · helmet (Rock + Scissors Attack Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -4134,7 +4134,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_psa_helmet",
-   "name": "Paper + Scissors Attack Set helmet · helmet (Paper + Scissors Attack Set)",
+   "name": "Equinox-Blitz Visage · helmet (Paper + Scissors Attack Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
