@@ -659,7 +659,7 @@ function updateTimers() {
 }
 function boot() {
   S = load() || newState(); S.set = S.set || { snd: true, hap: true }; if (!S.rewards) { S.rewards = []; addReward('Welcome prize', '10 Minute Speed Up x 1', { slips: { s5: 2 } }); } const el = Math.min(600, (Date.now() - (S.last || Date.now())) / 1000); if (el > 3) produce(el); S.last2 = 0; terrDirty = true;
-  initMap(); MAP.cx = S.view.x; MAP.cy = S.view.y; UI.booted = true; renderAll();
+  if (!THREATS.auto) S.incoming = S.incoming.filter(i => i.end > Date.now()); /* no stale hit on reload when threats are off */ initMap(); MAP.cx = S.view.x; MAP.cy = S.view.y; UI.booted = true; renderAll();
   setInterval(() => {
     tick(); renderTop(); renderTicker(); renderQueues();
     const now = Date.now(); if (now - UI.flyAt > 5500) { UI.flyAt = now; spawnFly(); }

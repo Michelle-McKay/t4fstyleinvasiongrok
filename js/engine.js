@@ -678,10 +678,16 @@ function randomTeleport() {
 function disband(quiet) { for (const k in S.own) if (S.own[k] === 0) delete S.own[k]; for (const k in S.encs) if (S.encs[k].o === 0) delete S.encs[k]; terrDirty = true; if (!quiet) note('Alliance disbanded. Every colored tile returns to neutral.', 'warn'); }
 
 /* ---------------- threats and bots ---------------- */
-function launchHostile() {
+/* Demo and test builds: enemy attacks, rallies and scouts only happen when asked for. Add ?threats=on to the page address to bring back the old random timers;
+   otherwise call testAttack(), testRally() or testScout() from the console (or let a thread trigger them) when a test needs one. */
+const THREATS = { auto: typeof location !== 'undefined' && /[?&]threats=on\b/.test(location.search) };
+function testAttack() { launchHostile(false); UIH.dirty(); }
+function testRally() { launchHostile(true); UIH.dirty(); }
+function testScout() { botScout(); UIH.dirty(); }
+function launchHostile(forceRally) {
   const bot = pick(S.bots), d = playerDefSide(); let Sd = 0, Hd = 0;
   const Dd = fight(Object.assign(mkSide({ inf1: 100 }, {}, 1)), d); Sd = Dd.Sd; Hd = Dd.Hd;
-  const rally = Math.random() < 0.3, r = rnd(0.3, 1.3) * (rally ? 1.6 : 1), k = Math.sqrt(r), Sa = Math.max(600, Sd * k), Ha = Math.max(6000, Hd * k);
+  const rally = forceRally == null ? Math.random() < 0.3 : !!forceRally, r = rnd(0.3, 1.3) * (rally ? 1.6 : 1), k = Math.sqrt(r), Sa = Math.max(600, Sd * k), Ha = Math.max(6000, Hd * k);
   const inc = { id: S.nid++, bot: bot.al, name: bot.tag + ' ' + bot.cmd, rally, start: Date.now(), end: Date.now() + rint(25000, 42000) + (rally ? 15000 : 0), S: Sa, H: Ha, n: Math.round(Ha / 110) };
   S.incoming.push(inc); UIH.flash(rally ? 'rally' : 'attack');
   if (hasB('embassy') && Math.random() < 0.7) callAllies(true); note((rally ? 'Rally inbound: ' : 'Hostile contact: ') + inc.name + ' is marching on you.', 'bad');
@@ -795,8 +801,8 @@ function tick() {
   for (const inc of S.incoming.slice()) if (now >= inc.end) { hitBase(inc); ch = true; }
   for (const k in S.encs) { const e = S.encs[k]; if (e.o !== 0 && now >= e.end) { const cur = S.own[k]; if (cur == null || cur === e.o) S.own[k] = e.o; delete S.encs[k]; terrDirty = true; ch = true; } }
   if (now > S.next.expand) { S.next.expand = now + rint(9000, 16000); botExpand(); ch = true; }
-  if (now > S.next.atk) { S.next.atk = now + rint(110000, 200000); launchHostile(); ch = true; }
-  if (now > S.next.scout) { S.next.scout = now + rint(70000, 150000); botScout(); ch = true; }
+  if (THREATS.auto && now > S.next.atk) { S.next.atk = now + rint(110000, 200000); launchHostile(); ch = true; }
+  if (THREATS.auto && now > S.next.scout) { S.next.scout = now + rint(70000, 150000); botScout(); ch = true; }
   if (now > S.next.orders) { S.next.orders = now + 120000; if (S.orders < lvlMax('hall')) { S.orders++; ch = true; } if (S.seals < lvlMax('prison')) S.seals++; }
   thronePower();
   if (S.shield.until && now >= S.shield.until) { S.shield.until = 0; note('Peace shield expired.', 'info'); ch = true; }
