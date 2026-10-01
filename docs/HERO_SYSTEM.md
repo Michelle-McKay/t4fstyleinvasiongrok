@@ -149,7 +149,7 @@ Cost by stretch at $2.00 per 100k: levels 1-30 about $235, 30-45 about $1,855, 4
 - Full-body avatars are vector placeholders until painted art arrives (prompts are in the art checklist).
 
 ## 12. Skill trees (built)
-- One point per level (49 at level 50). Main tree: 14 tiers, 40 nodes. Hunting tree: root, two branches, three advanced nodes (6 nodes). Everything fits in 46 points.
+- Two pools. Regular points: 2 per level 1-20, 3 for 21-35, 5 for 36-45, 10 for 46-50 (185 at level 50). Hunting points: 1 per level (50). Main tree: 14 tiers, 40 nodes costing 3/5/9 points for I/II/III (placeholders; 184 for the whole tree). Hunting tree: 6 nodes costing 4, 8 and 10 (50 for the whole tree).
 - A node needs one learned node in the tier above; II and III need the lower level of the same skill. Reset is free (open item).
 - Mapping from the reference game: Wood/Stone/Iron/Silver production become Oil/Energy/Steel/Cash; Infantry/Cavalry/Ranged attack become Rock/Paper/Scissors; Troop Defense becomes wall HP; Trap Attack becomes wall trap attack. Hunting "Energy" is our hunt stamina.
 - Hunting nodes: Monster Target Debuff (weaker monsters), Energy Cost Reduction (stacks with gear, capped at 50% total), Energy Recovery, Maximum Energy Limit, Hero Attack, Hero Attack Streak (per hunt streak step, up to 10). Hunter's instinct research only affects drops, so nothing overlaps.

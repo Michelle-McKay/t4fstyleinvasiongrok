@@ -216,11 +216,11 @@ function xpiGive(id, n) { S.xpi = S.xpi || {}; S.xpi[id] = (S.xpi[id] || 0) + n;
 /* Skills: banked points buy nodes in the main and hunting trees. */
 function skNode(id) { return SKILL_ALL.find(n => n.id === id); }
 function skHas(id) { return !!(S.hero.sk && S.hero.sk[id]); }
-function skSpent() { return S.hero.sk ? Object.keys(S.hero.sk).length : 0; }
-function skPoints() { return Math.max(0, heroLv() - 1 - skSpent()); }
+function skSpent(pool) { let t = 0; for (const id in (S.hero.sk || {})) { const n = skNode(id); if (n && (!pool || n.pool === pool)) t += n.cost; } return t; }
+function skPoints(pool) { return Math.max(0, skEarned(pool, heroLv()) - skSpent(pool)); }
 function skTier(id) { for (const t of ['main', 'hunt']) { const i = SKILL_TREES[t].findIndex(r => r.some(n => n.id === id)); if (i >= 0) return [t, i]; } return [null, -1]; }
 function skCan(id) {
-  const n = skNode(id); if (!n) return 'No such skill.'; if (skHas(id)) return 'Already learned.'; if (skPoints() < 1) return 'No skill points left.';
+  const n = skNode(id); if (!n) return 'No such skill.'; if (skHas(id)) return 'Already learned.'; if (skPoints(n.pool) < n.cost) return 'Needs ' + n.cost + ' ' + (n.pool === 'hunt' ? 'hunting' : 'skill') + ' points.';
   const [t, i] = skTier(id); if (i > 0 && !SKILL_TREES[t][i - 1].some(x => skHas(x.id))) return 'Learn a skill in the tier above first.';
   if (n.lv > 1 && !skHas(n.fam + (n.lv - 1))) return 'Learn ' + SK_FAM[n.fam][0] + ' ' + SK_RN[n.lv - 2] + ' first.'; return null;
 }
