@@ -82,12 +82,19 @@ def magenta_key(im, mask):
     between lamps), fades the purple shadow edge, and removes the magenta cast from edge pixels."""
     rgb = im.convert('RGB'); r, g, b = rgb.split()
     m = ImageChops.subtract(ImageChops.darker(r, b), g)                       # how magenta a pixel is
-    a = m.point(lambda v: 255 if v <= 28 else 0 if v >= 64 else int(255 * (64 - v) / 36))
+    a = m.point(lambda v: 255 if v <= 16 else 0 if v >= 40 else int(255 * (40 - v) / 24))
     a = ImageChops.darker(a, mask.filter(ImageFilter.MinFilter(3)))
     edge = a.point(lambda v: 255 if v < 250 else 0).filter(ImageFilter.MaxFilter(9))   # pixels near the cut
     m2 = ImageChops.multiply(m.point(lambda v: v if v > 8 else 0), edge.point(lambda v: 255 if v else 0))
     r = ImageChops.subtract(r, m2); b = ImageChops.subtract(b, m2)
     out = Image.merge('RGB', (r, g, b)).convert('RGBA'); out.putalpha(a.filter(ImageFilter.GaussianBlur(0.6))); return out
+
+SHADOW = {'city_build_crane': 125, 'city_build_beacon': 125, 'city_build_sparks': 175}   # layers that arrive with a baked floor shadow: grey-brown and darker than the art, so cut it by brightness
+
+def drop_shadow(im, thr):
+    rgb = im.convert('RGB'); lum = rgb.convert('L').point(lambda v: 255 if v >= thr else 0)
+    a = ImageChops.darker(im.getchannel('A'), lum.filter(ImageFilter.MaxFilter(3)))
+    out = im.copy(); out.putalpha(a); return out
 
 def has_alpha(im):
     return im.mode in ('RGBA', 'LA') and im.getchannel('A').getextrema()[0] < 250
@@ -106,6 +113,7 @@ def process(path):
         im = im.convert('RGB')
         if it['size'].startswith('1:1') and im.width != im.height:  # not square: centre-crop so it does not stretch
             n = min(im.size); l, t = (im.width - n) // 2, (im.height - n) // 2; im = im.crop((l, t, l + n, t + n)); note = 'centre-cropped to square'
+    if k in SHADOW and im.mode == 'RGBA': im = drop_shadow(im, SHADOW[k]); note += ', floor shadow cut'
     if it['transparent'] and k.startswith('city_ground'): im = trim(im)   # ground blobs are wide: keep their own aspect, the game stretches them over the island
     elif it['transparent'] and it['size'].startswith('1:1'): im = square(im)
     m = it['out']; sc = m / max(im.size)
