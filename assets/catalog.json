@@ -1,6 +1,6 @@
 {
  "v": 2,
- "count": 516,
+ "count": 517,
  "groups": [
   {
    "id": "bld",
@@ -109,8 +109,8 @@
   },
   {
    "id": "city",
-   "title": "City backdrop, ground and decor (36)",
-   "note": "Replaces the flat dark background and square street grid: three full-screen backdrops, ONE big slab (a single seamless image the whole base lies on, with the plateau and its edge painted in; the player swipes and zooms across it), a horizon strip, three organic ground islands, three plot pads, six construction-site pieces (scaffold wrap, crane, hanging load, beacon, sparks, dust) that the game animates over a plot being built, four winding road pieces and fourteen scenery pieces that make the base feel like one place."
+   "title": "City backdrop, ground and decor (37)",
+   "note": "Replaces the flat dark background and square street grid: three full-screen backdrops, two full-base ground images (sand and paved), each ONE seamless picture the whole base lies on, a horizon strip, three organic ground islands, three plot pads, six construction-site pieces (scaffold wrap, crane, hanging load, beacon, sparks, dust) that the game animates over a plot being built, four winding road pieces and fourteen scenery pieces that make the base feel like one place."
   },
   {
    "id": "ui",
@@ -3825,9 +3825,17 @@
   },
   {
    "group": "city",
-   "key": "city_slab",
-   "name": "City slab (one image)",
-   "size": "2:1, 4096 x 1920",
+   "key": "city_slab_1",
+   "name": "City slab 1: sand base (one image)",
+   "size": "2:1, 4096 x 2048",
+   "transparent": false,
+   "out": 3000
+  },
+  {
+   "group": "city",
+   "key": "city_slab_2",
+   "name": "City slab 2: paved base (one image)",
+   "size": "2:1, 4096 x 2048",
    "transparent": false,
    "out": 3000
   },
