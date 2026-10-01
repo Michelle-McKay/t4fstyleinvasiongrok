@@ -77,7 +77,14 @@ function render(){
  stage.innerHTML='';
  // permanent furthest-back layer: city_slab or map_slab, never selectable or movable
  var bk=document.createElement('div');bk.id='back';var bf=assets[back==='map'?'map_slab':'city_slab'];
- if(bf)bk.style.background=back==='map'?'url('+bf+') 0 0/1024px 1024px repeat':'url('+bf+') 0 0/100% 100% no-repeat';
+ if(bf&&back!=='map')bk.style.background='url('+bf+') 0 0/100% 100% no-repeat';
+ if(bf&&back==='map'){ // mirror every other tile so the edges always match: no visible seam lines
+  bk.style.overflow='hidden';
+  for(var r=0;r<3;r++)for(var c=0;c<4;c++){var w=document.createElement('div');
+   w.style.cssText='position:absolute;overflow:hidden;left:'+(c*1024)+'px;top:'+(r*1024)+'px;width:1024px;height:1024px;transform:scale('+(c%2?-1:1)+','+(r%2?-1:1)+')';
+   var t=document.createElement('img');t.src=bf;t.draggable=false;t.style.cssText='position:absolute;left:-8%;top:-8%;width:116%;height:116%'; // crop the soft outer edge of the picture
+   w.appendChild(t);bk.appendChild(w)}
+ }
  stage.appendChild(bk);
  items.forEach(function(it,i){
   var im=document.createElement('img');im.className='spr'+(it===sel?' sel':'');im.src=assets[it.key]||it.src;im.draggable=false;
