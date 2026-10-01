@@ -1,6 +1,6 @@
 # Forge rooms, hero level gate, gems, sockets and collection sources
 
-Spec: Michelle's gear, gem, monster hunting and Forge messages of 2026-10-01 (16:30, 16:35 master blueprint, 18:08 "finalized" gear catalog). Where they conflict, the latest wins; section 0 lists what changed. It builds on [HERO_SYSTEM.md](HERO_SYSTEM.md), [CRAFTING.md](CRAFTING.md) and [MONSTER_HUNTING.md](MONSTER_HUNTING.md), which are unchanged except where noted at the end. Code: `js/forge.js` (rooms and UI), `js/engine.js` (rules), `js/data.js` (tables, section "Gems, sockets and the Forge"). **Every number marked placeholder is a default for balancing, not a decision.**
+Spec: Michelle's gear, gem, monster hunting and Forge messages of 2026-10-01 (16:30, 16:35 master blueprint, 18:08 "finalized" gear catalog, 18:19 single-gem gem system). Where they conflict, the latest wins; section 0 lists what changed. It builds on [HERO_SYSTEM.md](HERO_SYSTEM.md), [CRAFTING.md](CRAFTING.md) and [MONSTER_HUNTING.md](MONSTER_HUNTING.md), which are unchanged except where noted at the end. Code: `js/forge.js` (rooms and UI), `js/engine.js` (rules), `js/data.js` (tables, section "Gems, sockets and the Forge"). **Every number marked placeholder is a default for balancing, not a decision.**
 
 ## 0. What the 18:08 finalized spec changed (against PR #165 and earlier)
 - **5 gear slots, not 7**: Helmet, Armor, Footwear, Weapon, Accessory. Gauntlets and Greaves are gone; old pieces in those slots are smelted to one material of their tier on load. What a piece does now comes from its category or set, not its slot.
@@ -13,12 +13,20 @@ Spec: Michelle's gear, gem, monster hunting and Forge messages of 2026-10-01 (16
 - **Tier names**: materials Composite Alloy, Carbon Fiber, Ballistic Polymer, Quantum Circuitry, Nano-Titanium, Aether-Core; gems Raw Shard, Calibrated Core, Prism Matrix, Hyper-Lens, Singularity Crystal, Omega Diamond; gear and the colours stay Grey, White, Green, Blue, Purple, Gold (Basic to Legendary).
 - **Not built, flagged**: the catalog says each piece needs 4 material slots made of specific named materials (Scrap Metal, Apex Beast Hide, Frost-Giant Shards...). The game still crafts from four tier materials (4-to-1 stays). The named materials are shown in the Gear Sets and Blueprint Archive rooms as each category's and set's recipe list, but are not separately stocked. OPEN ITEM: decide whether to add named material inventories.
 
+## 0b. What the 18:19 gem spec changed (against the 18:08 build, PR #166)
+- **One socket, one gem.** A fully upgraded piece has a single gem socket and holds one gem at a time; the socket was 4 sockets opened by quality and the Gemology research. Gems come out freely and are never destroyed. Socketing over a filled socket swaps the old gem back into stock.
+- **"Fully upgraded" is built as 1 star in the Enhancement Vault** (`GEM_SOCKET_STARS = 1`, **placeholder**: the spec does not say what fully upgraded means).
+- **Gemology research removed** (nothing left for it to open). Lapidary (gem power) stays and no longer needs Gemology.
+- **Gem Set bonus removed.** The 4th gem of every set is now its **Set Synergy** gem (holiday sets: Full-Set Synergy).
+- **97 gem types, not 33**: 25 Basic gems (replace the 6 cores), 12 regular sets x 4 = 48, 6 holiday sets x 4 = 24. The 27 per-monster Monster Gems became the 18 set gem families (the 15 holiday monsters share the 6 holiday sets).
+- **Scaling** (Grey to Gold, linear): Basic gems have their own ranges (1 to 13, 1.5 to 18, 2 to 24 or 2 to 26 percent); standard sets 2 to 25; Wonder / high-tier sets (Lv 47+, i.e. Wonder Rally, Wonder Solo, Wonder Defense) 2.5 to 30; holiday sets 3 to 35.
+
 ## 1. The Forge (six rooms)
 Tapping the Forge building opens Hero › Forge, a room bar with six rooms.
 
 | Room | What it does |
 |---|---|
-| **Gear Sets** | Set-organised view with three tabs: Basic Gear (13 categories), Regular Sets (12) and Holiday Sets (6). Each card shows hero level, stats, the 2 / 3 / 5 piece bonus, worn count, pieces owned and shards; tap a set for its five slots, core materials, source monsters, Gem Set bonus and a Craft with shard shortcut. |
+| **Gear Sets** | Set-organised view with three tabs: Basic Gear (13 categories), Regular Sets (12) and Holiday Sets (6). Each card shows hero level, stats, the 2 / 3 / 5 piece bonus, worn count, pieces owned and shards; tap a set for its five slots, core materials, source monsters, Set Synergy gem and a Craft with shard shortcut. |
 | **Equipment** | Type-organised view with a filter bar: Entire list, Helmets, Armor (chest, gauntlets, greaves), Boots, Weapons, Accessories. Each row shows tier, stat, socket strip, gem bonuses and Equip / Remove. |
 | **Workshop** | The crafting bench: 4-to-1 refine for materials, craft gear, 4-to-1 and mixed craft for gems, and the socket bench. |
 | **Smelter** | Dismantling bay. An unworn piece melts into **one material of its own tier** (a quarter of the four it cost) and gives back its gems. Set shards are lost. This is where unwanted gear and failed mixed crafts go. |
@@ -51,39 +59,89 @@ Set pieces give every stat of their set at 1 to 8 percent per piece (placeholder
 ## 3. Gems
 - **Six tiers** (Raw Shard, Calibrated Core, Prism Matrix, Hyper-Lens, Singularity Crystal, Omega Diamond) and the **strict 4-to-1 rule**, exactly like materials: four gems of one kind and tier combine into one of the next tier (Forge 3 x tier gates it). Four of a kind is guaranteed and free.
 - **Mixed gem craft** (the casino): four different gems sorted lowest to highest tier give the gem in position 1 / 2 / 3 / 4 with 75 / 20 / 4.9 / 0.1 percent (`MIX_ODDS`, shared with gear). The UI prints the exact odds first.
-- **Regular gems ("cores")**: Strike (troop attack), Guard (troop health), Bulwark (wall HP), Haste (march speed), Yield (yield), Mend (heal speed). Generic, non-set stats.
-- **Monster Gems**: one per monster, 27 in all (12 weekly, 15 holiday). A Monster Gem gives the first stat of its monster's gear set. They are tied to the monster: see section 5.
-- Power per gem by tier, **placeholder**: +0.4 / 0.7 / 1.1 / 1.6 / 2.2 / 3.0 percent (`GEM_PCT`). Lapidary research (Crafting tree, 5 levels) adds 4 to 20 percent to gem power.
+- **Basic gems (25)** drop anywhere (regular tiles, alliance store, gifts, quests, monster tiles) and boost one thing each. Range by tier, Grey to Gold:
 
-## 4. Sockets
-- Every gear piece has **4 sockets**. **Sockets 1 to 3 open by quality**, **socket 4 opens with the Gemology research** (Crafting tree, `gemology`, one level).
-- Open sockets by quality, **placeholder** (`socketsNative`): Grey 1, White 1, Green 2, Blue 2, Purple 3, Gold 3. Socket 4 is independent of quality, so a Grey piece with Gemology has sockets 1 and 4 open and 2 and 3 closed.
-- **Gem Set bonus**: four Monster Gems of one set in all four sockets of one piece add a bonus to that set's stat, **placeholder** by the lowest tier of the four: 1 / 2 / 3 / 4.5 / 6.5 / 9 percent (`GEMSET_PCT`). All four sockets must be open, so only **Purple or Gold gear with Gemology** can complete one. The Gem Set bonus is the first stat of the monster's set. Regular cores never form a Gem Set.
-- Gems come out of a socket for free (tap it). A smelted or consumed piece returns its gems.
+| Gem | Boost | Range |
+|---|---|---|
+| Iron-Plate Gem | General troop defense | 1% to 13% |
+| Vitality Gem | General troop health | 1% to 13% |
+| Vanguard Gem | General troop attack | 1% to 13% |
+| "Rock" Strike Gem | "Rock" troop attack | 1.5% to 18% |
+| "Rock" Guard Gem | "Rock" troop defense | 1.5% to 18% |
+| "Paper" Strike Gem | "Paper" troop attack | 1.5% to 18% |
+| "Paper" Guard Gem | "Paper" troop defense | 1.5% to 18% |
+| "Scissors" Strike Gem | "Scissors" troop attack | 1.5% to 18% |
+| "Scissors" Guard Gem | "Scissors" troop defense | 1.5% to 18% |
+| Siege Breaker Gem | Siege attack (wall traps) | 1.5% to 18% |
+| Builder's Gem | Construction speed | 1.5% to 18% |
+| Scribe's Gem | Research speed | 1.5% to 18% |
+| Drillmaster's Gem | Troop training speed | 1.5% to 18% |
+| Ordnance Gem | Trap training speed | 1.5% to 18% |
+| Hauler's Gem | Gathering speed and troop load | 2% to 24% |
+| Agri Gem | Food production speed | 2% to 26% |
+| Petro Gem | Oil production speed | 2% to 26% |
+| Grid Gem | Energy production speed | 2% to 26% |
+| Foundry Gem | Steel production speed | 2% to 26% |
+| Ledger Gem | Cash production speed | 2% to 26% |
+| Tracker's Gem | Monster energy cost reduction | 1% to 13% |
+| Hunter's Gem | Hero attack and monster damage | 1.5% to 18% |
+| March Gem | Hero march speed | 2% to 24% |
+| Tile Strike Gem | Tile hit attack | 1.5% to 18% |
+| Rally Banner Gem | General rally attack | 1.5% to 18% |
+
+- **Set gems (72)**: four per gear set, **monster loot tiles only**. The first three boost the set's themes, the fourth is the **Set Synergy** gem. Ranges are the same for all four gems of a set:
+
+| Set | Gems | Range |
+|---|---|---|
+| "Rock" Troop Set | Titan Core Gem (Attack); Titan Shell Gem (Health); Titan Impact Gem (Charge speed); Titan Crest Gem (Set synergy) | 2% to 25% |
+| "Paper" Troop Set | Gale Quill Gem (Attack); Gale Plume Gem (Health); Gale Wind Gem (Movement speed); Gale Crest Gem (Set synergy) | 2% to 25% |
+| "Scissors" Troop Set | Stalker Fang Gem (Attack); Stalker Chitin Gem (Health); Stalker Venom Gem (Lethality); Stalker Crest Gem (Set synergy) | 2% to 25% |
+| Siege (Trap-Killer) Set | Breaker Hammer Gem (Siege attack); Breaker Plating Gem (Defense); Breaker Piston Gem (Destruction speed); Breaker Core Gem (Set synergy) | 2% to 25% |
+| Higher Quality Training Set | Alpha Sinew Gem (Training speed); Alpha Whistle Gem (Capacity); Alpha Drum Gem (Cost reduction); Alpha Core Gem (Set synergy) | 2% to 25% |
+| Higher Quality Construction Set | Mason Granite Gem (Construction speed); Mason Rivet Gem (Upkeep efficiency); Mason Mallet Gem (Worker efficiency); Mason Core Gem (Set synergy) | 2% to 25% |
+| Higher Quality Research Set | Sage Crystal Gem (Research speed); Sage Brain Gem (Cost reduction); Sage Quill Gem (Output boost); Sage Core Gem (Set synergy) | 2% to 25% |
+| Tile Hit Attack Set | Nomad Spear Gem (Tile attack); Nomad Hide Gem (Tile health); Nomad Trail Gem (Tile march speed); Nomad Core Gem (Set synergy) | 2.5% to 30% |
+| General Rallying Set | Warlord Banner Gem (Rally attack); Warlord Horn Gem (Rally capacity); Warlord Armor Gem (Rally health); Warlord Core Gem (Set synergy) | 2.5% to 30% |
+| Wonder Rally Set | Sovereign Crown Gem (Wonder rally attack); Sovereign Ember Gem (Wonder rally health); Sovereign Gold Gem (Wonder march speed); Sovereign Core Gem (Set synergy) | 2.5% to 30% |
+| Wonder Solo Set | Phantom Hood Gem (Wonder solo attack); Phantom Void Gem (Wonder solo health); Phantom Stride Gem (Wonder solo march speed); Phantom Core Gem (Set synergy) | 2.5% to 30% |
+| Wonder Defense Set | Bastion Wall Gem (Wonder defense); Bastion Stone Gem (Wonder health); Bastion Anchor Gem (Reinforcement speed); Bastion Core Gem (Set synergy) | 2.5% to 30% |
+| Rock + Paper Defense Set | Frost Shield Gem (Rock and Paper defense); Frost Ribbon Gem (Base defense health); Frost Tinsel Gem (Garrison capacity); Yule Core Gem (Full-set synergy: wall defense and trap survival) | 3% to 35% |
+| Rock + Scissors Defense Set | Solstice Wall Gem (Rock and Scissors defense); Solstice Bell Gem (Base defense health); Solstice Resin Gem (Reinforcement travel speed); Solstice Core Gem (Full-set synergy: rally damage mitigation) | 3% to 35% |
+| Paper + Scissors Defense Set | Harvest Ward Gem (Paper and Scissors defense); Harvest Silk Gem (Base defense health); Harvest Leaf Gem (Base shield duration); Harvest Core Gem (Full-set synergy: enemy attack reduction) | 3% to 35% |
+| Rock + Paper Attack Set | Spring Strike Gem (Rock and Paper attack); Spring Ash Gem (Combat health); Spring Thread Gem (Hero world map march speed); Spring Core Gem (Full-set synergy: critical damage for Rock and Paper) | 3% to 35% |
+| Rock + Scissors Attack Set | Summer Assault Gem (Rock and Scissors attack); Summer Spark Gem (Combat health); Summer Glass Gem (Rally assembly speed); Summer Core Gem (Full-set synergy: PvP troop lethality) | 3% to 35% |
+| Paper + Scissors Attack Set | Equinox Blitz Gem (Paper and Scissors attack); Equinox Paper Gem (Combat health); Equinox Seal Gem (Troop lethality); Equinox Core Gem (Full-set synergy: stacking damage aura) | 3% to 35% |
+
+- A gem's effect is its percent for its tier, times (1 + Lapidary research), added to the stats listed in `GEMS[id].as` (`js/data.js`). Effects the game has no stat for yet (capacity, cost reduction, lethality, reinforcement speed, shield duration, critical damage...) feed the **nearest existing stat** and the label shows the spec's wording. **OPEN ITEM:** build those stats for real.
+- **Set Synergy**: adds its percent to every stat of its set while 2 or more pieces of the set are worn (Full-Set Synergy of a holiday set: all 5 worn). **Placeholder** activation rule.
+
+## 4. The gem socket
+- A piece with **1 star** (`GEM_SOCKET_STARS`, placeholder for "fully upgraded") has **one socket** holding **one gem of one type**. Below that the socket is locked and shown capped.
+- Gems come out for free (tap the socketed gem in the Workshop's socket bench); a new gem swaps the old one back to stock. A smelted or consumed piece returns its gem.
 - All gem and star bonuses flow through `wornBonus()` into `mods()`, so they affect real combat, gathering, training, heal and hunt stamina.
 
 ## 5. Collection ecosystem
 | Source | What it gives |
 |---|---|
-| **Regular world tiles** | Generic materials and cores only. Tier weights 40 / 30 / 20 / 10 for Levels 1 to 4 (cut off at the tile level and rescaled, `TILE_W`), so mostly Levels 1 to 3, sometimes 4. Expected finds per full tile `0.5 + 0.25 x level`, half materials, half cores. **Level 5 and 6 tiles**: a 5 percent chance per gather of a **once-a-week Epic jackpot** (`TILE_J5`). **Level 6 tiles**: a 0.1 percent chance per gather of a **6-pack of Gold** (3 Aether-Core + 3 Omega Diamond, `TILE_J6`). |
-| **Monster-spawned tiles** | Left behind when a monster dies, same level as the monster, one tile look per monster. The **only source of set shards and Monster Gems**, plus regular finds as above (no jackpots). Gem tier uses the monster drop spread (strict ceiling: own level or lower, Legendary only from level 6, Hunter's instinct research shifts it). Expected Monster Gems per full tile `0.6 + 0.3 x level`; shard chance `30% + 10% x level` (max 90%). A holiday tile gives its **event shard**, and also a shard of one of the week's regular sets. |
-| **Alliance Store** (Guild › Store) | Mystery chests for alliance points: 3 finds, each a material or core, Level 1 (65%) or Level 2 (35%). 50 points each. Points come from opening alliance chests (5 x chest level, 15 per gift). Never Monster Gems. |
-| **Alliance P2W gifts** | When an ally buys a pack, a shared gift chest drops for the whole alliance: 2 materials and 2 cores of Level 3 (70%) or Level 4 (30%) plus supplies. In this single-player build allies are simulated: about one in six allied chests is a gift. **Payments stay in sandbox; nothing here touches real money.** |
-| **Quests and dailies** | Material pouches and bags of basic cores (Level 1, sometimes 2) on the daily exercise, forging, three hunt wins and socketing a first gem. |
+| **Regular world tiles** | Generic materials and Basic gems only. Tier weights 40 / 30 / 20 / 10 for Levels 1 to 4 (cut off at the tile level and rescaled, `TILE_W`), so mostly Levels 1 to 3, sometimes 4. Expected finds per full tile `0.5 + 0.25 x level`, half materials, half cores. **Level 5 and 6 tiles**: a 5 percent chance per gather of a **once-a-week Epic jackpot** (`TILE_J5`). **Level 6 tiles**: a 0.1 percent chance per gather of a **6-pack of Gold** (3 Aether-Core + 3 Omega Diamond, `TILE_J6`). |
+| **Monster-spawned tiles** | Left behind when a monster dies, same level as the monster, one tile look per monster. The **only source of set shards and set gems**, plus regular finds as above (no jackpots). Gem tier uses the monster drop spread (strict ceiling: own level or lower, Legendary only from level 6, Hunter's instinct research shifts it). Expected set gems per full tile `0.6 + 0.3 x level`; shard chance `30% + 10% x level` (max 90%). A holiday tile gives its **event shard**, and also a shard of one of the week's regular sets. |
+| **Alliance Store** (Guild › Store) | Mystery chests for alliance points: 3 finds, each a material or Basic gem, Level 1 (65%) or Level 2 (35%). 50 points each. Points come from opening alliance chests (5 x chest level, 15 per gift). Never set gems. |
+| **Alliance P2W gifts** | When an ally buys a pack, a shared gift chest drops for the whole alliance: 2 materials and 2 Basic gems of Level 3 (70%) or Level 4 (30%) plus supplies. In this single-player build allies are simulated: about one in six allied chests is a gift. **Payments stay in sandbox; nothing here touches real money.** |
+| **Quests and dailies** | Material pouches and bags of Basic gems (Level 1, sometimes 2) on the daily exercise, forging, three hunt wins and socketing a first gem. |
 
 ## 6. Enhancement Vault
 Star a piece up to 5 stars. **Star N+1 consumes N+1 duplicates** (same slot, set and tier, not worn), `2,000 x (N+1)` alloy and needs Forge `3 + N` (placeholder). Each star adds 8 percent to the piece's own bonus (`STAR_PCT`). Gems on consumed duplicates return to stock.
 
 ## 7. Changes to earlier systems
 - **Shards moved to the loot tile.** Killing a monster no longer carries a shard home; gathering the tile it leaves does (camps drop none). Monster kills still give materials, XP, the instant pocket and the alliance chest. This makes the monster tile the exclusive source of set gear materials as the spec says. [MONSTER_HUNTING.md](MONSTER_HUNTING.md) is updated.
-- Old saves: the single "gems" counter becomes Strike cores; gauntlets and greaves are smelted into materials; old sets, shards, gems and loot tiles map to the new sets; old accessories and slot gear become Basic gear categories (`migrateGear`).
+- Old saves: the single "gems" counter becomes Vanguard gems; old cores become Basic gems (Strike to Vanguard, Guard and Mend to Vitality, Bulwark to Iron-Plate, Haste to March, Yield to Agri); old set gems become the first gem of that set; a piece's old four gems become one (the highest tier stays socketed, the rest return to stock); gauntlets and greaves are smelted into materials; old sets, shards, gems and loot tiles map to the new sets; old accessories and slot gear become Basic gear categories (`migrateGear`).
 
 ## 8. Open items (placeholders)
-- Every value in `data.js` section "Gems, sockets and the Forge": gem power, Gem Set power, sockets per tier, star bonus and costs, tile weights, jackpot odds, store cost and rolls.
+- Every value in `data.js` section "Gems, sockets and the Forge": gem ranges, the star that opens the socket, star bonus and costs, tile weights, jackpot odds, store cost and rolls.
 - Smelter return (one material of the piece's tier) and whether a Basic piece should return less.
-- Whether Monster Gems should also drop from the kill itself (the brief says both "monsters drop gems" and "the monster tile is the exclusive source"; built as tile-only).
-- Gem set bonus across two pieces, and a research that opens sockets 2 and 3 early.
+- Whether set gems should also drop from the kill itself (the brief says both "monsters drop gems" and "the monster tile is the exclusive source"; built as tile-only).
+- What "fully upgraded" means for the gem socket, the nearest-stat mapping of gem effects, and the synergy activation rule.
 - Alliance points sources and price.
 
 ## 9. Art
-New prompts in the checklist (`tools/artcatalog.js`): 6 Forge room interiors, socket and star pieces, blueprint cards, store and gift chests, alliance points icon (group "Forge rooms, sockets and chests"), 27 Monster Gem icons (group "Monster Gems") and the 6 core icons. Gear icons are now 5 slots x 6 tiers = 30 with four sockets (open by quality, the fourth always capped for research); the 12 regular monsters have new names and descriptions, and holiday shards are now 6 (one per holiday set). No gear or monster art had been painted yet, so nothing needs redoing. All pieces share one shape, camera, light and size and are built to be animated (glint sweep, socket pulse, chest open).
+New prompts in the checklist (`tools/artcatalog.js`): 6 Forge room interiors, socket and star pieces, blueprint cards, store and gift chests, alliance points icon (group "Forge rooms, sockets and chests"), 72 set gem icons (group "Set gems") and 25 Basic gem icons (group "Basic gems"). Gear icons are 5 slots x 6 tiers = 30 with ONE socket position, drawn capped; the research-locked socket and the Gem Set ring were removed, a Set Synergy glow ring was added; the 12 regular monsters have new names and descriptions, and holiday shards are now 6 (one per holiday set). No gear or monster art had been painted yet, so nothing needs redoing. All pieces share one shape, camera, light and size and are built to be animated (glint sweep, socket pulse, chest open).

@@ -62,7 +62,7 @@ heroSVG = function (id, o) { const f = ART.file('hero_' + id); return f ? imgTag
 const _vecXpi = xpiSVG;
 xpiSVG = function (id) { const f = ART.file('xpi_' + id); return f ? imgTag(f, 'unit xpi x' + id) : _vecXpi(id); };
 const _vecStone = stoneSVG;
-stoneSVG = function (kind, tier) { const f = ART.file(gemIsSet(kind) ? 'mgem_' + kind : 'core_' + kind); return f ? imgTag(f, 'unit stone t' + clamp(tier | 0, 1, 6)) : _vecStone(kind, tier); };
+stoneSVG = function (kind, tier) { const f = ART.file('gem_' + kind); return f ? imgTag(f, 'unit stone t' + clamp(tier | 0, 1, 6)) : _vecStone(kind, tier); };
 const _vecHF = heroFullSVG;
 heroFullSVG = function (id) { const f = ART.file('heroful_' + id); return f ? imgTag(f, 'hfull h-' + id) : _vecHF(id); };
 

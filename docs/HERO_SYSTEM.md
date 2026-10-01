@@ -144,6 +144,6 @@ Cost by stretch at $2.00 per 100k: levels 1-30 about $235, 30-45 about $1,855, 4
 - Set bonus values (`SETS[...].b`) and gear rarity tiers: placeholder values; rarity is the existing grades 1 to 6.
 - Skill tree: not built. One skill point per level is banked and shown.
 - Starter pack and limited-time offers: not added.
-- Gem pack lineup: unchanged. Socket gems (cores and Monster Gems) are now built, see FORGE_GEMS.md.
+- Gem pack lineup: unchanged. Gems (25 Basic and 72 set gems, one per piece) are now built, see FORGE_GEMS.md.
 - Avatar switching: free (`AVATAR_SWITCH_COST = 0`).
 - Full-body avatars are vector placeholders until painted art arrives (prompts are in the art checklist).

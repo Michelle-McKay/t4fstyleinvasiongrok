@@ -157,7 +157,7 @@ const MISSIONS = [
   { id: 'm6', n: 'Run the daily exercise', d: () => S.daily === new Date().toDateString() ? 1 : 0, t: 1, slips: { s5: 2 }, daily: 1, mats: { 1: 4, 2: 1 }, gembag: 2 },
   { id: 'm7', n: 'Raise the Command Center to 10', d: () => Math.min(ccLevel(), 10), t: 10, dia: 120, tokens: 1 },
   { id: 'm8', n: 'Win 3 monster hunts', d: () => Math.min(S.stam.wins, 3), t: 3, mats: { 1: 6, 2: 2 }, gembag: 3 },
-  { id: 'm9', n: 'Socket a gem into a gear piece', d: () => S.gear.pieces.some(p => (p.gems || []).some(Boolean)) ? 1 : 0, t: 1, mats: { 2: 3 }, gembag: 2 }
+  { id: 'm9', n: 'Socket a gem into a gear piece', d: () => S.gear.pieces.some(p => p.gem) ? 1 : 0, t: 1, mats: { 2: 3 }, gembag: 2 }
 ];
 const HOUR = 3600e3;
 function missionHTML() {
@@ -192,7 +192,7 @@ function chestsHTML() {
   const now = Date.now(), cs = S.chests.slice().sort((a, b) => b.lv - a.lv || b.t - a.t);
   return `<div class="panel"><div class="hd"><h3>Alliance gift chests</h3><span class="tag ${cs.length ? 'br' : ''}">${cs.length}</span></div><div class="bd"><div class="sub">Every monster killed on the map drops a chest for the whole alliance. Bigger monsters, bigger chests. When an ally buys a pack, a mid-tier gift chest drops for everyone too. Opening a chest earns alliance points for the Store tab. Chests are shared, so open them before they expire after 24 hours.</div>
   <div class="flex mt"><button class="btn pri" data-a="chestall" ${cs.length ? '' : 'disabled'}>Open all</button></div></div></div>
-  <div class="panel"><div class="bd list">${cs.map(c => `<div class="it"><span class="num br" style="width:44px">Lv ${c.lv}</span><div class="grow"><b class="h" style="font-size:15px">${c.from}'s ${c.kind === 'gift' ? 'pack gift' : 'chest'}</b><div class="sub">${c.kind === 'gift' ? 'a member bought a pack (sandbox): Level ' + c.lv + ' materials and cores' : chestBars(c.lv) + ' material rolls · resources · maybe an XP item'} · expires in ${fmtT((c.t + CHEST_LIFE_MS - now) / 1000)}</div></div><button class="btn sm pri" data-a="chest" data-id="${c.id}">Open</button></div>`).join('') || '<div class="sub">No chests. Hunt a monster or wait for an ally.</div>'}</div></div>`;
+  <div class="panel"><div class="bd list">${cs.map(c => `<div class="it"><span class="num br" style="width:44px">Lv ${c.lv}</span><div class="grow"><b class="h" style="font-size:15px">${c.from}'s ${c.kind === 'gift' ? 'pack gift' : 'chest'}</b><div class="sub">${c.kind === 'gift' ? 'a member bought a pack (sandbox): Level ' + c.lv + ' materials and Basic gems' : chestBars(c.lv) + ' material rolls · resources · maybe an XP item'} · expires in ${fmtT((c.t + CHEST_LIFE_MS - now) / 1000)}</div></div><button class="btn sm pri" data-a="chest" data-id="${c.id}">Open</button></div>`).join('') || '<div class="sub">No chests. Hunt a monster or wait for an ally.</div>'}</div></div>`;
 }
 function eventsHTML() {
   const now = Date.now(), fd = Math.max(0, (S.freeDiaAt || 0) + 4 * HOUR - now), sp = Math.max(0, (S.supplyAt || 0) + 0.5 * HOUR - now), dl = S.daily === new Date().toDateString();
@@ -327,7 +327,7 @@ function huntReportHTML(h) {
     + row('Materials (ride home)', mats || '—') + row('Hunt streak', h.streak + ' in a row' + (h.extra ? ' · <span class="ox">+' + h.extra + ' extra roll' + (h.extra > 1 ? 's' : '') + '</span>' : ''))
     + row('Commander XP', '+' + fmtN(h.xp)) + row('Hero upgrade items', (h.items.length ? h.items.join(', ') + ' · ' : '') + h.frags + ' fragments' + (h.fused ? ' → ' + h.fused + ' Tiny XP' : ''))
     + row('Instant pocket', h.pocket ? '+' + fmtN(h.pocket[1]) + ' ' + RESN[h.pocket[0]] : 'StoreHouse full') + row('Alliance gift chest', 'Level ' + h.chest + ' · shared, see Guild › Chests')
-    + `<div class="sub">${h.eff.toFixed(1)} materials per 10 net stamina across all your hunts. Carried loot is paid out when the column is home. Set shards and Monster Gems are not carried by the monster: they sit in the loot tile it leaves behind, so send a column to gather it.</div>`;
+    + `<div class="sub">${h.eff.toFixed(1)} materials per 10 net stamina across all your hunts. Carried loot is paid out when the column is home. Set shards and set gems are not carried by the monster: they sit in the loot tile it leaves behind, so send a column to gather it.</div>`;
 }
 function sheetReport(id) {
   const r = S.reports.find(x => x.id === id); if (!r) return '<div class="sub">Report gone.</div>';
