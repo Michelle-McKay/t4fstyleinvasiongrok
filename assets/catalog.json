@@ -3834,7 +3834,7 @@
   {
    "group": "city",
    "key": "map_slab",
-   "name": "World map ground tile (ONE image, tiles seamlessly)",
+   "name": "World map ground tile (ONE image, uniform, tiles seamlessly)",
    "size": "1:1, 2048 x 2048",
    "transparent": false,
    "out": 2048
