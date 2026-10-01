@@ -167,7 +167,16 @@ Her updated list, recorded as written. Reference only, nothing here is built. Pr
 | 5-Day -50% Upkeep Reduction | 8,000 |
 
 ## 5. Chests
-Placeholder. Michelle is sending this tab next.
+Prices and the other chests are still to come. Drop tables received so far (per item chance, as Michelle sent them; the number of items in each level is not given yet, so the chances are not yet checked to add up to 100%):
+
+| Chest | Level 1 / Tier 1 | Level 2 / Tier 2 | Level 3 / Tier 3 | Tier 4 | Tier 5 | Tier 6 |
+|---|---|---|---|---|---|---|
+| Normal Material Chest | 2.5% | 1.458% | 0.208% | n/a | n/a | n/a |
+| Special Material Chest | 2.5% | 1.458% | 0.208% | n/a | n/a | n/a |
+| Rare Material Chest | 2.5% | 1.458% | 0.208% | n/a | n/a | n/a |
+| Epic Material Chest | 2.083% | 1.042% | 0.625% | 0.292% | 0.104% | 0.021% (top-tier legendary crafting items) |
+
+Notes: the first three chests are given with the same three figures, so it is not yet clear how Special and Rare differ from Normal (probably which item levels sit in each tier); to confirm with Michelle. In our game the nearest match is the forge material grades (Basic to Legendary, six grades), see `STORE_TIER2` and `pouch()` in `js/engine.js` for the current alliance-store chest rolls.
 
 ## Notes for the later build (things her list needs that the game lacks)
 Upkeep (no upkeep system today), Hero Resurrection and Captured Hero Rename (heroes are captured, not killed, and enemy heroes are not captured), Torch, Iron fetters and Code of War, Gear Bag (no gear storage limit), Gem tools, March presets, Fake Army, and Default Hero Energy (the game has stamina, shown as Chips in her mapping). Per-hero XP items from the reference are already dropped from her list.
