@@ -1,6 +1,6 @@
 {
  "v": 2,
- "count": 702,
+ "count": 911,
  "groups": [
   {
    "id": "bld",
@@ -81,6 +81,16 @@
    "id": "heroful",
    "title": "Hero avatars, full body (3)",
    "note": "The hero screen centre: a FULL-BODY standing character, front view, identical pose and proportions for every avatar so they can share one animation set (idle breathing, flex, attack). Transparent. Arms slightly away from the body, legs shoulder-width apart, feet flat on an invisible ground, nothing overlapping the silhouette, so the arms, head and torso can be cut out as separate layers and animated later. Same bare/base armour for all three so gear can be drawn on top; avatars differ only in face, hair and base colours."
+  },
+  {
+   "id": "piece",
+   "title": "Gear pieces, the full catalog (155)",
+   "note": "Every piece of the finalized catalog: 13 Basic categories x 5 slots (65), 12 regular sets x 5 (60) and 6 holiday sets x 5 (30). ONE icon per piece, transparent, the identical camera, size, lighting and shape per SLOT across all 155 (the same helmet, vest, rifle, boots and dog-tag amulet silhouette every time), so only the colour scheme and ONE small etched emblem change and a glint or glow can be animated across the same surfaces later. The quality (Grey to Gold) glow, frame and the single gem socket are drawn in code: leave one clear flat spot for the socket in the same place on every piece of a slot. Do a whole set (its 5 slots) together."
+  },
+  {
+   "id": "matn",
+   "title": "Named gear materials (54)",
+   "note": "The named ingredients listed on each gear recipe (Scrap Metal, Apex Beast Hide, Frost-Giant Shards...), one icon each, transparent. ALL share the identical camera, size, lighting and a single chunky raw-chunk silhouette on a small base, so they read as one family; only the material and colour change. The quality tier is NOT drawn (the game shows it with the six ingot tiers). Built to glint or shimmer later."
   },
   {
    "id": "core",
@@ -2920,6 +2930,1678 @@
    "size": "3:4, 1200 x 1600",
    "transparent": true,
    "out": 600
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_defense_helmet",
+   "name": "General Defense / Traps · helmet",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_defense_chest",
+   "name": "General Defense / Traps · chest",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_defense_weapon",
+   "name": "General Defense / Traps · weapon",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_defense_boots",
+   "name": "General Defense / Traps · boots",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_defense_accessory",
+   "name": "General Defense / Traps · accessory",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_attack_helmet",
+   "name": "General Attack · helmet",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_attack_chest",
+   "name": "General Attack · chest",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_attack_weapon",
+   "name": "General Attack · weapon",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_attack_boots",
+   "name": "General Attack · boots",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_attack_accessory",
+   "name": "General Attack · accessory",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_food_helmet",
+   "name": "Food Production · helmet",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_food_chest",
+   "name": "Food Production · chest",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_food_weapon",
+   "name": "Food Production · weapon",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_food_boots",
+   "name": "Food Production · boots",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_food_accessory",
+   "name": "Food Production · accessory",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_oil_helmet",
+   "name": "Oil Production · helmet",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_oil_chest",
+   "name": "Oil Production · chest",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_oil_weapon",
+   "name": "Oil Production · weapon",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_oil_boots",
+   "name": "Oil Production · boots",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_oil_accessory",
+   "name": "Oil Production · accessory",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_energy_helmet",
+   "name": "Energy Production · helmet",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_energy_chest",
+   "name": "Energy Production · chest",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_energy_weapon",
+   "name": "Energy Production · weapon",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_energy_boots",
+   "name": "Energy Production · boots",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_energy_accessory",
+   "name": "Energy Production · accessory",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_steel_helmet",
+   "name": "Steel Production · helmet",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_steel_chest",
+   "name": "Steel Production · chest",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_steel_weapon",
+   "name": "Steel Production · weapon",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_steel_boots",
+   "name": "Steel Production · boots",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_steel_accessory",
+   "name": "Steel Production · accessory",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_cash_helmet",
+   "name": "Cash Production · helmet",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_cash_chest",
+   "name": "Cash Production · chest",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_cash_weapon",
+   "name": "Cash Production · weapon",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_cash_boots",
+   "name": "Cash Production · boots",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_cash_accessory",
+   "name": "Cash Production · accessory",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_build_helmet",
+   "name": "Construction · helmet",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_build_chest",
+   "name": "Construction · chest",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_build_weapon",
+   "name": "Construction · weapon",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_build_boots",
+   "name": "Construction · boots",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_build_accessory",
+   "name": "Construction · accessory",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_gather_helmet",
+   "name": "Gathering · helmet",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_gather_chest",
+   "name": "Gathering · chest",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_gather_weapon",
+   "name": "Gathering · weapon",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_gather_boots",
+   "name": "Gathering · boots",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_gather_accessory",
+   "name": "Gathering · accessory",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_research_helmet",
+   "name": "Research · helmet",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_research_chest",
+   "name": "Research · chest",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_research_weapon",
+   "name": "Research · weapon",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_research_boots",
+   "name": "Research · boots",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_research_accessory",
+   "name": "Research · accessory",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_train_helmet",
+   "name": "Troop Training · helmet",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_train_chest",
+   "name": "Troop Training · chest",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_train_weapon",
+   "name": "Troop Training · weapon",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_train_boots",
+   "name": "Troop Training · boots",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_train_accessory",
+   "name": "Troop Training · accessory",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_trap_helmet",
+   "name": "Wall Trap Training · helmet",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_trap_chest",
+   "name": "Wall Trap Training · chest",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_trap_weapon",
+   "name": "Wall Trap Training · weapon",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_trap_boots",
+   "name": "Wall Trap Training · boots",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_trap_accessory",
+   "name": "Wall Trap Training · accessory",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_hunt_helmet",
+   "name": "Monster Hunting · helmet",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_hunt_chest",
+   "name": "Monster Hunting · chest",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_hunt_weapon",
+   "name": "Monster Hunting · weapon",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_hunt_boots",
+   "name": "Monster Hunting · boots",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_b_hunt_accessory",
+   "name": "Monster Hunting · accessory",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_rock_helmet",
+   "name": "\"Rock\" Troop Set · helmet",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_rock_chest",
+   "name": "\"Rock\" Troop Set · chest",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_rock_weapon",
+   "name": "\"Rock\" Troop Set · weapon",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_rock_boots",
+   "name": "\"Rock\" Troop Set · boots",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_rock_accessory",
+   "name": "\"Rock\" Troop Set · accessory",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_paper_helmet",
+   "name": "\"Paper\" Troop Set · helmet",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_paper_chest",
+   "name": "\"Paper\" Troop Set · chest",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_paper_weapon",
+   "name": "\"Paper\" Troop Set · weapon",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_paper_boots",
+   "name": "\"Paper\" Troop Set · boots",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_paper_accessory",
+   "name": "\"Paper\" Troop Set · accessory",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_scissors_helmet",
+   "name": "\"Scissors\" Troop Set · helmet",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_scissors_chest",
+   "name": "\"Scissors\" Troop Set · chest",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_scissors_weapon",
+   "name": "\"Scissors\" Troop Set · weapon",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_scissors_boots",
+   "name": "\"Scissors\" Troop Set · boots",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_scissors_accessory",
+   "name": "\"Scissors\" Troop Set · accessory",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_training_helmet",
+   "name": "Higher Quality Training Set · helmet",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_training_chest",
+   "name": "Higher Quality Training Set · chest",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_training_weapon",
+   "name": "Higher Quality Training Set · weapon",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_training_boots",
+   "name": "Higher Quality Training Set · boots",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_training_accessory",
+   "name": "Higher Quality Training Set · accessory",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_construction_helmet",
+   "name": "Higher Quality Construction Set · helmet",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_construction_chest",
+   "name": "Higher Quality Construction Set · chest",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_construction_weapon",
+   "name": "Higher Quality Construction Set · weapon",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_construction_boots",
+   "name": "Higher Quality Construction Set · boots",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_construction_accessory",
+   "name": "Higher Quality Construction Set · accessory",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_research_helmet",
+   "name": "Higher Quality Research Set · helmet",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_research_chest",
+   "name": "Higher Quality Research Set · chest",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_research_weapon",
+   "name": "Higher Quality Research Set · weapon",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_research_boots",
+   "name": "Higher Quality Research Set · boots",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_research_accessory",
+   "name": "Higher Quality Research Set · accessory",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_siege_helmet",
+   "name": "Siege (Trap-Killer) Set · helmet",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_siege_chest",
+   "name": "Siege (Trap-Killer) Set · chest",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_siege_weapon",
+   "name": "Siege (Trap-Killer) Set · weapon",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_siege_boots",
+   "name": "Siege (Trap-Killer) Set · boots",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_siege_accessory",
+   "name": "Siege (Trap-Killer) Set · accessory",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_tilehit_helmet",
+   "name": "Tile Hit Attack Set · helmet",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_tilehit_chest",
+   "name": "Tile Hit Attack Set · chest",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_tilehit_weapon",
+   "name": "Tile Hit Attack Set · weapon",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_tilehit_boots",
+   "name": "Tile Hit Attack Set · boots",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_tilehit_accessory",
+   "name": "Tile Hit Attack Set · accessory",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_rally_helmet",
+   "name": "General Rallying Set · helmet",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_rally_chest",
+   "name": "General Rallying Set · chest",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_rally_weapon",
+   "name": "General Rallying Set · weapon",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_rally_boots",
+   "name": "General Rallying Set · boots",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_rally_accessory",
+   "name": "General Rallying Set · accessory",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_wrally_helmet",
+   "name": "Wonder Rally Set · helmet",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_wrally_chest",
+   "name": "Wonder Rally Set · chest",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_wrally_weapon",
+   "name": "Wonder Rally Set · weapon",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_wrally_boots",
+   "name": "Wonder Rally Set · boots",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_wrally_accessory",
+   "name": "Wonder Rally Set · accessory",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_wsolo_helmet",
+   "name": "Wonder Solo Set · helmet",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_wsolo_chest",
+   "name": "Wonder Solo Set · chest",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_wsolo_weapon",
+   "name": "Wonder Solo Set · weapon",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_wsolo_boots",
+   "name": "Wonder Solo Set · boots",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_wsolo_accessory",
+   "name": "Wonder Solo Set · accessory",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_wdef_helmet",
+   "name": "Wonder Defense Set · helmet",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_wdef_chest",
+   "name": "Wonder Defense Set · chest",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_wdef_weapon",
+   "name": "Wonder Defense Set · weapon",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_wdef_boots",
+   "name": "Wonder Defense Set · boots",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_wdef_accessory",
+   "name": "Wonder Defense Set · accessory",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_hs_rpd_helmet",
+   "name": "Rock + Paper Defense Set · helmet",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_hs_rpd_chest",
+   "name": "Rock + Paper Defense Set · chest",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_hs_rpd_weapon",
+   "name": "Rock + Paper Defense Set · weapon",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_hs_rpd_boots",
+   "name": "Rock + Paper Defense Set · boots",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_hs_rpd_accessory",
+   "name": "Rock + Paper Defense Set · accessory",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_hs_rsd_helmet",
+   "name": "Rock + Scissors Defense Set · helmet",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_hs_rsd_chest",
+   "name": "Rock + Scissors Defense Set · chest",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_hs_rsd_weapon",
+   "name": "Rock + Scissors Defense Set · weapon",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_hs_rsd_boots",
+   "name": "Rock + Scissors Defense Set · boots",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_hs_rsd_accessory",
+   "name": "Rock + Scissors Defense Set · accessory",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_hs_psd_helmet",
+   "name": "Paper + Scissors Defense Set · helmet",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_hs_psd_chest",
+   "name": "Paper + Scissors Defense Set · chest",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_hs_psd_weapon",
+   "name": "Paper + Scissors Defense Set · weapon",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_hs_psd_boots",
+   "name": "Paper + Scissors Defense Set · boots",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_hs_psd_accessory",
+   "name": "Paper + Scissors Defense Set · accessory",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_hs_rpa_helmet",
+   "name": "Rock + Paper Attack Set · helmet",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_hs_rpa_chest",
+   "name": "Rock + Paper Attack Set · chest",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_hs_rpa_weapon",
+   "name": "Rock + Paper Attack Set · weapon",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_hs_rpa_boots",
+   "name": "Rock + Paper Attack Set · boots",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_hs_rpa_accessory",
+   "name": "Rock + Paper Attack Set · accessory",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_hs_rsa_helmet",
+   "name": "Rock + Scissors Attack Set · helmet",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_hs_rsa_chest",
+   "name": "Rock + Scissors Attack Set · chest",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_hs_rsa_weapon",
+   "name": "Rock + Scissors Attack Set · weapon",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_hs_rsa_boots",
+   "name": "Rock + Scissors Attack Set · boots",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_hs_rsa_accessory",
+   "name": "Rock + Scissors Attack Set · accessory",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_hs_psa_helmet",
+   "name": "Paper + Scissors Attack Set · helmet",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_hs_psa_chest",
+   "name": "Paper + Scissors Attack Set · chest",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_hs_psa_weapon",
+   "name": "Paper + Scissors Attack Set · weapon",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_hs_psa_boots",
+   "name": "Paper + Scissors Attack Set · boots",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "piece",
+   "key": "piece_s_hs_psa_accessory",
+   "name": "Paper + Scissors Attack Set · accessory",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "matn",
+   "key": "matn_scrap_metal",
+   "name": "Material: Scrap Metal (Basic)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_rivets_and_fasteners",
+   "name": "Material: Rivets and Fasteners (Basic)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_reinforced_polymer",
+   "name": "Material: Reinforced Polymer (Basic)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_industrial_lubricant",
+   "name": "Material: Industrial Lubricant (Basic)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_hardened_carbon_rods",
+   "name": "Material: Hardened Carbon Rods (Basic)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_electrical_wiring_spools",
+   "name": "Material: Electrical Wiring Spools (Basic)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_compressed_rubber_gaskets",
+   "name": "Material: Compressed Rubber Gaskets (Basic)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_tempered_alloy_ingots",
+   "name": "Material: Tempered Alloy Ingots (Basic)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_precision_springs",
+   "name": "Material: Precision Springs (Basic)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_high_tension_webbing",
+   "name": "Material: High-Tension Webbing (Basic)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_composite_ceramic_plates",
+   "name": "Material: Composite Ceramic Plates (Basic)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_master_grade_core_alloy",
+   "name": "Material: Master-Grade Core Alloy (Basic)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_apex_beast_hide",
+   "name": "Material: Apex Beast Hide (\"Rock\" Troop Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_chitin_scales",
+   "name": "Material: Chitin Scales (\"Rock\" Troop Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_gale_wing_feathers",
+   "name": "Material: Gale-Wing Feathers (\"Paper\" Troop Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_hollow_quill",
+   "name": "Material: Hollow Quill (\"Paper\" Troop Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_venom_sac_residue",
+   "name": "Material: Venom-Sac Residue (\"Scissors\" Troop Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_mandible_shards",
+   "name": "Material: Mandible Shards (\"Scissors\" Troop Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_alpha_predator_bone",
+   "name": "Material: Alpha-Predator Bone (Higher Quality Training Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_iron_sinew",
+   "name": "Material: Iron-Sinew (Higher Quality Training Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_mason_beast_granite_shards",
+   "name": "Material: Mason-Beast Granite Shards (Higher Quality Construction Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_adamantite_rivets",
+   "name": "Material: Adamantite Rivets (Higher Quality Construction Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_sage_beast_brain_matter",
+   "name": "Material: Sage-Beast Brain-Matter (Higher Quality Research Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_luminous_crystal",
+   "name": "Material: Luminous Crystal (Higher Quality Research Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_behemoth_iron_plate",
+   "name": "Material: Behemoth Iron-Plate (Siege (Trap-Killer) Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_pyre_core_shard",
+   "name": "Material: Pyre-Core Shard (Siege (Trap-Killer) Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_nomad_hide",
+   "name": "Material: Nomad Hide (Tile Hit Attack Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_quick_stride_tendon",
+   "name": "Material: Quick-Stride Tendon (Tile Hit Attack Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_war_chief_sinew",
+   "name": "Material: War-Chief Sinew (General Rallying Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_banner_cloth",
+   "name": "Material: Banner-Cloth (General Rallying Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_sovereign_crown_shard",
+   "name": "Material: Sovereign Crown Shard (Wonder Rally Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_dragon_blood_ember",
+   "name": "Material: Dragon-Blood Ember (Wonder Rally Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_phantom_stalker_pelt",
+   "name": "Material: Phantom-Stalker Pelt (Wonder Solo Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_void_core_shard",
+   "name": "Material: Void-Core Shard (Wonder Solo Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_bastion_behemoth_shell",
+   "name": "Material: Bastion-Behemoth Shell (Wonder Defense Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_basalt_core",
+   "name": "Material: Basalt Core (Wonder Defense Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_frost_giant_shards",
+   "name": "Material: Frost-Giant Shards (Rock + Paper Defense Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_winter_festival_ribbons",
+   "name": "Material: Winter-Festival Ribbons (Rock + Paper Defense Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_holiday_tinsel_wire",
+   "name": "Material: Holiday Tinsel Wire (Rock + Paper Defense Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_solstice_stone",
+   "name": "Material: Solstice Stone (Rock + Scissors Defense Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_festival_bell_metal",
+   "name": "Material: Festival Bell Metal (Rock + Scissors Defense Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_holiday_pine_resin",
+   "name": "Material: Holiday Pine Resin (Rock + Scissors Defense Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_autumn_harvest_gold",
+   "name": "Material: Autumn-Harvest Gold (Paper + Scissors Defense Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_harvest_festival_silk",
+   "name": "Material: Harvest-Festival Silk (Paper + Scissors Defense Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_holiday_leaf_veins",
+   "name": "Material: Holiday Leaf Veins (Paper + Scissors Defense Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_spring_blossom_amber",
+   "name": "Material: Spring-Blossom Amber (Rock + Paper Attack Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_festival_firecracker_ash",
+   "name": "Material: Festival Firecracker Ash (Rock + Paper Attack Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_holiday_silk_threads",
+   "name": "Material: Holiday Silk Threads (Rock + Paper Attack Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_summer_solstice_flare",
+   "name": "Material: Summer-Solstice Flare (Rock + Scissors Attack Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_festival_spark_core",
+   "name": "Material: Festival Spark Core (Rock + Scissors Attack Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_holiday_ember_glass",
+   "name": "Material: Holiday Ember Glass (Rock + Scissors Attack Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_equinox_shadow_weave",
+   "name": "Material: Equinox Shadow-Weave (Paper + Scissors Attack Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_festival_lantern_paper",
+   "name": "Material: Festival Lantern Paper (Paper + Scissors Attack Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "matn",
+   "key": "matn_holiday_wax_seal",
+   "name": "Material: Holiday Wax Seal (Paper + Scissors Attack Set)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
   },
   {
    "group": "core",
