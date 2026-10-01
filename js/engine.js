@@ -234,7 +234,7 @@ function mods(withHero) {
   const m = { atk: {}, hp: 1, hpc: {}, yld: {}, gather: 0, load: rv('load'), march: rv('march'), train: 0, build: rv('build'), heal: rv('restore'), wallAtk: rv('perim'), wallHp: rv('bulk'), helmet: 0, research: 0, trap: 0, huntCost: 0 };
   const T = TITLES[S.titles.you] ? S.titles.you : null;
   const set = setBonus(), G = wornBonus(), K = skillBonus(); for (const k in K) G[k] = (G[k] || 0) + K[k];
-  const V = vipBonus(); for (const k of ['build', 'research', 'gather', 'train', 'atk', 'hp']) G[k] = (G[k] || 0) + V[k]; m.vipDef = V.def; m.rallyAtk = V.rallyAtk; m.rallyHp = V.rallyHp;
+  const V = vipBonus(); for (const k of ['build', 'research', 'gather', 'train', 'atk', 'hp']) G[k] = (G[k] || 0) + V[k]; G.wallHp = (G.wallHp || 0) + V.def; m.rallyAtk = V.rallyAtk; m.rallyHp = V.rallyHp;
   let hpAdd = rv('plating') + (heroOn() ? heroStat('hp') : 0) + G.hp;
   let marchAtk = 0, yAdd = 0;
   if (T === 'blade') marchAtk += 0.08; if (T === 'coward') marchAtk -= 0.08;
@@ -303,7 +303,7 @@ function wallStats() {
   return { hp, atk, crew, crewN: sumCol(crew) };
 }
 function defCol() { const c = Object.assign({}, S.troops), e = embCol(); for (const k in e) c[k] = (c[k] || 0) + e[k]; return c; }
-function playerDefSide() { const m = mods(); const w = wallStats(); return Object.assign(mkSide(defCol(), m.atk, m.hp * (1 + m.vipDef), w, null, m.hpc), { plating: rv('plating') }); }
+function playerDefSide() { const m = mods(); const w = wallStats(); return Object.assign(mkSide(defCol(), m.atk, m.hp, w, null, m.hpc), { plating: rv('plating') }); }
 function attackerSide(col, hero) { const m = mods(hero); return Object.assign(mkSide(col, m.atk, m.hp, null, null, m.hpc), { plating: rv('plating') }); }
 function unitRows(side, res) { return side.units.map(u => [tierName(u.c, u.t), u.n, (res.lost && res.lost[u.k]) || 0, (res.wounded && res.wounded[u.k]) || 0]); }
 function boostRows(hero) {
