@@ -48,7 +48,7 @@ const DETAILS = {
   },
   defense(p) { const w = wallStats(); return stat('Crew', `${w.crewN} / ${p.l * 40}`) + stat('Wall HP', fmtN(w.hp)) + stat('Wall attack', fmtN(w.atk)) + WT.map((x, i) => stat('Wall tier ' + (i + 1), p.l >= WALL_GATE[i] ? 'open' : 'Defense Center ' + WALL_GATE[i])).join(''); },
   embassy(p) { const kd = kdGet(kHome()); return stat('Capacity', fmtN(embCap())) + stat('Hosted', fmtN(embHosted())) + stat('Best tier sent', 'Tier ' + embTier(p.l)) + stat('Alliance', (kd ? kd.ally.name : S.al[0].n) + ' · kingdom ' + kHome()) + '<div class="sub mt">Allies fight beside your troops and wall. Capacity counts every Embassy. Reinforcements go home if you leave the kingdom.</div>'; },
-  forge(p) { const fl = lvlMax('forge'); return stat('Grade-up chance', Math.round(forgeUp(fl) * 100) + '% per crafted piece') + [1, 2, 3, 4, 5].map(g => stat('Refine grade ' + g + ' to ' + (g + 1), fl >= forgeGate(g) ? 'open' : 'Forge ' + forgeGate(g))).join('') + stat('Bars in stock', gradeUnits() + ' / 1024') + stat('Pieces on the rack', S.gear.pieces.length); },
+  forge(p) { const fl = lvlMax('forge'); return [1, 2, 3, 4, 5].map(g => stat('Refine ' + qName(g) + ' to ' + qName(g + 1), fl >= forgeGate(g) ? 'open' : 'Forge ' + forgeGate(g))).join('') + stat('Materials in stock', gradeUnits() + ' / 1024 Basic') + stat('Pieces on the rack', S.gear.pieces.length); },
   market(p) { rollMarket(); return S.market.offers.map(o => { const it = MARKET_CAT.find(x => x.id === o.id); return stat(it.n, o.sold ? 'sold' : it.cost + '◆'); }).join('') + '<div class="sub mt">Three offers a day. Refresh costs 15 diamonds.</div>'; }
 };
 function actionsFor(p, ar, i) {
@@ -63,7 +63,7 @@ function actionsFor(p, ar, i) {
   if (b === 'radar') { a.push(act('anti', 'Anti-Scout', p.l >= 4 ? (S.anti ? 'On. Tap to turn off.' : 'Off. Tap to turn on.') : 'Needs level 4.', '', p.l < 4)); a.push(act('lab:field', 'Recon', 'Research scan depth.')); }
   if (b === 'defense') { a.push(act('wing:wall', 'Open Wall', 'Crew the wall.')); a.push(act('lab:defense', 'Bulkheads', 'Research wall HP.')); }
   if (b === 'embassy') { const cool = embLeft() > 0; a.push(act('wing:embassy', 'Open Embassy', 'Garrison list and send-home.')); a.push(act('embcall', 'Call allies', cool ? 'Mustering ' + fmtT(embLeft() / 1000) : 'Ask allies for troops.', '', cool || embHosted() >= embCap())); }
-  if (b === 'forge') { a.push(act('wing:forge', 'Open Forge', 'Refine bars and craft gear.')); }
+  if (b === 'forge') { a.push(act('wing:forge', 'Open Forge', 'Refine materials and craft gear.')); }
   if (b === 'market') { a.push(act('wing:market', 'Open Market', 'Today\'s offers.')); }
   return a.join('');
 }
@@ -81,7 +81,7 @@ function nextGives(p) {
   else if (b === 'tech') out.push(L + 1 === 8 ? 'Opens tier 3 troops' : L + 1 === 12 ? 'Opens tier 4 troops' : 'Research access', '');
   else if (b === 'market') out.push('Longer shelf of offers');
   else if (b === 'embassy') out.push('Capacity +' + fmtN(EMB_PER_LEVEL), (L + 1) % 8 === 0 ? 'Allies send tier ' + embTier(L + 1) : '');
-  else if (b === 'forge') out.push('Grade-up chance +2%', (L + 1) % 3 === 0 ? 'Refine grade ' + (L + 1) / 3 + ' bars' : '');
+  else if (b === 'forge') out.push((L + 1) % 3 === 0 ? 'Refine ' + qName((L + 1) / 3) + ' materials' : '');
   return out.filter(Boolean);
 }
 function feedsHTML(p) {
