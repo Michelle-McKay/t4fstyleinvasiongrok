@@ -26,10 +26,10 @@ button.on{background:var(--acc);color:#111;border-color:var(--acc)}
 .item:hover{border-color:var(--acc)}
 #view{flex:1;overflow:auto;position:relative;touch-action:none}
 #stage{position:relative;width:3200px;height:2400px;
-background-color:#0b0f15;
-background-image:linear-gradient(30deg,rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(150deg,rgba(255,255,255,.05) 1px,transparent 1px);
-background-size:128px 74px}
-#stage.nogrid{background-image:none}
+background-color:#0b0f15}
+#back{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;user-select:none;z-index:0}
+#stage::after{content:"";position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:0;background-image:linear-gradient(30deg,rgba(255,255,255,.07) 1px,transparent 1px),linear-gradient(150deg,rgba(255,255,255,.07) 1px,transparent 1px);background-size:128px 74px}
+#stage.nogrid::after{display:none}
 .spr{position:absolute;transform-origin:center;touch-action:none;user-select:none;-webkit-user-drag:none;cursor:move}
 .spr.sel{outline:2px dashed var(--acc);outline-offset:2px}
 #ghost{position:fixed;pointer-events:none;opacity:.8;z-index:99;display:none;max-width:120px;max-height:120px}
@@ -49,6 +49,7 @@ background-size:128px 74px}
   <button id="bSm">−</button><button id="bBig">+</button>
   <button id="bGrid" class="on">Grid</button>
   <button id="bSnap">Snap</button>
+  <button id="bBack2" title="The backdrop is permanent and cannot be moved">Backdrop: City</button>
   <button id="bClear">Clear</button>
   <span id="count"></span>
  </div>
@@ -65,15 +66,19 @@ background-size:128px 74px}
 (function(){
 var KEY='artSandbox.v1',stage=document.getElementById('stage'),view=document.getElementById('view');
 var ghost=document.getElementById('ghost'),hint=document.getElementById('hint');
-var items=[],sel=null,snap=false,nextId=1,assets={};
+var items=[],sel=null,snap=false,nextId=1,assets={},back='city';
 var GRID_W=128,GRID_H=74;
 
-function load(){try{var s=JSON.parse(localStorage.getItem(KEY)||'null');if(s&&s.items){items=s.items;nextId=s.nextId||items.length+1;snap=!!s.snap}}catch(e){}}
-function save(){try{localStorage.setItem(KEY,JSON.stringify({items:items,nextId:nextId,snap:snap}))}catch(e){}}
+function load(){try{var s=JSON.parse(localStorage.getItem(KEY)||'null');if(s&&s.items){items=s.items;nextId=s.nextId||items.length+1;snap=!!s.snap;back=s.back==='map'?'map':'city'}}catch(e){}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify({items:items,nextId:nextId,snap:snap,back:back}))}catch(e){}}
 
 function groupOf(p){return p.split('/')[1]}
 function render(){
  stage.innerHTML='';
+ // permanent furthest-back layer: city_slab or map_slab, never selectable or movable
+ var bk=document.createElement('div');bk.id='back';var bf=assets[back==='map'?'map_slab':'city_slab'];
+ if(bf)bk.style.background=back==='map'?'url('+bf+') 0 0/1024px 1024px repeat':'url('+bf+') 0 0/100% 100% no-repeat';
+ stage.appendChild(bk);
  items.forEach(function(it,i){
   var im=document.createElement('img');im.className='spr'+(it===sel?' sel':'');im.src=assets[it.key]||it.src;im.draggable=false;
   im.style.left=it.x+'px';im.style.top=it.y+'px';im.style.zIndex=i+1;
@@ -125,6 +130,7 @@ function buildPalette(){
  var g=document.getElementById('grid');g.innerHTML='';
  var groups={};
  Object.keys(assets).sort().forEach(function(k){
+  if(k==='city_slab'||k==='map_slab')return;
   var gname=groupOf(assets[k]);
   if(cat&&gname!==cat)return;if(q&&k.toLowerCase().indexOf(q)<0)return;
   (groups[gname]=groups[gname]||[]).push(k);
@@ -164,6 +170,7 @@ $('bDup').onclick=function(){if(sel){var c=JSON.parse(JSON.stringify(sel));c.id=
 $('bFlip').onclick=function(){if(sel){sel.flip=!sel.flip;render();save()}};
 $('bFront').onclick=function(){if(sel){items.splice(items.indexOf(sel),1);items.push(sel);render();save()}};
 $('bBack').onclick=function(){if(sel){items.splice(items.indexOf(sel),1);items.unshift(sel);render();save()}};
+$('bBack2').onclick=function(){back=back==='city'?'map':'city';this.textContent='Backdrop: '+(back==='map'?'Map':'City');render();save()};
 $('bSm').onclick=function(){resize(.9)};$('bBig').onclick=function(){resize(1.1)};
 $('bGrid').onclick=function(){stage.classList.toggle('nogrid');this.classList.toggle('on')};
 $('bSnap').onclick=function(){snap=!snap;this.classList.toggle('on',snap);save()};
@@ -177,7 +184,7 @@ fetch('assets/manifest.json').then(function(r){return r.json()}).then(function(m
  // keep placed items whose asset was removed
  var cats={};Object.keys(assets).forEach(function(k){cats[groupOf(assets[k])]=1});
  var s=$('cat');s.innerHTML='<option value="">All art</option>'+Object.keys(cats).sort().map(function(c){return '<option>'+c+'</option>'}).join('');
- $('bSnap').classList.toggle('on',snap);
+ $('bSnap').classList.toggle('on',snap);$('bBack2').textContent='Backdrop: '+(back==='map'?'Map':'City');
  buildPalette();render();
  var first=items[0];if(first)view.scrollTo(Math.max(0,first.x-300),Math.max(0,first.y-200));
  else view.scrollTo(1100,800);
