@@ -156,6 +156,35 @@ const BASIC = {
   hunt: { n: 'Monster Hunting', lv: 25, st: ['huntCost', 'heroAtk', 'march'], lo: 2, hi: 26, mats: 'Master-Grade Core Alloy, Tempered Alloy Ingots' }
 };
 const BASIC_ORDER = Object.keys(BASIC);
+/* Basic gear, named items per slot (Michelle, 2026-10-01 19:01: Helmet list). Each slot lists one named item per category:
+   [category]: [name, [4 required materials, a repeat means 2x]]. Optional 3rd element overrides { lv, st, vals } when a slot differs from its category.
+   A slot or category not listed here falls back to the category's generic name, recipe text and curve. ADD THE NEXT SLOT LISTS HERE. */
+const BASIC_ITEMS = {
+  helmet: {
+    defense: ['Barricaded Face-Plate', ['Scrap Metal', 'Rivets and Fasteners', 'Reinforced Polymer', 'Industrial Lubricant']],
+    attack: ['Standard-Issue Combat Helmet', ['Scrap Metal', 'Scrap Metal', 'Hardened Carbon Rods', 'High-Tension Webbing']],
+    food: ["Hydroponic Overseer's Mask", ['Reinforced Polymer', 'Compressed Rubber Gaskets', 'Industrial Lubricant', 'Electrical Wiring Spools']],
+    oil: ['Refinery-Operator Respirator', ['Compressed Rubber Gaskets', 'Compressed Rubber Gaskets', 'Industrial Lubricant', 'Tempered Alloy Ingots']],
+    energy: ['Power-Grid Grounding Helm', ['Electrical Wiring Spools', 'Reinforced Polymer', 'Precision Springs', 'Hardened Carbon Rods']],
+    steel: ['Foundry-Worker Shield Mask', ['Tempered Alloy Ingots', 'Scrap Metal', 'Rivets and Fasteners', 'Composite Ceramic Plates']],
+    cash: ["Ledger-Keeper's Visor", ['Hardened Carbon Rods', 'Rivets and Fasteners', 'Reinforced Polymer', 'Electrical Wiring Spools']],
+    build: ["Contractor's Hardhat", ['Reinforced Polymer', 'Reinforced Polymer', 'Tempered Alloy Ingots', 'Scrap Metal']],
+    gather: ["Hauler's Visor", ['High-Tension Webbing', 'Reinforced Polymer', 'Rivets and Fasteners', 'Industrial Lubricant']],
+    research: ['Data-Scribe Visor', ['Electrical Wiring Spools', 'Electrical Wiring Spools', 'Composite Ceramic Plates', 'Precision Springs']],
+    train: ["Drillmaster's Headset", ['Precision Springs', 'Tempered Alloy Ingots', 'High-Tension Webbing', 'Industrial Lubricant']],
+    trap: ['Ordnance-Assembler Mask', ['Precision Springs', 'Precision Springs', 'Composite Ceramic Plates', 'Rivets and Fasteners']],
+    hunt: ["Tracker's Night-Vision Hood", ['High-Tension Webbing', 'Master-Grade Core Alloy', 'Composite Ceramic Plates', 'Electrical Wiring Spools']]
+  }
+};
+/* Grey to Gold values (percent) by category range; these are not linear (spec 2026-10-01 19:01) */
+const BASIC_CURVES = { '1-13': [1, 2.5, 4.5, 7, 10, 13], '2-26': [2, 5, 9, 14, 20, 26], '1.5-18': [1.5, 3.5, 6, 9.5, 13.5, 18], '2-24': [2, 4.5, 8, 12.5, 18, 24] };
+const recipeText = m => { const c = {}; m.forEach(x => c[x] = (c[x] || 0) + 1); return Object.keys(c).map(x => (c[x] > 1 ? c[x] + 'x ' : '') + x).join(', '); };
+/* One Basic item = category x slot: its name, hero level, stats, six tier values and recipe */
+function basicOf(cat, slot) {
+  const b = BASIC[cat || 'attack'], it = ((BASIC_ITEMS[slot] || {})[cat || 'attack']) || null, o = (it && it[2]) || {};
+  return { n: it ? it[0] : null, kind: b.n, lv: o.lv || b.lv, st: o.st || b.st, vals: o.vals || BASIC_CURVES[b.lo + '-' + b.hi] || [b.lo, b.hi, b.hi, b.hi, b.hi, b.hi], mats: it ? recipeText(it[1]) : b.mats, recipe: it ? it[1] : null };
+}
+
 /* Set gear: per-piece stat value scale (percent, Grey to Gold) and bonuses at 2, 3 and 5 worn pieces (five slots). OPEN ITEM: all placeholders. */
 const SET_RANGE = [1, 8], SET_PCS = [2, 3, 5], SET_BONUS = [0.03, 0.06, 0.10];
 /* Regular sets: 12, one monster each (monster id = set id). `st` = the stats every piece of the set gives, `mats` = its core themed monster drops (flavour and codex for now). */
@@ -406,13 +435,17 @@ const MAT_NAMES = [null, 'Composite Alloy', 'Carbon Fiber', 'Ballistic Polymer',
 const GEM_TIERS = [null, 'Raw Shard', 'Calibrated Core', 'Prism Matrix', 'Hyper-Lens', 'Singularity Crystal', 'Omega Diamond'];
 const matName = t => MAT_NAMES[t], gemTierName = t => GEM_TIERS[t];
 /* One piece: the value of each of its stats (a fraction), by tier (and stars). Basic gear uses its category, set gear its set. */
-function pieceLv(p) { return p.set ? SETS[p.set].lv : BASIC[p.cat || 'attack'].lv; }
+function pieceLv(p) { return p.set ? SETS[p.set].lv : basicOf(p.cat, p.slot).lv; }
 function pieceStatMap(p) {
-  const r = {}, [lo, hi] = p.set ? SET_RANGE : [BASIC[p.cat || 'attack'].lo, BASIC[p.cat || 'attack'].hi], v = (lo + (hi - lo) * (p.grade - 1) / 5) / 100 * starMul(p);
-  for (const k of (p.set ? SETS[p.set].st : BASIC[p.cat || 'attack'].st)) r[k] = v; return r;
+  const r = {}; let v, sts;
+  if (p.set) { v = (SET_RANGE[0] + (SET_RANGE[1] - SET_RANGE[0]) * (p.grade - 1) / 5) / 100 * starMul(p); sts = SETS[p.set].st; }
+  else { const b = basicOf(p.cat, p.slot); v = b.vals[p.grade - 1] / 100 * starMul(p); sts = b.st; }
+  for (const k of sts) r[k] = v; return r;
 }
 const pieceScore = p => { const m = pieceStatMap(p); let t = 0; for (const k in m) t += m[k]; return t; };
-const pieceKind = p => p.set ? SETS[p.set].n : BASIC[p.cat || 'attack'].n;
+const pieceKind = p => p.set ? SETS[p.set].n : basicOf(p.cat, p.slot).kind;
+/* display name without the quality: a named Basic item, else '<kind> <slot>' */
+const pieceTitle = p => { const n = !p.set && basicOf(p.cat, p.slot).n; return n || pieceKind(p) + ' ' + SLOT_NAME[p.slot]; };
 /* Where gems and set materials come from (docs/FORGE_GEMS.md section 5) */
 const TILE_W = [40, 30, 20, 10];             // regular world tile: tier weights (Basic..Rare), cut off at the tile level
 const TILE_J5 = 0.05, TILE_J6 = 0.001;       // chance per gather: the weekly Level 5 jackpot (tiles 5-6, once a week), the 6-pack Level 6 jackpot (tile 6)
