@@ -61,7 +61,7 @@ function payBtn(cost, act, data, label, cls) {
   return `<button class="btn line" data-a="${act}" ${dd} data-cover="1" ${S.dia < d ? 'disabled' : ''}>${label} · cover ${d}${svg('dia', 'ic').replace('<svg', '<svg ' + ic)}</button>`;
 }
 function jobCtl(j) {
-  const rush = rushCost(j.end), slips = Object.values(S.slips).reduce((a, b) => a + (b || 0), 0), cap = helpCap(), canHelp = j.kind !== 'march';
+  const rush = rushCost(j.end), slips = S.slips.s5 + S.slips.s60 + S.slips.s480, cap = helpCap(), canHelp = j.kind !== 'march';
   return `<div class="flex wrap mt"><span>${tm(j.end, true)}</span>
   <button class="btn sm" data-a="rush" data-id="${j.id}" ${S.dia < rush ? 'disabled' : ''}>Rush ${rush}◆</button>
   <button class="btn sm" data-a="slip" data-id="${j.id}" ${slips ? '' : 'disabled'}>Slip (${slips})</button>

@@ -43,24 +43,10 @@ function moveBuilding(area, from, to) {
   if (itmQty('bmove') < 1) return 'Needs a Building Move.';
   itmTake('bmove'); S.plots[area][to] = p; S.plots[area][from] = null; note(`${BLD[p.b].n} moved to plot ${to + 1}.`, 'good'); return null;
 }
-function openChest(it) {
-  const o = it.open, got = [];
-  if (o.mats) { matAdd(o.mats[0], o.mats[1]); got.push(`${o.mats[1]} ${matName(o.mats[0])}`); }
-  if (o.gems) { for (let i = 0; i < o.gems[1]; i++) gemAdd(gemKey(coreKind(), o.gems[0]), 1); got.push(`${o.gems[1]} ${gemTierName(o.gems[0])} Basic gems`); }
-  if (o.grant) { grant(o.grant); got.push('supplies'); }
-  if (o.items) { const b = itmEnsure(); for (const k in o.items) { b[k] = (b[k] || 0) + o.items[k]; got.push(`${o.items[k]}× ${itemDef(k).n}`); } }
-  if (o.xpi) for (const k in o.xpi) { xpiGive(k, o.xpi[k]); got.push(`${o.xpi[k]}× ${XPI.find(x => x.id === k).n}`); }
-  note(`${it.n}: ${got.join(', ')}.`, 'good'); return null;
-}
 /* using an item from the bag */
 function itmUse(id) {
   const it = itemDef(id); if (!it) return 'No such item.'; if (itmQty(id) < 1) return 'None in the bag.';
   if (it.buf) { itmTake(id); return itmBuff(it); }
-  if (it.res) { const room = storeCap() - S.res[it.res]; if (room < 1) return 'The StoreHouse is full.'; itmTake(id); const a = addRes(it.res, it.amt); note(`+${fmtN(a)} ${RESN[it.res]}${a < it.amt ? ' (StoreHouse full, the rest is lost)' : ''}.`, 'good'); return null; }
-  if (it.stam) { stamTick(Date.now()); if (S.stam.v >= stamMax()) return 'Stamina is already full.'; itmTake(id); S.stam.v = Math.min(stamMax(), S.stam.v + it.stam); note(`Stamina ${S.stam.v}/${stamMax()}.`, 'good'); return null; }
-  if (it.shield) { if (shieldOut()) return 'Recall the columns first. A shield cannot rise with marches out.'; itmTake(id); S.shield.until = Date.now() + it.shield / OCC * 1000; note(it.n + ' is up.', 'good'); return null; }
-  if (it.recall) { const e = recallAll(); if (!e) itmTake(id); return e; }
-  if (it.open) { itmTake(id); return openChest(it); }
   if (id === 'rescue') { if (!S.hero.captured) return 'No hero is captured.'; itmTake(id); S.hero.captured = false; note(heroName() + ' is back.', 'good'); return null; }
   if (id === 'daily_chance') { if (S.daily !== new Date().toDateString()) return 'The daily exercise is ready, run it first.'; itmTake(id); S.daily = ''; note('Daily exercise can run again.', 'good'); return null; }
   if (id === 'bookmarks') { if (bkCap() >= ITEM_BK.max) return 'Bookmarks are at the maximum.'; itmTake(id); S.bkPlus = (S.bkPlus || 0) + 1; note(`Bookmark slots: ${bkCap()}.`, 'good'); return null; }
@@ -81,7 +67,7 @@ function itmUse(id) {
 }
 /* ---------------- screen ---------------- */
 function itmIcon(it) {
-  const f = typeof ART !== 'undefined' && ART.file('sitem_' + (it.ico || it.id));
+  const f = typeof ART !== 'undefined' && ART.file('sitem_' + it.id);
   if (f) return `<div class="rwic itic"><img class="iticon" src="${f}" alt="" draggable="false"></div>`;
   return `<div class="rwic itic"><svg viewBox="0 0 48 48"><rect x="4" y="4" width="40" height="40" rx="8" fill="${it.vip ? '#2e4d7a' : it.buf ? '#7a5a1c' : '#3a4a52'}" stroke="#d9b45a" stroke-width="2"/><text x="24" y="30" text-anchor="middle" font-size="${it.g.length > 3 ? 11 : 15}" font-weight="700" fill="#f1ead2" font-family="sans-serif">${it.g}</text></svg></div>`;
 }
@@ -89,11 +75,11 @@ const fmtBuf = ms => fmtT(ms / 1000);
 function itmRow(it) {
   const have = itmQty(it.id), usd = it.usd ? IAP.price(iapOfItem(it.id)) : null;
   const buy = it.usd ? `<button class="btn sm pri" data-a="itmiap" data-id="${it.id}">${usd}</button>` : `<button class="btn sm" data-a="itmbuy" data-id="${it.id}" ${S.dia < it.cost ? 'disabled' : ''}>${fmtN(it.cost)}◆</button>`;
-  const dur = it.buf ? ` Lasts ${dual(it.sheet, DRILL)}.` : it.shield ? ` Lasts ${dual(it.shield, OCC)}.` : '';
+  const dur = it.buf ? ` Lasts ${dual(it.sheet, DRILL).replace(' sheet', ' sheet')}.` : '';
   return `<div class="rwrow">${itmIcon(it)}<div class="grow"><b>${it.n}</b>${!it.usd && have ? ` <span class="num br">×${have}</span>` : ''}<div class="sub">${it.d}${dur}</div></div>${buy}</div>`;
 }
 function itmBuffs() {
-  const rows = Object.keys(S.buf || {}).filter(k => bufLeftMs(k)).map(k => `<div class="rwrow"><div class="grow"><b>${{ xp: 'Hero XP', gather: 'Gathering speed', march: 'March speed', atk: 'Attack', def: 'Defense', size: 'March size', anti: 'Anti-scout' }[k]}${k === 'anti' ? '' : ' +' + Math.round(S.buf[k].pct * 100) + '%'}</b></div><span class="num br">${fmtBuf(bufLeftMs(k))}</span></div>`);
+  const rows = Object.keys(S.buf || {}).filter(k => bufLeftMs(k)).map(k => `<div class="rwrow"><div class="grow"><b>${{ xp: 'Hero XP', gather: 'Gathering speed', march: 'March speed' }[k]} +${Math.round(S.buf[k].pct * 100)}%</b></div><span class="num br">${fmtBuf(bufLeftMs(k))}</span></div>`);
   return rows.length ? `<div class="panel"><div class="hd"><h3>Running boosts</h3></div><div class="bd">${rows.join('')}</div></div>` : '';
 }
 function movePanel() {
@@ -108,14 +94,13 @@ function movePanel() {
 const _itemHTML = itemHTML;
 function itemHTML2(t) {
   itmEnsure();
-  const cats = { spec: ['special', 'Special'], res: ['res', 'Resources'], war: ['war', 'War'], chest: ['chest', 'Chests'] }, tab = cats[t];
-  if (tab) return `<div class="panel"><div class="hd"><h3>${tab[1]}</h3><b class="num br">${fmtN(S.dia)}◆</b></div><div class="bd">${ITEMS.filter(i => i.cat === tab[0]).map(itmRow).join('')}<div class="sub mt">${t === 'spec' ? `${IAP.mode() === 'sandbox' ? '<b class="br">Demo build:</b> VIP point items are sandbox, no money is charged. ' : ''}VIP is permanent: points come only from real-money items and the Alliance Store, and there are no timed VIP passes.` : t === 'chest' ? 'Chests go to the bag. Open them with Use.' : 'Bought items go to the bag. Use them from there.'}</div></div></div>`;
+  if (t === 'spec') return `<div class="panel"><div class="hd"><h3>Special</h3><b class="num br">${fmtN(S.dia)}◆</b></div><div class="bd">${ITEMS.filter(i => i.cat === 'special').map(itmRow).join('')}<div class="sub mt">${IAP.mode() === 'sandbox' ? '<b class="br">Demo build:</b> VIP point items are sandbox, no money is charged. ' : ''}VIP is permanent: points come only from real-money items and the Alliance Store, and there are no timed VIP passes.</div></div></div>`;
   if (t === 'boost') return itmBuffs() + _itemHTML(t) + `<div class="panel"><div class="hd"><h3>March speed</h3></div><div class="bd">${ITEMS.filter(i => i.cat === 'speed').map(itmRow).join('')}</div></div>`;
   const mine = ITEMS.filter(i => !i.usd && itmQty(i.id));
   const bag = `<div class="panel"><div class="hd"><h3>My items</h3></div><div class="bd">${mine.map(it => `<div class="rwrow">${itmIcon(it)}<div class="grow"><b>${it.n}</b> <span class="num br">×${itmQty(it.id)}</span><div class="sub">${it.d}</div></div><button class="btn sm pri" data-a="itmuse" data-id="${it.id}">Use</button></div>`).join('') || '<div class="sub">Nothing yet. Buy items in the Special and Speed Up tabs.</div>'}</div></div>`;
   return itmBuffs() + movePanel() + bag + _itemHTML(t);
 }
-DR.item = { tabs: [['bag', 'Bag'], ['spec', 'Special'], ['res', 'Resources'], ['boost', 'Speed Up'], ['war', 'War'], ['chest', 'Chests']], body: itemHTML2 };
+DR.item = { tabs: [['bag', 'Bag'], ['spec', 'Special'], ['boost', 'Speed Up']], body: itemHTML2 };
 Object.assign(A, {
   itmbuy(d) { run(itmBuy(d.id), 'Added to the bag.'); },
   itmiap(d) { const p = iapOfItem(d.id); IAP.buy(p.id).then(e => { if (e) toast(e, 'warn'); else { hap([16, 50, 16]); } UI.dirty = true; D(); }); },
