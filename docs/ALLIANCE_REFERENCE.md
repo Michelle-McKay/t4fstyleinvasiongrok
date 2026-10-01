@@ -56,6 +56,42 @@ Mapped to us: we already have "Ask help" on a job (`askHelp`, help clicks capped
 
 Mapped to us: we keep `S.score` and tile count only. Stats we could track from things that already exist: troops killed and lost (Rock/Paper/Scissors), traps destroyed (our 3 trap types), battles won and lost, throne time (`S.throne`), alliance helps, resources collected (Food/Oil/Energy/Steel/Cash), gifts opened (alliance chests), monster targets killed (`docs/MONSTER_HUNTING.md`). Drop or rename ones we have no system for (heroes captured, executed, escaped, bounties). The Most Power list uses simulated allies' power. The leaderboard would rank us against the five local rival alliances. Cheap to build: counters in state plus one table screen.
 
+## Manage Alliance, ranks, public profile, comments (five more screenshots)
+
+**Manage Alliance** is a short menu: **View Ranks** and **View Public Profile**.
+
+**View Ranks** is a permission table. Columns are ranks R1 to R4 and the leader (R5). Each row is one permission:
+
+| Permission | R1 | R2 | R3 | R4 | Leader |
+|---|---|---|---|---|---|
+| Receive Alliance Gifts | yes | yes | yes | yes | yes |
+| Send Alliance Card | yes | yes | yes | yes | yes |
+| Promote Members | | | yes | yes | yes |
+| Demote Members | | | yes | yes | yes |
+| Kick Members | | | | yes | yes |
+| Send Alliance Invite | | | | yes | yes |
+| Manage Alliance Invites | | | | yes | yes |
+| Purchase From Alliance Store Catalog | | | | yes | yes |
+| Manage Block List | | | | yes | yes |
+| Change Alliance Headline | | | | yes | yes |
+| Change Alliance Description | | | | yes | yes |
+| Change Alliance Bulletin | | | | yes | yes |
+| Summon Alliance Monster | | | | yes | yes |
+| Primary Language | | | | | yes |
+| Open Recruitment | | | | | yes |
+| Change Alliance Flag | | | | | yes |
+| Change Alliance Name / Tag | | | | | yes |
+| Transfer Alliance Leadership | | | | | yes |
+| Disband Alliance | | | | | yes |
+
+Ranks are strictly nested: each rank keeps everything below it and adds more. R3 can promote and demote; R4 runs members, invites, the store catalog, text fields and summoning the alliance monster; only the leader changes identity, language, recruitment and leadership.
+
+**Public profile** (what outsiders see): Alliance Power, Leader, Members count; emblem, tag + name, headline, Gift Level, Language; four buttons (**Comment**, **Members**, **Stats**, **Leader**); and a long free-text description (the "Alliance Description" permission above).
+
+**Alliance Comments**: a board where visitors post comments on an alliance. Each entry shows the commenter's alliance emblem and a text bubble, with a Post Comment button at the bottom. (The reference screenshot of this one was blanked out with a "demo only" overlay, so entry details are partly hidden.)
+
+Mapped to us: we already have R5 and two R4 officers appointed in the Vault after holding the throne (`js/engine.js`, throne rule). Ranks R1-R3 and the permission checks do not exist. Fits our single-player build only as a read-only table (who can do what, with simulated allies at ranks) and a simple profile page for the player's alliance and the five rival alliances (power, leader, members, gift level, description). Summon Alliance Monster ties to the shared monster idea in the gap list. Comments, invites, block list and kick need real members. Our alliance art catalog already has rank badges (R1 to R5) and emblems.
+
 ## Art already planned
 
 `tools/artcatalog.js` group `ally` already has 16 emblems, 5 rank badges and 15 feature icons (help, tech, gifts, war, territory, shop, members, donate, chat, rally, embassy, throne, mail, quests, flag), a create banner and a hall backdrop, plus `icon_apoint`, chests and `tabhead_alliance`. Anything built from the gaps above reuses these first. New icons would be needed only for: News, Resource Help, Summary & Stats, Manage, Leave, Applicant, Alliance Monster, Filter. Each would follow the existing `ICOADD('ally', ...)` rules: same shading, color theme, size and camera as the other ally icons, built so it can be animated later, no text.
