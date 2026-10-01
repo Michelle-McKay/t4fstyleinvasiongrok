@@ -76,17 +76,14 @@ Same five sub-tabs as the store (Special, Resources, Speed Up, War, Chests). Eac
 
 Her updated list, recorded as written. Reference only, nothing here is built. Prices are in Gold (the game's premium currency is called diamonds in code today; the name is part of the vocabulary revision at the end). Resource mapping from the reference game: Wood is Energy, Stone is Oil, Iron is Steel, Silver is Cash, Stamina is Chips, Food stays Food. In code these are Rations, Fuel, Power, Alloy and Cash (`NODE_RES`), and hunting stamina; the names get settled in the vocabulary revision.
 
-**Open conflict:** the Special tab lists VIP 1 Day, 7 Days and 30 Days, but the standing rule is that VIP is permanent and unlocks only by spending real money (`docs/VIP.md`). The 100, 300 and 1,000 VIP point lines are also priced in Gold here, while the rule says money only. Waiting on Michelle to say which way to go.
+**VIP decision (Michelle, 2026-10-01):** the timed VIP passes (1, 7 and 30 days) are removed from her list. VIP stays permanent and money-only. The 100, 300 and 1,000 VIP point items stay as real-money items (not sold for Gold); the Gold prices shown for them below (150, 400, 1,000) are from her original list and do not apply.
 
 ## 1. Special
 | Item | Gold |
 |---|---|
-| 100 VIP Points | 150 |
-| 300 VIP Points | 400 |
-| 1,000 VIP Points | 1,000 |
-| VIP 1 Day | 250 |
-| VIP 7 Days | 1,500 |
-| VIP 30 Days | 4,000 |
+| 100 VIP Points | 150 (real money only, see note) |
+| 300 VIP Points | 400 (real money only) |
+| 1,000 VIP Points | 1,000 (real money only) |
 | 25% Hero XP Bonus | 2,000 |
 | 50,000 Hero XP | 400 |
 | 200,000 Hero XP | 1,500 |
@@ -101,7 +98,7 @@ Her updated list, recorded as written. Reference only, nothing here is built. Pr
 | Hunting Skill Reset | 1,000 |
 | Hero Resurrection | 6,000 |
 | Daily Chance | 800 |
-| VIP Chance | 1,000 |
+| VIP Chance | 1,000 (check: VIP has no daily chests) |
 | Alliance Rename | 200 |
 | Alliance Card | 100 |
 | Building Move | 500 |
