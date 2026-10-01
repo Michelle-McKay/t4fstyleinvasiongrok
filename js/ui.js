@@ -173,8 +173,8 @@ function monImg(id, g) { try { const c = FEAT.monster(g, id); return `<img class
 function setProgress(id) { id = gearOf(id); const have = new Set(S.gear.pieces.filter(p => p.set === id).map(p => p.slot)).size; return `${have}/5 pieces · ${S.shards[id] || 0} shards`; }
 function huntHTML() {
   const now = Date.now(); stamTick(now); const sm = S.stam, st = S.streak, live = st.n > 0 && now - st.at <= STREAK_MS ? st.n : 0, net = Math.max(1, sm.spent - sm.refunded), act = activeSets(now), hol = activeHolidays(now), rs = S.research.hunt || 0;
-  const regen = sm.v >= STAM_MAX ? 'Full' : 'Next point ' + fmtT((sm.at + STAM_REGEN_MS - now) / 1000);
-  let h = `<div class="panel"><div class="hd"><h3>Hunt stamina</h3><span class="tag br">${Math.floor(sm.v)}/${STAM_MAX}</span></div><div class="bd"><div class="bar"><i style="width:${sm.v / STAM_MAX * 100}%"></i></div>
+  const regen = sm.v >= stamMax() ? 'Full' : 'Next point ' + fmtT((sm.at + stamRegen() - now) / 1000);
+  let h = `<div class="panel"><div class="hd"><h3>Hunt stamina</h3><span class="tag br">${Math.floor(sm.v)}/${stamMax()}</span></div><div class="bd"><div class="bar"><i style="width:${sm.v / stamMax() * 100}%"></i></div>
   <div class="sub mt">${regen}. A level 1 monster costs ${stamCost(1)}, a level 6 costs ${stamCost(6)}. Recalling a column before it arrives refunds it; Tracker gear refunds a share of every win.</div>
   <div class="rr"><span>Spent / refunded</span><span class="num">${fmtN(sm.spent)} / ${fmtN(sm.refunded)}</span></div><div class="rr"><span>Efficiency</span><span class="num">${(sm.mats / net * 10).toFixed(1)} materials per 10 net stamina</span></div><div class="rr"><span>Hunts · wins</span><span class="num">${sm.hunts} · ${sm.wins}</span></div>
   <div class="rr"><span>Hunt streak</span><span class="num ${live ? 'br' : 'mut'}">${live} now · best ${st.best || 0}</span></div><div class="sub">A win within ${STREAK_MS / 60000} minutes of the last keeps the streak. Every 3 in a row adds one extra material roll (up to +3). A loss resets it.</div>
@@ -264,7 +264,7 @@ function sheetTile(x, y) {
   } else if (t.kind === 'monster' || t.kind === 'camp') {
     const camp = t.kind === 'camp', Dd = mkSide({}, {}, 1, null, monsterSyn(t.grade, camp));
     const ms = !camp && t.mon && SETS[t.mon], cost = camp ? 0 : huntStam(t.grade); stamTick(Date.now());
-    if (ms) h += `<div class="sub mt">${ms.hol ? '<span class="tag br">Event · ' + HOLIDAYS.find(q => q.id === ms.hol).n + '</span> ' : ''}Its loot tile holds <b>${SETS[gearOf(t.mon)].n}</b> shards and ${ms.mon} gems · level ${t.grade} drops tier ${t.grade} and lower</div><div class="sub">Stamina <b class="num ${S.stam.v >= cost ? '' : 'sg'}">${cost}</b> to hunt · you have <b class="num">${Math.floor(S.stam.v)}</b>/${STAM_MAX}${mods().huntCost ? ' · gear cuts the cost ' + Math.round(Math.min(0.5, mods().huntCost) * 100) + '%' : ''}</div>`;
+    if (ms) h += `<div class="sub mt">${ms.hol ? '<span class="tag br">Event · ' + HOLIDAYS.find(q => q.id === ms.hol).n + '</span> ' : ''}Its loot tile holds <b>${SETS[gearOf(t.mon)].n}</b> shards and ${ms.mon} gems · level ${t.grade} drops tier ${t.grade} and lower</div><div class="sub">Stamina <b class="num ${S.stam.v >= cost ? '' : 'sg'}">${cost}</b> to hunt · you have <b class="num">${Math.floor(S.stam.v)}</b>/${stamMax()}${mods().huntCost ? ' · gear cuts the cost ' + Math.round(Math.min(0.5, mods().huntCost) * 100) + '%' : ''}</div>`;
     h += `<div class="sub mt">Odds ${oddsText(Dd, col, c.hero) || '—'} · a dead pack leaves a rich vein · hunting strips the shield</div>` + compHTML('comp') + eta('hunt') + `<div class="flex mt"><button class="btn pri tall grow" data-a="launch" data-k="hunt" ${tot ? '' : 'disabled'}>Send hunt</button></div>`;
   } else if (t.kind === 'wild' || t.kind === 'forest') {
     const tk = tpKind(x, y);
@@ -524,16 +524,29 @@ function heroSlotPanel(sl) {
     return `<div class="it"><i class="ui big">${gearSVG(sl, p.grade, p.set)}</i><div class="grow"><b class="h" style="font-size:15px">${qName(p.grade)} ${pieceTitle(p)}</b> ${ar}<div class="sub">${pieceText(p)}</div></div><button class="btn sm ${on ? 'line' : 'pri'}" data-a="${on ? 'rack' : 'wear'}" data-id="${p.id}" ${!on && setLocked(p) ? 'disabled' : ''}>${on ? 'Remove' : setLocked(p) ? 'Hero Lv ' + pieceLv(p) : 'Equip'}</button></div>`; };
   return `<div class="panel"><div class="hd"><h3>${SLOT_NAME[sl]}</h3><span class="tag">${w ? qName(w.grade) + ' ' + pieceTitle(w) : 'empty'}</span></div><div class="bd"><div class="flex sp"><div class="sub">${w ? pieceText(w) : 'Nothing equipped.'}</div><button class="btn sm" data-a="hupg" data-s="${sl}">Upgrade</button></div><div class="lbl mt">Owned</div><div class="list">${own.map(row).join('') || '<div class="sub">None yet. Craft some in the Forge.</div>'}</div></div></div>`;
 }
+/* ---------------- skill trees: main (economy and combat) and hunting ---------------- */
+function skNodeBtn(n) {
+  const has = skHas(n.id), err = has ? null : skCan(n.id), ok = !has && !err, f = SK_FAM[n.fam], painted = typeof ART !== 'undefined' && ART.file && ART.file('skillnode_' + n.fam);
+  const pct = n.stat === 'stamMax' || n.stat === 'stamRegen' ? '+' + Math.round(n.v * 100) + '%' : '+' + (n.v * 100).toFixed(n.v < 0.01 ? 1 : 0).replace(/\.0$/, '') + '%';
+  return `<button class="skn ${has ? 'on' : ok ? 'can' : 'lock'}" data-a="skbuy" data-id="${n.id}" title="${err || ''}"><i class="sk-ic">${painted ? `<img src="${painted}" alt="">` : f[0].split(' ').map(w => w[0]).join('').slice(0, 2)}</i><b>${f[0]}</b><span class="num">${SK_RN[n.lv - 1]} · ${pct}${n.stat === 'streakAtk' ? ' per streak' : ''}</span></button>`;
+}
+function skillsHTML() {
+  const sp = skPoints(), t = UI.sk || 'main', tiers = SKILL_TREES[t];
+  return `<div class="panel"><div class="hd"><h3>Skills</h3><span class="tag ${sp ? 'br' : ''}">${sp} points</span></div><div class="bd"><div class="tabs2"><button class="${t === 'main' ? 'on' : ''}" data-a="sktree" data-k="main">Main</button><button class="${t === 'hunt' ? 'on' : ''}" data-a="sktree" data-k="hunt">Hunting</button><button class="line" data-a="skreset" style="margin-left:auto" ${skSpent() ? '' : 'disabled'}>Reset</button></div>
+  <div class="sub mb">One point per level. Tap a node to learn it. Each node needs one learned node in the tier above, and II or III needs the lower level of the same skill. Values are placeholders. Reset is free for now.</div>
+  ${tiers.map((r, i) => `<div class="skt"><span class="skl">${t === 'main' ? 'Tier ' + (i + 1) : ['Root', 'Branches', 'Advanced'][i]}</span><div class="skr">${r.map(skNodeBtn).join('')}</div></div>`).join('')}
+  ${t === 'hunt' ? '<div class="sub mt">Hunter\'s instinct (Field research) still improves monster drops. These nodes change cost, energy, hero attack and monster strength, not drops.</div>' : ''}</div></div>`;
+}
 function heroScreenHTML() {
   const h = S.hero, lv = heroLv(), need = heroNeed(lv), pct = lv >= HERO_MAX ? 100 : Math.min(100, (h.xp || 0) / need * 100), hb = HEROES[h.id];
   const cnt = setCounts(), best = setBest() || Object.keys(cnt).sort((a, b) => cnt[b] - cnt[a])[0], n = best ? cnt[best] : 0;
-  const gb = heroGearBonus(), sp = Math.max(0, lv - 1 - (h.spUsed || 0)), bag = Object.values(S.xpi).reduce((a, b) => a + b, 0);
+  const gb = heroGearBonus(), sp = skPoints(), bag = Object.values(S.xpi).reduce((a, b) => a + b, 0);
   const stat = (k, lab) => `<div class="hst"><span>${lab}</span><b class="num">+${(heroStat(k) * 100).toFixed(1).replace(/\.0$/, '')}%${gb[k] ? ` <i class="up">+${(gb[k] * 100).toFixed(1).replace(/\.0$/, '')}%</i>` : ''}</b></div>`;
   const tab = UI.ht || 'gear', T = (k, n_, dot) => `<button class="${tab === k ? 'on' : ''}" data-a="hstab" data-k="${k}">${n_}${dot ? dotEm : ''}</button>`;
   const setLine = best ? `${SETS[best].n} ${n}/5 · ${SET_PCS.map(k => `<span class="${n >= k ? 'up' : 'mut'}">${k}pc</span>`).join(' ')}` : 'No set yet';
   let body;
   if (tab === 'gear') body = UI.hs ? heroSlotPanel(UI.hs) : `<div class="panel"><div class="bd sub">Tap a gear slot to see it, compare owned pieces and upgrade.${best ? `<div class="mt">${SETS[best].n}: ${setDesc(best)}</div>` : ''}</div></div>`;
-  else if (tab === 'skills') body = `<div class="panel"><div class="hd"><h3>Skills</h3><span class="tag ${sp ? 'br' : ''}">${sp} points</span></div><div class="bd sub">One skill point per level. The skill tree is not built yet: points are banked for it. (Open item.)</div></div>`;
+  else if (tab === 'skills') body = skillsHTML();
   else if (tab === 'avatar') body = heroesHTML();
   else body = `<div class="panel"><div class="hd"><h3>XP items</h3><button class="btn sm line" data-a="drawer" data-id="hero" data-tab="store">Get more</button></div><div class="bd list">${XPI.map(it => { const q = S.xpi[it.id] || 0; return `<div class="it"><i class="ui big">${xpiSVG(it.id)}</i><div class="grow"><b class="h" style="font-size:15px">${it.n}</b> <span class="num br">×${q}</span><div class="sub">+${fmtN(it.xp)} hero XP each</div></div><div class="flex"><button class="btn sm" data-a="usexp" data-id="${it.id}" data-n="1" ${q && lv < HERO_MAX ? '' : 'disabled'}>Use</button><button class="btn sm line" data-a="usexp" data-id="${it.id}" data-n="max" ${q && lv < HERO_MAX ? '' : 'disabled'}>Use max</button></div></div>`; }).join('')}</div><div class="bd sub">Free XP comes from hunts, building and research, and the daily exercise. Boosts apply to earned XP only, never to items.</div></div>`;
   return `<div class="panel hs"><div class="hs-top"><b class="h">${hb.n}</b><span class="tag br">Lv ${lv}</span><span class="grow"></span><span class="sub">Power</span><b class="num">${fmtN(heroPower())}</b></div><div class="bar mt"><i style="width:${pct}%"></i></div><div class="flex sp sub"><span>${lv >= HERO_MAX ? 'Max level' : fmtN(h.xp || 0) + ' / ' + fmtN(need) + ' XP'}</span><span>${lv >= HERO_MAX ? '' : 'Lv ' + (lv + 1)}</span></div>
@@ -696,6 +709,7 @@ const A = {
   supply() { if (Date.now() < (S.supplyAt || 0) + 0.5 * HOUR) return toast('The next drop is not ready.', 'warn'); S.supplyAt = Date.now(); const g = {}; for (const r of RES) g[r] = Math.round(storeCap() * 0.02); grant(g); toast('Supply drop: ' + fmtN(g[RES[0]]) + ' of each resource', 'good'); hap(14); D(); },
   mrefresh() { if (S.dia < 15) return run('Short of diamonds.'); dchg(-15, 'Market refresh'); rollMarket(true); D(); }, mbuy(d) { run(buyMarket(+d.i), 'Bought.'); },
   hero(d) { run(setHero(d.k)); }, hstab(d) { UI.ht = d.k; D(); }, hslot(d) { UI.ht = 'gear'; UI.hs = UI.hs === d.s ? null : d.s; D(); },
+  skbuy(d) { run(skBuy(d.id)); }, sktree(d) { UI.sk = d.k; D(); }, skreset() { run(skReset(), 'Skills reset.'); },
   hupg(d) { UI.cr.slot = d.s; openDrawer('hero', 'forge'); },
   usexp(d) { run(useXpItem(d.id, d.n === 'max' ? 'max' : +d.n)); },
   hflex() { const el = $('#hfig'); if (!el) return; UI.hfx = !UI.hfx; el.classList.remove('flex', 'strike'); void el.offsetWidth; el.classList.add(UI.hfx ? 'flex' : 'strike'); hap(10); }, ransom(d) { run(ransom(!!d.seal)); },

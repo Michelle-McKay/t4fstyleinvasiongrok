@@ -130,6 +130,25 @@ const XPI_PACK = 5, XP_MIN_RATE = 2.0;         // items per pack, minimum dollar
 const XP_FREE = { daily: [['tiny', 2], ['small', 1]], hunt: 3000, battle: 1500, buildPerLevel: 400 };
 /* Per-level hero stats, identical for every avatar. Leadership raises column load. */
 const HERO_STAT = { atk: 0.004, def: 0.004, hp: 0.004, lead: 0.004 };
+/* Hero skill trees. One skill point per level (level 50 = 49 points). Node values are PLACEHOLDERS. Wording from the reference game is mapped to our terms:
+   Wood/Stone/Iron/Silver -> Oil/Energy/Steel/Cash production; Infantry/Cavalry/Ranged -> Rock/Paper/Scissors troops; Troop Defense -> wall HP; Trap Attack -> wall trap attack.
+   A node needs one bought node in the tier above, and II/III need the I/II of the same family. */
+const SK_FAM = {
+  atk: ['Troop Attack', 'atk'], food: ['Food Production', 'prod_rations'], oil: ['Oil Production', 'prod_fuel'], energy: ['Energy Production', 'prod_power'], steel: ['Steel Production', 'prod_alloy'], cash: ['Cash Production', 'prod_cash'],
+  build: ['Construction', 'build'], research: ['Research', 'research'], train: ['Troop Training', 'train'], rock: ['Rock Attack', 'atk_inf'], paper: ['Paper Attack', 'atk_arm'], scissors: ['Scissors Attack', 'atk_air'], siege: ['Siege Attack', 'atk_siege'],
+  gather: ['Resources Gathering', 'gather'], trapb: ['Trap Building', 'trap'], trapa: ['Trap Attack', 'wallAtk'], hp: ['Troop Health', 'hp'], def: ['Troop Defense', 'wallHp'],
+  debuff: ['Monster Target Debuff', 'monDebuff'], hcost: ['Energy Cost Reduction', 'huntCost'], hregen: ['Energy Recovery', 'stamRegen'], hatk: ['Hero Attack', 'heroAtk'], hmax: ['Maximum Energy Limit', 'stamMax'], hstreak: ['Hero Attack Streak', 'streakAtk']
+};
+const SK_VAL = { prod: [0.03, 0.05, 0.08], com: [0.02, 0.03, 0.04], eco: [0.03, 0.05, 0.08], hunt: { debuff: 0.05, hcost: 0.05, hregen: 0.10, hatk: 0.05, hmax: 0.10, hstreak: 0.005 } };   // placeholders
+const SK_RN = ['I', 'II', 'III'];
+const _skv = (f, lv) => SK_VAL.hunt[f] != null ? SK_VAL.hunt[f] : (['food', 'oil', 'energy', 'steel', 'cash', 'gather'].includes(f) ? SK_VAL.prod[lv - 1] : ['build', 'research', 'train', 'trapb'].includes(f) ? SK_VAL.eco[lv - 1] : SK_VAL.com[lv - 1]);
+const _skn = list => list.map(t => { const [f, lv] = t.split(':'); return { id: f + lv, fam: f, lv: +lv, name: SK_FAM[f][0] + ' ' + SK_RN[lv - 1], stat: SK_FAM[f][1], v: _skv(f, +lv) }; });
+const SKILL_TREES = {
+  main: ['atk:1 food:1', 'build:1 research:1', 'train:1 oil:1 energy:1', 'scissors:1 siege:1 steel:1', 'paper:1 gather:1 cash:1', 'rock:1 trapb:1 food:2', 'hp:1 trapa:1 oil:2', 'def:1 energy:2 steel:2',
+    'trapb:2 research:2 cash:2', 'rock:2 trapa:2 build:2', 'paper:2 scissors:2 gather:2', 'train:2 siege:2 food:3', 'def:2 steel:3 oil:3', 'hp:2 cash:3 energy:3'].map(r => _skn(r.split(' '))),
+  hunt: ['debuff:1', 'hcost:1 hregen:1', 'hatk:1 hmax:1 hstreak:1'].map(r => _skn(r.split(' ')))
+};
+const SKILL_ALL = [].concat(...SKILL_TREES.main, ...SKILL_TREES.hunt);
 /* Five gear slots (spec 2026-10-01): Helmet, Armor, Footwear, Weapon, Accessory. What a piece does comes from its category (Basic gear) or its set, not from its slot. */
 const SLOTS = ['helmet', 'chest', 'weapon', 'boots', 'accessory'];
 const SLOT_NAME = { helmet: 'Helmet', chest: 'Armor', boots: 'Footwear', weapon: 'Weapon', accessory: 'Accessory' };
