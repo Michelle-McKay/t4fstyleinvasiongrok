@@ -21,7 +21,7 @@ CAT = {i['key']: i for i in json.load(open(os.path.join(A, 'catalog.json')))['it
 FOLDER = {'bld': 'buildings', 'head': 'backdrops', 'troop': 'troops', 'wall': 'walls', 'hero': 'heroes',
           'map': 'map', 'tile': 'tiles', 'pack': 'packs', 'gem': 'packs', 'icon': 'icons', 'skill': 'skills', 'gear': 'gear', 'core': 'cores',
           'vip': 'vip', 'avatar': 'avatars', 'chat': 'chat', 'item': 'items',
-          'tab': 'tabs', 'ally': 'alliance', 'march': 'marches', 'quest': 'quests', 'city': 'city'}
+          'tab': 'tabs', 'ally': 'alliance', 'march': 'marches', 'quest': 'quests', 'city': 'city', 'ui': 'ui'}
 
 def key_of(path):
     s = os.path.splitext(os.path.basename(path))[0].lower().strip()
@@ -82,7 +82,7 @@ def magenta_key(im, mask):
     between lamps), fades the purple shadow edge, and removes the magenta cast from edge pixels."""
     rgb = im.convert('RGB'); r, g, b = rgb.split()
     m = ImageChops.subtract(ImageChops.darker(r, b), g)                       # how magenta a pixel is
-    a = m.point(lambda v: 255 if v <= 16 else 0 if v >= 40 else int(255 * (40 - v) / 24))
+    a = m.point(lambda v: 255 if v <= 28 else 0 if v >= 64 else int(255 * (64 - v) / 36))
     a = ImageChops.darker(a, mask.filter(ImageFilter.MinFilter(3)))
     edge = a.point(lambda v: 255 if v < 250 else 0).filter(ImageFilter.MaxFilter(9))   # pixels near the cut
     m2 = ImageChops.multiply(m.point(lambda v: v if v > 8 else 0), edge.point(lambda v: 255 if v else 0))
@@ -96,7 +96,7 @@ def drop_shadow(im, thr):
     a = ImageChops.darker(im.getchannel('A'), lum.filter(ImageFilter.MaxFilter(3)))
     out = im.copy(); out.putalpha(a); return out
 
-def drop_grey_shadow(im, warm=False):
+def drop_grey_shadow(im, warm=False, extra=False):
     """Floor shadows are dull grey-brown (low saturation, not green-dominant, not bark). Only the part connected to the
     background is cut, so dull pixels inside the art are kept."""
     r, g, b = im.convert('RGB').split(); mx = ImageChops.lighter(ImageChops.lighter(r, g), b); mn = ImageChops.darker(ImageChops.darker(r, g), b)
@@ -106,7 +106,12 @@ def drop_grey_shadow(im, warm=False):
     else:
         m = ImageChops.multiply(m, ImageChops.subtract(g, r).point(lambda v: 255 if v <= 6 else 0))
         m = ImageChops.multiply(m, ImageChops.subtract(g, b).point(lambda v: 255 if v < 26 else 0))
-    m = ImageChops.multiply(m, im.convert('L').point(lambda v: 255 if v < (134 if warm else 165) else 0))
+    m = ImageChops.multiply(m, im.convert('L').point(lambda v: 255 if 85 < v < (134 if warm else 165) else 0))   # dark bark and tyres are darker than a shadow, so they stay
+    purple = ImageChops.subtract(ImageChops.darker(r, b), g).point(lambda v: 255 if v >= 6 else 0)          # pink-purple tint of a shadow: bark and leaves never have blue and red both above green
+    purple = ImageChops.multiply(purple, im.convert('L').point(lambda v: 255 if v < 175 else 0))
+    neutral = ImageChops.multiply(ImageChops.subtract(mx, mn).point(lambda v: 255 if v < 26 else 0), ImageChops.subtract(g, b).point(lambda v: 255 if v < 10 else 0))
+    neutral = ImageChops.multiply(neutral, ImageChops.subtract(g, r).point(lambda v: 255 if v <= 6 else 0))
+    if extra: m = ImageChops.lighter(ImageChops.lighter(m, purple), neutral)   # only for subjects with no grey metal or white paint
     a = im.getchannel('A'); free = ImageChops.lighter(m, a.point(lambda v: 255 if v < 20 else 0))
     ImageDraw.floodfill(free, (0, 0), 128, thresh=0)
     sh = free.point(lambda v: 255 if v == 128 else 0).filter(ImageFilter.MaxFilter(5))
@@ -140,8 +145,8 @@ def process(path):
         im = im.convert('RGB')
         if it['size'].startswith('1:1') and im.width != im.height:  # not square: centre-crop so it does not stretch
             n = min(im.size); l, t = (im.width - n) // 2, (im.height - n) // 2; im = im.crop((l, t, l + n, t + n)); note = 'centre-cropped to square'
-    if (k.startswith('city_deco_tree') or k == 'city_deco_bush') and im.mode == 'RGBA': im = drop_grey_shadow(im); note += ', floor shadow cut'
-    elif k in ('city_deco_barrel', 'city_deco_flag') or k.startswith('mapmarch_') or k.endswith('_dust') and im.mode == 'RGBA': im = drop_grey_shadow(im, True); note += ', floor shadow cut'
+    if (k.startswith('city_deco_tree') or k == 'city_deco_bush') and im.mode == 'RGBA': im = drop_grey_shadow(im, False, True); note += ', floor shadow cut'
+    elif k in ('city_deco_barrel', 'city_deco_flag') or k.startswith('mapmarch_') or k.endswith('_dust') and im.mode == 'RGBA': im = drop_grey_shadow(im, True, k in ('city_deco_barrel', 'city_deco_flag') or k.endswith('_dust')); note += ', floor shadow cut'
     if k in SHADOW and im.mode == 'RGBA': im = drop_shadow(im, SHADOW[k]); note += ', floor shadow cut'
     if it['transparent'] and k.startswith('city_ground'): im = trim(im)   # ground blobs are wide: keep their own aspect, the game stretches them over the island
     elif it['transparent'] and it['size'].startswith('1:1'): im = square(im)

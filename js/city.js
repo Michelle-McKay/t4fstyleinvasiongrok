@@ -23,12 +23,13 @@ function cityRoads(kind) {
   return `<svg class="croads" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${paths.map(d => `<path d="${d}" fill="none" stroke="${c[1]}" stroke-width="13" stroke-linecap="round" vector-effect="non-scaling-stroke"/><path d="${d}" fill="none" stroke="${c[0]}" stroke-width="10" stroke-linecap="round" vector-effect="non-scaling-stroke"/>${kind === 'cnc' ? `<path d="${d}" fill="none" stroke="${c[2]}" stroke-width="1.4" stroke-dasharray="7 9" vector-effect="non-scaling-stroke" opacity=".7"/>` : ''}`).join('')}</svg>`;
 }
 /* Scenery: painted sprite when it exists, else a small CSS/SVG piece. Positions are seeded so the city looks the same every visit. */
+const DECOR_SCALE = { tree_1: 1.35, tree_2: 1.45, tree_3: 1.3, rock_1: 1, rock_2: .9, bush: .8, barrel: .65, water: 1.3, fence: 1, lamp: 1.1, flag: 1.1, sandbag: .85, crates: .75 };
 function cityDecor(kind) {
   const r = cityRand('deco' + kind), out = [];
   const set = kind === 'cnc' ? ['lamp', 'flag', 'sandbag', 'tree_1', 'tree_3', 'bush', 'rock_1', 'crates'] : ['tree_1', 'tree_2', 'tree_3', 'rock_1', 'rock_2', 'bush', 'barrel', 'water', 'fence'];
   const slots = [[2, 4], [92, 6], [3, 30], [93, 33], [2, 58], [92, 60], [4, 86], [90, 88], [47, 2], [48, 94], [24, 96], [72, 95]];
   slots.forEach(([x, y], i) => {
-    const k = set[Math.floor(r() * set.length)], img = cityImg('city_deco_' + k), s = 26 + Math.round(r() * 12), px = x + (r() - .5) * 4, py = y + (r() - .5) * 4;
+    const k = set[Math.floor(r() * set.length)], img = cityImg('city_deco_' + k), s = Math.round((26 + Math.round(r() * 12)) * (DECOR_SCALE[k] || 1)), px = x + (r() - .5) * 4, py = y + (r() - .5) * 4;
     out.push(`<span class="cd ${img ? '' : 'v ' + k.replace(/_\d/, '')}" style="left:${px}%;top:${py}%;width:${s}px;height:${s}px">${img ? `<img src="${img}" alt="">` : ''}</span>`);
   });
   return out.join('');

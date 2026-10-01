@@ -25,7 +25,7 @@ function loadPacks() {
 /* ---------- shared style (v2: bright, clean industrial) ---------- */
 const STYLE_HEAD = 'Style: clean, polished, stylized-realistic game-asset render for a modern mobile base-building strategy game, like a high-end 3D render with crisp edges and smooth shading. ';
 const STYLE_TAIL =
-  'Bright daylight, high-key lighting, soft ambient light with a gentle shadow falling to the lower right. Saturated, readable colours with strong contrast and a crisp silhouette that still reads at small size. ' +
+  'Bright daylight, high-key lighting from ONE key light at the upper left, so light faces are on the upper left and the soft shading is on the lower right, the same in every image of the set. Colour lock: warm cream-white, light grey and golden sand, safety orange, brass, glowing cyan-blue; NO pink, peach, salmon, mauve or purple tints anywhere. Saturated, readable colours with strong contrast and a crisp silhouette that still reads at small size. ' +
   'Everything is tidy and well kept: clean surfaces, neat surroundings. No rust, no grime, no dirt streaks, no scrap, no debris, no clutter, not dark, not gritty, not post-apocalyptic. ' +
   'Original design, not a copy of any existing game or franchise. No text, letters, numbers, logos, real flags, watermark, signature or border. Sharp clean edges everywhere, no smeared, melted, blurry or duplicated parts, no floating fragments, no warped perspective, no extra or missing limbs, no fake writing or squiggles that look like letters.';
 /* buildings and backdrops */
@@ -34,7 +34,7 @@ const STYLE = STYLE_HEAD + 'Bright, clean, modern industrial-military look: modu
 const STYLE_GEN = STYLE_HEAD + 'Bright, clean, modern industrial-military palette: off-white, light grey and warm sand with safety-orange and brass accents and softly glowing blue lights. ' + STYLE_TAIL;
 const CAM = 'Camera: three-quarter overhead, looking down about 40 degrees, front-left corner facing the viewer, the same camera, scale and lighting as every other asset in this set.';
 const DIA = 'Footprint: the whole subject sits on ONE perfectly square patch of ground with straight edges and sharp corners, which from the camera angle reads as a diamond that fills the frame, exactly like an isometric map tile. Any fence or wall is straight and follows the edges of that square. No round, oval, hexagonal or octagonal shapes in the outline, and nothing sticks out past the square.';
-const BG_T = 'Background: one flat solid magenta (#FF00FF) colour filling the whole frame, no gradient, no floor, no shadow on it. Any shadow inside the subject is a soft neutral grey-brown, never purple, pink or magenta, and no pink, red-violet or magenta colour appears anywhere on the subject itself. Do NOT draw a grey checkerboard pattern (that is a fake transparency grid and cannot be removed).';
+const BG_T = 'Background: one flat solid magenta (#FF00FF) colour filling the whole frame, no gradient, no floor, no shadow on it. The subject casts NO shadow onto the background and has no ground ellipse or contact shadow (the game draws its own shadows); only shading on the subject itself, a soft neutral grey-brown, never purple, pink or magenta, and no pink, red-violet or magenta colour appears anywhere on the subject itself. Do NOT draw a grey checkerboard pattern (that is a fake transparency grid and cannot be removed).';
 const BG_O = 'Fill the whole frame, no transparent areas.';
 const PAD = 'Place the building complex on one clean, flat, square light-concrete pad with a thin edge (the same pad size in every image of this set), centred, filling about 85 percent of the frame. Nothing may extend past the pad. No vehicles, people, banners, flag poles or separate structures unless named.';
 
@@ -111,7 +111,7 @@ const TROOP_SUBJECT = {
     'a demolition walker: a large four-legged walker carrying a swinging wrecking-ball arm and a siege cannon, white with brass trim'
   ]
 };
-const TSUF = 'Render style: smooth polished 3D game render with soft shading and clean edges, exactly the same style as the buildings of this set, NOT a comic, NOT a cartoon, NOT cel-shaded, NO black outlines. The unit faces front-left, fills about 80 percent of the frame, and is shown at the same scale and camera as every other unit in the set. A soft neutral shadow directly under it, no ground, no base plate, no text';
+const TSUF = 'Render style: smooth polished 3D game render with soft shading and clean edges, exactly the same style as the buildings of this set, NOT a comic, NOT a cartoon, NOT cel-shaded, NO black outlines. The unit faces front-left, fills about 80 percent of the frame, and is shown at the same scale and camera as every other unit in the set. No shadow, no ground, no base plate, no text. Built for later animation: limbs, wheels, rotors and turrets are clearly separate readable shapes, the pose is a neutral idle';
 const WALL_SUBJECT = {
   sent: [
     'an automated point-gun: a small clean auto-turret on a low concrete mount',
@@ -120,7 +120,7 @@ const WALL_SUBJECT = {
     'a perimeter plasma emplacement: a heavy white armoured cannon pod with a glowing blue core and brass trim'
   ],
   bast: [
-    'a row of anti-tank barriers: clean steel hedgehogs and spiked blocks on a light pad',
+    'a light shield emplacement: a low armoured gun shield on a clean concrete mount with a short heavy barrel, the plainest of the bastion set, same concrete emplacement style as the railgun turret',
     'a railgun turret: a long twin-rail cannon on a clean concrete emplacement',
     'a siege-breaker battery: several heavy gun barrels behind clean armoured shields',
     'a quantum shield emplacement: a bunker with a glowing blue energy dome and emitters'
@@ -445,6 +445,34 @@ function build() {
   for (const k of Object.keys(RD)) add('city', { key: `city_road_${k}`, name: `City road: ${k}`, size: '1:1, 1024 x 1024', transparent: true, out: 256, prompt: make(`${RD[k]}. ${RDC}. ${FLAT} High overhead camera (about 45 degrees down)`, STYLE_GEN, BG_T) });
   const DC = { tree_1: 'a single round leafy green tree with a short brown trunk', tree_2: 'a single tall slim green pine tree', tree_3: 'a small cluster of exactly three young green trees close together', rock_1: 'a single mid-size smooth grey boulder with a little moss on top', rock_2: 'a cluster of exactly four small grey rocks of different sizes', fence: 'a short straight section of light steel mesh fence, two posts and four panels', lamp: 'a single tall slim street lamp with a soft warm glow', sandbag: 'a small neat wall of stacked sandbags, two rows high, about six bags long', crates: 'a neat stack of three pale wooden supply crates, two on the bottom and one on top', water: 'a small steel water tower: a round tank on four slim legs', barrel: 'two safety-orange fuel barrels standing side by side', flag: 'a single tall flagpole with a plain blue banner with no symbol', pond: 'a small round pond of clear blue water with a few reeds at the edge', bush: 'a single low round green bush with a few small white flowers' };
   for (const k of Object.keys(DC)) add('city', { key: `city_deco_${k}`, name: `City decor: ${k.replace('_', ' ')}`, size: '1:1, 1024 x 1024', transparent: true, out: 256, prompt: make(`A single piece of scenery for a base-building game: ${DC[k]}. The object fills about 70 percent of the frame, centred, with only a small soft shadow directly under it on the right. NO ground slab, NO base plate, NO grass patch, NO pad, NO diamond, NO tile under it: the object stands directly on the flat magenta background. Only this one object, nothing else. Camera: three-quarter overhead about 40 degrees down`, STYLE_GEN, BG_T) });
+
+
+  G('ui', 'UI parts and effects (24)', 'New in the audit. Reusable interface parts and small effects the game still draws in code. Buttons, frames and bars are text-free and stretch from their middle, so keep the centre plain. Effects are flat 2D, drawn as one separate transparent piece each, because they will be animated later (scaled, faded, spun or looped in code).');
+  const UIP = (key, name, subj, out, extra) => add('ui', { key, name, size: '1:1, 1024 x 1024', transparent: true, out: out || 256, prompt: make(`${subj}. Front view, flat orthographic, centred, only this piece, no text, no letters, no numbers${extra ? '. ' + extra : ''}`, STYLE_GEN, BG_T) });
+  UIP('ui_btn_green', 'Button: confirm (green)', 'A wide rounded-rectangle game button, glossy glowing green with a thin brass rim and a soft top highlight, perfectly plain in the middle for a label, twice as wide as tall', 256);
+  UIP('ui_btn_blue', 'Button: secondary (blue)', 'The same wide rounded-rectangle game button in glossy steel blue with a thin brass rim, plain in the middle, identical shape and size to the green one', 256);
+  UIP('ui_btn_orange', 'Button: speed-up (orange)', 'The same wide rounded-rectangle game button in glossy safety orange with a thin brass rim, plain in the middle, identical shape and size to the green one', 256);
+  UIP('ui_btn_grey', 'Button: disabled (grey)', 'The same wide rounded-rectangle game button in flat matte light grey with a thin grey rim and no gloss, plain in the middle, identical shape and size to the green one', 256);
+  UIP('ui_panel', 'Panel frame', 'A square dialog panel frame: a clean off-white steel plate with a thin brass border and four small brass corner studs, the whole middle a plain flat pale cream area, no decoration in the middle so it can stretch', 512);
+  UIP('ui_panel_dark', 'Panel frame, dark', 'The same square dialog panel frame as the cream one, but the plate is deep navy steel with the same thin brass border and corner studs and a plain flat dark-blue middle', 512);
+  UIP('ui_bar_frame', 'Progress bar frame', 'An empty horizontal progress bar, a slim rounded steel trough with a thin brass rim and a plain dark-blue empty inside, eight times as wide as tall', 256);
+  UIP('ui_bar_fill', 'Progress bar fill', 'A horizontal progress bar fill: a slim rounded glossy glowing green strip with a soft top highlight, eight times as wide as tall, plain along its length so it can be cut to any length', 256);
+  UIP('ui_resbar', 'Resource pill', 'A small rounded pill-shaped HUD plate for a resource count: dark navy glass with a thin brass rim and a round empty socket on the left end, plain on the right for a number, four times as wide as tall', 256);
+  UIP('ui_badge_dot', 'Notification dot', 'A small glossy round red notification dot with a thin white rim and a soft highlight, plain in the middle', 64);
+  UIP('ui_timer', 'Timer plate', 'A small rounded steel plate with a tiny brass clock icon on the left and a plain dark-blue area on the right for a countdown, three times as wide as tall', 256);
+  UIP('ui_toast', 'Toast banner', 'A wide slim message banner: a rounded navy glass bar with a thin brass rim and a soft glow along the top edge, plain in the middle, six times as wide as tall', 256);
+  UIP('ui_select_ring', 'Map selection ring', 'A glowing cyan-blue selection ring seen at an isometric angle (a flat diamond-shaped ring, twice as wide as tall) with four small corner ticks, hollow in the middle, soft glow on the ring only', 256);
+  UIP('ui_territory_flag', 'Territory flag marker', 'A small plain pennant flag on a slim brass pole with a small round base, the flag a clean flat cyan-blue with a white star (no letters), the cloth waving gently to the right, pole straight', 128);
+  const FXP = (key, name, subj, out) => add('ui', { key, name, size: '1:1, 1024 x 1024', transparent: true, out: out || 256, prompt: make(`${subj}. A flat 2D cartoon effect drawn like a comic-book graphic: matte flat colour in two or three tones, a clean crisp outline-free silhouette, no gloss, no 3D shading, no shadow, centred, only this one effect, no text. Symmetric and cleanly separated from the background so it can be scaled, rotated and faded in code`, STYLE_GEN, BG_T) });
+  FXP('fx_levelup', 'Effect: level up', 'A bright golden upward chevron arrow with three small golden sparkles around it and a soft round yellow burst behind it');
+  FXP('fx_coin_burst', 'Effect: coin burst', 'A burst of eight golden coins flying outwards from a small bright centre, each coin a clean flat gold disc seen at a slight angle');
+  FXP('fx_smoke', 'Effect: chimney smoke', 'ONE soft rising smoke puff column: three stacked flat pale-grey puffs, the lowest the biggest, the top the smallest, so a looped animation can rise and fade', 128);
+  FXP('fx_cloud', 'Effect: drifting cloud', 'ONE wide flat white cloud with a scalloped top and a flat bottom, plain two-tone white and pale blue-grey, three times as wide as tall', 256);
+  FXP('fx_heal', 'Effect: heal', 'A glowing mint-green plus sign with four small green sparkles drifting upward around it', 128);
+  FXP('fx_explosion', 'Effect: explosion', 'A flat comic-style explosion burst: a spiky orange outer star, a yellow middle star and a small white core, with four small flying orange sparks', 256);
+  FXP('fx_muzzle', 'Effect: muzzle flash', 'A single flat muzzle flash pointing to the right: a pointed yellow-white flame star with an orange outer tip, symmetric top to bottom', 128);
+  FXP('fx_shield_hit', 'Effect: shield hit', 'A flat glowing cyan-blue energy ripple: three concentric curved arcs of light with a bright white spark in the middle', 128);
+  FXP('fx_alert', 'Effect: attack alert', 'A flat bold red warning triangle burst: a pulsing red triangle ring with three short red radiating dashes on each side', 128);
 
   return { style: { style: STYLE, camera: CAM, transparent: BG_T, opaque: BG_O, pad: PAD }, groups, items };
 }

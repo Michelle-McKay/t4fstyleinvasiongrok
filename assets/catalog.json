@@ -1,6 +1,6 @@
 {
  "v": 2,
- "count": 498,
+ "count": 521,
  "groups": [
   {
    "id": "bld",
@@ -111,6 +111,11 @@
    "id": "city",
    "title": "City backdrop, ground and decor (34)",
    "note": "Replaces the flat dark background and square street grid: three full-screen backdrops, a horizon strip, three organic ground islands, three plot pads, six construction-site pieces (scaffold wrap, crane, hanging load, beacon, sparks, dust) that the game animates over a plot being built, four winding road pieces and fourteen scenery pieces that make the base feel like one place."
+  },
+  {
+   "id": "ui",
+   "title": "UI parts and effects (24)",
+   "note": "New in the audit. Reusable interface parts and small effects the game still draws in code. Buttons, frames and bars are text-free and stretch from their middle, so keep the centre plain. Effects are flat 2D, drawn as one separate transparent piece each, because they will be animated later (scaled, faded, spun or looped in code)."
   }
  ],
  "items": [
@@ -4113,6 +4118,190 @@
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
+  },
+  {
+   "group": "ui",
+   "key": "ui_btn_green",
+   "name": "Button: confirm (green)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "ui",
+   "key": "ui_btn_blue",
+   "name": "Button: secondary (blue)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "ui",
+   "key": "ui_btn_orange",
+   "name": "Button: speed-up (orange)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "ui",
+   "key": "ui_btn_grey",
+   "name": "Button: disabled (grey)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "ui",
+   "key": "ui_panel",
+   "name": "Panel frame",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "ui",
+   "key": "ui_panel_dark",
+   "name": "Panel frame, dark",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 512
+  },
+  {
+   "group": "ui",
+   "key": "ui_bar_frame",
+   "name": "Progress bar frame",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "ui",
+   "key": "ui_bar_fill",
+   "name": "Progress bar fill",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "ui",
+   "key": "ui_resbar",
+   "name": "Resource pill",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "ui",
+   "key": "ui_badge_dot",
+   "name": "Notification dot",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 64
+  },
+  {
+   "group": "ui",
+   "key": "ui_timer",
+   "name": "Timer plate",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "ui",
+   "key": "ui_toast",
+   "name": "Toast banner",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "ui",
+   "key": "ui_select_ring",
+   "name": "Map selection ring",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "ui",
+   "key": "ui_territory_flag",
+   "name": "Territory flag marker",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "ui",
+   "key": "fx_levelup",
+   "name": "Effect: level up",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "ui",
+   "key": "fx_coin_burst",
+   "name": "Effect: coin burst",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "ui",
+   "key": "fx_smoke",
+   "name": "Effect: chimney smoke",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "ui",
+   "key": "fx_cloud",
+   "name": "Effect: drifting cloud",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "ui",
+   "key": "fx_heal",
+   "name": "Effect: heal",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "ui",
+   "key": "fx_explosion",
+   "name": "Effect: explosion",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "ui",
+   "key": "fx_muzzle",
+   "name": "Effect: muzzle flash",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "ui",
+   "key": "fx_shield_hit",
+   "name": "Effect: shield hit",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "ui",
+   "key": "fx_alert",
+   "name": "Effect: attack alert",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
   }
  ]
 }
