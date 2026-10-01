@@ -6,7 +6,8 @@
   const save = () => { laySave(); D(); };
   const extra = () => LAY.sel && LAY.data.extra[LAY.sel.kind].find(e => e.id === LAY.sel.id);
   const groupOf = k => k.split('_')[0];
-  window.layBarHTML = () => {
+  window.layBarHTML = () => { return ''; };
+  window.layBarOld = () => {
     const sel = LAY.sel, ex = extra(), keys = Object.keys(ART.f);
     const groups = [...new Set(keys.map(groupOf))].sort(), g = LAY.grp || 'city';
     let h = `<div class="laybar"><b>Layout mode</b><span>Drag plots and pieces. Drag bare ground to scroll.</span><button class="btn sm pri" data-a="layout">Done</button><button class="btn sm ${LAY.pal ? 'on' : 'line'}" data-a="layadd">Add</button><button class="btn sm line" data-a="laycopy">Copy</button><button class="btn sm line" data-a="layreset">Reset</button>`;
