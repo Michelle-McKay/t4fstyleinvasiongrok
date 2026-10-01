@@ -59,7 +59,7 @@ const lvOf = ts => { let b = TLV[0]; for (const l of TLV) if (Math.abs(l - ts) <
 /* pre-warped diamond ground tiles per zoom level, so chunk builds are plain axis-aligned blits */
 const ATL = new Map(), gdpr = () => Math.min(MAP.dpr, 1.5); // the ground layer is soft art, so it renders at most 1.5x
 function tileAtlas(lv, base, v) {
-  const dpr = gdpr(), key = lv + base + v + '@' + dpr; let c = ATL.get(key); if (c) return c;
+  const dpr = gdpr(), key = lv + base + v + '@' + dpr + (base === 'wild' ? ART.slabReady() : ''); let c = ATL.get(key); if (c) return c;
   const tq = lv, hq = tq / 2; c = document.createElement('canvas'); c.width = Math.ceil(2 * tq * dpr) + 4; c.height = Math.ceil(tq * dpr) + 4;
   const g = c.getContext('2d'); g.imageSmoothingEnabled = true; g.setTransform(dpr * tq, dpr * hq, -dpr * tq, dpr * hq, c.width / 2, c.height / 2 - dpr * hq);
   g.drawImage(terrainSprite(base, v), -.015, -.015, 1.03, 1.03);
