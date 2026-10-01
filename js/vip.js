@@ -5,7 +5,7 @@
 const VIP_PER_USD = 100;
 const VIP_AP_RATE = 1;            // OPEN ITEM: VIP points per alliance point spent in the Alliance Store (a 50-point chest gives 50)
 const VIP_COUNT_DIAMONDS = true;  // set false to count only themed packs, not plain diamond packs
-const VIP_STATS = [['build', 'Build Speed'], ['research', 'Research Speed'], ['gather', 'Gathering Speed'], ['train', 'Troop Training Speed'], ['atk', 'Troop Attack'], ['def', 'Troop Defense'], ['hp', 'Troop HP'], ['rallyAtk', 'Rally Attack'], ['rallyHp', 'Rally HP']];
+const VIP_STATS = [['build', 'Construction Speed'], ['research', 'Research Speed'], ['gather', 'Resources Gathering Speed'], ['train', 'Troop Training Speed'], ['atk', 'Troop Attack'], ['def', 'Troop Defense (Wall HP)'], ['hp', 'Troop Health'], ['rallyAtk', 'Rally Attack'], ['rallyHp', 'Rally Health']];   // names follow the hero skill tree and STAT_LAB in data.js
 const VIP_LEVELS = [   // [points, usd, {stat: percent}, free build queue 2]
   [100, 1, { build: 5, gather: 5 }],
   [500, 5, { build: 8, research: 5 }],
@@ -40,7 +40,7 @@ const buildSlots = () => Math.max(S.builders, vipQueue2() ? 2 : 1);
 function vipPerkRows(level) {
   const rows = [], t = vipTotals(level);
   for (const [k, n] of VIP_STATS) if (t[k]) rows.push(`${n}: +${Math.round(t[k] * 100)}%`);
-  if (level >= 5) rows.push('Free Build Queue 2 (permanent)');
+  if (level >= 5) rows.push('Second Builder, free and permanent');
   return rows;
 }
 function vipAdd(n, src) {
