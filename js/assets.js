@@ -46,7 +46,7 @@ const TILE_N = { wild: 3, forest: 2, plaza: 1 };
 const _vecTerrain = terrainSprite;
 terrainSprite = function (t, v) {
   const n = TILE_N[t], k = n && 'tile_' + t + '_' + (v % n + 1), f = k && ART.file(k);
-  if (t === 'wild') { const sf = ART.file('map_slab'), im = sf && ART.img(sf); if (im) { const sk = 'slab:' + (v % 4); if (!SP[sk]) { const c = document.createElement('canvas'); c.width = c.height = 256; const w = im.width / 2, h = im.height / 2, i = v % 4; c.getContext('2d').drawImage(im, (i & 1) * w, (i >> 1) * h, w, h, 0, 0, 256, 256); SP[sk] = c; } return SP[sk]; } }
+  if (t === 'wild') { const sf = ART.file('map_slab'), im = sf && ART.img(sf); if (im) { const sk = 'slab:' + (v % 4); if (!SP[sk]) { const c = document.createElement('canvas'); c.width = c.height = 256; const w = im.width * .42, h = im.height * .42, i = v % 4; c.getContext('2d').drawImage(im, im.width * .08 + (i & 1) * w, im.height * .08 + (i >> 1) * h, w, h, 0, 0, 256, 256); // inner part only: the picture's outer edge is slightly darker SP[sk] = c; } return SP[sk]; } }
   return (f && canvasFrom(k, f, 256)) || _vecTerrain(t, v);
 };
 
