@@ -2950,7 +2950,7 @@
   {
    "group": "piece",
    "key": "piece_b_defense_weapon",
-   "name": "General Defense / Traps weapon · weapon (General Defense / Traps)",
+   "name": "Barricaded Shield-Guard · weapon (General Defense / Traps)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -2958,7 +2958,7 @@
   {
    "group": "piece",
    "key": "piece_b_defense_boots",
-   "name": "General Defense / Traps boots · boots (General Defense / Traps)",
+   "name": "Barricaded Greaves · boots (General Defense / Traps)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -2966,7 +2966,7 @@
   {
    "group": "piece",
    "key": "piece_b_defense_accessory",
-   "name": "General Defense / Traps accessory · accessory (General Defense / Traps)",
+   "name": "Barricaded Trap-Trigger · accessory (General Defense / Traps)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -2990,7 +2990,7 @@
   {
    "group": "piece",
    "key": "piece_b_attack_weapon",
-   "name": "General Attack weapon · weapon (General Attack)",
+   "name": "Standard-Issue Sidearm · weapon (General Attack)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -2998,7 +2998,7 @@
   {
    "group": "piece",
    "key": "piece_b_attack_boots",
-   "name": "General Attack boots · boots (General Attack)",
+   "name": "Standard-Issue Combat Boots · boots (General Attack)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3006,7 +3006,7 @@
   {
    "group": "piece",
    "key": "piece_b_attack_accessory",
-   "name": "General Attack accessory · accessory (General Attack)",
+   "name": "Standard-Issue Comm-Link · accessory (General Attack)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3030,7 +3030,7 @@
   {
    "group": "piece",
    "key": "piece_b_food_weapon",
-   "name": "Food Production weapon · weapon (Food Production)",
+   "name": "Hydroponic Overseer's Pruner · weapon (Food Production)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3038,7 +3038,7 @@
   {
    "group": "piece",
    "key": "piece_b_food_boots",
-   "name": "Food Production boots · boots (Food Production)",
+   "name": "Hydroponic Overseer's Boots · boots (Food Production)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3046,7 +3046,7 @@
   {
    "group": "piece",
    "key": "piece_b_food_accessory",
-   "name": "Food Production accessory · accessory (Food Production)",
+   "name": "Hydroponic Overseer's pH Meter · accessory (Food Production)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3070,7 +3070,7 @@
   {
    "group": "piece",
    "key": "piece_b_oil_weapon",
-   "name": "Oil Production weapon · weapon (Oil Production)",
+   "name": "Refinery-Operator Valve Wrench · weapon (Oil Production)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3078,7 +3078,7 @@
   {
    "group": "piece",
    "key": "piece_b_oil_boots",
-   "name": "Oil Production boots · boots (Oil Production)",
+   "name": "Refinery-Operator Spill Boots · boots (Oil Production)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3086,7 +3086,7 @@
   {
    "group": "piece",
    "key": "piece_b_oil_accessory",
-   "name": "Oil Production accessory · accessory (Oil Production)",
+   "name": "Refinery-Operator Pressure Valve · accessory (Oil Production)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3110,7 +3110,7 @@
   {
    "group": "piece",
    "key": "piece_b_energy_weapon",
-   "name": "Energy Production weapon · weapon (Energy Production)",
+   "name": "Power-Grid Hot-Wire Pliers · weapon (Energy Production)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3118,7 +3118,7 @@
   {
    "group": "piece",
    "key": "piece_b_energy_boots",
-   "name": "Energy Production boots · boots (Energy Production)",
+   "name": "Power-Grid Rubber Boots · boots (Energy Production)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3126,7 +3126,7 @@
   {
    "group": "piece",
    "key": "piece_b_energy_accessory",
-   "name": "Energy Production accessory · accessory (Energy Production)",
+   "name": "Power-Grid Voltage Meter · accessory (Energy Production)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3150,7 +3150,7 @@
   {
    "group": "piece",
    "key": "piece_b_steel_weapon",
-   "name": "Steel Production weapon · weapon (Steel Production)",
+   "name": "Foundry-Worker Tongs · weapon (Steel Production)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3158,7 +3158,7 @@
   {
    "group": "piece",
    "key": "piece_b_steel_boots",
-   "name": "Steel Production boots · boots (Steel Production)",
+   "name": "Foundry-Worker Asbestos Boots · boots (Steel Production)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3166,7 +3166,7 @@
   {
    "group": "piece",
    "key": "piece_b_steel_accessory",
-   "name": "Steel Production accessory · accessory (Steel Production)",
+   "name": "Foundry-Worker Pyrometer · accessory (Steel Production)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3190,7 +3190,7 @@
   {
    "group": "piece",
    "key": "piece_b_cash_weapon",
-   "name": "Cash Production weapon · weapon (Cash Production)",
+   "name": "Ledger-Keeper's Stamp · weapon (Cash Production)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3198,7 +3198,7 @@
   {
    "group": "piece",
    "key": "piece_b_cash_boots",
-   "name": "Cash Production boots · boots (Cash Production)",
+   "name": "Ledger-Keeper's Shoes · boots (Cash Production)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3206,7 +3206,7 @@
   {
    "group": "piece",
    "key": "piece_b_cash_accessory",
-   "name": "Cash Production accessory · accessory (Cash Production)",
+   "name": "Ledger-Keeper's Monocle · accessory (Cash Production)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3230,7 +3230,7 @@
   {
    "group": "piece",
    "key": "piece_b_build_weapon",
-   "name": "Construction weapon · weapon (Construction)",
+   "name": "Contractor's Rivet Gun · weapon (Construction)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3238,7 +3238,7 @@
   {
    "group": "piece",
    "key": "piece_b_build_boots",
-   "name": "Construction boots · boots (Construction)",
+   "name": "Contractor's Steel-Toes · boots (Construction)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3246,7 +3246,7 @@
   {
    "group": "piece",
    "key": "piece_b_build_accessory",
-   "name": "Construction accessory · accessory (Construction)",
+   "name": "Contractor's Blueprint Pad · accessory (Construction)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3270,7 +3270,7 @@
   {
    "group": "piece",
    "key": "piece_b_gather_weapon",
-   "name": "Gathering weapon · weapon (Gathering)",
+   "name": "Hauler's Utility Prybar · weapon (Gathering)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3278,7 +3278,7 @@
   {
    "group": "piece",
    "key": "piece_b_gather_boots",
-   "name": "Gathering boots · boots (Gathering)",
+   "name": "Hauler's Traction Boots · boots (Gathering)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3286,7 +3286,7 @@
   {
    "group": "piece",
    "key": "piece_b_gather_accessory",
-   "name": "Gathering accessory · accessory (Gathering)",
+   "name": "Hauler's Weight Scale · accessory (Gathering)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3310,7 +3310,7 @@
   {
    "group": "piece",
    "key": "piece_b_research_weapon",
-   "name": "Research weapon · weapon (Research)",
+   "name": "Data-Scribe Stylus Wand · weapon (Research)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3318,7 +3318,7 @@
   {
    "group": "piece",
    "key": "piece_b_research_boots",
-   "name": "Research boots · boots (Research)",
+   "name": "Data-Scribe Anti-Static Soles · boots (Research)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3326,7 +3326,7 @@
   {
    "group": "piece",
    "key": "piece_b_research_accessory",
-   "name": "Research accessory · accessory (Research)",
+   "name": "Data-Scribe Core Drive · accessory (Research)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3350,7 +3350,7 @@
   {
    "group": "piece",
    "key": "piece_b_train_weapon",
-   "name": "Troop Training weapon · weapon (Troop Training)",
+   "name": "Drillmaster's Pace Baton · weapon (Troop Training)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3358,7 +3358,7 @@
   {
    "group": "piece",
    "key": "piece_b_train_boots",
-   "name": "Troop Training boots · boots (Troop Training)",
+   "name": "Drillmaster's Marching Boots · boots (Troop Training)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3366,7 +3366,7 @@
   {
    "group": "piece",
    "key": "piece_b_train_accessory",
-   "name": "Troop Training accessory · accessory (Troop Training)",
+   "name": "Drillmaster's Stopwatch · accessory (Troop Training)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3390,7 +3390,7 @@
   {
    "group": "piece",
    "key": "piece_b_trap_weapon",
-   "name": "Wall Trap Training weapon · weapon (Wall Trap Training)",
+   "name": "Ordnance-Assembler Torque Wrench · weapon (Wall Trap Training)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3398,7 +3398,7 @@
   {
    "group": "piece",
    "key": "piece_b_trap_boots",
-   "name": "Wall Trap Training boots · boots (Wall Trap Training)",
+   "name": "Ordnance-Assembler Mag-Boots · boots (Wall Trap Training)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3406,7 +3406,7 @@
   {
    "group": "piece",
    "key": "piece_b_trap_accessory",
-   "name": "Wall Trap Training accessory · accessory (Wall Trap Training)",
+   "name": "Ordnance-Assembler Pressure Gauge · accessory (Wall Trap Training)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3430,7 +3430,7 @@
   {
    "group": "piece",
    "key": "piece_b_hunt_weapon",
-   "name": "Monster Hunting weapon · weapon (Monster Hunting)",
+   "name": "Tracker's Heavy Rifle · weapon (Monster Hunting)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3438,7 +3438,7 @@
   {
    "group": "piece",
    "key": "piece_b_hunt_boots",
-   "name": "Monster Hunting boots · boots (Monster Hunting)",
+   "name": "Tracker's Stalking Boots · boots (Monster Hunting)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3446,7 +3446,7 @@
   {
    "group": "piece",
    "key": "piece_b_hunt_accessory",
-   "name": "Monster Hunting accessory · accessory (Monster Hunting)",
+   "name": "Tracker's Fauna Scanner · accessory (Monster Hunting)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3470,7 +3470,7 @@
   {
    "group": "piece",
    "key": "piece_s_rock_weapon",
-   "name": "\"Rock\" Troop Set weapon · weapon (\"Rock\" Troop Set)",
+   "name": "Titan-Plated Greatblade · weapon (\"Rock\" Troop Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3478,7 +3478,7 @@
   {
    "group": "piece",
    "key": "piece_s_rock_boots",
-   "name": "\"Rock\" Troop Set boots · boots (\"Rock\" Troop Set)",
+   "name": "Titan-Plated Greaves · boots (\"Rock\" Troop Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3486,7 +3486,7 @@
   {
    "group": "piece",
    "key": "piece_s_rock_accessory",
-   "name": "\"Rock\" Troop Set accessory · accessory (\"Rock\" Troop Set)",
+   "name": "Titan-Plated Signet · accessory (\"Rock\" Troop Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3510,7 +3510,7 @@
   {
    "group": "piece",
    "key": "piece_s_paper_weapon",
-   "name": "\"Paper\" Troop Set weapon · weapon (\"Paper\" Troop Set)",
+   "name": "Gale-Weaver Bow · weapon (\"Paper\" Troop Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3518,7 +3518,7 @@
   {
    "group": "piece",
    "key": "piece_s_paper_boots",
-   "name": "\"Paper\" Troop Set boots · boots (\"Paper\" Troop Set)",
+   "name": "Gale-Weaver Striders · boots (\"Paper\" Troop Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3526,7 +3526,7 @@
   {
    "group": "piece",
    "key": "piece_s_paper_accessory",
-   "name": "\"Paper\" Troop Set accessory · accessory (\"Paper\" Troop Set)",
+   "name": "Gale-Weaver Talisman · accessory (\"Paper\" Troop Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3550,7 +3550,7 @@
   {
    "group": "piece",
    "key": "piece_s_scissors_weapon",
-   "name": "\"Scissors\" Troop Set weapon · weapon (\"Scissors\" Troop Set)",
+   "name": "Stalker-Chitin Blade · weapon (\"Scissors\" Troop Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3558,7 +3558,7 @@
   {
    "group": "piece",
    "key": "piece_s_scissors_boots",
-   "name": "\"Scissors\" Troop Set boots · boots (\"Scissors\" Troop Set)",
+   "name": "Stalker-Chitin Talons · boots (\"Scissors\" Troop Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3566,7 +3566,7 @@
   {
    "group": "piece",
    "key": "piece_s_scissors_accessory",
-   "name": "\"Scissors\" Troop Set accessory · accessory (\"Scissors\" Troop Set)",
+   "name": "Stalker-Chitin Emblem · accessory (\"Scissors\" Troop Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3590,7 +3590,7 @@
   {
    "group": "piece",
    "key": "piece_s_training_weapon",
-   "name": "Higher Quality Training Set weapon · weapon (Higher Quality Training Set)",
+   "name": "Grand-Trainer Whip · weapon (Higher Quality Training Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3598,7 +3598,7 @@
   {
    "group": "piece",
    "key": "piece_s_training_boots",
-   "name": "Higher Quality Training Set boots · boots (Higher Quality Training Set)",
+   "name": "Grand-Trainer Cleats · boots (Higher Quality Training Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3606,7 +3606,7 @@
   {
    "group": "piece",
    "key": "piece_s_training_accessory",
-   "name": "Higher Quality Training Set accessory · accessory (Higher Quality Training Set)",
+   "name": "Grand-Trainer Metronome · accessory (Higher Quality Training Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3630,7 +3630,7 @@
   {
    "group": "piece",
    "key": "piece_s_construction_weapon",
-   "name": "Higher Quality Construction Set weapon · weapon (Higher Quality Construction Set)",
+   "name": "Master-Builder Mallet · weapon (Higher Quality Construction Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3638,7 +3638,7 @@
   {
    "group": "piece",
    "key": "piece_s_construction_boots",
-   "name": "Higher Quality Construction Set boots · boots (Higher Quality Construction Set)",
+   "name": "Master-Builder Boots · boots (Higher Quality Construction Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3646,7 +3646,7 @@
   {
    "group": "piece",
    "key": "piece_s_construction_accessory",
-   "name": "Higher Quality Construction Set accessory · accessory (Higher Quality Construction Set)",
+   "name": "Master-Builder Level · accessory (Higher Quality Construction Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3670,7 +3670,7 @@
   {
    "group": "piece",
    "key": "piece_s_research_weapon",
-   "name": "Higher Quality Research Set weapon · weapon (Higher Quality Research Set)",
+   "name": "Sage-Scholar Quill · weapon (Higher Quality Research Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3678,7 +3678,7 @@
   {
    "group": "piece",
    "key": "piece_s_research_boots",
-   "name": "Higher Quality Research Set boots · boots (Higher Quality Research Set)",
+   "name": "Sage-Scholar Slippers · boots (Higher Quality Research Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3686,7 +3686,7 @@
   {
    "group": "piece",
    "key": "piece_s_research_accessory",
-   "name": "Higher Quality Research Set accessory · accessory (Higher Quality Research Set)",
+   "name": "Sage-Scholar Astrolabe · accessory (Higher Quality Research Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3710,7 +3710,7 @@
   {
    "group": "piece",
    "key": "piece_s_siege_weapon",
-   "name": "Siege (Trap-Killer) Set weapon · weapon (Siege (Trap-Killer) Set)",
+   "name": "Breaker-Hammer · weapon (Siege (Trap-Killer) Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3718,7 +3718,7 @@
   {
    "group": "piece",
    "key": "piece_s_siege_boots",
-   "name": "Siege (Trap-Killer) Set boots · boots (Siege (Trap-Killer) Set)",
+   "name": "Breaker-Soles · boots (Siege (Trap-Killer) Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3726,7 +3726,7 @@
   {
    "group": "piece",
    "key": "piece_s_siege_accessory",
-   "name": "Siege (Trap-Killer) Set accessory · accessory (Siege (Trap-Killer) Set)",
+   "name": "Breaker-Core · accessory (Siege (Trap-Killer) Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3750,7 +3750,7 @@
   {
    "group": "piece",
    "key": "piece_s_tilehit_weapon",
-   "name": "Tile Hit Attack Set weapon · weapon (Tile Hit Attack Set)",
+   "name": "Raid-Leader Spear · weapon (Tile Hit Attack Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3758,7 +3758,7 @@
   {
    "group": "piece",
    "key": "piece_s_tilehit_boots",
-   "name": "Tile Hit Attack Set boots · boots (Tile Hit Attack Set)",
+   "name": "Raid-Leader Sprint-Boots · boots (Tile Hit Attack Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3766,7 +3766,7 @@
   {
    "group": "piece",
    "key": "piece_s_tilehit_accessory",
-   "name": "Tile Hit Attack Set accessory · accessory (Tile Hit Attack Set)",
+   "name": "Raid-Leader Trail-Map · accessory (Tile Hit Attack Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3790,7 +3790,7 @@
   {
    "group": "piece",
    "key": "piece_s_rally_weapon",
-   "name": "General Rallying Set weapon · weapon (General Rallying Set)",
+   "name": "Warlord's Command Baton · weapon (General Rallying Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3798,7 +3798,7 @@
   {
    "group": "piece",
    "key": "piece_s_rally_boots",
-   "name": "General Rallying Set boots · boots (General Rallying Set)",
+   "name": "Warlord's Marching Boots · boots (General Rallying Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3806,7 +3806,7 @@
   {
    "group": "piece",
    "key": "piece_s_rally_accessory",
-   "name": "General Rallying Set accessory · accessory (General Rallying Set)",
+   "name": "Warlord's War-Horn · accessory (General Rallying Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3830,7 +3830,7 @@
   {
    "group": "piece",
    "key": "piece_s_wrally_weapon",
-   "name": "Wonder Rally Set weapon · weapon (Wonder Rally Set)",
+   "name": "Sovereign Vanguard Scepter · weapon (Wonder Rally Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3838,7 +3838,7 @@
   {
    "group": "piece",
    "key": "piece_s_wrally_boots",
-   "name": "Wonder Rally Set boots · boots (Wonder Rally Set)",
+   "name": "Sovereign Vanguard Boots · boots (Wonder Rally Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3846,7 +3846,7 @@
   {
    "group": "piece",
    "key": "piece_s_wrally_accessory",
-   "name": "Wonder Rally Set accessory · accessory (Wonder Rally Set)",
+   "name": "Sovereign Vanguard Relic · accessory (Wonder Rally Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3870,7 +3870,7 @@
   {
    "group": "piece",
    "key": "piece_s_wsolo_weapon",
-   "name": "Wonder Solo Set weapon · weapon (Wonder Solo Set)",
+   "name": "Phantom Apex Dagger · weapon (Wonder Solo Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3878,7 +3878,7 @@
   {
    "group": "piece",
    "key": "piece_s_wsolo_boots",
-   "name": "Wonder Solo Set boots · boots (Wonder Solo Set)",
+   "name": "Phantom Apex Striders · boots (Wonder Solo Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3886,7 +3886,7 @@
   {
    "group": "piece",
    "key": "piece_s_wsolo_accessory",
-   "name": "Wonder Solo Set accessory · accessory (Wonder Solo Set)",
+   "name": "Phantom Apex Compass · accessory (Wonder Solo Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3910,7 +3910,7 @@
   {
    "group": "piece",
    "key": "piece_s_wdef_weapon",
-   "name": "Wonder Defense Set weapon · weapon (Wonder Defense Set)",
+   "name": "Bastion Wall Tower-Shield · weapon (Wonder Defense Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3918,7 +3918,7 @@
   {
    "group": "piece",
    "key": "piece_s_wdef_boots",
-   "name": "Wonder Defense Set boots · boots (Wonder Defense Set)",
+   "name": "Bastion Wall Greaves · boots (Wonder Defense Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3926,7 +3926,7 @@
   {
    "group": "piece",
    "key": "piece_s_wdef_accessory",
-   "name": "Wonder Defense Set accessory · accessory (Wonder Defense Set)",
+   "name": "Bastion Wall Anchor · accessory (Wonder Defense Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3950,7 +3950,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_rpd_weapon",
-   "name": "Rock + Paper Defense Set weapon · weapon (Rock + Paper Defense Set)",
+   "name": "Yule-Garrison Barrier Shield · weapon (Rock + Paper Defense Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3958,7 +3958,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_rpd_boots",
-   "name": "Rock + Paper Defense Set boots · boots (Rock + Paper Defense Set)",
+   "name": "Yule-Garrison Greaves · boots (Rock + Paper Defense Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3966,7 +3966,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_rpd_accessory",
-   "name": "Rock + Paper Defense Set accessory · accessory (Rock + Paper Defense Set)",
+   "name": "Yule-Garrison Crest · accessory (Rock + Paper Defense Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3990,7 +3990,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_rsd_weapon",
-   "name": "Rock + Scissors Defense Set weapon · weapon (Rock + Scissors Defense Set)",
+   "name": "Solstice-Bulwark Tower-Guard · weapon (Rock + Scissors Defense Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3998,7 +3998,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_rsd_boots",
-   "name": "Rock + Scissors Defense Set boots · boots (Rock + Scissors Defense Set)",
+   "name": "Solstice-Bulwark Boots · boots (Rock + Scissors Defense Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -4006,7 +4006,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_rsd_accessory",
-   "name": "Rock + Scissors Defense Set accessory · accessory (Rock + Scissors Defense Set)",
+   "name": "Solstice-Bulwark Medal · accessory (Rock + Scissors Defense Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -4030,7 +4030,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_psd_weapon",
-   "name": "Paper + Scissors Defense Set weapon · weapon (Paper + Scissors Defense Set)",
+   "name": "Harvest-Aegis Ward · weapon (Paper + Scissors Defense Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -4038,7 +4038,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_psd_boots",
-   "name": "Paper + Scissors Defense Set boots · boots (Paper + Scissors Defense Set)",
+   "name": "Harvest-Aegis Striders · boots (Paper + Scissors Defense Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -4046,7 +4046,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_psd_accessory",
-   "name": "Paper + Scissors Defense Set accessory · accessory (Paper + Scissors Defense Set)",
+   "name": "Harvest-Aegis Talisman · accessory (Paper + Scissors Defense Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -4070,7 +4070,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_rpa_weapon",
-   "name": "Rock + Paper Attack Set weapon · weapon (Rock + Paper Attack Set)",
+   "name": "Spring-Strike Greatsword · weapon (Rock + Paper Attack Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -4078,7 +4078,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_rpa_boots",
-   "name": "Rock + Paper Attack Set boots · boots (Rock + Paper Attack Set)",
+   "name": "Spring-Strike Cleats · boots (Rock + Paper Attack Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -4086,7 +4086,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_rpa_accessory",
-   "name": "Rock + Paper Attack Set accessory · accessory (Rock + Paper Attack Set)",
+   "name": "Spring-Strike Banner · accessory (Rock + Paper Attack Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -4110,7 +4110,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_rsa_weapon",
-   "name": "Rock + Scissors Attack Set weapon · weapon (Rock + Scissors Attack Set)",
+   "name": "Summer-Assault Spear · weapon (Rock + Scissors Attack Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -4118,7 +4118,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_rsa_boots",
-   "name": "Rock + Scissors Attack Set boots · boots (Rock + Scissors Attack Set)",
+   "name": "Summer-Assault Boots · boots (Rock + Scissors Attack Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -4126,7 +4126,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_rsa_accessory",
-   "name": "Rock + Scissors Attack Set accessory · accessory (Rock + Scissors Attack Set)",
+   "name": "Summer-Assault Emblem · accessory (Rock + Scissors Attack Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -4150,7 +4150,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_psa_weapon",
-   "name": "Paper + Scissors Attack Set weapon · weapon (Paper + Scissors Attack Set)",
+   "name": "Equinox-Blitz Bow · weapon (Paper + Scissors Attack Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -4158,7 +4158,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_psa_boots",
-   "name": "Paper + Scissors Attack Set boots · boots (Paper + Scissors Attack Set)",
+   "name": "Equinox-Blitz Sprint-Soles · boots (Paper + Scissors Attack Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -4166,7 +4166,7 @@
   {
    "group": "piece",
    "key": "piece_s_hs_psa_accessory",
-   "name": "Paper + Scissors Attack Set accessory · accessory (Paper + Scissors Attack Set)",
+   "name": "Equinox-Blitz Compass · accessory (Paper + Scissors Attack Set)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
