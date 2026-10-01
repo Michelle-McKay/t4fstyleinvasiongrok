@@ -1,6 +1,6 @@
 {
  "v": 2,
- "count": 521,
+ "count": 514,
  "groups": [
   {
    "id": "bld",
@@ -29,8 +29,8 @@
   },
   {
    "id": "map",
-   "title": "Map features (37)",
-   "note": "Sprites for the world map, transparent. Shown small, so bold shapes and strong colour. The map is made of diamond (isometric) tiles, so every camp, base, citadel and resource site sits on a square patch that reads as a diamond. Nothing is round, hexagonal or octagonal."
+   "title": "Map features (30)",
+   "note": "Sprites for the world map, transparent. REWORKED: each resource has ONE gathering-tile image (the level is a number drawn in code, so the picture never changes with level), and every monster, including one set monster for each gear set, has a loot tile. Old six-level resource pictures are retired. Shown small, so bold shapes and strong colour. The map is made of diamond (isometric) tiles, so every camp, base, citadel and resource site sits on a square patch that reads as a diamond. Nothing is round, hexagonal or octagonal."
   },
   {
    "id": "tile",
@@ -1397,192 +1397,136 @@
   },
   {
    "group": "map",
-   "key": "node_food_1",
-   "name": "Food field tier 1",
+   "key": "node_food",
+   "name": "Food field",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
   },
   {
    "group": "map",
-   "key": "node_food_2",
-   "name": "Food field tier 2",
+   "key": "node_oil",
+   "name": "Oil field",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
   },
   {
    "group": "map",
-   "key": "node_food_3",
-   "name": "Food field tier 3",
+   "key": "node_energy",
+   "name": "Energy vein",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
   },
   {
    "group": "map",
-   "key": "node_food_4",
-   "name": "Food field tier 4",
+   "key": "node_steel",
+   "name": "Steel vein",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
   },
   {
    "group": "map",
-   "key": "node_food_5",
-   "name": "Food field tier 5",
+   "key": "node_cash",
+   "name": "Cash depot",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
   },
   {
    "group": "map",
-   "key": "node_food_6",
-   "name": "Food field tier 6",
+   "key": "mon_set_vanguard",
+   "name": "Vanguard Warden (Vanguard set monster)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "map",
+   "key": "mon_set_outrider",
+   "name": "Outrider Stalker (Outrider set monster)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "map",
+   "key": "mon_set_battery",
+   "name": "Battery Beetle (Battery set monster)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 384
+  },
+  {
+   "group": "map",
+   "key": "monloot_1",
+   "name": "Ash Hound loot tile",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
   },
   {
    "group": "map",
-   "key": "node_oil_1",
-   "name": "Oil field tier 1",
+   "key": "monloot_2",
+   "name": "Dune Raptor loot tile",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
   },
   {
    "group": "map",
-   "key": "node_oil_2",
-   "name": "Oil field tier 2",
+   "key": "monloot_3",
+   "name": "Rust Brute loot tile",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
   },
   {
    "group": "map",
-   "key": "node_oil_3",
-   "name": "Oil field tier 3",
+   "key": "monloot_4",
+   "name": "Slate Crawler loot tile",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
   },
   {
    "group": "map",
-   "key": "node_oil_4",
-   "name": "Oil field tier 4",
+   "key": "monloot_5",
+   "name": "Ember Colossus loot tile",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
   },
   {
    "group": "map",
-   "key": "node_oil_5",
-   "name": "Oil field tier 5",
+   "key": "monloot_6",
+   "name": "Iron Wyrm loot tile",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
   },
   {
    "group": "map",
-   "key": "node_oil_6",
-   "name": "Oil field tier 6",
+   "key": "monloot_set_vanguard",
+   "name": "Vanguard Warden loot tile",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
   },
   {
    "group": "map",
-   "key": "node_energy_1",
-   "name": "Energy vein tier 1",
+   "key": "monloot_set_outrider",
+   "name": "Outrider Stalker loot tile",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
   },
   {
    "group": "map",
-   "key": "node_energy_2",
-   "name": "Energy vein tier 2",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 256
-  },
-  {
-   "group": "map",
-   "key": "node_energy_3",
-   "name": "Energy vein tier 3",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 256
-  },
-  {
-   "group": "map",
-   "key": "node_energy_4",
-   "name": "Energy vein tier 4",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 256
-  },
-  {
-   "group": "map",
-   "key": "node_energy_5",
-   "name": "Energy vein tier 5",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 256
-  },
-  {
-   "group": "map",
-   "key": "node_energy_6",
-   "name": "Energy vein tier 6",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 256
-  },
-  {
-   "group": "map",
-   "key": "node_steel_1",
-   "name": "Steel vein tier 1",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 256
-  },
-  {
-   "group": "map",
-   "key": "node_steel_2",
-   "name": "Steel vein tier 2",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 256
-  },
-  {
-   "group": "map",
-   "key": "node_steel_3",
-   "name": "Steel vein tier 3",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 256
-  },
-  {
-   "group": "map",
-   "key": "node_steel_4",
-   "name": "Steel vein tier 4",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 256
-  },
-  {
-   "group": "map",
-   "key": "node_steel_5",
-   "name": "Steel vein tier 5",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 256
-  },
-  {
-   "group": "map",
-   "key": "node_steel_6",
-   "name": "Steel vein tier 6",
+   "key": "monloot_set_battery",
+   "name": "Battery Beetle loot tile",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
