@@ -3,7 +3,7 @@
    While on: tap anything to select it (Parent / Child refine what is selected), then drag to move, Smaller / Bigger, Hide, Front / Back,
    change what tapping it does, or add any painted piece from the art library to the screen you are on.
    Everything is stored on the device; Copy gives the whole layout as text. The map's tiles, monsters and ground are drawn on a canvas, so those stay as they are. */
-const ED = { on: false, drag: null, cand: null, sel: null, piece: null, pal: false, grp: 'city', min: false, top: false, snap: false, zoom: { s: 1, x: 0, y: 0 }, pinch: null, hist: [], redo: [], data: (() => { try { const d = JSON.parse(localStorage.getItem('im_edit1')); if (d && d.o && d.add) return d; } catch (e) { } return { o: {}, add: {} }; })() };
+const ED = { on: false, drag: null, cand: null, sel: null, piece: null, pal: false, grp: 'city', min: false, top: false, snap: false, zoom: { s: 1, x: 0, y: 0 }, pinch: null, hist: [], redo: [], data: (() => { try { const d = JSON.parse(localStorage.getItem('im_edit1')); if (d && d.o && d.add) { for (const k of Object.keys(d.o)) if (/\.(cworld|cpan|cityscape)[^>]*$|#(ground2?|map)$/.test(k)) delete d.o[k]; return d; } } catch (e) { } return { o: {}, add: {} }; })() };
 (() => {
   const $1 = (s, r) => (r || document).querySelector(s), clampN = (v, a, b) => Math.max(a, Math.min(b, v));
   const store = j => { try { localStorage.setItem('im_edit1', j); } catch (e) { } };
@@ -48,9 +48,11 @@ const ED = { on: false, drag: null, cand: null, sel: null, piece: null, pal: fal
   }
   const apply = () => { css(); wire(); layers(); };
   /* ---------- picking ---------- */
+  const BACK = '.cworld,.cpan,.cityscape,#ground,#ground2,#map,#mapwrap';
   function pick(t) {
     if (!t || !t.closest || t.closest('.edui') || t.tagName === 'CANVAS' || t.closest('.isle .plot, .isle .cd') || !t.closest('#app')) return null;
-    return t.closest('.edpiece') || t.closest('button,[data-a]') || t.closest('img,svg,input,select,.chip,.panel,.tips,.prow,.rwrow,.fl,h3,p,span,div') || t;
+    const r = t.closest('.edpiece') || t.closest('button,[data-a]') || t.closest('img,svg,input,select,.chip,.panel,.tips,.prow,.rwrow,.fl,h3,p,span,div') || t;
+    return r.matches && r.matches(BACK) ? null : r; // the city and map backdrops are permanent, never selectable
   }
   const selectEl = el => { ED.sel = null; ED.piece = null; if (el) { if (el.classList.contains('edpiece')) ED.piece = { key: el.dataset.pkey, id: el.dataset.pid }; else ED.sel = pathOf(el); } apply(); bar(); };
   /* ---------- gestures ---------- */
