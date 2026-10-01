@@ -46,6 +46,14 @@ const TIERS = {
   4: 'Upgrade tier 4 of 5, "advanced": high-tech, with tall glass sections, solar arrays, antennas and glowing blue light strips along the roofs and doors.',
   5: 'Upgrade tier 5 of 5, "flagship": the grandest version, the same site at its largest, gleaming white and light steel with brass accents, glowing blue energy accents, impressive but still tidy.'
 };
+const TECH_LOCK = 'SERIES LOCK, identical in all five tier images so they read as one site growing: the same square light-concrete pad; the same 2 by 2 cluster of four flat-roofed blocks, with the tallest block at the back corner and the main lab block at the front-left; the same off-white and light grey panels with safety-orange trim bands (no gold or pink); the same single satellite dish on the front-left block; and the same glowing cyan strips. Each tier keeps every block and the dish exactly where the earlier tier had them and only adds things, so tier N looks like tier N-1 after an upgrade, never a different building. If attached, match the reference image of the neighbouring tier exactly in style, colour and layout';
+const TECH_TIERS = {
+  1: 'Upgrade tier 1 of 5, "starter": the four plain flat-roofed blocks with the single dish, orange trim bands and a few small windows. Nothing on the other roofs except small vents. The plainest of the five.',
+  2: 'Upgrade tier 2 of 5: the same four blocks, a second small annex added beside the lab block, a rooftop vent unit and a short antenna mast on the back block, the dish unchanged.',
+  3: 'Upgrade tier 3 of 5: the same blocks and annex, now with solar panel arrays on two roofs, small rooftop equipment boxes, floodlights and a few orange bollards along the pad edge.',
+  4: 'Upgrade tier 4 of 5: the same site, a tall glass-fronted section added at the front of the lab block, solar arrays on three roofs, two taller antennas on the back block and glowing cyan light strips along the roof edges.',
+  5: 'Upgrade tier 5 of 5, "flagship": the same site at its most advanced: the glass front section enlarged, solar arrays on every roof, a second smaller dish and one small white observation dome added on the back block, a cluster of antennas, and brighter cyan strips on every roof edge. Still the same four-block layout, same orange trim, clearly the same building as tier 4, just grander.'
+};
 const EXTRA_BLD = {};   // buildings that have art but are not in js/data.js yet
 const BLD_SUBJECT = {
   embassy: 'An Embassy: an allied reinforcement post, a wide welcoming hall with a flagpole, a small landing pad for arriving troop transports and a tidy reception courtyard',
@@ -202,7 +210,7 @@ function build() {
   for (const k of Object.keys(ALL_BLD)) {
     for (let t = 1; t <= 5; t++) add('bld', {
       key: `bld_${k}_t${t}`, name: `${ALL_BLD[k].n} tier ${t}`, size: '1:1, 1024 x 1024', transparent: true, out: 512,
-      prompt: make(BLD_SUBJECT[k], TIERS[t], PAD, STYLE, CAM, BG_T)
+      prompt: k === 'tech' ? make(BLD_SUBJECT[k], TECH_LOCK, TECH_TIERS[t], PAD, STYLE, CAM, BG_T) : make(BLD_SUBJECT[k], TIERS[t], PAD, STYLE, CAM, BG_T)
     });
   }
   G('head', 'Building sheet backdrops (17)', 'The wide scenery behind a building on its info sheet. NO building in it: leave an empty flat patch of ground in the lower centre where the game places the building.');
