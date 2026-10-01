@@ -1,6 +1,6 @@
 # Items tab: reference notes (5 tabs) mapped to our game
 
-Notes taken from screenshots of a commercial game's Items > Store (Special, Resources, Speed Up, War, Chests), for design reference only. Names, prices and art are our own. Reference and research only, nothing here is in the game (a first build was rolled back). Status: **Designed** means a worked design exists in `docs/ITEMS.md`, **Maybe** is undecided, **No** is skipped with the reason. Vocabulary (Rations/Fuel/Power/Alloy/Cash vs Food/Oil/Energy/Steel) is to be revised at the end of the project.
+Notes taken from screenshots of a commercial game's Items > Store (Special, Resources, Speed Up, War, Chests), for design reference only. Names, prices and art are our own. Reference and research only, nothing here is in the game (a first build was rolled back). Status: **Designed** means a worked design existed in the rolled-back build, **Maybe** is undecided, **No** is skipped with the reason. Vocabulary (Rations/Fuel/Power/Alloy/Cash vs Food/Oil/Energy/Steel) is to be revised at the end of the project.
 
 ## Special
 | Reference idea | Our version | Status |
