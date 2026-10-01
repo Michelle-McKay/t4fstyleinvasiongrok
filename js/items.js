@@ -105,34 +105,21 @@ function movePanel() {
   <select data-a="mvto">${'<option value="">Empty plot</option>' + empty.map(i => `<option value="${i}" ${String(mv.to) === String(i) ? 'selected' : ''}>Plot ${i + 1}</option>`).join('')}</select>
   <button class="btn pri" data-a="mvgo" ${mv.from === '' || mv.to === '' ? 'disabled' : ''}>Move</button></div>${empty.length ? '' : '<div class="sub mt">No empty plot of this kind.</div>'}</div></div>`;
 }
-const BAG_TABS = [['special', 'Special'], ['res', 'Resources'], ['speed', 'Speed Up'], ['war', 'War'], ['chest', 'Chests']];
-/* My Items: an icon grid with the owned count in the corner, one sub-tab per store tab. Slips are listed under Speed Up; they are used from the Slip button on a running job. */
-function bagItems(cat) {
-  const out = ITEMS.filter(i => !i.usd && i.cat === cat && itmQty(i.id)).map(i => Object.assign({}, i, { qty: itmQty(i.id) }));
-  if (cat === 'speed') for (const x of SLIPS) if ((S.slips[x.id] || 0) > 0) out.push({ id: 'slip:' + x.id, n: x.n.replace(/^(One|Two|Five) /, ''), g: fmtT(x.sec).replace(/^0?(\d+):(\d\d):\d\d$/, (m, h, mi) => +h ? h + 'H' : +mi + 'M'), d: 'Speeds up any running build, training or research. Use it from the Slip button on the job.', qty: S.slips[x.id], slip: 1 });
-  return out;
-}
-function bagGrid() {
-  const tab = UI.bagTab || 'special', list = bagItems(tab), sel = list.find(i => i.id === UI.bagSel);
-  const tabs = `<div class="tabs2">${BAG_TABS.map(([k, n]) => `<button class="${tab === k ? 'on' : ''}" data-a="bagtab" data-k="${k}">${n}</button>`).join('')}</div>`;
-  const grid = list.length ? `<div class="bgrid">${list.map(i => `<button class="bcell ${sel && sel.id === i.id ? 'on' : ''}" data-a="bagsel" data-id="${i.id}"><div class="bi">${itmIcon(i)}<em class="bq">${i.qty}</em></div><span>${i.n}</span></button>`).join('')}</div>` : '<div class="sub">Nothing here yet. Buy items in the store tabs.</div>';
-  const det = sel ? `<div class="rwrow mt">${itmIcon(sel)}<div class="grow"><b>${sel.n}</b> <span class="num br">×${sel.qty}</span><div class="sub">${sel.d}</div></div>${sel.slip ? '' : `<button class="btn sm pri" data-a="itmuse" data-id="${sel.id}">Use</button>`}</div>` : '';
-  return `<div class="panel"><div class="hd"><h3>My Items</h3></div><div class="bd">${tabs}${grid}${det}</div></div>`;
-}
 const _itemHTML = itemHTML;
 function itemHTML2(t) {
   itmEnsure();
   const cats = { spec: ['special', 'Special'], res: ['res', 'Resources'], war: ['war', 'War'], chest: ['chest', 'Chests'] }, tab = cats[t];
   if (tab) return `<div class="panel"><div class="hd"><h3>${tab[1]}</h3><b class="num br">${fmtN(S.dia)}◆</b></div><div class="bd">${ITEMS.filter(i => i.cat === tab[0]).map(itmRow).join('')}<div class="sub mt">${t === 'spec' ? `${IAP.mode() === 'sandbox' ? '<b class="br">Demo build:</b> VIP point items are sandbox, no money is charged. ' : ''}VIP is permanent: points come only from real-money items and the Alliance Store, and there are no timed VIP passes.` : t === 'chest' ? 'Chests go to the bag. Open them with Use.' : 'Bought items go to the bag. Use them from there.'}</div></div></div>`;
   if (t === 'boost') return itmBuffs() + _itemHTML(t) + `<div class="panel"><div class="hd"><h3>March speed</h3></div><div class="bd">${ITEMS.filter(i => i.cat === 'speed').map(itmRow).join('')}</div></div>`;
-  return itmBuffs() + movePanel() + bagGrid();
+  const mine = ITEMS.filter(i => !i.usd && itmQty(i.id));
+  const bag = `<div class="panel"><div class="hd"><h3>My items</h3></div><div class="bd">${mine.map(it => `<div class="rwrow">${itmIcon(it)}<div class="grow"><b>${it.n}</b> <span class="num br">×${itmQty(it.id)}</span><div class="sub">${it.d}</div></div><button class="btn sm pri" data-a="itmuse" data-id="${it.id}">Use</button></div>`).join('') || '<div class="sub">Nothing yet. Buy items in the Special and Speed Up tabs.</div>'}</div></div>`;
+  return itmBuffs() + movePanel() + bag + _itemHTML(t);
 }
-DR.item = { tabs: [['bag', 'My Items'], ['spec', 'Special'], ['res', 'Resources'], ['boost', 'Speed Up'], ['war', 'War'], ['chest', 'Chests']], body: itemHTML2 };
+DR.item = { tabs: [['bag', 'Bag'], ['spec', 'Special'], ['res', 'Resources'], ['boost', 'Speed Up'], ['war', 'War'], ['chest', 'Chests']], body: itemHTML2 };
 Object.assign(A, {
   itmbuy(d) { run(itmBuy(d.id), 'Added to the bag.'); },
   itmiap(d) { const p = iapOfItem(d.id); IAP.buy(p.id).then(e => { if (e) toast(e, 'warn'); else { hap([16, 50, 16]); } UI.dirty = true; D(); }); },
   itmuse(d) { const e = itmUse(d.id); if (e === 'Cancelled.') return D(); run(e); },
-  bagtab(d) { UI.bagTab = d.k; UI.bagSel = null; D(); }, bagsel(d) { UI.bagSel = UI.bagSel === d.id ? null : d.id; D(); },
   mvclose() { UI.mv = null; D(); }, mvarea(d) { UI.mv = { area: d.k, from: '', to: '' }; D(); },
   mvfrom(d, el) { UI.mv.from = el.value; D(); }, mvto(d, el) { UI.mv.to = el.value; D(); },
   mvgo() { const m = UI.mv; if (run(moveBuilding(m.area, +m.from, +m.to), 'Building moved.')) UI.mv = null; D(); }

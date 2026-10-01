@@ -606,4 +606,3 @@ button.sock{cursor:pointer}
 .vhead .flex{gap:12px;align-items:center}.panel>.hd:has(.btn){justify-content:space-between}
 
 .rwic.itic{background:linear-gradient(135deg,#243642,#10181d)}.rwic.itic svg{width:44px;height:44px}.iticon{width:100%;height:100%;object-fit:contain}
-.bgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px 8px;align-items:start}.bcell{background:none;border:1px solid transparent;padding:2px;color:#e8e4d6;font:600 11px/1.15 var(--head);text-align:center;text-transform:uppercase;letter-spacing:.04em}.bcell.on{border-color:var(--brass)}.bcell .bi{position:relative}.bcell .rwic{width:100%;height:auto;aspect-ratio:1}.bcell .rwic svg{width:70%;height:70%}.bcell .bq{position:absolute;right:5px;bottom:3px;font:700 15px var(--head);font-style:normal;color:#fff;text-shadow:0 1px 3px #000}.bcell span{display:block;margin-top:3px;color:#cfc9b6;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
