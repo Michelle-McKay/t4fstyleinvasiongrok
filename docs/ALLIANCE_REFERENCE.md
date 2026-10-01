@@ -38,6 +38,24 @@ Our resources: Food / Oil / Energy / Steel / Cash. Troops: Rock / Paper / Scisso
 | Mail All | None | Gap (low value without real members) |
 | Join bonus banner | Welcome prize only | Gap (cheap) |
 
+## Alliance Help reference (two more screenshots)
+
+- Intro text: help speeds up allies' timers; the higher your Stronghold level, the more times you can receive help (help slots scale with Stronghold). A popup repeats this and lists what qualifies: **buildings, research and troop healing**.
+- Top bar: **Daily Funds and Loyalty** counter (0/10,000): helping earns alliance funds and loyalty, capped per day.
+- List of allies' open requests. Each row: rank numeral (I to V), member name, what they want ("Help me build Lv.18 Wall", "research Lv.4 Energy Recovery", "heal 200,000 soldiers"), a progress bar with a count (13/22 helps received of the slots it can take), and a **Help** button.
+- Bottom buttons: **More Information** (the popup) and **Help All** (answer every open request in one tap).
+- The home menu shows a red badge with the number of open requests.
+
+Mapped to us: we already have "Ask help" on a job (`askHelp`, help clicks capped by Command Center level, `helpCap()`), so help slots already scale with a building level. Missing: the list of allies' requests with progress bars, Help All, a daily cap on points earned for helping, and a badge on the Guild tab. Allies are simulated, so the list shows simulated allies' build, research and heal timers; helping them earns alliance points up to a daily cap (the reference's cap is 10,000 funds and loyalty a day; ours would be set against our alliance point income). We also have no troop healing timer to ask help for beyond the Med desk; check before building.
+
+## Summary & Stats reference (three more screenshots)
+
+- **Most Power**: ranked list of every member with their power number.
+- **Alliance Stats** (lifetime totals): Throne Owned Time, Troops Killed, Troops Killed (Deaths), Traps Destroyed, Troops Killed Ratio, Cities Destroyed, Battles Won / Lost / Win-Loss Ratio, Wars Won / Lost / War Win-Loss Ratio, Enemy Heroes Captured / Executed, Heroes Escaped, Heroes Lost, Bounties Claimed, Alliance Help (helps given) and Help Ratio, Resources Collected, Gifts Opened, Monster Targets Killed.
+- **Leaderboard Ranking**: the alliance's rank among all alliances for each of those stats (shows "Unranked" until it places).
+
+Mapped to us: we keep `S.score` and tile count only. Stats we could track from things that already exist: troops killed and lost (Rock/Paper/Scissors), traps destroyed (our 3 trap types), battles won and lost, throne time (`S.throne`), alliance helps, resources collected (Food/Oil/Energy/Steel/Cash), gifts opened (alliance chests), monster targets killed (`docs/MONSTER_HUNTING.md`). Drop or rename ones we have no system for (heroes captured, executed, escaped, bounties). The Most Power list uses simulated allies' power. The leaderboard would rank us against the five local rival alliances. Cheap to build: counters in state plus one table screen.
+
 ## Art already planned
 
 `tools/artcatalog.js` group `ally` already has 16 emblems, 5 rank badges and 15 feature icons (help, tech, gifts, war, territory, shop, members, donate, chat, rally, embassy, throne, mail, quests, flag), a create banner and a hall backdrop, plus `icon_apoint`, chests and `tabhead_alliance`. Anything built from the gaps above reuses these first. New icons would be needed only for: News, Resource Help, Summary & Stats, Manage, Leave, Applicant, Alliance Monster, Filter. Each would follow the existing `ICOADD('ally', ...)` rules: same shading, color theme, size and camera as the other ally icons, built so it can be animated later, no text.
