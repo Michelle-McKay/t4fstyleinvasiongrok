@@ -154,3 +154,7 @@ Star a piece up to 5 stars. **Star N+1 consumes N+1 duplicates** (same slot, set
 
 ## 9. Art
 New prompts in the checklist (`tools/artcatalog.js`): 6 Forge room interiors, socket and star pieces, blueprint cards, store and gift chests, alliance points icon (group "Forge rooms, sockets and chests"), 72 set gem icons (group "Set gems") and 25 Basic gem icons (group "Basic gems"). Gear icons are 5 slots x 6 tiers = 30 with ONE socket position, drawn capped; the research-locked socket and the Gem Set ring were removed, a Set Synergy glow ring was added; the 12 regular monsters have new names and descriptions, and holiday shards are now 6 (one per holiday set). No gear or monster art had been painted yet, so nothing needs redoing. All pieces share one shape, camera, light and size and are built to be animated (glint sweep, socket pulse, chest open).
+
+## Note: reference Gem Chest tables (2026-10-01, reference only)
+Michelle's Gem Chest drop tables (Normal, Uncommon, Rare, Epic) are recorded in `ITEMS_REFERENCE.md`. They differ from this gem system in three ways: her chests list 5 to 7 gem kinds per level while we have 25 Basic kinds at all six levels, her Epic chest drops up to Level 6 while store chests here stop at Level 2, and the Normal chest percentages as listed sum to 90%. Nothing is changed here until she decides.
+
