@@ -496,6 +496,27 @@ const SET_ITEMS = {
     hs_psa: ['Equinox-Blitz Jerkin', 'Equinox Shadow-Weave, 2x Festival Lantern Paper, Holiday Wax Seal']
   }
 };
+
+/* The remaining slots (Michelle, 2026-10-01 19:03): every slot of a category / set shares the helmet's stats and recipe, only the item name differs. */
+const SET_NAME_ORDER = ['rock', 'paper', 'scissors', 'siege', 'wrally', 'wsolo', 'wdef', 'rally', 'tilehit', 'research', 'construction', 'training', 'hs_rpd', 'hs_rsd', 'hs_psd', 'hs_rpa', 'hs_rsa', 'hs_psa'];
+const SLOT_ITEM_NAMES = {
+  boots: {
+    basic: ['Barricaded Greaves', 'Standard-Issue Combat Boots', "Hydroponic Overseer's Boots", 'Refinery-Operator Spill Boots', 'Power-Grid Rubber Boots', 'Foundry-Worker Asbestos Boots', "Ledger-Keeper's Shoes", "Contractor's Steel-Toes", "Hauler's Traction Boots", 'Data-Scribe Anti-Static Soles', "Drillmaster's Marching Boots", 'Ordnance-Assembler Mag-Boots', "Tracker's Stalking Boots"],
+    sets: ['Titan-Plated Greaves', 'Gale-Weaver Striders', 'Stalker-Chitin Talons', 'Breaker-Soles', 'Sovereign Vanguard Boots', 'Phantom Apex Striders', 'Bastion Wall Greaves', "Warlord's Marching Boots", 'Raid-Leader Sprint-Boots', 'Sage-Scholar Slippers', 'Master-Builder Boots', 'Grand-Trainer Cleats', 'Yule-Garrison Greaves', 'Solstice-Bulwark Boots', 'Harvest-Aegis Striders', 'Spring-Strike Cleats', 'Summer-Assault Boots', 'Equinox-Blitz Sprint-Soles']
+  },
+  weapon: {
+    basic: ['Barricaded Shield-Guard', 'Standard-Issue Sidearm', "Hydroponic Overseer's Pruner", 'Refinery-Operator Valve Wrench', 'Power-Grid Hot-Wire Pliers', 'Foundry-Worker Tongs', "Ledger-Keeper's Stamp", "Contractor's Rivet Gun", "Hauler's Utility Prybar", 'Data-Scribe Stylus Wand', "Drillmaster's Pace Baton", 'Ordnance-Assembler Torque Wrench', "Tracker's Heavy Rifle"],
+    sets: ['Titan-Plated Greatblade', 'Gale-Weaver Bow', 'Stalker-Chitin Blade', 'Breaker-Hammer', 'Sovereign Vanguard Scepter', 'Phantom Apex Dagger', 'Bastion Wall Tower-Shield', "Warlord's Command Baton", 'Raid-Leader Spear', 'Sage-Scholar Quill', 'Master-Builder Mallet', 'Grand-Trainer Whip', 'Yule-Garrison Barrier Shield', 'Solstice-Bulwark Tower-Guard', 'Harvest-Aegis Ward', 'Spring-Strike Greatsword', 'Summer-Assault Spear', 'Equinox-Blitz Bow']
+  },
+  accessory: {
+    basic: ['Barricaded Trap-Trigger', 'Standard-Issue Comm-Link', "Hydroponic Overseer's pH Meter", 'Refinery-Operator Pressure Valve', 'Power-Grid Voltage Meter', 'Foundry-Worker Pyrometer', "Ledger-Keeper's Monocle", "Contractor's Blueprint Pad", "Hauler's Weight Scale", 'Data-Scribe Core Drive', "Drillmaster's Stopwatch", 'Ordnance-Assembler Pressure Gauge', "Tracker's Fauna Scanner"],
+    sets: ['Titan-Plated Signet', 'Gale-Weaver Talisman', 'Stalker-Chitin Emblem', 'Breaker-Core', 'Sovereign Vanguard Relic', 'Phantom Apex Compass', 'Bastion Wall Anchor', "Warlord's War-Horn", 'Raid-Leader Trail-Map', 'Sage-Scholar Astrolabe', 'Master-Builder Level', 'Grand-Trainer Metronome', 'Yule-Garrison Crest', 'Solstice-Bulwark Medal', 'Harvest-Aegis Talisman', 'Spring-Strike Banner', 'Summer-Assault Emblem', 'Equinox-Blitz Compass']
+  }
+};
+for (const sl in SLOT_ITEM_NAMES) {
+  BASIC_ITEMS[sl] = {}; BASIC_ORDER.forEach((c, i) => { BASIC_ITEMS[sl][c] = [SLOT_ITEM_NAMES[sl].basic[i], BASIC_ITEMS.helmet[c][1]]; });
+  SET_ITEMS[sl] = {}; SET_NAME_ORDER.forEach((s, i) => { SET_ITEMS[sl][s] = [SLOT_ITEM_NAMES[sl].sets[i], SET_ITEMS.helmet[s][1]]; });
+}
 /* One set item = set x slot: its name, hero level and recipe */
 function setItemOf(set, slot) {
   const s = SETS[set], it = ((SET_ITEMS[slot] || {})[set]) || null;
