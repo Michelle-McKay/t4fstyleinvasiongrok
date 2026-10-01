@@ -141,7 +141,7 @@ def process(path):
         if it['size'].startswith('1:1') and im.width != im.height:  # not square: centre-crop so it does not stretch
             n = min(im.size); l, t = (im.width - n) // 2, (im.height - n) // 2; im = im.crop((l, t, l + n, t + n)); note = 'centre-cropped to square'
     if (k.startswith('city_deco_tree') or k == 'city_deco_bush') and im.mode == 'RGBA': im = drop_grey_shadow(im); note += ', floor shadow cut'
-    elif k in ('city_deco_barrel', 'city_deco_flag') and im.mode == 'RGBA': im = drop_grey_shadow(im, True); note += ', floor shadow cut'
+    elif k in ('city_deco_barrel', 'city_deco_flag') or k.startswith('mapmarch_') and im.mode == 'RGBA': im = drop_grey_shadow(im, True); note += ', floor shadow cut'
     if k in SHADOW and im.mode == 'RGBA': im = drop_shadow(im, SHADOW[k]); note += ', floor shadow cut'
     if it['transparent'] and k.startswith('city_ground'): im = trim(im)   # ground blobs are wide: keep their own aspect, the game stretches them over the island
     elif it['transparent'] and it['size'].startswith('1:1'): im = square(im)
