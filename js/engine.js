@@ -51,7 +51,7 @@ function newState() {
   return st;
 }
 function save() { try { S.last = Date.now(); localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) { } }
-function load() { try { const s = localStorage.getItem(SAVE_KEY); if (s) { const o = JSON.parse(s); if (o && o.v === 1) { if (o.hero && o.hero.level == null) { o.hero.level = 1; o.hero.xp = 0; delete o.hero.rank; } o.xpi = o.xpi || {}; o.stam = o.stam || { v: STAM_MAX, at: Date.now(), spent: 0, refunded: 0, mats: 0, hunts: 0, wins: 0 }; o.streak = o.streak || { n: 0, at: 0, best: 0 }; o.chests = o.chests || []; if (typeof o.gems !== 'object' || !o.gems) { const n = +o.gems || 0; o.gems = n ? { 'strike:1': n } : {}; } o.codex = o.codex || {}; if (!o.nm) o.nm = Object.fromEntries(BASIC_MATS.map(k => [k, 4])); migrateGear(o); o.ap = o.ap || 0; o.j5 = o.j5 || 0; o.frags = o.frags || 0; o.next = o.next || {}; if (!o.next.chest) o.next.chest = Date.now() + 30000; for (const k of Object.keys(o.wall || {})) if (/^garr/.test(k)) delete o.wall[k]; o.jobs = (o.jobs || []).filter(j => !(j.kind === 'wall' && j.cls === 'garr')); return o; } } } catch (e) { } return null; }
+function load() { try { const s = localStorage.getItem(SAVE_KEY); if (s) { const o = JSON.parse(s); if (o && o.v === 1) { if (o.hero && o.hero.level == null) { o.hero.level = 1; o.hero.xp = 0; delete o.hero.rank; } o.xpi = o.xpi || {}; o.stam = o.stam || { v: STAM_MAX, at: Date.now(), spent: 0, refunded: 0, mats: 0, hunts: 0, wins: 0 }; o.streak = o.streak || { n: 0, at: 0, best: 0 }; o.chests = o.chests || []; if (typeof o.gems !== 'object' || !o.gems) { const n = +o.gems || 0; o.gems = n ? { 'strike:1': n } : {}; } o.codex = o.codex || {}; if (!o.nm) o.nm = Object.fromEntries(BASIC_MATS.map(k => [k, 4])); migrateGear(o); o.ap = o.ap || 0; o.vip = o.vip || { pts: 0, log: [] }; o.j5 = o.j5 || 0; o.frags = o.frags || 0; o.next = o.next || {}; if (!o.next.chest) o.next.chest = Date.now() + 30000; for (const k of Object.keys(o.wall || {})) if (/^garr/.test(k)) delete o.wall[k]; o.jobs = (o.jobs || []).filter(j => !(j.kind === 'wall' && j.cls === 'garr')); return o; } } } catch (e) { } return null; }
 /* Old saves: seven slots became five, old sets became the 12 spec sets, holiday sets became the 6 shared ones. */
 const OLD_CORES = { strike: 'vanguard', guard: 'vitality', bulwark: 'ironplate', haste: 'marchgem', yield: 'agri', mend: 'vitality' };
 const OLD_SETS = { vanguard: 'rock', outrider: 'paper', marksman: 'scissors', battery: 'training', prospector: 'construction', caravan: 'research', foundry: 'siege', academy: 'tilehit', medic: 'rally', bulwark: 'wdef', breaker: 'wrally', tracker: 'wsolo' };
@@ -234,6 +234,7 @@ function mods(withHero) {
   const m = { atk: {}, hp: 1, hpc: {}, yld: {}, gather: 0, load: rv('load'), march: rv('march'), train: 0, build: rv('build'), heal: rv('restore'), wallAtk: rv('perim'), wallHp: rv('bulk'), helmet: 0, research: 0, trap: 0, huntCost: 0 };
   const T = TITLES[S.titles.you] ? S.titles.you : null;
   const set = setBonus(), G = wornBonus(), K = skillBonus(); for (const k in K) G[k] = (G[k] || 0) + K[k];
+  const V = vipBonus(); for (const k of ['build', 'research', 'gather', 'train', 'atk', 'hp']) G[k] = (G[k] || 0) + V[k]; m.vipDef = V.def; m.rallyAtk = V.rallyAtk; m.rallyHp = V.rallyHp;
   let hpAdd = rv('plating') + (heroOn() ? heroStat('hp') : 0) + G.hp;
   let marchAtk = 0, yAdd = 0;
   if (T === 'blade') marchAtk += 0.08; if (T === 'coward') marchAtk -= 0.08;
@@ -302,7 +303,7 @@ function wallStats() {
   return { hp, atk, crew, crewN: sumCol(crew) };
 }
 function defCol() { const c = Object.assign({}, S.troops), e = embCol(); for (const k in e) c[k] = (c[k] || 0) + e[k]; return c; }
-function playerDefSide() { const m = mods(); const w = wallStats(); return Object.assign(mkSide(defCol(), m.atk, m.hp, w, null, m.hpc), { plating: rv('plating') }); }
+function playerDefSide() { const m = mods(); const w = wallStats(); return Object.assign(mkSide(defCol(), m.atk, m.hp * (1 + m.vipDef), w, null, m.hpc), { plating: rv('plating') }); }
 function attackerSide(col, hero) { const m = mods(hero); return Object.assign(mkSide(col, m.atk, m.hp, null, null, m.hpc), { plating: rv('plating') }); }
 function unitRows(side, res) { return side.units.map(u => [tierName(u.c, u.t), u.n, (res.lost && res.lost[u.k]) || 0, (res.wounded && res.wounded[u.k]) || 0]); }
 function boostRows(hero) {
@@ -337,7 +338,7 @@ function produce(dt) {
 function hourly() { const m = mods(), o = {}; for (const p of allPlots()) { if (p.l <= 0) continue; const d = BLD[p.b]; if (d.res) o[d.res] = (o[d.res] || 0) + d.rate * p.l * m.yld[d.res]; else if (p.b === 'treasury') o.cash = (o.cash || 0) + 480 * p.l * m.yld.cash; } return o; }
 
 /* ---------------- timed jobs (build, train, research, heal, wall) ---------------- */
-const JOB_LIMIT = { build: () => S.builders, train: () => 1, res: () => 1, heal: () => 1, wall: () => 1 };
+const JOB_LIMIT = { build: () => buildSlots(), train: () => 1, res: () => 1, heal: () => 1, wall: () => 1 };
 function jobsOf(kind) { return S.jobs.filter(j => j.kind === kind); }
 function addJob(kind, sheetSec, extra, why) {
   if (jobsOf(kind).length >= JOB_LIMIT[kind]()) return kind === 'build' ? 'Builders are busy.' : 'That queue is busy.';
@@ -360,7 +361,7 @@ function buildErr(area, idx, b) {
 function startBuild(area, idx, b, cover) {
   const e = buildErr(area, idx, b); if (e) return e;
   let p = S.plots[area][idx]; const to = (p ? p.l : 0) + 1; b = p ? p.b : b;
-  if (jobsOf('build').length >= S.builders) return 'Builders are busy.';
+  if (jobsOf('build').length >= buildSlots()) return 'Builders are busy.';
   const pe = pay(buildCost(b, to), cover, BLD[b].n + ' ' + to); if (pe) return pe;
   const sec = buildSheetSec(b, to) / (1 + mods().build);
   if (!p) S.plots[area][idx] = { b, l: 0 };
@@ -558,7 +559,9 @@ function absorb(m, res) { m.col = res.left; for (const k in res.wounded) m.wound
 function startBack(m) { m.phase = 'back'; m.start = Date.now(); m.end = Date.now() + m.backMs; }
 function fightMarch(m, D, title, opts) {
   opts = opts || {};
-  const A = attackerSide(m.col, m.hero), before = Object.assign({}, m.col), r = fight(A, D);
+  const A = attackerSide(m.col, m.hero), before = Object.assign({}, m.col);
+  if (m.kind === 'rally') { const vm = mods(); for (const u of A.units) { u.atk *= 1 + vm.rallyAtk; u.hp *= 1 + vm.rallyHp; } }
+  const r = fight(A, D);
   let fd = r.fd, obl = false;
   if (opts.citadel && r.Sa >= 3 * r.Sd) { fd = 1; obl = true; }
   const res = applyLoss(m.col, r.fa); const dres = D.units.length ? applyLoss(Object.fromEntries(D.units.map(u => [u.k, u.n])), fd) : { lost: {}, wounded: {} };
@@ -873,7 +876,7 @@ function buyPack(id) {
 }
 function buySlip(id) { const s = SLIPS.find(x => x.id === id); if (S.dia < s.cost) return 'Short of diamonds.'; dchg(-s.cost, s.n); S.slips[id] += s.q; return null; }
 function buyRes(r, n) { if (S.res[r] >= storeCap()) return 'StoreHouse is full.'; const c = Math.min(n, Math.ceil((storeCap() - S.res[r]) / DIA_RATE[r])); if (S.dia < c) return 'Short of diamonds.'; dchg(-c, 'Crate: ' + RESN[r]); addRes(r, c * DIA_RATE[r]); return null; }
-function buyBuilder() { if (S.builders >= 2) return 'Second builder already hired.'; if (S.dia < 220) return 'Short of diamonds.'; dchg(-220, 'Second builder'); S.builders = 2; return null; }
+function buyBuilder() { if (S.builders >= 2 || vipQueue2()) return 'Second builder already hired.'; if (S.dia < 220) return 'Short of diamonds.'; dchg(-220, 'Second builder'); S.builders = 2; return null; }
 function buyOrders() { if (S.dia < 80) return 'Short of diamonds.'; dchg(-80, 'Operational orders x5'); S.orders += 5; return null; }
 function buySeals() { if (S.dia < 60) return 'Short of diamonds.'; dchg(-60, 'Restraint seals x5'); S.seals += 5; return null; }
 function buyToken(crate) { const c = crate ? 260 : 100; if (S.dia < c) return 'Short of diamonds.'; dchg(-c, crate ? 'Coordination Crate' : 'Coordination token'); S.tokens += crate ? 3 : 1; return null; }
@@ -942,7 +945,7 @@ function pouch(mats, gems, tiers) {
 }
 function storeChestBuy() {
   if ((S.ap || 0) < STORE_COST) return 'Short of alliance points.';
-  S.ap -= STORE_COST; const mats = {}, got = [], by = {};
+  S.ap -= STORE_COST; vipAdd(STORE_COST * VIP_AP_RATE, 'Alliance Store'); const mats = {}, got = [], by = {};
   for (let i = 0; i < STORE_ROLLS; i++) { const t = Math.random() < STORE_TIER2 ? 2 : 1; if (Math.random() < 0.5) { matAdd(t, 1); mats[t] = (mats[t] || 0) + 1; } else { gemAdd(gemKey(coreKind(), t), 1); by[t] = (by[t] || 0) + 1; } }
   for (const t in mats) got.push(mats[t] + ' ' + matName(t) + (mats[t] > 1 ? ' (x' + mats[t] + ')' : ''));
   for (const t in by) got.push(by[t] + ' ' + gemTierName(t) + ' (Basic gem)');

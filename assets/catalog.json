@@ -1,6 +1,6 @@
 {
  "v": 2,
- "count": 941,
+ "count": 944,
  "groups": [
   {
    "id": "bld",
@@ -104,8 +104,8 @@
   },
   {
    "id": "vip",
-   "title": "VIP badges (7)",
-   "note": "One badge family in seven images. Levels 1 and 2 share image 1, levels 3 and 4 share image 2, 5 and 6 share image 3, 7 and 8 share image 4, 9 and 10 share image 5, level 11 has its own (vip_11) and level 12 has one special badge (vip_12). Every badge has the identical shape, size and layout; only the metal and one small detail change, so they read as a set. Attach the first one you like as a reference when making the rest."
+   "title": "VIP badges (10)",
+   "note": "One badge family in ten images for the 15 VIP levels. Levels 1 and 2 share image 1, levels 3 and 4 share image 2, 5 and 6 share image 3, 7 and 8 share image 4, 9 and 10 share image 5; levels 11, 12, 13, 14 and 15 each have their own (vip_11 to vip_15), and each of those five differs from the one before by a single tiny detail, so the top looks like one badge getting very slightly richer, never a new design. The level number is drawn by the game on top, so the art has no number. Every badge has the identical shape, size and layout; only the metal and one small detail change, so they read as a set. Attach the first one you like as a reference when making the rest."
   },
   {
    "id": "avatar",
@@ -5099,7 +5099,31 @@
   {
    "group": "vip",
    "key": "vip_12",
-   "name": "VIP badge 12 (special, the top level)",
+   "name": "VIP badge 12",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "vip",
+   "key": "vip_13",
+   "name": "VIP badge 13",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "vip",
+   "key": "vip_14",
+   "name": "VIP badge 14",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "vip",
+   "key": "vip_15",
+   "name": "VIP badge 15 (top level)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256

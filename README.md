@@ -26,6 +26,9 @@ Open `index.html` (or serve the folder statically). Barlow Condensed and Source 
 ## Docs
 `docs/HERO_SYSTEM.md` is the hero, gear and XP item design with the open items. `docs/CRAFTING.md` is gear crafting and `docs/MONSTER_HUNTING.md` is the weekly monster rotation, holiday monsters, stamina, chests and drop odds. `docs/TAP_SEQUENCES.md` lists every click per building (design reference, not in the game). `docs/ART_SPEC.md` is the brief for real art. `docs/IAP.md` covers store purchases.
 
+## VIP
+`js/vip.js` holds the 15 permanent VIP levels, points and bonuses (read by `mods()`), `js/vipui.js` the VIP screen. See `docs/VIP.md`.
+
 ## Purchases
 `js/iap.js` holds the diamond-pack store, bundles and purchase layer. The browser build is sandbox only (no money). See `docs/IAP.md` for the native wrapper, server validation and compliance steps.
 
