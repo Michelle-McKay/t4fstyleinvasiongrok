@@ -26,7 +26,7 @@ const UI = {
   page: 'map', drawer: null, dt: { mission: 'mis', item: 'bag', more: 'menu', desk: 'train', hero: 'hero', alliance: 'throne', mail: 'rep', march: 'cols' }, sheet: null,
   comp: { inf: 0, arm: 0, air: 0, siege: 0, hero: false }, rcomp: { inf: 0, arm: 0, air: 0, siege: 0, hero: false },
   tr: { cls: 'inf', tier: 1, n: 0 }, wl: { cls: 'sent', tier: 1, n: 0 }, lab: 'combat', med: 'depot', fg: 3,
-  cr: { slot: 'weapon', sel: {}, shard: '', stat: 'training' }, rl: { target: 'citadel', wait: 0, slots: 0 }, sel: null, dirty: true, ready: {}, flyAt: 0, chips: '', plate: '', pills: '', qbar: '', prod: '', dbtn: ''
+  cr: { slot: 'weapon', sel: {}, shard: '', cat: 'defense' }, rl: { target: 'citadel', wait: 0, slots: 0 }, sel: null, dirty: true, ready: {}, flyAt: 0, chips: '', plate: '', pills: '', qbar: '', prod: '', dbtn: ''
 };
 
 /* ---------------- feedback: toast, tone, haptics ---------------- */
@@ -163,14 +163,14 @@ const HOUR = 3600e3;
 function missionHTML() {
   S.missions = S.missions || {}; const day = new Date().toDateString();
   const rows = MISSIONS.map(m => {
-    const done = m.daily ? S.missions[m.id] === day : !!S.missions[m.id], cur = m.d(), ok = cur >= m.t, pr = [m.dia ? `${m.dia}◆` : '', m.tokens ? `${m.tokens} token` : '', ...(m.slips ? Object.keys(m.slips).map(k => `${m.slips[k]}× slip`) : []), ...(m.res ? Object.keys(m.res).map(k => `${fmtN(m.res[k])} ${RESN[k]}`) : []), ...(m.mats ? Object.keys(m.mats).map(t => `${m.mats[t]}× ${qName(t)} material`) : []), m.gembag ? `${m.gembag} basic cores` : ''].filter(Boolean).join(' · ');
+    const done = m.daily ? S.missions[m.id] === day : !!S.missions[m.id], cur = m.d(), ok = cur >= m.t, pr = [m.dia ? `${m.dia}◆` : '', m.tokens ? `${m.tokens} token` : '', ...(m.slips ? Object.keys(m.slips).map(k => `${m.slips[k]}× slip`) : []), ...(m.res ? Object.keys(m.res).map(k => `${fmtN(m.res[k])} ${RESN[k]}`) : []), ...(m.mats ? Object.keys(m.mats).map(t => `${m.mats[t]}× ${matName(t)}`) : []), m.gembag ? `${m.gembag} basic cores` : ''].filter(Boolean).join(' · ');
     return `<div class="rwrow"><div class="grow"><b>${m.n}</b><div class="sub">${fmtN(cur)}/${fmtN(m.t)} · ${pr}</div><div class="bar"><i style="width:${cur / m.t * 100}%"></i></div></div><button class="btn sm ${ok && !done ? 'pri' : 'line'}" data-a="mclaim" data-id="${m.id}" ${ok && !done ? '' : 'disabled'}>${done ? 'Claimed' : 'Claim'}</button></div>`;
   }).join('');
   return `<div class="panel"><div class="hd"><h3>Missions</h3><span class="sub">${MISSIONS.filter(m => m.d() >= m.t && !(m.daily ? S.missions[m.id] === day : S.missions[m.id])).length} ready</span></div><div class="bd">${rows}</div></div>`;
 }
 const dfmt = t => new Date(t).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
 function monImg(id, g) { try { const c = FEAT.monster(g, id); return `<img class="mimg" src="${c.toDataURL()}" alt="" width="44" height="44">`; } catch (e) { return ''; } }
-function setProgress(id) { const have = new Set(S.gear.pieces.filter(p => p.set === id).map(p => p.slot)).size; return `${have}/7 pieces · ${S.shards[id] || 0} shards`; }
+function setProgress(id) { id = gearOf(id); const have = new Set(S.gear.pieces.filter(p => p.set === id).map(p => p.slot)).size; return `${have}/5 pieces · ${S.shards[id] || 0} shards`; }
 function huntHTML() {
   const now = Date.now(); stamTick(now); const sm = S.stam, st = S.streak, live = st.n > 0 && now - st.at <= STREAK_MS ? st.n : 0, net = Math.max(1, sm.spent - sm.refunded), act = activeSets(now), hol = activeHolidays(now), rs = S.research.hunt || 0;
   const regen = sm.v >= STAM_MAX ? 'Full' : 'Next point ' + fmtT((sm.at + STAM_REGEN_MS - now) / 1000);
@@ -180,11 +180,11 @@ function huntHTML() {
   <div class="rr"><span>Hunt streak</span><span class="num ${live ? 'br' : 'mut'}">${live} now · best ${st.best || 0}</span></div><div class="sub">A win within ${STREAK_MS / 60000} minutes of the last keeps the streak. Every 3 in a row adds one extra material roll (up to +3). A loss resets it.</div>
   <div class="rr"><span>Hero fragments</span><span class="num">${S.frags}/10 → 1 Tiny XP item</span></div></div></div>`;
   h += `<div class="panel"><div class="hd"><h3>This week · ${CYCLE_NAMES[huntCycle(now)]}</h3><span class="tag">ends in ${fmtT((weekEnds(now) - now) / 1000)} real</span></div><div class="bd list">${act.map(id => `<div class="it">${monImg(id, 6)}<div class="grow"><b class="h" style="font-size:15px">${SETS[id].mon}</b><div class="sub">${SETS[id].n} set · ${SETS[id].cat} · ${setProgress(id)}</div></div></div>`).join('')}</div><div class="bd sub">Three of the 12 regular monsters are on the map all week, every week; the cycle repeats every four weeks. All twelve: ${SET_ORDER.map(i => SETS[i].mon).join(', ')}.</div></div>`;
-  h += `<div class="panel"><div class="hd"><h3>Drops</h3><span class="tag">Hunter's instinct ${rs}/10</span></div><div class="bd"><div class="sub">A monster drops its own tier or lower, never higher. Odds per material roll:</div>${[1, 2, 3, 4, 5, 6].map(L => `<div class="rr"><span>Level ${L} monster</span><span class="num">${dropOdds(L, rs).map((x, i) => `<span style="color:${QUALITY[i + 1].col}">${(x * 100).toFixed(1)}</span>`).join(' / ')}</span></div>`).join('')}<div class="sub">Basic / Common / Uncommon / Rare / Epic / Legendary, in percent. Max research at level 6 is 25 / 15 / 10 / 35 / 14.3 / 0.7.</div></div></div>`;
+  h += `<div class="panel"><div class="hd"><h3>Drops</h3><span class="tag">Hunter's instinct ${rs}/10</span></div><div class="bd"><div class="sub">A monster drops its own tier or lower, never higher. Odds per material roll:</div>${[1, 2, 3, 4, 5, 6].map(L => `<div class="rr"><span>Level ${L} monster</span><span class="num">${dropOdds(L, rs).map((x, i) => `<span style="color:${QUALITY[i + 1].col}">${(x * 100).toFixed(1)}</span>`).join(' / ')}</span></div>`).join('')}<div class="sub">Composite Alloy / Carbon Fiber / Ballistic Polymer / Quantum Circuitry / Nano-Titanium / Aether-Core (Grey to Gold), in percent. Max research at level 6 is 25 / 15 / 10 / 35 / 14.3 / 0.7.</div></div></div>`;
   h += `<div class="panel"><div class="hd"><h3>Holiday monsters</h3><span class="tag ${hol.length ? 'br' : ''}">${hol.length ? hol.length + ' live' : 'none live'}</span></div><div class="bd">
-  <div class="sub">Each holiday brings its own monster for one full week, every year, in place of ${Math.round(HOL_SHARE * 100)}% of the map's packs. It drops regular loot plus an event shard for a limited gear set; unfinished sets carry over to next year.</div>
+  <div class="sub">Each holiday brings its own monster for one full week, every year, in place of ${Math.round(HOL_SHARE * 100)}% of the map's packs. It drops regular loot plus an event shard for a one of the six holiday gear sets; unfinished sets carry over to next year.</div>
   ${HOLIDAYS.map(q => { const on = hol.includes(q.id), nx = nextHolidayStart(q, now), cur = holidayWindows(q, now).find(t => now >= t && now < t + HOL_DAYS * 86400000), pv = HUNT_PREVIEW.holiday === q.id;
-    return `<div class="rwrow"><div class="grow"><b>${q.mon}</b> <span class="tag ${on ? 'br' : ''}">${on ? (cur ? 'live until ' + dfmt(cur + HOL_DAYS * 86400000 - 1) : 'preview') : nx ? dfmt(nx) : 'date not tabled'}</span><div class="sub">${q.n} · ${q.reg} · ${q.set} set ${setProgress('h_' + q.id)}</div></div><button class="btn sm ${pv ? 'pri' : 'line'}" data-a="hprev" data-id="${pv ? '' : q.id}">${pv ? 'Stop' : 'Preview'}</button></div>`; }).join('')}
+    return `<div class="rwrow"><div class="grow"><b>${q.mon}</b> <span class="tag ${on ? 'br' : ''}">${on ? (cur ? 'live until ' + dfmt(cur + HOL_DAYS * 86400000 - 1) : 'preview') : nx ? dfmt(nx) : 'date not tabled'}</span><div class="sub">${q.n} · ${q.reg} · ${SETS[gearOf('h_' + q.id)].n} ${setProgress('h_' + q.id)}</div></div><button class="btn sm ${pv ? 'pri' : 'line'}" data-a="hprev" data-id="${pv ? '' : q.id}">${pv ? 'Stop' : 'Preview'}</button></div>`; }).join('')}
   <div class="sub mt">Preview puts that holiday's monster on the map now so you can see and hunt it. Demo only, it is not saved.</div></div></div>`;
   return h;
 }
@@ -263,8 +263,8 @@ function sheetTile(x, y) {
     h += compHTML('comp') + eta('gather') + `<div class="flex mt"><button class="btn pri tall grow" data-a="launch" data-k="gather" ${tot ? '' : 'disabled'}>Send gather</button></div>`;
   } else if (t.kind === 'monster' || t.kind === 'camp') {
     const camp = t.kind === 'camp', Dd = mkSide({}, {}, 1, null, monsterSyn(t.grade, camp));
-    const ms = !camp && t.mon && SETS[t.mon], cost = camp ? 0 : stamCost(t.grade); stamTick(Date.now());
-    if (ms) h += `<div class="sub mt">${ms.hol ? '<span class="tag br">Event · ' + HOLIDAYS.find(q => q.id === ms.hol).n + '</span> ' : ''}Guards the <b>${ms.n}</b> set${ms.hol ? '' : ' (' + ms.cat + ')'} · level ${t.grade} drops tier ${t.grade} and lower</div><div class="sub">Stamina <b class="num ${S.stam.v >= cost ? '' : 'sg'}">${cost}</b> to hunt · you have <b class="num">${Math.floor(S.stam.v)}</b>/${STAM_MAX}${setWorn().refund ? ' · gear refunds ' + Math.round(setWorn().refund * 100) + '% on a win' : ''}</div>`;
+    const ms = !camp && t.mon && SETS[t.mon], cost = camp ? 0 : huntStam(t.grade); stamTick(Date.now());
+    if (ms) h += `<div class="sub mt">${ms.hol ? '<span class="tag br">Event · ' + HOLIDAYS.find(q => q.id === ms.hol).n + '</span> ' : ''}Its loot tile holds <b>${SETS[gearOf(t.mon)].n}</b> shards and ${ms.mon} gems · level ${t.grade} drops tier ${t.grade} and lower</div><div class="sub">Stamina <b class="num ${S.stam.v >= cost ? '' : 'sg'}">${cost}</b> to hunt · you have <b class="num">${Math.floor(S.stam.v)}</b>/${STAM_MAX}${mods().huntCost ? ' · gear cuts the cost ' + Math.round(Math.min(0.5, mods().huntCost) * 100) + '%' : ''}</div>`;
     h += `<div class="sub mt">Odds ${oddsText(Dd, col, c.hero) || '—'} · a dead pack leaves a rich vein · hunting strips the shield</div>` + compHTML('comp') + eta('hunt') + `<div class="flex mt"><button class="btn pri tall grow" data-a="launch" data-k="hunt" ${tot ? '' : 'disabled'}>Send hunt</button></div>`;
   } else if (t.kind === 'wild' || t.kind === 'forest') {
     const tk = tpKind(x, y);
@@ -295,7 +295,7 @@ function effectText(b, l) {
   if (b === 'hall') return `Rally of ${fmtN(4000 * l)} · orders ${S.orders}/${l}`;
   if (b === 'prison') return `Restraint seals ${S.seals}/${l}`;
   if (b === 'embassy') return `Hosting ${fmtN(embHosted())}/${fmtN(embCap())} allied troops`;
-  if (b === 'forge') return `Refines up to ${qName(Math.min(6, Math.floor(lvlMax('forge') / 3) + 1))}`;
+  if (b === 'forge') return `Combines up to ${matName(Math.min(6, Math.floor(lvlMax('forge') / 3) + 1))}`;
   return '';
 }
 function sheetPlot(area, idx) {
@@ -321,7 +321,7 @@ function sheetPlot(area, idx) {
   return h;
 }
 function huntReportHTML(h) {
-  const row = (a, b) => `<div class="rr"><span>${a}</span><span class="num">${b}</span></div>`, mats = Object.keys(h.mats).sort().map(g => `${h.mats[g]} <span style="color:${QUALITY[g].col}">${qName(g)}</span>`).join(', ');
+  const row = (a, b) => `<div class="rr"><span>${a}</span><span class="num">${b}</span></div>`, mats = Object.keys(h.mats).sort().map(g => `${h.mats[g]} <span style="color:${QUALITY[g].col}">${matName(g)}</span>`).join(', ');
   return `<div class="lbl mt">${h.mon}${h.hol ? ' · event monster' : ''} · level ${h.lv}</div>`
     + row('Stamina spent', h.stam.cost) + row('Gear refund', h.stam.refund ? '<span class="ox">+' + h.stam.refund + '</span> (net ' + h.stam.net + ')' : '—')
     + row('Materials (ride home)', mats || '—') + row('Hunt streak', h.streak + ' in a row' + (h.extra ? ' · <span class="ox">+' + h.extra + ' extra roll' + (h.extra > 1 ? 's' : '') + '</span>' : ''))
@@ -422,7 +422,7 @@ function sheetTech(id) {
   if (done) return h + '<div class="sub mt ox">Fully researched.</div>';
   h += '<div class="lbl mt">Requirements</div>' + row(!g, 'lab', g || 'Prerequisites met') + row(!busy, 'lab', busy ? 'Lab is busy' : 'Empty research queue') + Object.keys(cost).filter(r => cost[r] > 0).map(r => row(Math.floor(S.res[r]) >= cost[r], r, `${fmtN(S.res[r])}/${fmtN(cost[r])}`)).join('');
   h += `<div class="lbl mt">Upgrade rewards</div><div class="rr"><span>${svg('hero', 'ic').replace('<svg', '<svg ' + ic)} Commander XP</span><span class="num">${fmtN(to * 400)}</span></div><div class="rr"><span>${svg('alliance', 'ic').replace('<svg', '<svg ' + ic)} Power</span><span class="num">+${to * 11}</span></div>`;
-  const sec = researchSheetSec(id, to), real = fmtT(sec / DRILL);
+  const sec = researchSec(id, to), real = fmtT(sec / DRILL);
   h += `<div class="flex sp mt"><div><div class="lbl">Original time</div><div class="num" style="font-size:18px">${fmtT(sec)}</div></div><div style="text-align:right"><div class="lbl">Real time</div><div class="num br" style="font-size:18px">${real}</div></div></div>`;
   h += `<div class="flex sp mt"><button class="btn instant" data-a="techinstant" data-id="${id}" ${g || busy ? 'disabled' : ''}>Instant ${svg('dia', 'ic').replace('<svg', '<svg ' + ic)} ${rushCost(Date.now() + sec * 1000 / DRILL)}</button>${payBtn(cost, 'research', { id }, 'Research', 'pri')}</div>`;
   return h;
@@ -508,21 +508,21 @@ function heroesHTML() {
 /* ---------------- hero screen: avatar centre, 4 slots left, 3 slots and set progress right, stats, tabs ---------------- */
 const dotEm = '<em class="dot"></em>';
 function heroPower() { let g = 0; for (const sl of SLOTS) { const pc = slotPiece(sl); if (pc) g += pc.grade * 120; } return heroLv() * 300 + g; }
-function setLocked(p) { return !!p.set && heroLv() < HERO_SET_LV; }
-function betterGear(slot) { const w = slotPiece(slot), best = S.gear.pieces.filter(p => p.slot === slot && !setLocked(p)).reduce((a, p) => Math.max(a, p.grade), 0); return best > (w ? w.grade : 0); }
+function setLocked(p) { return heroLv() < pieceLv(p); }
+function betterGear(slot) { const w = slotPiece(slot), best = S.gear.pieces.filter(p => p.slot === slot && !setLocked(p)).reduce((a, p) => Math.max(a, pieceScore(p)), 0); return best > (w ? pieceScore(w) : 0) + 1e-9; }
 function heroGearBonus() {
-  const g = sl => { const p = slotPiece(sl); return p ? pPct(p) : 0; }, ST = wornBonus();
-  return { atk: g('weapon') + g('gauntlets') + ST.atk, def: g('helmet'), hp: g('chest') + g('greaves') + ST.hp, lead: g('boots') };
+  const G = wornBonus();
+  return { atk: G.atk, def: G.wallHp, hp: G.hp, lead: G.load };
 }
 function heroSlotBtn(sl) {
   const p = slotPiece(sl);
   return `<button class="hslot ${UI.hs === sl ? 'on' : ''}" data-a="hslot" data-s="${sl}"><i class="ui big">${p ? gearSVG(sl, p.grade, p.set) : emptySlot(sl)}</i><span>${SLOT_NAME[sl]}</span>${betterGear(sl) ? dotEm : ''}</button>`;
 }
 function heroSlotPanel(sl) {
-  const w = slotPiece(sl), own = S.gear.pieces.filter(p => p.slot === sl).sort((a, b) => b.grade - a.grade), wp = w ? pPct(w) : 0;
-  const row = p => { const on = S.gear.worn[sl] === p.id, d = pPct(p) - wp, ar = on ? '' : d > 0 ? '<b class="up">▲</b>' : d < 0 ? '<b class="dn">▼</b>' : '<b class="eq">＝</b>';
-    return `<div class="it"><i class="ui big">${gearSVG(sl, p.grade, p.set)}</i><div class="grow"><b class="h" style="font-size:15px">${qName(p.grade)} ${p.set ? SETS[p.set].n : ''} ${SLOT_NAME[sl]}</b> ${ar}<div class="sub">${pieceText(p)}</div></div><button class="btn sm ${on ? 'line' : 'pri'}" data-a="${on ? 'rack' : 'wear'}" data-id="${p.id}" ${!on && setLocked(p) ? 'disabled' : ''}>${on ? 'Remove' : setLocked(p) ? 'Hero Lv ' + HERO_SET_LV : 'Equip'}</button></div>`; };
-  return `<div class="panel"><div class="hd"><h3>${SLOT_NAME[sl]}</h3><span class="tag">${w ? qName(w.grade) + (w.set ? ' ' + SETS[w.set].n : '') : 'empty'}</span></div><div class="bd"><div class="flex sp"><div class="sub">${w ? pieceText(w) : 'Nothing equipped.'}</div><button class="btn sm" data-a="hupg" data-s="${sl}">Upgrade</button></div><div class="lbl mt">Owned</div><div class="list">${own.map(row).join('') || '<div class="sub">None yet. Craft some in the Forge.</div>'}</div></div></div>`;
+  const w = slotPiece(sl), own = S.gear.pieces.filter(p => p.slot === sl).sort((a, b) => b.grade - a.grade), wp = w ? pieceScore(w) : 0;
+  const row = p => { const on = S.gear.worn[sl] === p.id, d = pieceScore(p) - wp, ar = on ? '' : d > 0 ? '<b class="up">▲</b>' : d < 0 ? '<b class="dn">▼</b>' : '<b class="eq">＝</b>';
+    return `<div class="it"><i class="ui big">${gearSVG(sl, p.grade, p.set)}</i><div class="grow"><b class="h" style="font-size:15px">${qName(p.grade)} ${pieceKind(p)} ${SLOT_NAME[sl]}</b> ${ar}<div class="sub">${pieceText(p)}</div></div><button class="btn sm ${on ? 'line' : 'pri'}" data-a="${on ? 'rack' : 'wear'}" data-id="${p.id}" ${!on && setLocked(p) ? 'disabled' : ''}>${on ? 'Remove' : setLocked(p) ? 'Hero Lv ' + pieceLv(p) : 'Equip'}</button></div>`; };
+  return `<div class="panel"><div class="hd"><h3>${SLOT_NAME[sl]}</h3><span class="tag">${w ? qName(w.grade) + ' ' + pieceKind(w) : 'empty'}</span></div><div class="bd"><div class="flex sp"><div class="sub">${w ? pieceText(w) : 'Nothing equipped.'}</div><button class="btn sm" data-a="hupg" data-s="${sl}">Upgrade</button></div><div class="lbl mt">Owned</div><div class="list">${own.map(row).join('') || '<div class="sub">None yet. Craft some in the Forge.</div>'}</div></div></div>`;
 }
 function heroScreenHTML() {
   const h = S.hero, lv = heroLv(), need = heroNeed(lv), pct = lv >= HERO_MAX ? 100 : Math.min(100, (h.xp || 0) / need * 100), hb = HEROES[h.id];
@@ -530,14 +530,14 @@ function heroScreenHTML() {
   const gb = heroGearBonus(), sp = Math.max(0, lv - 1 - (h.spUsed || 0)), bag = Object.values(S.xpi).reduce((a, b) => a + b, 0);
   const stat = (k, lab) => `<div class="hst"><span>${lab}</span><b class="num">+${(heroStat(k) * 100).toFixed(1).replace(/\.0$/, '')}%${gb[k] ? ` <i class="up">+${(gb[k] * 100).toFixed(1).replace(/\.0$/, '')}%</i>` : ''}</b></div>`;
   const tab = UI.ht || 'gear', T = (k, n_, dot) => `<button class="${tab === k ? 'on' : ''}" data-a="hstab" data-k="${k}">${n_}${dot ? dotEm : ''}</button>`;
-  const setLine = best ? `${SETS[best].n} ${n}/7 · ${[3, 5, 7].map(k => `<span class="${n >= k ? 'up' : 'mut'}">${k}pc</span>`).join(' ')}` : 'No set yet';
+  const setLine = best ? `${SETS[best].n} ${n}/5 · ${SET_PCS.map(k => `<span class="${n >= k ? 'up' : 'mut'}">${k}pc</span>`).join(' ')}` : 'No set yet';
   let body;
-  if (tab === 'gear') body = UI.hs ? heroSlotPanel(UI.hs) : `<div class="panel"><div class="bd sub">Tap a gear slot to see it, compare owned pieces and upgrade.${best ? `<div class="mt">${SETS[best].n}: ${SETS[best].d}</div>` : ''}</div></div>`;
+  if (tab === 'gear') body = UI.hs ? heroSlotPanel(UI.hs) : `<div class="panel"><div class="bd sub">Tap a gear slot to see it, compare owned pieces and upgrade.${best ? `<div class="mt">${SETS[best].n}: ${setDesc(best)}</div>` : ''}</div></div>`;
   else if (tab === 'skills') body = `<div class="panel"><div class="hd"><h3>Skills</h3><span class="tag ${sp ? 'br' : ''}">${sp} points</span></div><div class="bd sub">One skill point per level. The skill tree is not built yet: points are banked for it. (Open item.)</div></div>`;
   else if (tab === 'avatar') body = heroesHTML();
   else body = `<div class="panel"><div class="hd"><h3>XP items</h3><button class="btn sm line" data-a="drawer" data-id="hero" data-tab="store">Get more</button></div><div class="bd list">${XPI.map(it => { const q = S.xpi[it.id] || 0; return `<div class="it"><i class="ui big">${xpiSVG(it.id)}</i><div class="grow"><b class="h" style="font-size:15px">${it.n}</b> <span class="num br">×${q}</span><div class="sub">+${fmtN(it.xp)} hero XP each</div></div><div class="flex"><button class="btn sm" data-a="usexp" data-id="${it.id}" data-n="1" ${q && lv < HERO_MAX ? '' : 'disabled'}>Use</button><button class="btn sm line" data-a="usexp" data-id="${it.id}" data-n="max" ${q && lv < HERO_MAX ? '' : 'disabled'}>Use max</button></div></div>`; }).join('')}</div><div class="bd sub">Free XP comes from hunts, building and research, and the daily exercise. Boosts apply to earned XP only, never to items.</div></div>`;
   return `<div class="panel hs"><div class="hs-top"><b class="h">${hb.n}</b><span class="tag br">Lv ${lv}</span><span class="grow"></span><span class="sub">Power</span><b class="num">${fmtN(heroPower())}</b></div><div class="bar mt"><i style="width:${pct}%"></i></div><div class="flex sp sub"><span>${lv >= HERO_MAX ? 'Max level' : fmtN(h.xp || 0) + ' / ' + fmtN(need) + ' XP'}</span><span>${lv >= HERO_MAX ? '' : 'Lv ' + (lv + 1)}</span></div>
-  <div class="hs-stage"><div class="hs-col">${['helmet', 'chest', 'gauntlets', 'greaves'].map(heroSlotBtn).join('')}</div><button class="hs-fig" id="hfig" data-a="hflex" aria-label="Hero">${heroFullSVG(h.id)}</button><div class="hs-col">${['weapon', 'boots', 'accessory'].map(heroSlotBtn).join('')}<div class="hset"><b class="num">${n}/7</b><span>${setLine}</span></div></div></div>
+  <div class="hs-stage"><div class="hs-col">${['helmet', 'chest', 'boots'].map(heroSlotBtn).join('')}</div><button class="hs-fig" id="hfig" data-a="hflex" aria-label="Hero">${heroFullSVG(h.id)}</button><div class="hs-col">${['weapon', 'accessory'].map(heroSlotBtn).join('')}<div class="hset"><b class="num">${n}/5</b><span>${setLine}</span></div></div></div>
   <div class="hs-stats">${stat('atk', 'Attack')}${stat('def', 'Defense')}${stat('hp', 'HP')}${stat('lead', 'Leadership')}</div></div>
   <div class="tabs2 hs-tabs">${T('gear', 'Gear', SLOTS.some(betterGear))}${T('skills', 'Skills', sp > 0)}${T('avatar', 'Avatar')}${T('inv', 'Inventory', bag > 0 && lv < HERO_MAX)}</div>${body}`;
 }
@@ -682,12 +682,12 @@ const A = {
   rally() { const c = UI.rcomp; if (run(createRally(UI.rl.target, c, c.hero, RALLY_WAITS[UI.rl.wait][1], UI.rl.slots), 'Rally is up.')) { CLS.forEach(k => c[k] = 0); c.hero = false; UI.rl.slots = 0; openDrawer('march', 'cols'); } },
   rallyto(d) { UI.rl.target = d.t; closeRadial(); openDrawer('alliance', 'rally'); },
   crsel(d) { const s = UI.cr.sel, g = +d.g, tot = sumCol(s); const n = clamp((s[g] || 0) + +d.d, 0, S.bars[g] || 0); if (+d.d > 0 && tot >= 4) return toast('A craft spends exactly four materials.', 'warn'); s[g] = n; if (!n) delete s[g]; D(); },
-  crslot(d) { UI.cr.slot = d.s; D(); }, crstat(d) { UI.cr.stat = d.s; D(); }, crshard(d) { UI.cr.shard = d.s; D(); }, crclear() { UI.cr.sel = {}; D(); },
+  crslot(d) { UI.cr.slot = d.s; D(); }, crcat(d, el) { UI.cr.cat = el.value; D(); }, crshard(d) { UI.cr.shard = d.s; D(); }, crclear() { UI.cr.sel = {}; D(); },
   chest(d) { run(claimChest(+d.id)); }, chestall() { run(claimAllChests()); },
   hprev(d) { HUNT_PREVIEW.holiday = d.id || null; terrDirty = true; D(); },
   embcall() { run(callAllies(false)); },
   embhome(d) { run(sendAlliesHome(d.id == null ? null : +d.id)); },
-  craft() { const C = UI.cr; if (run(craft(C.slot, C.sel, C.shard || null, C.stat))) { C.sel = {}; C.shard = ''; } },
+  craft() { const C = UI.cr; if (run(craft(C.slot, C.sel, C.shard || null, C.cat))) { C.sel = {}; C.shard = ''; } },
   refine(d) { run(refine(+d.g)); }, wear(d) { run(wear(+d.id)); }, rack(d) { run(rack(+d.id)); },
   pack(d) { run(buyPack(d.id)); }, slipbuy(d) { run(buySlip(d.id), 'Slips racked.'); }, crate(d) { run(buyRes(d.r, +d.n), 'Crate opened.'); },
   buyorders() { run(buyOrders(), 'Five orders.'); }, buyseals() { run(buySeals(), 'Five seals.'); }, buytoken() { run(buyToken(false), 'Token bought.'); }, buycrate() { run(buyToken(true), 'Three tokens.'); }, daily() { run(daily()); },

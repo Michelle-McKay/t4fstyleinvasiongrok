@@ -3,7 +3,7 @@
 Spec: Michelle's "Hero Gear Crafting & Material System" brief. Built on the existing Forge, the "bars" stockpile and the seven hero gear slots. No parallel system: the six named tiers are the existing grades 1 to 6.
 
 ## Tiers (`QUALITY` in js/data.js)
-1 Basic (grey), 2 Common (white), 3 Uncommon (green), 4 Rare (blue), 5 Epic (purple), 6 Legendary (gold). Used for materials and gear alike; the UI shows names, not "grade N".
+Gear quality: Grey (Basic), White (Common), Green (Uncommon), Blue (Rare), Purple (Epic), Gold (Legendary). Materials use the same six tiers under their own names: Composite Alloy, Carbon Fiber, Ballistic Polymer, Quantum Circuitry, Nano-Titanium, Aether-Core. Gems: Raw Shard, Calibrated Core, Prism Matrix, Hyper-Lens, Singularity Crystal, Omega Diamond.
 
 ## Rules (`craft`, `refine` in js/engine.js)
 - **4-to-1:** four materials of one tier refine into one of the next (Forge 3 x tier gates it). 1,024 Basic = 1 Legendary.

@@ -131,28 +131,67 @@ const XPI_PACK = 5, XP_MIN_RATE = 2.0;         // items per pack, minimum dollar
 const XP_FREE = { daily: [['tiny', 2], ['small', 1]], hunt: 3000, battle: 1500, buildPerLevel: 400 };
 /* Per-level hero stats, identical for every avatar. Leadership raises column load. */
 const HERO_STAT = { atk: 0.004, def: 0.004, hp: 0.004, lead: 0.004 };
-const SLOTS = ['helmet', 'chest', 'gauntlets', 'greaves', 'weapon', 'boots', 'accessory'];
-const SLOT_NAME = { helmet: 'Helm', chest: 'Chest Armor', gauntlets: 'Gauntlets', greaves: 'Greaves', weapon: 'Weapon', boots: 'Boots', accessory: 'Amulet' };
-const SLOT_CURVE = { weapon: [1, 12], chest: [1, 12], helmet: [1.5, 15], gauntlets: [1, 10], greaves: [1, 10], boots: [1, 10], accessory: [1, 8] };
-const SLOT_WHAT = { weapon: 'troop attack', chest: 'troop health', helmet: 'wall attack and wall HP', gauntlets: 'troop attack', greaves: 'troop health', boots: 'march speed and gathering speed', accessory: '' };
-/* Set bonuses at 3, 5 and 7 worn pieces of one set. OPEN ITEM: values and rarity tiers are placeholders. */
-const SETS = {
-  vanguard: { n: 'Vanguard', cat: 'Infantry', mon: 'Vanguard Warden', d: '+5% / +10% / +15% troop attack', aura: '#e0a44a', b: { 3: { atk: 0.05 }, 5: { atk: 0.10 }, 7: { atk: 0.15 } } },
-  outrider: { n: 'Outrider', cat: 'Cavalry', mon: 'Outrider Stalker', d: '+5% march speed, +8% / +15% troop attack', aura: '#5ec4d4', b: { 3: { march: 0.05 }, 5: { atk: 0.08 }, 7: { atk: 0.15 } } },
-  marksman: { n: 'Marksman', cat: 'Ranged', mon: 'Marksman Shrike', d: '+4% / +8% / +12% troop attack (placeholder)', aura: '#d4654a', b: { 3: { atk: 0.04 }, 5: { atk: 0.08 }, 7: { atk: 0.12 } } },
-  battery: { n: 'Battery', cat: 'Gathering', mon: 'Battery Beetle', d: '+5% / +10% / +15% yield', aura: '#8ea36a', b: { 3: { yld: 0.05 }, 5: { yld: 0.10 }, 7: { yld: 0.15 } } },
-  prospector: { n: 'Prospector', cat: 'Gathering speed', mon: 'Prospector Mole', d: '+5% / +10% / +15% gather speed (placeholder)', aura: '#b98a52', b: { 3: { gather: 0.05 }, 5: { gather: 0.10 }, 7: { gather: 0.15 } } },
-  caravan: { n: 'Caravan', cat: 'Logistics', mon: 'Caravan Behemoth', d: '+4% / +8% / +12% march speed (placeholder)', aura: '#7ab0e0', b: { 3: { march: 0.04 }, 5: { march: 0.08 }, 7: { march: 0.12 } } },
-  foundry: { n: 'Foundry', cat: 'Construction', mon: 'Foundry Golem', d: '+5% / +10% / +15% build speed (placeholder)', aura: '#e07a3a', b: { 3: { build: 0.05 }, 5: { build: 0.10 }, 7: { build: 0.15 } } },
-  academy: { n: 'Academy', cat: 'Training', mon: 'Academy Mantis', d: '+5% / +10% / +15% training speed (placeholder)', aura: '#a07ad6', b: { 3: { train: 0.05 }, 5: { train: 0.10 }, 7: { train: 0.15 } } },
-  medic: { n: 'Medic', cat: 'Healing', mon: 'Medic Moth', d: '+5% / +10% / +15% heal speed (placeholder)', aura: '#6fd0a0', b: { 3: { heal: 0.05 }, 5: { heal: 0.10 }, 7: { heal: 0.15 } } },
-  bulwark: { n: 'Bulwark', cat: 'Defense', mon: 'Bulwark Tortoise', d: '+5% / +10% / +15% wall HP (placeholder)', aura: '#8a98a8', b: { 3: { wallHp: 0.05 }, 5: { wallHp: 0.10 }, 7: { wallHp: 0.15 } } },
-  breaker: { n: 'Breaker', cat: 'Siege', mon: 'Breaker Ram', d: '+4% / +8% / +12% troop attack (placeholder)', aura: '#c84a4a', b: { 3: { atk: 0.04 }, 5: { atk: 0.08 }, 7: { atk: 0.12 } } },
-  tracker: { n: 'Tracker', cat: 'Hunting', mon: 'Tracker Lynx', d: 'Refunds 15% / 25% / 40% of hunt stamina on a win', aura: '#e0c84a', b: { 3: { refund: 0.15 }, 5: { refund: 0.25 }, 7: { refund: 0.40 } } }
+/* Five gear slots (spec 2026-10-01): Helmet, Armor, Footwear, Weapon, Accessory. What a piece does comes from its category (Basic gear) or its set, not from its slot. */
+const SLOTS = ['helmet', 'chest', 'weapon', 'boots', 'accessory'];
+const SLOT_NAME = { helmet: 'Helmet', chest: 'Armor', boots: 'Footwear', weapon: 'Weapon', accessory: 'Accessory' };
+/* Stat vocabulary. Values are fractions (0.05 = +5%). */
+const STAT_LAB = { atk: 'troop attack', hp: 'troop health', atk_inf: 'Rock (infantry) attack', atk_arm: 'Paper (armor) attack', atk_air: 'Scissors (aircraft) attack', atk_siege: 'siege attack', hp_inf: 'Rock (infantry) health', hp_arm: 'Paper (armor) health', hp_air: 'Scissors (aircraft) health', hp_siege: 'siege health',
+  wallHp: 'wall HP', wallAtk: 'wall trap attack', march: 'march speed', yld: 'yield', heal: 'heal speed', gather: 'gathering speed', load: 'troop load', build: 'construction speed', research: 'research speed', train: 'troop training speed', trap: 'trap training speed',
+  prod_rations: 'food production', prod_fuel: 'oil production', prod_power: 'energy production', prod_alloy: 'steel production', prod_cash: 'cash production', huntCost: 'monster energy cost cut', heroAtk: 'hero attack', refund: 'hunt stamina refund' };
+const STAT_KEYS = Object.keys(STAT_LAB);
+const zeroStats = () => { const r = {}; for (const k of STAT_KEYS) r[k] = 0; return r; };
+/* Basic Gear: 13 categories x 5 slots = 65 items, no set. Quality scales linearly Grey (lo) to Gold (hi), in percent, PER PIECE (OPEN ITEM: per piece or per full set). `lv` = hero level to wear. */
+const BASIC = {
+  defense: { n: 'General Defense / Traps', lv: 1, st: ['wallHp', 'wallAtk'], lo: 1, hi: 13, mats: 'Scrap Metal, Rivets and Fasteners' },
+  attack: { n: 'General Attack', lv: 3, st: ['atk'], lo: 1, hi: 13, mats: 'Reinforced Polymer, Industrial Lubricant' },
+  food: { n: 'Food Production', lv: 4, st: ['prod_rations'], lo: 2, hi: 26, mats: 'Hardened Carbon Rods, Electrical Wiring Spools' },
+  oil: { n: 'Oil Production', lv: 5, st: ['prod_fuel'], lo: 2, hi: 26, mats: 'Compressed Rubber Gaskets, Tempered Alloy Ingots' },
+  energy: { n: 'Energy Production', lv: 6, st: ['prod_power'], lo: 2, hi: 26, mats: 'Electrical Wiring Spools, Precision Springs' },
+  steel: { n: 'Steel Production', lv: 7, st: ['prod_alloy'], lo: 2, hi: 26, mats: 'Tempered Alloy Ingots, High-Tension Webbing' },
+  cash: { n: 'Cash Production', lv: 9, st: ['prod_cash'], lo: 2, hi: 26, mats: 'Composite Ceramic Plates, Precision Springs' },
+  build: { n: 'Construction', lv: 10, st: ['build'], lo: 1.5, hi: 18, mats: 'Rivets and Fasteners, Hardened Carbon Rods' },
+  gather: { n: 'Gathering', lv: 12, st: ['gather', 'load'], lo: 2, hi: 24, mats: 'High-Tension Webbing, Compressed Rubber Gaskets' },
+  research: { n: 'Research', lv: 15, st: ['research'], lo: 1.5, hi: 18, mats: 'Composite Ceramic Plates, Electrical Wiring Spools' },
+  train: { n: 'Troop Training', lv: 21, st: ['train'], lo: 1.5, hi: 18, mats: 'Reinforced Polymer, Industrial Lubricant' },
+  trap: { n: 'Wall Trap Training', lv: 23, st: ['trap'], lo: 1.5, hi: 18, mats: 'Scrap Metal, Precision Springs' },
+  hunt: { n: 'Monster Hunting', lv: 25, st: ['huntCost', 'heroAtk', 'march'], lo: 2, hi: 26, mats: 'Master-Grade Core Alloy, Tempered Alloy Ingots' }
 };
+const BASIC_ORDER = Object.keys(BASIC);
+/* Set gear: per-piece stat value scale (percent, Grey to Gold) and bonuses at 2, 3 and 5 worn pieces (five slots). OPEN ITEM: all placeholders. */
+const SET_RANGE = [1, 8], SET_PCS = [2, 3, 5], SET_BONUS = [0.03, 0.06, 0.10];
+/* Regular sets: 12, one monster each (monster id = set id). `st` = the stats every piece of the set gives, `mats` = its core themed monster drops (flavour and codex for now). */
+const SETS = {
+  rock: { n: '"Rock" Troop Set', cat: 'Troops', lv: 35, st: ['atk_inf', 'hp_inf'], mats: 'Apex Beast Hide, Chitin Scales', mon: 'Armored Juggernaut', aura: '#e0a44a' },
+  paper: { n: '"Paper" Troop Set', cat: 'Troops', lv: 36, st: ['atk_arm', 'hp_arm'], mats: 'Gale-Wing Feathers, Hollow Quill', mon: 'Cyber-Raptor', aura: '#5ec4d4' },
+  scissors: { n: '"Scissors" Troop Set', cat: 'Troops', lv: 37, st: ['atk_air', 'hp_air'], mats: 'Venom-Sac Residue, Mandible Shards', mon: 'Venom Spitter', aura: '#d4654a' },
+  training: { n: 'Higher Quality Training Set', cat: 'Economy', lv: 32, st: ['train'], mats: 'Alpha-Predator Bone, Iron-Sinew', mon: 'Rogue Supply Drone', aura: '#8ea36a' },
+  construction: { n: 'Higher Quality Construction Set', cat: 'Economy', lv: 34, st: ['build'], mats: 'Mason-Beast Granite Shards, Adamantite Rivets', mon: 'Data-Golems', aura: '#e07a3a' },
+  research: { n: 'Higher Quality Research Set', cat: 'Economy', lv: 40, st: ['research'], mats: 'Sage-Beast Brain-Matter, Luminous Crystal', mon: 'Crystal-Eater Worm', aura: '#a07ad6' },
+  siege: { n: 'Siege (Trap-Killer) Set', cat: 'Siege', lv: 39, st: ['atk_siege', 'hp_siege'], mats: 'Behemoth Iron-Plate, Pyre-Core Shard', mon: 'Scrap-Scraper Mech', aura: '#c84a4a' },
+  tilehit: { n: 'Tile Hit Attack Set', cat: 'Siege', lv: 47, st: ['atk', 'hp', 'march'], mats: 'Nomad Hide, Quick-Stride Tendon', mon: 'Pack-Hunter Drone', aura: '#b98a52' },
+  rally: { n: 'General Rallying Set', cat: 'Siege', lv: 49, st: ['atk', 'hp'], mats: 'War-Chief Sinew, Banner-Cloth', mon: 'War-Boss Behemoth', aura: '#7ab0e0' },
+  wrally: { n: 'Wonder Rally Set', cat: 'Wonder', lv: 50, st: ['atk', 'hp'], mats: 'Sovereign Crown Shard, Dragon-Blood Ember', mon: 'Dreadnought Overlord', aura: '#e0c84a' },
+  wsolo: { n: 'Wonder Solo Set', cat: 'Wonder', lv: 50, st: ['atk', 'hp', 'march'], mats: 'Phantom-Stalker Pelt, Void-Core Shard', mon: 'Bio-Hazard Pest', aura: '#6fd0a0' },
+  wdef: { n: 'Wonder Defense Set', cat: 'Wonder', lv: 50, st: ['wallHp', 'hp', 'march'], mats: 'Bastion-Behemoth Shell, Basalt Core', mon: 'Fortress Automaton', aura: '#8a98a8' }
+};
+/* Holiday gear sets: 6 sets (defense and attack pairs of Rock / Paper / Scissors) shared by the 15 holiday monsters, three or so monsters per set. */
+const HSETS = {
+  hs_rpd: { n: 'Rock + Paper Defense Set', lv: 46, st: ['wallHp', 'hp', 'hp_inf', 'hp_arm'], mats: 'Frost-Giant Shards, Winter-Festival Ribbons, Holiday Tinsel Wire' },
+  hs_rsd: { n: 'Rock + Scissors Defense Set', lv: 46, st: ['wallHp', 'hp', 'hp_inf', 'hp_air'], mats: 'Solstice Stone, Festival Bell Metal, Holiday Pine Resin' },
+  hs_psd: { n: 'Paper + Scissors Defense Set', lv: 46, st: ['wallHp', 'hp', 'hp_arm', 'hp_air'], mats: 'Autumn-Harvest Gold, Harvest-Festival Silk, Holiday Leaf Veins' },
+  hs_rpa: { n: 'Rock + Paper Attack Set', lv: 47, st: ['atk', 'hp', 'atk_inf', 'atk_arm'], mats: 'Spring-Blossom Amber, Festival Firecracker Ash, Holiday Silk Threads' },
+  hs_rsa: { n: 'Rock + Scissors Attack Set', lv: 47, st: ['atk', 'hp', 'atk_inf', 'atk_air'], mats: 'Summer-Solstice Flare, Festival Spark Core, Holiday Ember Glass' },
+  hs_psa: { n: 'Paper + Scissors Attack Set', lv: 47, st: ['atk', 'hp', 'atk_arm', 'atk_air'], mats: 'Equinox Shadow-Weave, Festival Lantern Paper, Holiday Wax Seal' }
+};
+const HSET_ORDER = Object.keys(HSETS);
+for (const k of HSET_ORDER) { HSETS[k].cat = 'Holiday'; HSETS[k].aura = '#e0a44a'; HSETS[k].hgear = true; SETS[k] = HSETS[k]; }
+const gearSetIds = () => SET_ORDER.concat(HSET_ORDER);
+const gearOf = id => (SETS[id] && SETS[id].gear) || id;           // the gear set a monster's shards belong to
+const setLv = id => SETS[id].lv;
+const setDesc = id => { const st = SETS[id].st.map(k => STAT_LAB[k]).join(', '); return st + '. Bonus at ' + SET_PCS.map((n, i) => n + ' pieces +' + SET_BONUS[i] * 100 + '%').join(', ') + ' (placeholder)'; };
 /* Weekly rotation: 12 regular monsters in four cycles of three. Each week exactly one cycle is on the map, every week, all week. */
-const SET_ORDER = ['vanguard', 'outrider', 'marksman', 'battery', 'prospector', 'caravan', 'foundry', 'academy', 'medic', 'bulwark', 'breaker', 'tracker'];
-const CYCLE_NAMES = ['Troop week', 'Economy week', 'Builder week', 'Fortress week'];
+const SET_ORDER = ['rock', 'paper', 'scissors', 'training', 'construction', 'research', 'siege', 'tilehit', 'rally', 'wrally', 'wsolo', 'wdef'];
+const CYCLE_NAMES = ['Troop week', 'Economy week', 'Siege week', 'Wonder week'];
 const WEEK_MS = 7 * 86400000, CYCLE_EPOCH = Date.UTC(2026, 0, 5);   // a Monday, UTC
 function huntCycle(now) { return ((Math.floor(((now == null ? Date.now() : now) - CYCLE_EPOCH) / WEEK_MS) % 4) + 4) % 4; }
 function activeSets(now) { const c = huntCycle(now); return SET_ORDER.slice(c * 3, c * 3 + 3); }
@@ -189,12 +228,8 @@ const HOLIDAYS = [
   { id: 'muertos', n: 'Día de los Muertos', reg: 'Mexico, Latin America', mon: 'Marigold Spirit-Hound', set: 'Marigold', aura: '#f0a020', d: y => [new Date(y, 10, 1)] },
   { id: 'midautumn', n: 'Mid-Autumn / Moon Festival', reg: 'East Asia', mon: 'Moonlit Hare', set: 'Moonlight', aura: '#c8d8f0', d: y => tabDates('mid', y) }
 ];
-/* Holiday gear sets are ordinary entries in SETS under 'h_' + id, so shards, crafting and bonuses need no special case. */
-const HOL_BONUS = [{ atk: 1 }, { yld: 1 }, { march: 1 }, { gather: 1 }, { build: 1 }, { train: 1 }, { heal: 1 }];
-HOLIDAYS.forEach((h, i) => {
-  const k = Object.keys(HOL_BONUS[i % 7])[0], lab = { atk: 'troop attack', yld: 'yield', march: 'march speed', gather: 'gather speed', build: 'build speed', train: 'training speed', heal: 'heal speed' }[k];
-  SETS['h_' + h.id] = { n: h.set, cat: 'Event · ' + h.n, mon: h.mon, hol: h.id, d: '+5% / +10% / +15% ' + lab + ' (placeholder)', aura: h.aura, b: { 3: { [k]: 0.05 }, 5: { [k]: 0.10 }, 7: { [k]: 0.15 } } };
-});
+/* Holiday monsters are monster-only entries in SETS ('h_' + holiday id): `gear` points at the holiday gear set their tile's shards belong to. */
+HOLIDAYS.forEach((h, i) => { const g = HSET_ORDER[i % HSET_ORDER.length]; SETS['h_' + h.id] = { n: h.set, cat: 'Event · ' + h.n, mon: h.mon, hol: h.id, aura: h.aura, gear: g, monOnly: true }; });
 const HOL_DAYS = 7;
 function holidayStarts(h, y) { return h.d(y).map(d => d.getTime()); }
 /* every window (start ms) of one holiday that could touch `now`: this year and last (a week can cross New Year) */
@@ -229,7 +264,6 @@ const stamCost = L => 10 + 4 * (L - 1);
 const STREAK_MS = 600000;
 /* Alliance gift chests from monster kills: level 1-6, larger chests at higher levels. Shared with the whole alliance. */
 const CHEST_LIFE_MS = 24 * 3600000, CHEST_MAX = 40;
-function piecePct(slot, grade) { const [a, b] = SLOT_CURVE[slot]; return (a + (b - a) * (grade - 1) / 5) / 100; }
 
 const RALLY_WAITS = [['5 minutes', 300], ['15 minutes', 900], ['30 minutes', 1800], ['1 hour', 3600], ['8 hours', 28800]];
 const DIA_PACKS = [
@@ -318,24 +352,34 @@ function reqAmounts(L) { return { rations: L * 500, fuel: L * 500, power: L * 40
    Regular gems (the six cores) give one generic stat. Monster gems are tied to one of the 27 gear sets (12 weekly + 15 holiday)
    and give that set's stat; four gems of one monster set in the four sockets of ONE piece complete its Gem Set bonus.
    OPEN ITEM: every value below is a placeholder. */
-const SOCKETS = 4, HERO_SET_LV = 30, STAR_MAX = 5, STAR_PCT = 0.08;
+const SOCKETS = 4, STAR_MAX = 5, STAR_PCT = 0.08;
 const CORES = {
   strike: { n: 'Strike core', stat: 'atk', col: '#e0603a' }, guard: { n: 'Guard core', stat: 'hp', col: '#3a64c8' }, bulwark: { n: 'Bulwark core', stat: 'wallHp', col: '#8a98a8' },
   haste: { n: 'Haste core', stat: 'march', col: '#e0c030' }, yield: { n: 'Yield core', stat: 'yld', col: '#4fb868' }, mend: { n: 'Mend core', stat: 'heal', col: '#4fc8b8' }
 };
-const STAT_LAB = { atk: 'troop attack', hp: 'troop health', wallHp: 'wall HP', march: 'march speed', yld: 'yield', heal: 'heal speed', gather: 'gather speed', build: 'build speed', train: 'training speed', refund: 'hunt stamina refund' };
 const GEM_PCT = [0.004, 0.007, 0.011, 0.016, 0.022, 0.030];          // one gem, by tier
 const GEMSET_PCT = [0.01, 0.02, 0.03, 0.045, 0.065, 0.09];           // Gem Set bonus (4 monster gems in one piece), by the LOWEST tier of the four
 const socketsNative = grade => Math.min(3, Math.ceil(grade / 2));    // Basic 1, Common 1, Uncommon 2, Rare 2, Epic 3, Legendary 3
 const gemKey = (kind, tier) => kind + ':' + tier;
 const gemSplit = k => { const i = k.lastIndexOf(':'); return [k.slice(0, i), +k.slice(i + 1)]; };
 const gemIsSet = kind => !CORES[kind];
-const gemStatKey = kind => CORES[kind] ? CORES[kind].stat : Object.keys(SETS[kind].b[3])[0];
-const gemName = kind => CORES[kind] ? CORES[kind].n : SETS[kind].n + ' gem';
+const gemStatKey = kind => CORES[kind] ? CORES[kind].stat : SETS[gearOf(kind)].st[0];
+const gemName = kind => CORES[kind] ? CORES[kind].n : SETS[kind].mon;
 const gemCol = kind => CORES[kind] ? CORES[kind].col : SETS[kind].aura;
 const gemMon = kind => gemIsSet(kind) ? SETS[kind].mon : null;
 const starMul = p => 1 + STAR_PCT * (p.stars || 0);
-function pPct(p) { return piecePct(p.slot, p.grade) * starMul(p); }
+/* Names: materials, gems and gear quality share the six tiers but have their own names (spec 2026-10-01). */
+const MAT_NAMES = [null, 'Composite Alloy', 'Carbon Fiber', 'Ballistic Polymer', 'Quantum Circuitry', 'Nano-Titanium', 'Aether-Core'];
+const GEM_TIERS = [null, 'Raw Shard', 'Calibrated Core', 'Prism Matrix', 'Hyper-Lens', 'Singularity Crystal', 'Omega Diamond'];
+const matName = t => MAT_NAMES[t], gemTierName = t => GEM_TIERS[t];
+/* One piece: the value of each of its stats (a fraction), by tier (and stars). Basic gear uses its category, set gear its set. */
+function pieceLv(p) { return p.set ? SETS[p.set].lv : BASIC[p.cat || 'attack'].lv; }
+function pieceStatMap(p) {
+  const r = {}, [lo, hi] = p.set ? SET_RANGE : [BASIC[p.cat || 'attack'].lo, BASIC[p.cat || 'attack'].hi], v = (lo + (hi - lo) * (p.grade - 1) / 5) / 100 * starMul(p);
+  for (const k of (p.set ? SETS[p.set].st : BASIC[p.cat || 'attack'].st)) r[k] = v; return r;
+}
+const pieceScore = p => { const m = pieceStatMap(p); let t = 0; for (const k in m) t += m[k]; return t; };
+const pieceKind = p => p.set ? SETS[p.set].n : BASIC[p.cat || 'attack'].n;
 /* Where gems and set materials come from (docs/FORGE_GEMS.md section 5) */
 const TILE_W = [40, 30, 20, 10];             // regular world tile: tier weights (Basic..Rare), cut off at the tile level
 const TILE_J5 = 0.05, TILE_J6 = 0.001;       // chance per gather: the weekly Level 5 jackpot (tiles 5-6, once a week), the 6-pack Level 6 jackpot (tile 6)

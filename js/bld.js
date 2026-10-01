@@ -48,7 +48,7 @@ const DETAILS = {
   },
   defense(p) { const w = wallStats(); return stat('Crew', `${w.crewN} / ${p.l * 40}`) + stat('Wall HP', fmtN(w.hp)) + stat('Wall attack', fmtN(w.atk)) + WT.map((x, i) => stat('Wall tier ' + (i + 1), p.l >= WALL_GATE[i] ? 'open' : 'Defense Center ' + WALL_GATE[i])).join(''); },
   embassy(p) { const kd = kdGet(kHome()); return stat('Capacity', fmtN(embCap())) + stat('Hosted', fmtN(embHosted())) + stat('Best tier sent', 'Tier ' + embTier(p.l)) + stat('Alliance', (kd ? kd.ally.name : S.al[0].n) + ' · kingdom ' + kHome()) + '<div class="sub mt">Allies fight beside your troops and wall. Capacity counts every Embassy. Reinforcements go home if you leave the kingdom.</div>'; },
-  forge(p) { const fl = lvlMax('forge'); return [1, 2, 3, 4, 5].map(g => stat('Refine ' + qName(g) + ' to ' + qName(g + 1), fl >= forgeGate(g) ? 'open' : 'Forge ' + forgeGate(g))).join('') + stat('Materials in stock', gradeUnits() + ' / 1024 Basic') + stat('Pieces on the rack', S.gear.pieces.length); },
+  forge(p) { const fl = lvlMax('forge'); return [1, 2, 3, 4, 5].map(g => stat('Combine ' + matName(g) + ' to ' + matName(g + 1), fl >= forgeGate(g) ? 'open' : 'Forge ' + forgeGate(g))).join('') + stat('Materials in stock', gradeUnits() + ' / 1024 Basic') + stat('Pieces on the rack', S.gear.pieces.length); },
   market(p) { rollMarket(); return S.market.offers.map(o => { const it = MARKET_CAT.find(x => x.id === o.id); return stat(it.n, o.sold ? 'sold' : it.cost + '◆'); }).join('') + '<div class="sub mt">Three offers a day. Refresh costs 15 diamonds.</div>'; }
 };
 function actionsFor(p, ar, i) {
@@ -81,7 +81,7 @@ function nextGives(p) {
   else if (b === 'tech') out.push(L + 1 === 8 ? 'Opens tier 3 troops' : L + 1 === 12 ? 'Opens tier 4 troops' : 'Research access', '');
   else if (b === 'market') out.push('Longer shelf of offers');
   else if (b === 'embassy') out.push('Capacity +' + fmtN(EMB_PER_LEVEL), (L + 1) % 8 === 0 ? 'Allies send tier ' + embTier(L + 1) : '');
-  else if (b === 'forge') out.push((L + 1) % 3 === 0 ? 'Refine ' + qName((L + 1) / 3) + ' materials' : '');
+  else if (b === 'forge') out.push((L + 1) % 3 === 0 ? 'Combine ' + matName((L + 1) / 3) : '');
   return out.filter(Boolean);
 }
 function feedsHTML(p) {

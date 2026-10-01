@@ -3,14 +3,14 @@
 Spec: Michelle's "Monster Hunting, Global Holidays, and Drop Mechanics" brief. Code: `js/data.js` (tables and pure rules), `js/engine.js` (`huntSpoils`, stamina, chests), `js/ui.js` (Mission › Hunt, Guild › Chests, hunt report). Built on the gear sets in [CRAFTING.md](CRAFTING.md) and the hero in [HERO_SYSTEM.md](HERO_SYSTEM.md).
 
 ## 1. Regular rotation
-- 12 regular monsters, one per gear set (`SETS`, ordered by `SET_ORDER`). Each guards exactly one set and its shards. Each leaves its own loot tile on the map.
-- **3 are on the map all week, every week.** The 12 form four cycles of three (`huntCycle`): Troop week (Vanguard, Outrider, Marksman), Economy week (Battery, Prospector, Caravan), Builder week (Foundry, Academy, Medic), Fortress week (Bulwark, Breaker, Tracker). The week turns over Monday 00:00 UTC; the cycle repeats every four weeks.
-- A monster tile picks one of the week's three from its coordinates (`monsterIdAt`), so the pack positions never change, only who stands on them.
-- Set bonuses: Vanguard, Outrider, Battery are the original sets. **The other nine are placeholders** (3/5/7 pieces, values +4-5% / +8-10% / +12-15%) over stats the game already has: ranged and siege attack, gather speed, march speed, build, training, heal, wall HP, plus Tracker, which refunds 15 / 25 / 40% of hunt stamina on a win. OPEN ITEM: real values and rarity.
+- 12 regular monsters, one per gear set (`SETS`, ordered by `SET_ORDER`; updated 2026-10-01, see [FORGE_GEMS.md](FORGE_GEMS.md) section 0). Each leaves its own loot tile on the map.
+- **3 are on the map all week, every week.** Four cycles of three (`huntCycle`): Troop week (Armored Juggernaut / Rock, Cyber-Raptor / Paper, Venom Spitter / Scissors), Economy week (Rogue Supply Drone / Training, Data-Golems / Construction, Crystal-Eater Worm / Research), Siege week (Scrap-Scraper Mech / Siege, Pack-Hunter Drone / Tile Hit, War-Boss Behemoth / Rally), Wonder week (Dreadnought Overlord / Wonder Rally, Bio-Hazard Pest / Wonder Solo, Fortress Automaton / Wonder Defense). The week turns over Monday 00:00 UTC.
+- A monster tile picks one of the week's three from its coordinates (`monsterIdAt`).
+- Set stats and bonuses: see FORGE_GEMS.md (bonus at 2, 3 and 5 pieces, all values placeholders).
 
 ## 2. Hunt stamina
 - Pool of 120, one point back per 20 drill seconds (5 sheet minutes). Cost to hunt a monster: `10 + 4 x (level - 1)`, so level 1 costs 10 and level 6 costs 30. Camps are free.
-- Recalling a column before it arrives refunds the whole cost. Tracker gear refunds a share of the cost on every win.
+- Recalling a column before it arrives refunds the whole cost. Monster Hunting gear cuts the cost up front (up to 50 percent).
 - Tracked in the Hunt tab: spent, refunded, **materials per 10 net stamina**, hunts and wins.
 
 ## 3. Victory report
@@ -27,9 +27,9 @@ Every kill drops a chest for the whole alliance (`S.chests`). Allies' kills add 
 
 ## 5. Holiday monsters
 Each holiday spawns its own monster for **one full week from the holiday date**, every year, replacing 30% of the map's monster packs (`HOL_SHARE`). Several holidays can overlap (Halloween and Día de los Muertos, for example); then each replaced pack picks one at random.
-A holiday monster's loot tile gives regular loot (including a shard of one of the week's regular sets) **plus an event shard** (`30% + 10% x level`, max 90%, scaled by how much of the tile one column takes) for that holiday's limited gear set (`SETS['h_' + id]`, 7 pieces). Event shards and crafted pieces persist, so an unfinished set is finished when the event returns. The Hunt tab shows each set's progress.
+A holiday monster's loot tile gives regular loot (including a shard of one of the week's regular sets) **plus an event shard** (`30% + 10% x level`, max 90%, scaled by how much of the tile one column takes) for one of the **6 holiday gear sets** (`HSETS`; each holiday monster points at one, three or so monsters per set). Event shards and crafted pieces persist, so an unfinished set is finished when the event returns.
 
-| Holiday | Date rule | Monster | Event set |
+| Holiday | Date rule | Monster | Monster Gem name (gear set is one of the 6 holiday sets) |
 |---|---|---|---|
 | New Year's Day | Jan 1 | Countdown Colossus | Countdown |
 | Valentine's Day | Feb 14 | Heartforge Hound | Heartstring |
