@@ -1,6 +1,6 @@
 {
  "v": 2,
- "count": 963,
+ "count": 1012,
  "groups": [
   {
    "id": "bld",
@@ -79,7 +79,7 @@
   },
   {
    "id": "sitem",
-   "title": "Store items (19)",
+   "title": "Store items (68)",
    "note": "Icons for the Items drawer, Special and Speed Up tabs. One consistent family: every item is a single glossy object on a rounded-square steel-and-brass medallion plate, so they read as one set; the object sits on the plate, centred, filling about 70 percent of it. The three VIP point items share one badge at three sizes, the two gathering boosts share one cart, the two march boosts share one pair of boots, the two teleports share one map. Transparent, front three-quarter view, no text or numbers anywhere (the amount is drawn in code). Build every item with clean separate shapes (the glow, the arrow, the pin and any ribbon as their own layers) so a glint, a bobbing arrow or a spinning swirl can be animated later. Do the shared families together."
   },
   {
@@ -3209,6 +3209,398 @@
    "group": "sitem",
    "key": "sitem_march50",
    "name": "Item: 50% March Speed Up",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "sitem",
+   "key": "sitem_res_rations_1",
+   "name": "Item: 10,000 Rations",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "sitem",
+   "key": "sitem_res_rations_2",
+   "name": "Item: 50,000 Rations",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "sitem",
+   "key": "sitem_res_rations_3",
+   "name": "Item: 150,000 Rations",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "sitem",
+   "key": "sitem_res_rations_4",
+   "name": "Item: 500,000 Rations",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "sitem",
+   "key": "sitem_res_fuel_1",
+   "name": "Item: 10,000 Fuel",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "sitem",
+   "key": "sitem_res_fuel_2",
+   "name": "Item: 50,000 Fuel",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "sitem",
+   "key": "sitem_res_fuel_3",
+   "name": "Item: 150,000 Fuel",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "sitem",
+   "key": "sitem_res_fuel_4",
+   "name": "Item: 500,000 Fuel",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "sitem",
+   "key": "sitem_res_power_1",
+   "name": "Item: 10,000 Power",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "sitem",
+   "key": "sitem_res_power_2",
+   "name": "Item: 50,000 Power",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "sitem",
+   "key": "sitem_res_power_3",
+   "name": "Item: 150,000 Power",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "sitem",
+   "key": "sitem_res_power_4",
+   "name": "Item: 500,000 Power",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "sitem",
+   "key": "sitem_res_alloy_1",
+   "name": "Item: 10,000 Alloy",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "sitem",
+   "key": "sitem_res_alloy_2",
+   "name": "Item: 50,000 Alloy",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "sitem",
+   "key": "sitem_res_alloy_3",
+   "name": "Item: 150,000 Alloy",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "sitem",
+   "key": "sitem_res_alloy_4",
+   "name": "Item: 500,000 Alloy",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "sitem",
+   "key": "sitem_res_cash_1",
+   "name": "Item: 10,000 Cash",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "sitem",
+   "key": "sitem_res_cash_2",
+   "name": "Item: 50,000 Cash",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "sitem",
+   "key": "sitem_res_cash_3",
+   "name": "Item: 150,000 Cash",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "sitem",
+   "key": "sitem_res_cash_4",
+   "name": "Item: 500,000 Cash",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "sitem",
+   "key": "sitem_stam60",
+   "name": "Item: 60 Stamina",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "sitem",
+   "key": "sitem_stam120",
+   "name": "Item: 120 Stamina",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "sitem",
+   "key": "sitem_shield24",
+   "name": "Item: 24-Hour Peace Shield",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "sitem",
+   "key": "sitem_shield3d",
+   "name": "Item: 3-Day Peace Shield",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "sitem",
+   "key": "sitem_anti24",
+   "name": "Item: 24-Hour Anti Scout",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "sitem",
+   "key": "sitem_anti7d",
+   "name": "Item: 7-Day Anti Scout",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "sitem",
+   "key": "sitem_atk12",
+   "name": "Item: 12-Hour +20% Attack",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "sitem",
+   "key": "sitem_atk24",
+   "name": "Item: 24-Hour +20% Attack",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "sitem",
+   "key": "sitem_def12",
+   "name": "Item: 12-Hour +20% Defense",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "sitem",
+   "key": "sitem_def24",
+   "name": "Item: 24-Hour +20% Defense",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "sitem",
+   "key": "sitem_size25",
+   "name": "Item: 4-Hour 25% March Size",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "sitem",
+   "key": "sitem_size50",
+   "name": "Item: 4-Hour 50% March Size",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "sitem",
+   "key": "sitem_recall",
+   "name": "Item: March Recall",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "sitem",
+   "key": "sitem_chest_mat1",
+   "name": "Item: Basic Material Chest",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "sitem",
+   "key": "sitem_chest_gem1",
+   "name": "Item: Basic Gem Chest",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "sitem",
+   "key": "sitem_chest_mat2",
+   "name": "Item: Common Material Chest",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "sitem",
+   "key": "sitem_chest_gem2",
+   "name": "Item: Common Gem Chest",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "sitem",
+   "key": "sitem_chest_mat3",
+   "name": "Item: Uncommon Material Chest",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "sitem",
+   "key": "sitem_chest_gem3",
+   "name": "Item: Uncommon Gem Chest",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "sitem",
+   "key": "sitem_chest_mat4",
+   "name": "Item: Rare Material Chest",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "sitem",
+   "key": "sitem_chest_gem4",
+   "name": "Item: Rare Gem Chest",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "sitem",
+   "key": "sitem_chest_res",
+   "name": "Item: Resource Chest",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "sitem",
+   "key": "sitem_chest_speed",
+   "name": "Item: Speed Up Chest",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "sitem",
+   "key": "sitem_chest_atk",
+   "name": "Item: Attack Chest",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "sitem",
+   "key": "sitem_chest_def",
+   "name": "Item: Defense Chest",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "sitem",
+   "key": "sitem_chest_esc1",
+   "name": "Item: Basic Escape Chest",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "sitem",
+   "key": "sitem_chest_esc2",
+   "name": "Item: Escape Chest",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "sitem",
+   "key": "sitem_chest_esc3",
+   "name": "Item: Advanced Escape Chest",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 256
+  },
+  {
+   "group": "sitem",
+   "key": "sitem_chest_xp",
+   "name": "Item: XP Chest",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256

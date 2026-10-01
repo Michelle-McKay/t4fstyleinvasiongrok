@@ -132,7 +132,7 @@ function hasB(b) { return allPlots().some(p => p.b === b && p.l > 0); }
 const R = id => S.research[id] || 0;
 const rv = id => lin(R(id), RS[id].a, RS[id].b, RS[id].max);
 function ccLevel() { return lvlMax('cc'); }
-function headcount() { const L = ccLevel(), h = lvlMax('hall'); return Math.floor((500 + L * 400) * (1 + (h ? h * 0.04 : 0))); }
+function headcount() { const L = ccLevel(), h = lvlMax('hall'); return Math.floor((500 + L * 400) * (1 + (h ? h * 0.04 : 0)) * (1 + bufPct('size'))); }
 function marchQueues() { return 1 + Math.floor(ccLevel() / 5); }
 function helpCap() { return 4 + ccLevel() * 2; }
 function storeSum() { return lvlSum('store'); }
@@ -236,7 +236,7 @@ function mods(withHero) {
   const m = { atk: {}, hp: 1, hpc: {}, yld: {}, gather: 0, load: rv('load'), march: rv('march'), train: 0, build: rv('build'), heal: rv('restore'), wallAtk: rv('perim'), wallHp: rv('bulk'), helmet: 0, research: 0, trap: 0, huntCost: 0 };
   const T = TITLES[S.titles.you] ? S.titles.you : null;
   const set = setBonus(), G = wornBonus(), K = skillBonus(); for (const k in K) G[k] = (G[k] || 0) + K[k];
-  const V = vipBonus(); for (const k of ['build', 'research', 'gather', 'train', 'atk', 'hp']) G[k] = (G[k] || 0) + V[k]; G.wallHp = (G.wallHp || 0) + V.def; m.rallyAtk = V.rallyAtk; m.rallyHp = V.rallyHp;
+  const V = vipBonus(); for (const k of ['build', 'research', 'gather', 'train', 'atk', 'hp']) G[k] = (G[k] || 0) + V[k]; G.wallHp = (G.wallHp || 0) + V.def + bufPct('def'); G.atk = (G.atk || 0) + bufPct('atk'); m.rallyAtk = V.rallyAtk; m.rallyHp = V.rallyHp;
   let hpAdd = rv('plating') + (heroOn() ? heroStat('hp') : 0) + G.hp;
   let marchAtk = 0, yAdd = 0;
   if (T === 'blade') marchAtk += 0.08; if (T === 'coward') marchAtk -= 0.08;
@@ -439,7 +439,7 @@ function slipJob(id, which) {
   const j = S.jobs.find(x => x.id === id) || S.marches.find(x => x.id === id); if (!j) return 'Nothing to speed up.';
   if (j.kind === 'rally' && j.phase !== 'wait') return 'A launched column takes no speed-up.';
   if (j.end > 1e15) return 'Nothing to speed up.';
-  const rem = remSheet(j.end), order = ['s5', 's60', 's480'];
+  const rem = remSheet(j.end), order = SLIPS.slice().sort((a, b) => a.sec - b.sec).map(x => x.id);
   let use = which; if (!use) use = order.find(s => S.slips[s] > 0 && SLIPS.find(x => x.id === s).sec >= rem) || order.slice().reverse().find(s => S.slips[s] > 0);
   if (!use || !S.slips[use]) return 'No slips in the rack.';
   S.slips[use]--; j.end -= SLIPS.find(x => x.id === use).sec / DRILL * 1000; return null;
@@ -831,7 +831,7 @@ function hitBase(inc, instant) {
   if (inForest() && !instant) { for (let i = 0; i < 400; i++) { const x = rint(20, W - 20), y = rint(20, H - 20); if (terrainAt(x, y) === 'wild' && legalSpot(x, y)) { S.base = { x, y }; S.view = { x, y }; note('Thrown from the forest to ' + x + ',' + y + '.', 'warn'); break; } } }
 }
 function botScout() {
-  const bot = pick(S.bots), blocked = S.anti && lvlMax('radar') >= 4; UIH.flash('scout');
+  const bot = pick(S.bots), blocked = (S.anti && lvlMax('radar') >= 4) || bufPct('anti') > 0; UIH.flash('scout');
   const rows = blocked ? [['Blocked', 'no garrison data', 0, 0]] : [['Garrison read', sumCol(S.troops) + ' troops', 0, 0]];
   pushReport({ title: (blocked ? 'Scout blocked: ' : 'Scout read you: ') + bot.tag + ' ' + bot.cmd, kind: 'scout', win: null, left: { name: 'You', rows: [], boosts: [['From', bot.tag + ' ' + bot.cmd + ' at ' + bot.x + ',' + bot.y], ['To', S.base.x + ',' + S.base.y]] }, right: { name: bot.tag, rows, boosts: blocked ? [] : [] } });
   note((blocked ? 'Blocked a scout from ' : 'Scout from ') + bot.tag + ' ' + bot.cmd + (blocked ? ' at ' + bot.x + ',' + bot.y + ' to ' + S.base.x + ',' + S.base.y : ' read your garrison') + '.', blocked ? 'good' : 'warn');
@@ -870,13 +870,13 @@ function buyMarket(i) {
   const it = MARKET_CAT.find(x => x.id === o.id); if (S.dia < it.cost) return 'Short of diamonds.';
   dchg(-it.cost, 'Black Market: ' + it.n); grant(it.give); o.sold = true; return null;
 }
-function grant(g) { for (const k in g) { if (RES.includes(k)) addRes(k, g[k]); else if (k === 'tokens') S.tokens += g[k]; else if (S.slips[k] != null) S.slips[k] += g[k]; else if (k === 'dia') dchg(g[k], 'Grant'); else if (k === 'bars') for (const gg in g[k]) S.bars[gg] = (S.bars[gg] || 0) + g[k][gg]; else if (k === 'shard') S.shards[g[k]]++; else if (k === 'gems') for (const gk in g[k]) gemAdd(gk, g[k][gk]); } }
+function grant(g) { for (const k in g) { if (RES.includes(k)) addRes(k, g[k]); else if (k === 'tokens') S.tokens += g[k]; else if (SLIPS.some(x => x.id === k)) S.slips[k] = (S.slips[k] || 0) + g[k]; else if (k === 'dia') dchg(g[k], 'Grant'); else if (k === 'bars') for (const gg in g[k]) S.bars[gg] = (S.bars[gg] || 0) + g[k][gg]; else if (k === 'shard') S.shards[g[k]]++; else if (k === 'gems') for (const gk in g[k]) gemAdd(gk, g[k][gk]); } }
 function buyPack(id) {
   const p = DIA_PACKS.find(x => x.id === id); if (S.dia < p.cost) return 'Short of diamonds.'; dchg(-p.cost, p.n);
   const g = { drop: { rations: 12000, fuel: 9000, power: 9000 }, field: { rations: 30000, fuel: 24000, power: 24000, alloy: 16000, cash: 8000, s60: 2 }, chest: { rations: 70000, fuel: 60000, power: 60000, alloy: 40000, cash: 20000, s60: 3, s480: 1, tokens: 3, bars: { 2: 4, 3: 2 } }, reserve: { rations: 160000, fuel: 140000, power: 140000, alloy: 100000, cash: 60000, s480: 4, s60: 6, tokens: 6, bars: { 3: 4, 4: 2 }, shard: 'vanguard' } }[id];
   grant(g); note(p.n + ' opened.', 'good'); return null;
 }
-function buySlip(id) { const s = SLIPS.find(x => x.id === id); if (S.dia < s.cost) return 'Short of diamonds.'; dchg(-s.cost, s.n); S.slips[id] += s.q; return null; }
+function buySlip(id) { const s = SLIPS.find(x => x.id === id); if (S.dia < s.cost) return 'Short of diamonds.'; dchg(-s.cost, s.n); S.slips[id] = (S.slips[id] || 0) + s.q; return null; }
 function buyRes(r, n) { if (S.res[r] >= storeCap()) return 'StoreHouse is full.'; const c = Math.min(n, Math.ceil((storeCap() - S.res[r]) / DIA_RATE[r])); if (S.dia < c) return 'Short of diamonds.'; dchg(-c, 'Crate: ' + RESN[r]); addRes(r, c * DIA_RATE[r]); return null; }
 function buyBuilder() { if (S.builders >= 2 || vipQueue2()) return 'Second builder already hired.'; if (S.dia < 220) return 'Short of diamonds.'; dchg(-220, 'Second builder'); S.builders = 2; return null; }
 function buyOrders() { if (S.dia < 80) return 'Short of diamonds.'; dchg(-80, 'Operational orders x5'); S.orders += 5; return null; }
