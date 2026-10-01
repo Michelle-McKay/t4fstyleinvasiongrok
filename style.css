@@ -604,3 +604,5 @@ button.sock{cursor:pointer}
 .vbar span{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(180deg,#5b7fb0,#2e4d7a)}.vbar em{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-style:normal;font-size:13px}
 .vperks{display:grid;gap:6px}.vperk{padding:9px 12px;background:#2e4a73;border:1px solid #4a6a99;font-size:14px}
 .vhead .flex{gap:12px;align-items:center}.panel>.hd:has(.btn){justify-content:space-between}
+
+.rwic.itic{background:linear-gradient(135deg,#243642,#10181d)}.rwic.itic svg{width:44px;height:44px}.iticon{width:100%;height:100%;object-fit:contain}
