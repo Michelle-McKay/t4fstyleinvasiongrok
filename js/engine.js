@@ -34,7 +34,7 @@ function newState() {
     jobs: [], marches: [], incoming: [], own: {}, encs: {}, nodes: {}, dead: {},
     research: {}, bars: { 1: 6, 2: 2, 3: 1, 4: 0, 5: 0, 6: 0 }, gems: 0, shards: { vanguard: 1, outrider: 0, battery: 1 },
     gear: { pieces: [], worn: {} }, slips: { s5: 2, s60: 0, s480: 0 }, tokens: 1, orders: 3, seals: 1,
-    hero: { id: 'ren', rank: 3, captured: false }, shield: { until: 0 }, anti: false,
+    hero: { id: 'ren', level: 1, xp: 0, captured: false }, xpi: {}, shield: { until: 0 }, anti: false,
     throne: { neutral: true, holder: null, holdEnd: 0, ruler: null, ruleUntil: 0, officers: [], colMarch: 0 },
     titles: {}, roster: ['Ada Voss', 'Ivo Hale', 'Ren Kade', 'Tobin Mace', 'Sera Quill', 'Dov Marek', 'Lio Hart'],
     al: [{ n: 'Iron March', tag: 'IRM', color: 'brass' }].concat(bots.map(b => ({ n: b.n, tag: b.tag, color: b.color }))), bots,
@@ -50,7 +50,7 @@ function newState() {
   return st;
 }
 function save() { try { S.last = Date.now(); localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) { } }
-function load() { try { const s = localStorage.getItem(SAVE_KEY); if (s) { const o = JSON.parse(s); if (o && o.v === 1) { for (const k of Object.keys(o.wall || {})) if (/^garr/.test(k)) delete o.wall[k]; o.jobs = (o.jobs || []).filter(j => !(j.kind === 'wall' && j.cls === 'garr')); return o; } } } catch (e) { } return null; }
+function load() { try { const s = localStorage.getItem(SAVE_KEY); if (s) { const o = JSON.parse(s); if (o && o.v === 1) { if (o.hero && o.hero.level == null) { o.hero.level = 1; o.hero.xp = 0; delete o.hero.rank; } o.xpi = o.xpi || {}; for (const k of Object.keys(o.wall || {})) if (/^garr/.test(k)) delete o.wall[k]; o.jobs = (o.jobs || []).filter(j => !(j.kind === 'wall' && j.cls === 'garr')); return o; } } } catch (e) { } return null; }
 function resetGame() { try { localStorage.removeItem(SAVE_KEY); } catch (e) { } S = newState(); terrDirty = true; UIH.dirty(); }
 function note(m, kind) { S.log.unshift({ t: Date.now(), m, k: kind || 'info' }); if (S.log.length > 80) S.log.length = 80; UIH.toast(m, kind); }
 function dchg(n, why) { S.dia += n; S.ledger.unshift({ t: Date.now(), n, why, bal: S.dia }); if (S.ledger.length > 120) S.ledger.length = 120; }
@@ -154,29 +154,52 @@ function heroLocked() { return S.marches.some(m => m.hero); }
 function heroOn() { return !S.hero.captured; }
 
 function slotPiece(slot) { const id = S.gear.worn[slot]; return id ? S.gear.pieces.find(p => p.id === id) : null; }
-function setBonus() { const w = SLOTS.map(slotPiece); if (w.some(p => !p)) return null; const s = w[0].set; if (!s || w.some(p => p.set !== s)) return null; return s; }
+/* Worn pieces per set. Bonuses stack at 3, 5 and 7 pieces of the same set. */
+function setCounts() { const c = {}; for (const sl of SLOTS) { const p = slotPiece(sl); if (p && p.set) c[p.set] = (c[p.set] || 0) + 1; } return c; }
+function setBest() { const c = setCounts(); let best = null; for (const k in c) if (c[k] >= 3 && (!best || c[k] > c[best])) best = k; return best; }
+function setBonus() { return setBest(); }
+function setFull() { const b = setBest(); return b && setCounts()[b] >= 7 ? b : null; }
+function setStats(set, n) { const r = { atk: 0, march: 0, yld: 0 }; if (!set) return r; const t = SETS[set].b; for (const k of [3, 5, 7]) if (n >= k) for (const st in t[k]) r[st] += t[k][st]; return r; }
+function setWorn() { const b = setBest(); return b ? setStats(b, setCounts()[b]) : setStats(null, 0); }
+/* Hero: levels from XP. Items and free XP go through heroGain; nothing is lost past level 50. */
+function heroLv() { return S.hero.level || 1; }
+function heroGain(n) {
+  const h = S.hero; if (heroLv() >= HERO_MAX || n <= 0) return 0; const before = h.level; h.xp = (h.xp || 0) + Math.floor(n);
+  while (h.level < HERO_MAX && h.xp >= heroNeed(h.level)) { h.xp -= heroNeed(h.level); h.level++; }
+  if (h.level >= HERO_MAX) h.xp = 0;
+  if (h.level > before) note(HEROES[h.id].n + ' reached level ' + h.level + '.', 'good'); return n;
+}
+function heroXpLeft() { return heroLv() >= HERO_MAX ? 0 : heroNeed(heroLv()) - (S.hero.xp || 0) + heroTotal(HERO_MAX) - heroTotal(heroLv() + 1); }
+function useXpItem(id, n) {
+  const it = XPI.find(x => x.id === id); if (!it) return 'No such item.'; if (heroLv() >= HERO_MAX) return 'The hero is at the level cap.';
+  const have = S.xpi[id] || 0; if (have < 1) return 'None left.';
+  const want = Math.min(have, Math.max(1, Math.ceil(heroXpLeft() / it.xp)), n === 'max' ? have : Math.max(1, n | 0));
+  S.xpi[id] = have - want; heroGain(want * it.xp); return null;
+}
+function xpiGive(id, n) { S.xpi = S.xpi || {}; S.xpi[id] = (S.xpi[id] || 0) + n; }
+function heroStat(k) { return HERO_STAT[k] * heroLv(); }
 function mods(withHero) {
   const m = { atk: {}, hp: 1, yld: {}, gather: 0, load: rv('load'), march: rv('march'), train: 0, build: rv('build'), heal: rv('restore'), wallAtk: rv('perim'), wallHp: rv('bulk'), helmet: 0 };
   const T = TITLES[S.titles.you] ? S.titles.you : null;
   const set = setBonus();
   const wp = slotPiece('weapon'), cp = slotPiece('chest'), hp = slotPiece('helmet'), bp = slotPiece('boots'), ap = slotPiece('accessory');
-  let hpAdd = rv('plating') + (cp ? piecePct('chest', cp.grade) : 0);
+  const gp = slotPiece('gauntlets'), rp = slotPiece('greaves'), ST = setWorn();
+  let hpAdd = rv('plating') + (cp ? piecePct('chest', cp.grade) : 0) + (rp ? piecePct('greaves', rp.grade) : 0) + (heroOn() ? heroStat('hp') : 0);
   let marchAtk = 0, yAdd = 0;
   if (T === 'blade') marchAtk += 0.08; if (T === 'coward') marchAtk -= 0.08;
   if (T === 'bulwark') hpAdd += 0.08; if (T === 'brittle') hpAdd -= 0.08;
   if (T === 'provisioner') { yAdd += 0.10; m.gather += 0.10; } if (T === 'burden') { yAdd -= 0.10; m.gather -= 0.10; }
   if (T === 'sluggard') m.march -= 0.08;
-  if (heroOn() && S.hero.id === 'ada') yAdd += 0.03 * S.hero.rank;
-  if (set === 'battery') yAdd += 0.15;
-  if (heroOn() && S.hero.id === 'ren' && withHero) marchAtk += 0.03 * S.hero.rank;
+  yAdd += ST.yld;
+  if (heroOn() && withHero) marchAtk += heroStat('atk');
   if (bp) { const p = piecePct('boots', bp.grade); m.march += p; m.gather += p; }
-  m.gather += rv('gather');
+  m.gather += rv('gather'); m.march += ST.march;
   if (hp) m.helmet = piecePct('helmet', hp.grade);
   m.train = rv('logi') + rv('trainspd') + (T === 'drillmaster' ? 0.08 : 0);
   if (ap) { const p = piecePct('accessory', ap.grade); if (ap.stat === 'training') m.train += p; else yAdd += p; }
-  if (heroOn() && S.hero.id === 'ivo') m.heal += 0.04 * S.hero.rank;
+  m.wallHp += heroOn() ? heroStat('def') : 0; m.load += heroOn() && withHero ? heroStat('lead') : 0;
   m.hp = 1 + hpAdd;
-  for (const c of CLS) m.atk[c] = (1 + rv('atk_' + c)) * (1 + (wp ? piecePct('weapon', wp.grade) : 0)) * (1 + (set === 'vanguard' || set === 'outrider' ? 0.15 : 0)) * (1 + marchAtk);
+  for (const c of CLS) m.atk[c] = (1 + rv('atk_' + c)) * (1 + (wp ? piecePct('weapon', wp.grade) : 0) + (gp ? piecePct('gauntlets', gp.grade) : 0)) * (1 + ST.atk) * (1 + marchAtk);
   for (const r of RES) m.yld[r] = 1 + (RS['y_' + r] ? rv('y_' + r) : 0) + yAdd;
   m.marchAtk = marchAtk; m.hpAdd = hpAdd; m.set = set;
   return m;
@@ -235,8 +258,8 @@ function unitRows(side, res) { return side.units.map(u => [tierName(u.c, u.t), u
 function boostRows(hero) {
   const m = mods(hero), avg = CLS.reduce((a, c) => a + m.atk[c], 0) / 4;
   const rows = [['Troop attack', '+' + Math.round((avg - 1) * 100) + '%'], ['Troop health', '+' + Math.round((m.hp - 1) * 100) + '%'], ['March speed', (m.march >= 0 ? '+' : '') + Math.round(m.march * 100) + '%']];
-  if (hero && heroOn()) rows.push(['Hero', HEROES[S.hero.id].n + ' r' + S.hero.rank]);
-  if (m.set) rows.push(['Set', SETS[m.set].n]);
+  if (hero && heroOn()) rows.push(['Hero', HEROES[S.hero.id].n + ' Lv ' + heroLv()]);
+  if (m.set) rows.push(['Set', SETS[m.set].n + ' ' + setCounts()[m.set] + '/7']);
   return rows;
 }
 function pushReport(r) { r.id = S.nid++; r.t = Date.now(); S.reports.unshift(r); if (S.reports.length > 30) S.reports.length = 30; return r; }
@@ -344,9 +367,9 @@ function startResearch(id, cover) {
 }
 function finishJob(j) {
   UIH.done(j);
-  if (j.kind === 'build') { S.plots[j.area][j.idx] = { b: j.b, l: j.to }; note(BLD[j.b].n + ' is now level ' + j.to + '.', 'good'); }
+  if (j.kind === 'build') { S.plots[j.area][j.idx] = { b: j.b, l: j.to }; note(BLD[j.b].n + ' is now level ' + j.to + '.', 'good'); heroGain(j.to * XP_FREE.buildPerLevel); }
   else if (j.kind === 'train') { const k = ck(j.cls, j.t); S.troops[k] = (S.troops[k] || 0) + j.n; note(j.n + ' ' + tierName(j.cls, j.t) + ' are on the line.', 'good'); }
-  else if (j.kind === 'res') { S.research[j.id] = j.to; note(RS[j.id].n + ' ' + j.to + ' is done.', 'good'); }
+  else if (j.kind === 'res') { S.research[j.id] = j.to; note(RS[j.id].n + ' ' + j.to + ' is done.', 'good'); heroGain(j.to * XP_FREE.buildPerLevel); }
   else if (j.kind === 'heal') { const k = ck(j.cls, j.t); S.troops[k] = (S.troops[k] || 0) + j.n; note(j.n + ' ' + tierName(j.cls, j.t) + ' are back on their feet.', 'good'); }
   else if (j.kind === 'wall') { const k = ck(j.cls, j.t); S.wall[k] = (S.wall[k] || 0) + j.n; note(j.n + ' ' + WCLSD[j.cls].names[j.t - 1] + ' are up.', 'good'); }
 }
@@ -477,7 +500,7 @@ function arrive(m) {
       S.nodes[key(m.tx, m.ty)] = { res, nk: Object.keys(NODE_RES).find(k => NODE_RES[k] === res), grade: vg, stock: 600 * vg, max: 600 * vg, rich: true };
       addLootBar(m, rollGrade(g)); rollShard(m, g); if (Math.random() < 0.3) m.loot.dia += g * 2;
       for (const r of [pick(RES.slice(0, 4)), pick(RES)]) m.loot.res[r] = (m.loot.res[r] || 0) + Math.round(g * rnd(500, 1100));
-      if (S.kills % 8 === 0) S.hero.rank = Math.min(10, S.hero.rank + 1);
+      heroGain(XP_FREE.hunt * g);
       if (fr.wiped) { S.marches = S.marches.filter(x => x !== m); if (m.hero) S.hero.captured = true; note('Pack dead, column gone. Rich vein left at ' + m.tx + ',' + m.ty + '.', 'warn'); return; }
       note('Pack dead at ' + m.tx + ',' + m.ty + '. A rich vein is open.', 'good');
     } else { if (fr.wiped) return wipe(m, 'on the hunt'); note('Hunt failed. Column falls back.', 'warn'); }
@@ -765,7 +788,7 @@ function buyBuilder() { if (S.builders >= 2) return 'Second builder already hire
 function buyOrders() { if (S.dia < 80) return 'Short of diamonds.'; dchg(-80, 'Operational orders x5'); S.orders += 5; return null; }
 function buySeals() { if (S.dia < 60) return 'Short of diamonds.'; dchg(-60, 'Restraint seals x5'); S.seals += 5; return null; }
 function buyToken(crate) { const c = crate ? 260 : 100; if (S.dia < c) return 'Short of diamonds.'; dchg(-c, crate ? 'Coordination Crate' : 'Coordination token'); S.tokens += crate ? 3 : 1; return null; }
-function daily() { const d = new Date().toDateString(); if (S.daily === d) return 'Exercise already run today.'; S.daily = d; S.tokens++; dchg(60, 'Daily exercise'); if (typeof addReward === 'function') addReward('Daily exercise prize', '10 Minute Speed Up x 1', { slips: { s5: 2 } }); note('Daily exercise done: 1 token, 60 diamonds, a prize in the Rewards Center.', 'good'); return null; }
+function daily() { const d = new Date().toDateString(); if (S.daily === d) return 'Exercise already run today.'; S.daily = d; S.tokens++; dchg(60, 'Daily exercise'); if (typeof addReward === 'function') addReward('Daily exercise prize', '10 Minute Speed Up x 1, 2 Tiny and 1 Small XP item', { slips: { s5: 2 }, xpi: { tiny: 2, small: 1 } }); note('Daily exercise done: 1 token, 60 diamonds, a prize in the Rewards Center.', 'good'); return null; }
 function gradeUnits() { let u = 0; for (let g = 1; g <= 6; g++) u += (S.bars[g] || 0) * Math.pow(4, g - 1); return u; }
 function refine(g) { if (!hasB('forge')) return 'Build a Forge first.'; if (g >= 6) return 'Grade 6 is the top.'; if (lvlMax('forge') < forgeGate(g)) return 'Forge ' + forgeGate(g) + ' needed to refine grade ' + g + '.'; if ((S.bars[g] || 0) < 4) return 'Four bars of grade ' + g + ' needed.'; S.bars[g] -= 4; S.bars[g + 1] = (S.bars[g + 1] || 0) + 1; return null; }
 function craft(slot, sel, shard, stat) {

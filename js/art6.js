@@ -101,6 +101,8 @@ const GEAR = {
   chest: c => sp([[14, 16], [26, 12], [32, 15], [38, 12], [50, 16], [52, 30], [46, 54], [32, 58], [18, 54], [12, 30]], c.b) + sp([[24, 22], [40, 22], [40, 44], [32, 48], [24, 44]], c.d) + RC(24, 32, 16, 2, c.g) + RC(30, 22, 4, 26, c.g, null, 0, 1) + CI(32, 30, 3.4, '#0b1c22', `stroke="${c.g}" stroke-width=".9"`) + CI(32, 30, 1.7, c.g, 'class="glw"') + rivets(17, 26, 3, 3.6) + rivets(41, 26, 3, 3.6),
   helmet: c => `<path d="M12 40a20 22 0 0 1 40 0v10H12z" fill="${c.b}" stroke="${KI}" stroke-width=".9"/><path d="M12 40a20 22 0 0 1 40 0v10H12z" fill="url(#uMetal)"/>` + sr(18, 36, 30, 9, '#0b1c22', 4) + RC(21, 39.4, 24, 2.6, c.g, null, 0, 1.3).replace('<rect', '<rect class="glw"') + RC(12, 47, 40, 3, c.d, KI, .5) + LN(32, 18, 32, 34, 'rgba(255,255,255,.28)', 1.4) + P([[26, 10], [38, 10], [36, 17], [28, 17]], c.g, KI, .5) + rivets(15, 48.5, 6, 6.4),
   boots: c => sp([[16, 10], [34, 10], [36, 36], [54, 44], [56, 54], [12, 54], [14, 30]], c.b) + sr(10, 52, 48, 6, c.d, 2.4) + sr(18, 14, 16, 5, c.d, 1.4) + LN(20, 26, 34, 28, c.g, 1.4) + LN(20, 32, 34, 34, c.g, 1.4) + RC(14, 50, 44, 1.6, c.g) + rivets(21, 41, 4, 4) + P([[38, 40], [52, 46], [54, 52], [36, 52]], 'rgba(255,255,255,.14)'),
+  gauntlets: c => sp([[18, 8], [42, 8], [44, 26], [52, 30], [54, 46], [44, 56], [22, 56], [16, 40]], c.b) + sr(16, 8, 28, 10, c.d, 2.4) + [24, 31, 38, 45].map(x => sr(x - 5, 36, 7, 16, c.d, 2)).join('') + RC(18, 22, 26, 2, c.g, null, 0, 1).replace('<rect', '<rect class="glw"') + sr(14, 28, 10, 7, c.d, 1.6) + rivets(21, 12.4, 3, 7),
+  greaves: c => sp([[18, 6], [44, 6], [46, 22], [44, 56], [20, 56], [16, 22]], c.b) + sp([[22, 20], [40, 20], [38, 38], [24, 38]], c.d) + CI(31, 29, 4.4, c.d, `stroke="${KI}" stroke-width=".8"`) + CI(31, 29, 2, c.g, 'class="glw"') + RC(20, 44, 24, 2.4, c.g, null, 0, 1) + sr(16, 8, 30, 6, c.d, 2) + rivets(22, 52, 3, 8),
   accessory: c => `<path d="M14 6c6 10 10 20 18 24 8-4 12-14 18-24" stroke="${c.d}" stroke-width="2.4" fill="none"/><path d="M14 6c6 10 10 20 18 24 8-4 12-14 18-24" stroke="rgba(255,255,255,.3)" stroke-width=".6" fill="none"/>` + `<path d="M32 30l12 8v14l-12 8-12-8V38z" fill="${c.b}" stroke="${KI}" stroke-width=".9"/><path d="M32 30l12 8v14l-12 8-12-8V38z" fill="url(#uMetal)"/><path d="M32 36l7 4.6v8.8l-7 4.6-7-4.6v-8.8z" fill="${c.d}" stroke="${c.g}" stroke-width=".9"/>` + CI(32, 45, 3.2, c.g, 'class="glw"') + gl(32, 45, 10, 'gGI')
 };
 const GEAR_TINT = g => { const a = GRADE_C[clamp(g | 0, 1, 6)]; return { b: '#5c676d', d: '#22292e', g: a }; };
@@ -128,4 +130,32 @@ function nameIcon(name) {
   for (const c of CLS) { const i = CLSD[c].names.indexOf(name); if (i >= 0) return `<i class="ui">${unitSVG(c, i + 1, { plate: false })}</i>`; }
   for (const c of WCLS) { const i = WCLSD[c].names.indexOf(name); if (i >= 0) return `<i class="ui">${wallSVG(c, i + 1)}</i>`; }
   return '';
+}
+
+/* ================= XP ITEMS AND FULL-BODY HERO ================= */
+/* XP item icon: a faceted medal on a ribbon; size and glow grow with the item. Painted override: xpi_<id>. */
+const XPI_C = { tiny: '#9aa4a8', small: '#8ea36a', medium: '#5ec4d4', large: '#8d78c9', huge: '#e0a44a', grand: '#ffd27a' };
+function xpiSVG(id) {
+  const _v = () => memo('xpi:' + id, () => {
+    const c = XPI_C[id] || '#9aa4a8', n = XPI.findIndex(x => x.id === id) + 1, r = 12 + n * 2;
+    let s = `<defs><radialGradient id="xg${id}" cx=".5" cy=".5" r=".6"><stop offset="0" stop-color="${c}" stop-opacity=".6"/><stop offset="1" stop-color="${c}" stop-opacity="0"/></radialGradient></defs>` + `<rect width="64" height="64" fill="url(#xg${id})"/>`;
+    s += P([[24, 6], [32, 28], [26, 34]], '#3c474e', KI, .6) + P([[40, 6], [32, 28], [38, 34]], '#59646a', KI, .6);
+    s += CI(32, 40, r, c, `stroke="${KI}" stroke-width="1.2"`) + CI(32, 40, r - 4, 'rgba(255,255,255,.18)', `stroke="${KI}" stroke-width=".6"`);
+    const pts = []; for (let i = 0; i < 10; i++) { const t = -Math.PI / 2 + i * Math.PI / 5, q = i % 2 ? (r - 5) * .45 : r - 5; pts.push([32 + Math.cos(t) * q, 40 + Math.sin(t) * q]); }
+    s += P(pts, '#fff', KI, .5).replace('<polygon', '<polygon opacity=".85"');
+    s += Array.from({ length: Math.min(6, n) }, (_, i) => CI(8 + i * 5.2, 59, 1.5, c, `stroke="${KI}" stroke-width=".3"`)).join('');
+    return svgU(s, 'unit xpi x' + id);
+  });
+  return _v();
+}
+/* Full-body hero (standing, front view). Placeholder vector built from the portrait palette until painted art arrives: heroful_<id>. */
+function heroFullSVG(id) {
+  return memo('hf:' + id, () => {
+    const [a, b] = HERO_BG[id];
+    let s = `<defs><radialGradient id="hfb${id}" cx=".5" cy=".45" r=".7"><stop offset="0" stop-color="${a}" stop-opacity=".55"/><stop offset="1" stop-color="${b}" stop-opacity="0"/></radialGradient></defs><rect width="96" height="128" fill="url(#hfb${id})"/>` + EL(48, 120, 26, 4, 'rgba(0,0,0,.45)');
+    s += `<g class="hfig">` + sr(34, 78, 12, 38, '#3c474e', 3) + sr(50, 78, 12, 38, '#3c474e', 3) + sr(31, 112, 17, 8, '#252c31', 3) + sr(48, 112, 17, 8, '#252c31', 3) + sr(28, 38, 40, 46, '#5c676d', 6) + sr(36, 44, 24, 30, b, 4) + RC(28, 70, 40, 5, a, null, 0, 1) + CI(48, 58, 4, a, 'class="glw"');
+    s += `<g class="harmL">` + sr(16, 40, 13, 34, '#5c676d', 5) + sr(14, 70, 15, 12, '#252c31', 4) + `</g><g class="harmR">` + sr(67, 40, 13, 34, '#5c676d', 5) + sr(67, 70, 15, 12, '#252c31', 4) + `</g>`;
+    s += CI(48, 26, 13, '#d7b595', `stroke="${KI}" stroke-width="1"`) + `<path d="M35 24a13 14 0 0 1 26 0v3H35z" fill="${a}" stroke="${KI}" stroke-width="1"/>` + RC(38, 28, 20, 3, '#0b1c22', null, 0, 1) + `</g>`;
+    return svgU(s, 'hfull h-' + id).replace('viewBox="0 0 64 64"', 'viewBox="0 0 96 128"');
+  });
 }

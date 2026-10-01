@@ -105,15 +105,39 @@ const TITLES = {
   coward: { n: 'Coward', good: 0, d: '−8% march attack' }, brittle: { n: 'Brittle', good: 0, d: '−8% staying power' },
   burden: { n: 'Burden', good: 0, d: '−10% yields and gathering' }, sluggard: { n: 'Sluggard', good: 0, d: '−8% march speed' }
 };
+/* One hero per player, levels 1 to 50. The three avatars are cosmetic only: identical stats (docs/HERO_SYSTEM.md). */
 const HEROES = {
-  ada: { n: 'Ada Voss', role: 'Quartermaster', d: '+3% yields per rank' },
-  ivo: { n: 'Ivo Hale', role: 'Surgeon', d: '+4% tier-2+ heal speed per rank' },
-  ren: { n: 'Ren Kade', role: 'Marshal', d: '+3% march attack per rank' }
+  ada: { n: 'Ada Voss', role: 'Avatar', d: 'Cosmetic avatar, same stats as every other' },
+  ivo: { n: 'Ivo Hale', role: 'Avatar', d: 'Cosmetic avatar, same stats as every other' },
+  ren: { n: 'Ren Kade', role: 'Avatar', d: 'Cosmetic avatar, same stats as every other' }
 };
-const SLOTS = ['weapon', 'chest', 'helmet', 'boots', 'accessory'];
-const SLOT_CURVE = { weapon: [1, 12], chest: [1, 12], helmet: [1.5, 15], boots: [1, 10], accessory: [1, 8] };
-const SLOT_WHAT = { weapon: 'troop attack', chest: 'troop health', helmet: 'wall attack and wall HP', boots: 'march speed and gathering speed', accessory: '' };
-const SETS = { vanguard: { n: 'Vanguard', d: '+15% troop attack', aura: '#e0a44a' }, outrider: { n: 'Outrider', d: '+15% troop attack', aura: '#5ec4d4' }, battery: { n: 'Battery', d: '+15% yield', aura: '#8ea36a' } };
+const AVATAR_SWITCH_COST = 0;                  // OPEN ITEM: switching avatars is free for now
+const HERO_MAX = 50;                           // OPEN ITEM: cap is a flat 50, not tied to player or base level yet
+/* XP needed to go from level N to N+1 (index N-1), blueprint: Game of War: Fire Age. Levels 7-42 are interpolated. */
+const HERO_XP = [10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000, 100000, 120000, 130000, 150000, 175000, 200000, 230000, 260000, 300000, 340000, 390000, 450000, 510000, 590000, 670000, 770000, 880000, 1000000, 1150000, 1310000, 1500000, 1720000, 1960000, 2240000, 2570000, 2930000, 3360000, 3840000, 4390000, 5020000, 5740000, 6560000, 7500000, 10000000, 15000000, 20000000, 50000000, 50000000, 100000000, 200000000];
+function heroNeed(lv) { return lv >= HERO_MAX ? 0 : HERO_XP[lv - 1]; }
+function heroTotal(lv) { let t = 0; for (let i = 1; i < lv; i++) t += HERO_XP[i - 1]; return t; }
+/* XP items. Packs hold 5 each. Item prices never fall below $2.00 per 100k XP (see HERO_SYSTEM.md rules). */
+const XPI = [
+  { id: 'tiny', n: 'Tiny XP Item', xp: 10000, usd: 1.49 }, { id: 'small', n: 'Small XP Item', xp: 50000, usd: 6.99 },
+  { id: 'medium', n: 'Medium XP Item', xp: 100000, usd: 12.99 }, { id: 'large', n: 'Large XP Item', xp: 250000, usd: 29.99 },
+  { id: 'huge', n: 'Huge XP Item', xp: 500000, usd: 54.99 }, { id: 'grand', n: 'Grand XP Item', xp: 1000000, usd: 99.99 }
+];
+const XPI_PACK = 5, XP_MIN_RATE = 2.0;         // items per pack, minimum dollars per 100k XP
+/* Free XP, kept roughly flat (about 100k a day in the real game; the drill clock here is faster). No catch-up bonus at higher levels. */
+const XP_FREE = { daily: [['tiny', 2], ['small', 1]], hunt: 3000, battle: 1500, buildPerLevel: 400 };
+/* Per-level hero stats, identical for every avatar. Leadership raises column load. */
+const HERO_STAT = { atk: 0.004, def: 0.004, hp: 0.004, lead: 0.004 };
+const SLOTS = ['helmet', 'chest', 'gauntlets', 'greaves', 'weapon', 'boots', 'accessory'];
+const SLOT_NAME = { helmet: 'Helm', chest: 'Chest Armor', gauntlets: 'Gauntlets', greaves: 'Greaves', weapon: 'Weapon', boots: 'Boots', accessory: 'Amulet' };
+const SLOT_CURVE = { weapon: [1, 12], chest: [1, 12], helmet: [1.5, 15], gauntlets: [1, 10], greaves: [1, 10], boots: [1, 10], accessory: [1, 8] };
+const SLOT_WHAT = { weapon: 'troop attack', chest: 'troop health', helmet: 'wall attack and wall HP', gauntlets: 'troop attack', greaves: 'troop health', boots: 'march speed and gathering speed', accessory: '' };
+/* Set bonuses at 3, 5 and 7 worn pieces of one set. OPEN ITEM: values and rarity tiers are placeholders. */
+const SETS = {
+  vanguard: { n: 'Vanguard', d: '+5% / +10% / +15% troop attack', aura: '#e0a44a', b: { 3: { atk: 0.05 }, 5: { atk: 0.10 }, 7: { atk: 0.15 } } },
+  outrider: { n: 'Outrider', d: '+5% march speed, +8% / +15% troop attack', aura: '#5ec4d4', b: { 3: { march: 0.05 }, 5: { atk: 0.08 }, 7: { atk: 0.15 } } },
+  battery: { n: 'Battery', d: '+5% / +10% / +15% yield', aura: '#8ea36a', b: { 3: { yld: 0.05 }, 5: { yld: 0.10 }, 7: { yld: 0.15 } } }
+};
 function piecePct(slot, grade) { const [a, b] = SLOT_CURVE[slot]; return (a + (b - a) * (grade - 1) / 5) / 100; }
 
 const RALLY_WAITS = [['5 minutes', 300], ['15 minutes', 900], ['30 minutes', 1800], ['1 hour', 3600], ['8 hours', 28800]];

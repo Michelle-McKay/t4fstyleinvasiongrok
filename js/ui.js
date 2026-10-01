@@ -23,7 +23,7 @@ const ICON = {
 const ICOL = { rations: '#8ea36a', fuel: '#e07a2f', power: '#5ec4d4', alloy: '#9aa4a8', cash: '#e0a44a', dia: '#5ec4d4' };
 const svg = (n, cls) => typeof RESICON !== 'undefined' && RESICON[n] ? resSvg(n, cls) : `<svg viewBox="0 0 24 24" fill="none" stroke="${ICOL[n] || 'currentColor'}" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" ${cls ? 'class="' + cls + '"' : ''}>${ICON[n]}</svg>`;
 const UI = {
-  page: 'map', drawer: null, dt: { mission: 'mis', item: 'bag', more: 'menu', desk: 'train', hero: 'forge', alliance: 'throne', mail: 'rep', march: 'cols' }, sheet: null,
+  page: 'map', drawer: null, dt: { mission: 'mis', item: 'bag', more: 'menu', desk: 'train', hero: 'hero', alliance: 'throne', mail: 'rep', march: 'cols' }, sheet: null,
   comp: { inf: 0, arm: 0, air: 0, siege: 0, hero: false }, rcomp: { inf: 0, arm: 0, air: 0, siege: 0, hero: false },
   tr: { cls: 'inf', tier: 1, n: 0 }, wl: { cls: 'sent', tier: 1, n: 0 }, lab: 'combat', med: 'depot', fg: 3,
   cr: { slot: 'weapon', sel: {}, shard: '', stat: 'training' }, rl: { target: 'citadel', wait: 0, slots: 0 }, sel: null, dirty: true, ready: {}, flyAt: 0, chips: '', plate: '', pills: '', qbar: '', prod: '', dbtn: ''
@@ -82,7 +82,7 @@ function watchPhrase() { const h = new Date().getHours(); return h >= 5 && h < 8
 const CHIP_ORDER = ['rations', 'fuel', 'alloy', 'power', 'cash'];
 const ago = ms => fmtT(Math.max(0, ms) / 1000);
 const HUDTXT = { build: 'Constructing', train: 'Training', res: 'Researching', heal: 'Healing', wall: 'Crewing wall' };
-function powerScore() { let p = 0; for (const k in S.troops) p += S.troops[k] * (+k.slice(-1) || 1) * 4; for (const ar of ['in', 'out']) for (const b of S.plots[ar]) if (b) p += b.l * 60; return p + S.hero.rank * 300; }
+function powerScore() { let p = 0; for (const k in S.troops) p += S.troops[k] * (+k.slice(-1) || 1) * 4; for (const ar of ['in', 'out']) for (const b of S.plots[ar]) if (b) p += b.l * 60; let gp = 0; for (const sl of SLOTS) { const pc = slotPiece(sl); if (pc) gp += pc.grade * 120; } return p + heroLv() * 300 + gp; }
 function renderTop() {
   const [ph, cl] = watchPhrase(); document.body.className = 'wash-' + cl;
   const now = Date.now(), L = ccLevel(), cap = storeCap(), hr = hourly(), hero = HEROES[S.hero.id];
@@ -95,7 +95,7 @@ function renderTop() {
   const html = CHIP_ORDER.map(r => { const f = S.res[r] / cap, full = f >= 0.97; return `<button class="chip ${full ? 'full' : ''}" data-a="resinfo" data-r="${r}" title="${RESN[r]} ${fmtN(S.res[r])} / ${fmtN(cap)}">${svg(r)}<b class="num">${fmtN(S.res[r])}</b><small class="num">${full ? 'FULL' : '+' + fmtN(hr[r] || 0) + '/h'}</small><i class="mtr"><u style="width:${Math.min(100, f * 100).toFixed(0)}%;background:${ICOL[r]}"></u></i></button>`; }).join('');
   if (html !== UI.chips) { UI.chips = html; $('#chips').innerHTML = html; }
   $('#alarm').classList.toggle('on', S.incoming.length > 0);
-  const set = setBonus(), au = $('#aura'); if (set) { au.className = 'on'; au.style.boxShadow = `inset 0 0 0 2px ${SETS[set].aura}66, inset 0 0 40px ${SETS[set].aura}33`; } else au.className = '';
+  const set = setFull(), au = $('#aura'); if (set) { au.className = 'on'; au.style.boxShadow = `inset 0 0 0 2px ${SETS[set].aura}66, inset 0 0 40px ${SETS[set].aura}33`; } else au.className = '';
 }
 /* production bar: the job that finishes first, with Speed Up like the reference HUD */
 function renderTicker() {
@@ -122,7 +122,7 @@ function sheetRes(r) {
 function sheetProfile() {
   const tiles = Object.values(S.own).filter(o => o === 0).length;
   return `<div class="h1">Commander</div><div class="tinfo"><div class="tport">${heroSVG(S.hero.id)}<i>Lv ${ccLevel()}</i></div><div class="grow"><div class="lbl">${HEROES[S.hero.id].n}</div><div class="big num">${fmtN(powerScore())}</div><div class="sub">power</div><div class="sub">${S.al[0].tag} · ${tiles} tiles · score ${S.score}</div><div class="sub">${fmtN(headcount())} troops at home · ${S.dia}◆</div></div></div>
-  <div class="flex wrap mt"><button class="btn" data-a="drawer" data-id="hero" data-tab="heroes">Heroes</button><button class="btn line" data-a="drawer" data-id="hero" data-tab="forge">Forge</button><button class="btn line" data-a="drawer" data-id="more" data-tab="menu">Settings</button><button class="btn line" data-a="scrim">Close</button></div>`;
+  <div class="flex wrap mt"><button class="btn" data-a="drawer" data-id="hero" data-tab="hero">Hero</button><button class="btn line" data-a="drawer" data-id="hero" data-tab="forge">Forge</button><button class="btn line" data-a="drawer" data-id="more" data-tab="menu">Settings</button><button class="btn line" data-a="scrim">Close</button></div>`;
 }
 /* bottom: tips banner (next thing to do) and alliance chat strip */
 function tipNow() {
@@ -189,7 +189,7 @@ function renderFloat() {
   const rdy = MISSIONS.some(m => m.d() >= m.t && !(m.daily ? (S.missions || {})[m.id] === day : (S.missions || {})[m.id]));
   const html = `<button class="fl gift" data-a="drawer" data-id="more" data-tab="rw" aria-label="Rewards">${svg('gift')}${(S.rewards || []).length ? `<em class="bdg">${Math.min(9, S.rewards.length)}</em>` : ''}</button>
   <button class="fl evt" data-a="drawer" data-id="mission" data-tab="ev" aria-label="Events">${svg('events')}${rdy ? '<em class="bdg">!</em>' : ''}</button>
-  <button class="fl hro" data-a="drawer" data-id="hero" data-tab="heroes" aria-label="Hero"><i>${heroSVG(S.hero.id)}</i>${S.hero.captured ? '<em class="dot"></em>' : ''}</button>
+  <button class="fl hro" data-a="drawer" data-id="hero" data-tab="hero" aria-label="Hero"><i>${heroSVG(S.hero.id)}</i>${S.hero.captured ? '<em class="dot"></em>' : ''}</button>
   <button class="fl sup ${sp ? 'cd' : ''}" data-a="supply" aria-label="Supply drop">${svg('crate')}${sp ? `<small>${ago(sp)}</small>` : ''}</button>
   <button class="fl fdi ${fd ? 'cd' : ''}" data-a="freedia" aria-label="Free diamonds">${svg('dia')}<small>${fd ? ago(fd) : 'Free'}</small></button>
   <button class="fl hsk ${S.incoming.some(i => i.rally) ? 'hot' : ''}" data-a="drawer" data-id="alliance" data-tab="throne" aria-label="Alliance">${svg('handshake')}</button>`;
@@ -447,7 +447,7 @@ function rewardsHTML() {
   const rw = S.rewards || [], ico = r => r.dia ? svg('dia') : r.res ? svg(Object.keys(r.res)[0]) : svg('train');
   return `<div class="rwban"><b>Current amount: ${rw.length}/200</b><span>Your Rewards Center holds 200 items. Collect regularly.</span></div>` + (rw.length ? `<div class="flex sp mb"><span class="sub">${rw.length} waiting</span><button class="btn sm pri" data-a="rwall">Collect all</button></div>` : '') + (rw.length ? rw.map(r => `<div class="rwrow"><span class="rwic">${ico(r).replace(/stroke-width="1.8"/, 'stroke-width="1.6"')}</span><div class="grow"><b>${r.title}</b><div class="sub">${r.desc}</div></div><button class="btn pri" data-a="rwget" data-id="${r.id}">Collect</button></div>`).join('') : '<div class="sub">Nothing waiting. Daily exercise, events and invites pay out here.</div>');
 }
-function grantReward(r) { if (r.dia) dchg(r.dia, r.title); if (r.res) for (const k in r.res) S.res[k] = Math.min(storeCap(), S.res[k] + r.res[k]); if (r.slips) for (const k in r.slips) S.slips[k] = (S.slips[k] || 0) + r.slips[k]; if (r.tokens) S.tokens += r.tokens; }
+function grantReward(r) { if (r.dia) dchg(r.dia, r.title); if (r.res) for (const k in r.res) S.res[k] = Math.min(storeCap(), S.res[k] + r.res[k]); if (r.slips) for (const k in r.slips) S.slips[k] = (S.slips[k] || 0) + r.slips[k]; if (r.tokens) S.tokens += r.tokens; if (r.xpi) for (const k in r.xpi) xpiGive(k, r.xpi[k]); }
 function inviteHTML() {
   S.code = S.code || Array.from({ length: 12 }, () => '0123456789abcdef'[Math.floor(Math.random() * 16)]).join('');
   return `<div class="panel"><div class="hd"><h3>I've been invited</h3></div><div class="bd"><div class="sub">Enter a friend's code once for a gift. It goes to the Rewards Center.</div><div class="flex sp mt"><div class="rwic big">${svg('dia')}<em>x1</em><span>200 Diamonds</span></div><div class="rwic big">${svg('train')}<em>x2</em><span>60 Minute Speed Up</span></div></div><div class="flex mt"><input id="invin" class="txin" placeholder="Enter the code here" maxlength="12" ${S.invUsed ? 'disabled' : ''}><button class="btn pri" data-a="invverify" ${S.invUsed ? 'disabled' : ''}>Verify</button></div></div></div>
@@ -463,7 +463,42 @@ function contactsHTML() {
 }
 function heroesHTML() {
   const hero = HEROES[S.hero.id];
-  return `<div class="panel"><div class="hd"><h3>Heroes</h3><span class="tag ${S.hero.captured ? 'sg' : ''}">Rank ${S.hero.rank}</span></div><div class="bd">${Object.keys(HEROES).map(k => `<div class="it flex" style="padding:6px 0"><i class="hpt ${S.hero.id === k ? 'on' : ''}">${heroSVG(k)}</i><div class="grow"><b class="h" style="font-size:16px">${HEROES[k].n}</b> <span class="sub">${HEROES[k].role} · ${HEROES[k].d}</span></div><button class="btn sm ${S.hero.id === k ? 'on' : 'line'}" data-a="hero" data-k="${k}">${S.hero.id === k ? 'Stationed' : 'Station'}</button></div>`).join('')}${S.hero.captured ? `<div class="flex wrap mt"><span class="sg">${hero.n} is captured.</span><button class="btn sm" data-a="ransom">Ransom 2500</button><button class="btn sm line" data-a="ransom" data-seal="1">Use seal</button></div>` : heroLocked() ? '<div class="sub mt">The hero is out. The base cannot teleport.</div>' : ''}</div></div>`;
+  return `<div class="panel"><div class="hd"><h3>Avatar</h3><span class="tag ${S.hero.captured ? 'sg' : ''}">Lv ${heroLv()}</span></div><div class="bd"><div class="sub mb">One hero per commander. Avatars are cosmetic only: every one has identical stats. Switching costs ${AVATAR_SWITCH_COST ? AVATAR_SWITCH_COST + '◆' : 'nothing'}.</div>${Object.keys(HEROES).map(k => `<div class="it flex" style="padding:6px 0"><i class="hpt ${S.hero.id === k ? 'on' : ''}">${heroSVG(k)}</i><div class="grow"><b class="h" style="font-size:16px">${HEROES[k].n}</b> <span class="sub">${HEROES[k].d}</span></div><button class="btn sm ${S.hero.id === k ? 'on' : 'line'}" data-a="hero" data-k="${k}">${S.hero.id === k ? 'Chosen' : 'Choose'}</button></div>`).join('')}${S.hero.captured ? `<div class="flex wrap mt"><span class="sg">${hero.n} is captured.</span><button class="btn sm" data-a="ransom">Ransom 2500</button><button class="btn sm line" data-a="ransom" data-seal="1">Use seal</button></div>` : heroLocked() ? '<div class="sub mt">The hero is out. The base cannot teleport.</div>' : ''}</div></div>`;
+}
+/* ---------------- hero screen: avatar centre, 4 slots left, 3 slots and set progress right, stats, tabs ---------------- */
+const dotEm = '<em class="dot"></em>';
+function heroPower() { let g = 0; for (const sl of SLOTS) { const pc = slotPiece(sl); if (pc) g += pc.grade * 120; } return heroLv() * 300 + g; }
+function betterGear(slot) { const w = slotPiece(slot), best = S.gear.pieces.filter(p => p.slot === slot).reduce((a, p) => Math.max(a, p.grade), 0); return best > (w ? w.grade : 0); }
+function heroGearBonus() {
+  const g = sl => { const p = slotPiece(sl); return p ? piecePct(sl, p.grade) : 0; }, ST = setWorn();
+  return { atk: g('weapon') + g('gauntlets') + ST.atk, def: g('helmet'), hp: g('chest') + g('greaves'), lead: g('boots') };
+}
+function heroSlotBtn(sl) {
+  const p = slotPiece(sl);
+  return `<button class="hslot ${UI.hs === sl ? 'on' : ''}" data-a="hslot" data-s="${sl}"><i class="ui big">${p ? gearSVG(sl, p.grade, p.set) : emptySlot(sl)}</i><span>${SLOT_NAME[sl]}</span>${betterGear(sl) ? dotEm : ''}</button>`;
+}
+function heroSlotPanel(sl) {
+  const w = slotPiece(sl), own = S.gear.pieces.filter(p => p.slot === sl).sort((a, b) => b.grade - a.grade), wp = w ? piecePct(sl, w.grade) : 0;
+  const row = p => { const on = S.gear.worn[sl] === p.id, d = piecePct(sl, p.grade) - wp, ar = on ? '' : d > 0 ? '<b class="up">▲</b>' : d < 0 ? '<b class="dn">▼</b>' : '<b class="eq">＝</b>';
+    return `<div class="it"><i class="ui big">${gearSVG(sl, p.grade, p.set)}</i><div class="grow"><b class="h" style="font-size:15px">G${p.grade} ${p.set ? SETS[p.set].n : ''} ${SLOT_NAME[sl]}</b> ${ar}<div class="sub">${pieceText(p)}</div></div><button class="btn sm ${on ? 'line' : 'pri'}" data-a="${on ? 'rack' : 'wear'}" data-id="${p.id}">${on ? 'Remove' : 'Equip'}</button></div>`; };
+  return `<div class="panel"><div class="hd"><h3>${SLOT_NAME[sl]}</h3><span class="tag">${w ? 'G' + w.grade + (w.set ? ' ' + SETS[w.set].n : '') : 'empty'}</span></div><div class="bd"><div class="flex sp"><div class="sub">${w ? pieceText(w) : 'Nothing equipped.'}</div><button class="btn sm" data-a="hupg" data-s="${sl}">Upgrade</button></div><div class="lbl mt">Owned</div><div class="list">${own.map(row).join('') || '<div class="sub">None yet. Craft some in the Forge.</div>'}</div></div></div>`;
+}
+function heroScreenHTML() {
+  const h = S.hero, lv = heroLv(), need = heroNeed(lv), pct = lv >= HERO_MAX ? 100 : Math.min(100, (h.xp || 0) / need * 100), hb = HEROES[h.id];
+  const cnt = setCounts(), best = setBest() || Object.keys(cnt).sort((a, b) => cnt[b] - cnt[a])[0], n = best ? cnt[best] : 0;
+  const gb = heroGearBonus(), sp = Math.max(0, lv - 1 - (h.spUsed || 0)), bag = Object.values(S.xpi).reduce((a, b) => a + b, 0);
+  const stat = (k, lab) => `<div class="hst"><span>${lab}</span><b class="num">+${(heroStat(k) * 100).toFixed(1).replace(/\.0$/, '')}%${gb[k] ? ` <i class="up">+${(gb[k] * 100).toFixed(1).replace(/\.0$/, '')}%</i>` : ''}</b></div>`;
+  const tab = UI.ht || 'gear', T = (k, n_, dot) => `<button class="${tab === k ? 'on' : ''}" data-a="hstab" data-k="${k}">${n_}${dot ? dotEm : ''}</button>`;
+  const setLine = best ? `${SETS[best].n} ${n}/7 · ${[3, 5, 7].map(k => `<span class="${n >= k ? 'up' : 'mut'}">${k}pc</span>`).join(' ')}` : 'No set yet';
+  let body;
+  if (tab === 'gear') body = UI.hs ? heroSlotPanel(UI.hs) : `<div class="panel"><div class="bd sub">Tap a gear slot to see it, compare owned pieces and upgrade.${best ? `<div class="mt">${SETS[best].n}: ${SETS[best].d}</div>` : ''}</div></div>`;
+  else if (tab === 'skills') body = `<div class="panel"><div class="hd"><h3>Skills</h3><span class="tag ${sp ? 'br' : ''}">${sp} points</span></div><div class="bd sub">One skill point per level. The skill tree is not built yet: points are banked for it. (Open item.)</div></div>`;
+  else if (tab === 'avatar') body = heroesHTML();
+  else body = `<div class="panel"><div class="hd"><h3>XP items</h3><button class="btn sm line" data-a="drawer" data-id="hero" data-tab="store">Get more</button></div><div class="bd list">${XPI.map(it => { const q = S.xpi[it.id] || 0; return `<div class="it"><i class="ui big">${xpiSVG(it.id)}</i><div class="grow"><b class="h" style="font-size:15px">${it.n}</b> <span class="num br">×${q}</span><div class="sub">+${fmtN(it.xp)} hero XP each</div></div><div class="flex"><button class="btn sm" data-a="usexp" data-id="${it.id}" data-n="1" ${q && lv < HERO_MAX ? '' : 'disabled'}>Use</button><button class="btn sm line" data-a="usexp" data-id="${it.id}" data-n="max" ${q && lv < HERO_MAX ? '' : 'disabled'}>Use max</button></div></div>`; }).join('')}</div><div class="bd sub">Free XP comes from hunts, building and research, and the daily exercise. Boosts apply to earned XP only, never to items.</div></div>`;
+  return `<div class="panel hs"><div class="hs-top"><b class="h">${hb.n}</b><span class="tag br">Lv ${lv}</span><span class="grow"></span><span class="sub">Power</span><b class="num">${fmtN(heroPower())}</b></div><div class="bar mt"><i style="width:${pct}%"></i></div><div class="flex sp sub"><span>${lv >= HERO_MAX ? 'Max level' : fmtN(h.xp || 0) + ' / ' + fmtN(need) + ' XP'}</span><span>${lv >= HERO_MAX ? '' : 'Lv ' + (lv + 1)}</span></div>
+  <div class="hs-stage"><div class="hs-col">${['helmet', 'chest', 'gauntlets', 'greaves'].map(heroSlotBtn).join('')}</div><button class="hs-fig" id="hfig" data-a="hflex" aria-label="Hero">${heroFullSVG(h.id)}</button><div class="hs-col">${['weapon', 'boots', 'accessory'].map(heroSlotBtn).join('')}<div class="hset"><b class="num">${n}/7</b><span>${setLine}</span></div></div></div>
+  <div class="hs-stats">${stat('atk', 'Attack')}${stat('def', 'Defense')}${stat('hp', 'HP')}${stat('lead', 'Leadership')}</div></div>
+  <div class="tabs2 hs-tabs">${T('gear', 'Gear', SLOTS.some(betterGear))}${T('skills', 'Skills', sp > 0)}${T('avatar', 'Avatar')}${T('inv', 'Inventory', bag > 0 && lv < HERO_MAX)}</div>${body}`;
 }
 function ledgerHTML() { return `<div class="panel"><div class="hd"><h3>Diamond ledger</h3><b class="num br">${S.dia}◆</b></div><div class="bd">${S.ledger.map(l => `<div class="rr"><span>${l.why}</span><span class="num ${l.n < 0 ? 'sg' : 'ox'}">${l.n > 0 ? '+' : ''}${l.n} → ${l.bal}</span></div>`).join('') || '<div class="sub">No entries. A local ledger, not a store.</div>'}</div></div>`; }
 function throneHTML() {
@@ -482,7 +517,7 @@ const DR = {
   mission: { tabs: [['mis', 'Missions'], ['ev', 'Events']], body: t => t === 'ev' ? eventsHTML() : missionHTML() },
   item: { tabs: [['bag', 'Bag'], ['boost', 'Boosts']], body: itemHTML },
   desk: { tabs: [['train', 'Train'], ['lab', 'Lab'], ['med', 'Med']], body: renderDesk_ },
-  hero: { tabs: [['forge', 'Forge'], ['heroes', 'Heroes'], ['store', 'Store'], ['market', 'Market'], ['ledger', 'Ledger']], body: t => ({ forge: forgeHTML, heroes: heroesHTML, store: storeHTML, market: marketHTML, ledger: ledgerHTML })[t]() },
+  hero: { tabs: [['hero', 'Hero'], ['forge', 'Forge'], ['store', 'Store'], ['market', 'Market'], ['ledger', 'Ledger']], body: t => ({ hero: heroScreenHTML, forge: forgeHTML, store: storeHTML, market: marketHTML, ledger: ledgerHTML })[t]() },
   alliance: { tabs: [['throne', 'Throne'], ['rally', 'Rally'], ['emb', 'Embassy'], ['ally', 'Alliance']], body: t => ({ throne: throneHTML, rally: marchRally, emb: embassyHTML, ally: allyHTML })[t]() },
   mail: { tabs: [['rep', 'Reports'], ['sav', 'Saved'], ['log', 'Log'], ['ctc', 'Contacts']], body: t => ({ rep: reportsHTML, sav: () => reportsHTML(true), log: logHTML, ctc: contactsHTML })[t]() },
   more: { tabs: [['menu', 'More'], ['rw', 'Rewards'], ['inv', 'Invite'], ['help', 'Help']], body: t => ({ menu: moreHTML, rw: rewardsHTML, inv: inviteHTML, help: helpHTML })[t]() },
@@ -626,7 +661,10 @@ const A = {
   freedia() { if (Date.now() < (S.freeDiaAt || 0) + 4 * HOUR) return toast('Free diamonds are cooling down.', 'warn'); S.freeDiaAt = Date.now(); dchg(20, 'Free diamonds'); toast('+20 diamonds', 'good'); hap(14); D(); },
   supply() { if (Date.now() < (S.supplyAt || 0) + 0.5 * HOUR) return toast('The next drop is not ready.', 'warn'); S.supplyAt = Date.now(); const g = {}; for (const r of RES) g[r] = Math.round(storeCap() * 0.02); grant(g); toast('Supply drop: ' + fmtN(g[RES[0]]) + ' of each resource', 'good'); hap(14); D(); },
   mrefresh() { if (S.dia < 15) return run('Short of diamonds.'); dchg(-15, 'Market refresh'); rollMarket(true); D(); }, mbuy(d) { run(buyMarket(+d.i), 'Bought.'); },
-  hero(d) { run(setHero(d.k)); }, ransom(d) { run(ransom(!!d.seal)); },
+  hero(d) { run(setHero(d.k)); }, hstab(d) { UI.ht = d.k; D(); }, hslot(d) { UI.ht = 'gear'; UI.hs = UI.hs === d.s ? null : d.s; D(); },
+  hupg(d) { UI.cr.slot = d.s; openDrawer('hero', 'forge'); },
+  usexp(d) { run(useXpItem(d.id, d.n === 'max' ? 'max' : +d.n)); },
+  hflex() { const el = $('#hfig'); if (!el) return; UI.hfx = !UI.hfx; el.classList.remove('flex', 'strike'); void el.offsetWidth; el.classList.add(UI.hfx ? 'flex' : 'strike'); hap(10); }, ransom(d) { run(ransom(!!d.seal)); },
   recolor(d) { run(recolor(d.c)); }, disband() { if (confirm('Disband the alliance? Every colored tile goes neutral.')) { disband(); D(); } },
   appoint(d) { run(appoint(d.n)); }, title(d, el) { run(grantTitle(d.n, el.value || null)); },
   setopt(d) { S.set[d.k] = !setOn(d.k); D(); },
