@@ -528,12 +528,12 @@ function heroSlotPanel(sl) {
 function skNodeBtn(n) {
   const has = skHas(n.id), err = has ? null : skCan(n.id), ok = !has && !err, f = SK_FAM[n.fam], painted = typeof ART !== 'undefined' && ART.file && ART.file('skillnode_' + n.fam);
   const pct = n.stat === 'stamMax' || n.stat === 'stamRegen' ? '+' + Math.round(n.v * 100) + '%' : '+' + (n.v * 100).toFixed(n.v < 0.01 ? 1 : 0).replace(/\.0$/, '') + '%';
-  return `<button class="skn ${has ? 'on' : ok ? 'can' : 'lock'}" data-a="skbuy" data-id="${n.id}" title="${err || ''}"><i class="sk-ic">${painted ? `<img src="${painted}" alt="">` : f[0].split(' ').map(w => w[0]).join('').slice(0, 2)}</i><b>${f[0]}</b><span class="num">${SK_RN[n.lv - 1]} · ${pct}${n.stat === 'streakAtk' ? ' per streak' : ''}</span></button>`;
+  return `<button class="skn ${has ? 'on' : ok ? 'can' : 'lock'}" data-a="skbuy" data-id="${n.id}" title="${err || ''}"><i class="sk-ic">${painted ? `<img src="${painted}" alt="">` : f[0].split(' ').map(w => w[0]).join('').slice(0, 2)}</i><b>${f[0]}</b><span class="num">${SK_RN[n.lv - 1]} · ${pct} · ${n.cost}pt${n.stat === 'streakAtk' ? ' per streak' : ''}</span></button>`;
 }
 function skillsHTML() {
-  const sp = skPoints(), t = UI.sk || 'main', tiers = SKILL_TREES[t];
-  return `<div class="panel"><div class="hd"><h3>Skills</h3><span class="tag ${sp ? 'br' : ''}">${sp} points</span></div><div class="bd"><div class="tabs2"><button class="${t === 'main' ? 'on' : ''}" data-a="sktree" data-k="main">Main</button><button class="${t === 'hunt' ? 'on' : ''}" data-a="sktree" data-k="hunt">Hunting</button><button class="line" data-a="skreset" style="margin-left:auto" ${skSpent() ? '' : 'disabled'}>Reset</button></div>
-  <div class="sub mb">One point per level. Tap a node to learn it. Each node needs one learned node in the tier above, and II or III needs the lower level of the same skill. Values are placeholders. Reset is free for now.</div>
+  const sp = skPoints('main') + skPoints('hunt'), t = UI.sk || 'main', tiers = SKILL_TREES[t];
+  return `<div class="panel"><div class="hd"><h3>Skills</h3><span class="tag ${sp ? 'br' : ''}">${sp} ${t === 'hunt' ? 'hunting' : 'skill'} points</span></div><div class="bd"><div class="tabs2"><button class="${t === 'main' ? 'on' : ''}" data-a="sktree" data-k="main">Main</button><button class="${t === 'hunt' ? 'on' : ''}" data-a="sktree" data-k="hunt">Hunting</button><button class="line" data-a="skreset" style="margin-left:auto" ${skSpent() ? '' : 'disabled'}>Reset</button></div>
+  <div class="sub mb">Two separate point pools: skill points for the main tree (2 per level to 20, 3 to 35, 5 to 45, 10 to 50, 185 in all) and hunting points for this tab (1 per level, 50 in all). Tap a node to learn it. Each node needs one learned node in the tier above, and II or III needs the lower level of the same skill. Values are placeholders. Reset is free for now.</div>
   ${tiers.map((r, i) => `<div class="skt"><span class="skl">${t === 'main' ? 'Tier ' + (i + 1) : ['Root', 'Branches', 'Advanced'][i]}</span><div class="skr">${r.map(skNodeBtn).join('')}</div></div>`).join('')}
   ${t === 'hunt' ? '<div class="sub mt">Hunter\'s instinct (Field research) still improves monster drops. These nodes change cost, energy, hero attack and monster strength, not drops.</div>' : ''}</div></div>`;
 }

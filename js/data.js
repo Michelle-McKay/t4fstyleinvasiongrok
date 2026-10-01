@@ -142,7 +142,12 @@ const SK_FAM = {
 const SK_VAL = { prod: [0.03, 0.05, 0.08], com: [0.02, 0.03, 0.04], eco: [0.03, 0.05, 0.08], hunt: { debuff: 0.05, hcost: 0.05, hregen: 0.10, hatk: 0.05, hmax: 0.10, hstreak: 0.005 } };   // placeholders
 const SK_RN = ['I', 'II', 'III'];
 const _skv = (f, lv) => SK_VAL.hunt[f] != null ? SK_VAL.hunt[f] : (['food', 'oil', 'energy', 'steel', 'cash', 'gather'].includes(f) ? SK_VAL.prod[lv - 1] : ['build', 'research', 'train', 'trapb'].includes(f) ? SK_VAL.eco[lv - 1] : SK_VAL.com[lv - 1]);
-const _skn = list => list.map(t => { const [f, lv] = t.split(':'); return { id: f + lv, fam: f, lv: +lv, name: SK_FAM[f][0] + ' ' + SK_RN[lv - 1], stat: SK_FAM[f][1], v: _skv(f, +lv) }; });
+/* Two point pools (master skill doc). Regular points: 2 per level 1-20, 3 for 21-35, 5 for 36-45, 10 for 46-50 (185 by level 50). Hunting points: 1 per level (50). Node COSTS are placeholders:
+   main I/II/III = 3/5/9 (the whole main tree costs 184 of 185), hunting root 4, branches 8, advanced 10 (50 of 50). */
+const spRegular = lv => lv <= 20 ? 2 : lv <= 35 ? 3 : lv <= 45 ? 5 : 10;
+function skEarned(pool, lv) { let t = 0; for (let l = 1; l <= lv; l++) t += pool === 'hunt' ? 1 : spRegular(l); return t; }
+const SK_COST_MAIN = [3, 5, 9], SK_COST_HUNT = { debuff: 4, hcost: 8, hregen: 8, hatk: 10, hmax: 10, hstreak: 10 };
+const _skn = list => list.map(t => { const [f, lv] = t.split(':'), hunt = SK_COST_HUNT[f] != null; return { id: f + lv, fam: f, lv: +lv, name: SK_FAM[f][0] + ' ' + SK_RN[lv - 1], stat: SK_FAM[f][1], v: _skv(f, +lv), pool: hunt ? 'hunt' : 'main', cost: hunt ? SK_COST_HUNT[f] : SK_COST_MAIN[lv - 1] }; });
 const SKILL_TREES = {
   main: ['atk:1 food:1', 'build:1 research:1', 'train:1 oil:1 energy:1', 'scissors:1 siege:1 steel:1', 'paper:1 gather:1 cash:1', 'rock:1 trapb:1 food:2', 'hp:1 trapa:1 oil:2', 'def:1 energy:2 steel:2',
     'trapb:2 research:2 cash:2', 'rock:2 trapa:2 build:2', 'paper:2 scissors:2 gather:2', 'train:2 siege:2 food:3', 'def:2 steel:3 oil:3', 'hp:2 cash:3 energy:3'].map(r => _skn(r.split(' '))),
