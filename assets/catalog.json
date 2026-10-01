@@ -2934,7 +2934,7 @@
   {
    "group": "piece",
    "key": "piece_b_defense_helmet",
-   "name": "General Defense / Traps · helmet",
+   "name": "Barricaded Face-Plate · helmet (General Defense / Traps)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -2942,7 +2942,7 @@
   {
    "group": "piece",
    "key": "piece_b_defense_chest",
-   "name": "General Defense / Traps · chest",
+   "name": "General Defense / Traps chest · chest (General Defense / Traps)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -2950,7 +2950,7 @@
   {
    "group": "piece",
    "key": "piece_b_defense_weapon",
-   "name": "General Defense / Traps · weapon",
+   "name": "General Defense / Traps weapon · weapon (General Defense / Traps)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -2958,7 +2958,7 @@
   {
    "group": "piece",
    "key": "piece_b_defense_boots",
-   "name": "General Defense / Traps · boots",
+   "name": "General Defense / Traps boots · boots (General Defense / Traps)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -2966,7 +2966,7 @@
   {
    "group": "piece",
    "key": "piece_b_defense_accessory",
-   "name": "General Defense / Traps · accessory",
+   "name": "General Defense / Traps accessory · accessory (General Defense / Traps)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -2974,7 +2974,7 @@
   {
    "group": "piece",
    "key": "piece_b_attack_helmet",
-   "name": "General Attack · helmet",
+   "name": "Standard-Issue Combat Helmet · helmet (General Attack)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -2982,7 +2982,7 @@
   {
    "group": "piece",
    "key": "piece_b_attack_chest",
-   "name": "General Attack · chest",
+   "name": "General Attack chest · chest (General Attack)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -2990,7 +2990,7 @@
   {
    "group": "piece",
    "key": "piece_b_attack_weapon",
-   "name": "General Attack · weapon",
+   "name": "General Attack weapon · weapon (General Attack)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -2998,7 +2998,7 @@
   {
    "group": "piece",
    "key": "piece_b_attack_boots",
-   "name": "General Attack · boots",
+   "name": "General Attack boots · boots (General Attack)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3006,7 +3006,7 @@
   {
    "group": "piece",
    "key": "piece_b_attack_accessory",
-   "name": "General Attack · accessory",
+   "name": "General Attack accessory · accessory (General Attack)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3014,7 +3014,7 @@
   {
    "group": "piece",
    "key": "piece_b_food_helmet",
-   "name": "Food Production · helmet",
+   "name": "Hydroponic Overseer's Mask · helmet (Food Production)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3022,7 +3022,7 @@
   {
    "group": "piece",
    "key": "piece_b_food_chest",
-   "name": "Food Production · chest",
+   "name": "Food Production chest · chest (Food Production)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3030,7 +3030,7 @@
   {
    "group": "piece",
    "key": "piece_b_food_weapon",
-   "name": "Food Production · weapon",
+   "name": "Food Production weapon · weapon (Food Production)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3038,7 +3038,7 @@
   {
    "group": "piece",
    "key": "piece_b_food_boots",
-   "name": "Food Production · boots",
+   "name": "Food Production boots · boots (Food Production)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3046,7 +3046,7 @@
   {
    "group": "piece",
    "key": "piece_b_food_accessory",
-   "name": "Food Production · accessory",
+   "name": "Food Production accessory · accessory (Food Production)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3054,7 +3054,7 @@
   {
    "group": "piece",
    "key": "piece_b_oil_helmet",
-   "name": "Oil Production · helmet",
+   "name": "Refinery-Operator Respirator · helmet (Oil Production)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3062,7 +3062,7 @@
   {
    "group": "piece",
    "key": "piece_b_oil_chest",
-   "name": "Oil Production · chest",
+   "name": "Oil Production chest · chest (Oil Production)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3070,7 +3070,7 @@
   {
    "group": "piece",
    "key": "piece_b_oil_weapon",
-   "name": "Oil Production · weapon",
+   "name": "Oil Production weapon · weapon (Oil Production)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3078,7 +3078,7 @@
   {
    "group": "piece",
    "key": "piece_b_oil_boots",
-   "name": "Oil Production · boots",
+   "name": "Oil Production boots · boots (Oil Production)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3086,7 +3086,7 @@
   {
    "group": "piece",
    "key": "piece_b_oil_accessory",
-   "name": "Oil Production · accessory",
+   "name": "Oil Production accessory · accessory (Oil Production)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3094,7 +3094,7 @@
   {
    "group": "piece",
    "key": "piece_b_energy_helmet",
-   "name": "Energy Production · helmet",
+   "name": "Power-Grid Grounding Helm · helmet (Energy Production)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3102,7 +3102,7 @@
   {
    "group": "piece",
    "key": "piece_b_energy_chest",
-   "name": "Energy Production · chest",
+   "name": "Energy Production chest · chest (Energy Production)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3110,7 +3110,7 @@
   {
    "group": "piece",
    "key": "piece_b_energy_weapon",
-   "name": "Energy Production · weapon",
+   "name": "Energy Production weapon · weapon (Energy Production)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3118,7 +3118,7 @@
   {
    "group": "piece",
    "key": "piece_b_energy_boots",
-   "name": "Energy Production · boots",
+   "name": "Energy Production boots · boots (Energy Production)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3126,7 +3126,7 @@
   {
    "group": "piece",
    "key": "piece_b_energy_accessory",
-   "name": "Energy Production · accessory",
+   "name": "Energy Production accessory · accessory (Energy Production)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3134,7 +3134,7 @@
   {
    "group": "piece",
    "key": "piece_b_steel_helmet",
-   "name": "Steel Production · helmet",
+   "name": "Foundry-Worker Shield Mask · helmet (Steel Production)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3142,7 +3142,7 @@
   {
    "group": "piece",
    "key": "piece_b_steel_chest",
-   "name": "Steel Production · chest",
+   "name": "Steel Production chest · chest (Steel Production)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3150,7 +3150,7 @@
   {
    "group": "piece",
    "key": "piece_b_steel_weapon",
-   "name": "Steel Production · weapon",
+   "name": "Steel Production weapon · weapon (Steel Production)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3158,7 +3158,7 @@
   {
    "group": "piece",
    "key": "piece_b_steel_boots",
-   "name": "Steel Production · boots",
+   "name": "Steel Production boots · boots (Steel Production)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3166,7 +3166,7 @@
   {
    "group": "piece",
    "key": "piece_b_steel_accessory",
-   "name": "Steel Production · accessory",
+   "name": "Steel Production accessory · accessory (Steel Production)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3174,7 +3174,7 @@
   {
    "group": "piece",
    "key": "piece_b_cash_helmet",
-   "name": "Cash Production · helmet",
+   "name": "Ledger-Keeper's Visor · helmet (Cash Production)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3182,7 +3182,7 @@
   {
    "group": "piece",
    "key": "piece_b_cash_chest",
-   "name": "Cash Production · chest",
+   "name": "Cash Production chest · chest (Cash Production)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3190,7 +3190,7 @@
   {
    "group": "piece",
    "key": "piece_b_cash_weapon",
-   "name": "Cash Production · weapon",
+   "name": "Cash Production weapon · weapon (Cash Production)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3198,7 +3198,7 @@
   {
    "group": "piece",
    "key": "piece_b_cash_boots",
-   "name": "Cash Production · boots",
+   "name": "Cash Production boots · boots (Cash Production)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3206,7 +3206,7 @@
   {
    "group": "piece",
    "key": "piece_b_cash_accessory",
-   "name": "Cash Production · accessory",
+   "name": "Cash Production accessory · accessory (Cash Production)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3214,7 +3214,7 @@
   {
    "group": "piece",
    "key": "piece_b_build_helmet",
-   "name": "Construction · helmet",
+   "name": "Contractor's Hardhat · helmet (Construction)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3222,7 +3222,7 @@
   {
    "group": "piece",
    "key": "piece_b_build_chest",
-   "name": "Construction · chest",
+   "name": "Construction chest · chest (Construction)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3230,7 +3230,7 @@
   {
    "group": "piece",
    "key": "piece_b_build_weapon",
-   "name": "Construction · weapon",
+   "name": "Construction weapon · weapon (Construction)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3238,7 +3238,7 @@
   {
    "group": "piece",
    "key": "piece_b_build_boots",
-   "name": "Construction · boots",
+   "name": "Construction boots · boots (Construction)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3246,7 +3246,7 @@
   {
    "group": "piece",
    "key": "piece_b_build_accessory",
-   "name": "Construction · accessory",
+   "name": "Construction accessory · accessory (Construction)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3254,7 +3254,7 @@
   {
    "group": "piece",
    "key": "piece_b_gather_helmet",
-   "name": "Gathering · helmet",
+   "name": "Hauler's Visor · helmet (Gathering)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3262,7 +3262,7 @@
   {
    "group": "piece",
    "key": "piece_b_gather_chest",
-   "name": "Gathering · chest",
+   "name": "Gathering chest · chest (Gathering)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3270,7 +3270,7 @@
   {
    "group": "piece",
    "key": "piece_b_gather_weapon",
-   "name": "Gathering · weapon",
+   "name": "Gathering weapon · weapon (Gathering)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3278,7 +3278,7 @@
   {
    "group": "piece",
    "key": "piece_b_gather_boots",
-   "name": "Gathering · boots",
+   "name": "Gathering boots · boots (Gathering)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3286,7 +3286,7 @@
   {
    "group": "piece",
    "key": "piece_b_gather_accessory",
-   "name": "Gathering · accessory",
+   "name": "Gathering accessory · accessory (Gathering)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3294,7 +3294,7 @@
   {
    "group": "piece",
    "key": "piece_b_research_helmet",
-   "name": "Research · helmet",
+   "name": "Data-Scribe Visor · helmet (Research)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3302,7 +3302,7 @@
   {
    "group": "piece",
    "key": "piece_b_research_chest",
-   "name": "Research · chest",
+   "name": "Research chest · chest (Research)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3310,7 +3310,7 @@
   {
    "group": "piece",
    "key": "piece_b_research_weapon",
-   "name": "Research · weapon",
+   "name": "Research weapon · weapon (Research)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3318,7 +3318,7 @@
   {
    "group": "piece",
    "key": "piece_b_research_boots",
-   "name": "Research · boots",
+   "name": "Research boots · boots (Research)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3326,7 +3326,7 @@
   {
    "group": "piece",
    "key": "piece_b_research_accessory",
-   "name": "Research · accessory",
+   "name": "Research accessory · accessory (Research)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3334,7 +3334,7 @@
   {
    "group": "piece",
    "key": "piece_b_train_helmet",
-   "name": "Troop Training · helmet",
+   "name": "Drillmaster's Headset · helmet (Troop Training)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3342,7 +3342,7 @@
   {
    "group": "piece",
    "key": "piece_b_train_chest",
-   "name": "Troop Training · chest",
+   "name": "Troop Training chest · chest (Troop Training)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3350,7 +3350,7 @@
   {
    "group": "piece",
    "key": "piece_b_train_weapon",
-   "name": "Troop Training · weapon",
+   "name": "Troop Training weapon · weapon (Troop Training)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3358,7 +3358,7 @@
   {
    "group": "piece",
    "key": "piece_b_train_boots",
-   "name": "Troop Training · boots",
+   "name": "Troop Training boots · boots (Troop Training)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3366,7 +3366,7 @@
   {
    "group": "piece",
    "key": "piece_b_train_accessory",
-   "name": "Troop Training · accessory",
+   "name": "Troop Training accessory · accessory (Troop Training)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3374,7 +3374,7 @@
   {
    "group": "piece",
    "key": "piece_b_trap_helmet",
-   "name": "Wall Trap Training · helmet",
+   "name": "Ordnance-Assembler Mask · helmet (Wall Trap Training)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3382,7 +3382,7 @@
   {
    "group": "piece",
    "key": "piece_b_trap_chest",
-   "name": "Wall Trap Training · chest",
+   "name": "Wall Trap Training chest · chest (Wall Trap Training)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3390,7 +3390,7 @@
   {
    "group": "piece",
    "key": "piece_b_trap_weapon",
-   "name": "Wall Trap Training · weapon",
+   "name": "Wall Trap Training weapon · weapon (Wall Trap Training)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3398,7 +3398,7 @@
   {
    "group": "piece",
    "key": "piece_b_trap_boots",
-   "name": "Wall Trap Training · boots",
+   "name": "Wall Trap Training boots · boots (Wall Trap Training)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3406,7 +3406,7 @@
   {
    "group": "piece",
    "key": "piece_b_trap_accessory",
-   "name": "Wall Trap Training · accessory",
+   "name": "Wall Trap Training accessory · accessory (Wall Trap Training)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3414,7 +3414,7 @@
   {
    "group": "piece",
    "key": "piece_b_hunt_helmet",
-   "name": "Monster Hunting · helmet",
+   "name": "Tracker's Night-Vision Hood · helmet (Monster Hunting)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3422,7 +3422,7 @@
   {
    "group": "piece",
    "key": "piece_b_hunt_chest",
-   "name": "Monster Hunting · chest",
+   "name": "Monster Hunting chest · chest (Monster Hunting)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3430,7 +3430,7 @@
   {
    "group": "piece",
    "key": "piece_b_hunt_weapon",
-   "name": "Monster Hunting · weapon",
+   "name": "Monster Hunting weapon · weapon (Monster Hunting)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3438,7 +3438,7 @@
   {
    "group": "piece",
    "key": "piece_b_hunt_boots",
-   "name": "Monster Hunting · boots",
+   "name": "Monster Hunting boots · boots (Monster Hunting)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -3446,7 +3446,7 @@
   {
    "group": "piece",
    "key": "piece_b_hunt_accessory",
-   "name": "Monster Hunting · accessory",
+   "name": "Monster Hunting accessory · accessory (Monster Hunting)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256

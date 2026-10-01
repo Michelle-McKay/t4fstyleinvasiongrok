@@ -871,8 +871,8 @@ function craft(slot, sel, shard, cat) {
   const ins = []; for (const g in sel) for (let i = 0; i < sel[g]; i++) ins.push(+g); ins.sort((x, y) => x - y);
   const mixed = ins[0] !== ins[3]; let grade = ins[0];
   if (mixed) { let r = Math.random(), i = 0; for (; i < 3; i++) { r -= MIX_ODDS[i]; if (r < 0) break; } grade = ins[i]; }
-  const p = { id: S.nid++, slot, grade, set: shard || null, cat: shard ? null : cat, gems: [], stars: 0 }; S.gear.pieces.push(p); if (shard) S.codex[shard] = 1;
-  note('Forged ' + qName(grade) + ' ' + pieceKind(p) + ' ' + SLOT_NAME[slot] + (mixed ? (grade > ins[0] ? ' from a mixed craft: you beat the odds.' : ' from a mixed craft: the floor, as usual.') : ' (four of a kind, guaranteed).'), mixed && grade === ins[0] ? 'warn' : 'good'); return null;
+  const p = { id: S.nid++, slot, grade, set: shard || null, cat: shard ? null : cat, gem: null, stars: 0 }; S.gear.pieces.push(p); if (shard) S.codex[shard] = 1;
+  note('Forged ' + qName(grade) + ' ' + pieceTitle(p) + (mixed ? (grade > ins[0] ? ' from a mixed craft: you beat the odds.' : ' from a mixed craft: the floor, as usual.') : ' (four of a kind, guaranteed).'), mixed && grade === ins[0] ? 'warn' : 'good'); return null;
 }
 function wear(id) { const p = S.gear.pieces.find(x => x.id === id); if (!p) return 'No such piece.'; if (heroLv() < pieceLv(p)) return (p.set ? 'This set' : 'This category') + ' needs hero level ' + pieceLv(p) + '.'; S.gear.worn[p.slot] = id; return null; }
 function rack(id) { const p = S.gear.pieces.find(x => x.id === id); if (!p) return 'No such piece.'; if (S.gear.worn[p.slot] === id) delete S.gear.worn[p.slot]; return null; }
@@ -946,7 +946,7 @@ function unsocketGem(pid) { const p = S.gear.pieces.find(x => x.id === pid); if 
 function smelt(id) {
   if (!hasB('forge')) return 'Build a Forge first.'; const p = S.gear.pieces.find(x => x.id === id); if (!p) return 'No such piece.'; if (S.gear.worn[p.slot] === id) return 'Take it off first.';
   if (p.gem) gemAdd(p.gem, 1);
-  S.gear.pieces = S.gear.pieces.filter(x => x !== p); matAdd(p.grade, 1); note('Smelted ' + qName(p.grade) + ' ' + pieceKind(p) + ' ' + SLOT_NAME[p.slot] + ' into one ' + matName(p.grade) + '.', 'info'); return null;
+  S.gear.pieces = S.gear.pieces.filter(x => x !== p); matAdd(p.grade, 1); note('Smelted ' + qName(p.grade) + ' ' + pieceTitle(p) + ' into one ' + matName(p.grade) + '.', 'info'); return null;
 }
 /* Enhancement Vault: star a piece with duplicates (same slot, set and tier, unworn). Star N+1 needs N+1 duplicates, alloy and Forge 3 + N. */
 function dupes(p) { return S.gear.pieces.filter(x => x !== p && x.slot === p.slot && x.grade === p.grade && (x.set || null) === (p.set || null) && S.gear.worn[x.slot] !== x.id); }
@@ -957,7 +957,7 @@ function starUp(id) {
   const d = dupes(p); if (d.length < n + 1) return 'Star ' + (n + 1) + ' needs ' + (n + 1) + ' duplicate' + (n ? 's' : '') + ' (same slot, set and tier, not worn).';
   const e = pay(starCost(n), false, 'Enhancement'); if (e) return e;
   for (const x of d.slice(0, n + 1)) { if (x.gem) gemAdd(x.gem, 1); S.gear.pieces = S.gear.pieces.filter(y => y !== x); }
-  p.stars = n + 1; note(qName(p.grade) + ' ' + pieceKind(p) + ' ' + SLOT_NAME[p.slot] + ' is now ' + p.stars + ' star' + (p.stars > 1 ? 's' : '') + '.', 'good'); return null;
+  p.stars = n + 1; note(qName(p.grade) + ' ' + pieceTitle(p) + ' is now ' + p.stars + ' star' + (p.stars > 1 ? 's' : '') + '.', 'good'); return null;
 }
 function setHero(id) { if (heroLocked()) return 'The hero is out.'; if (S.hero.captured) return 'The hero is captured.'; S.hero.id = id; return null; }
 

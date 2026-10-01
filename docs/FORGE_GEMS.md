@@ -56,6 +56,12 @@ Stat per piece scales linearly Grey to Gold. **OPEN ITEM: the spec table does no
 
 Set pieces give every stat of their set at 1 to 8 percent per piece (placeholder, `SET_RANGE`). All of it flows through `wornBonus()` into `mods()`: per-class attack and health, production per resource, build / research / training / trap speed, hunt stamina cost (`huntStam`, stamina is cut up front instead of refunded), wall stats.
 
+## 2c. Named Basic gear per slot (Michelle, 2026-10-01 19:01)
+- Basic gear now has a **named item per category and slot**. The **Helmet list is in** (13 items, `BASIC_ITEMS.helmet` in `js/data.js`): Barricaded Face-Plate, Standard-Issue Combat Helmet, Hydroponic Overseer's Mask, Refinery-Operator Respirator, Power-Grid Grounding Helm, Foundry-Worker Shield Mask, Ledger-Keeper's Visor, Contractor's Hardhat, Hauler's Visor, Data-Scribe Visor, Drillmaster's Headset, Ordnance-Assembler Mask, Tracker's Night-Vision Hood. Other slots keep the generic category name until their lists arrive; to add a slot, add its list to `BASIC_ITEMS` (name, four recipe materials, optional `{lv, st, vals}` override).
+- **Per-tier values are not linear** (`BASIC_CURVES`): 1 / 2.5 / 4.5 / 7 / 10 / 13, 2 / 5 / 9 / 14 / 20 / 26, 1.5 / 3.5 / 6 / 9.5 / 13.5 / 18, 2 / 4.5 / 8 / 12.5 / 18 / 24. They apply to every slot of the category for now (the helmet list is the only one received); a slot can override with `vals`.
+- **Recipes** are four named materials, a repeat means 2x (e.g. 2x Scrap Metal). They are shown in Gear Sets, the Workshop and the art prompts. **Not enforced yet:** the craft still spends four tier materials; the named materials are not stocked or dropped (OPEN ITEM: decide how they are earned).
+- Hunt hood stats map to Monster energy cost, Hero attack and march speed.
+
 ## 3. Gems
 - **Six tiers** (Raw Shard, Calibrated Core, Prism Matrix, Hyper-Lens, Singularity Crystal, Omega Diamond) and the **strict 4-to-1 rule**, exactly like materials: four gems of one kind and tier combine into one of the next tier (Forge 3 x tier gates it). Four of a kind is guaranteed and free.
 - **Mixed gem craft** (the casino): four different gems sorted lowest to highest tier give the gem in position 1 / 2 / 3 / 4 with 75 / 20 / 4.9 / 0.1 percent (`MIX_ODDS`, shared with gear). The UI prints the exact odds first.
