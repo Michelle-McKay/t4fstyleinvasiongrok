@@ -525,3 +525,10 @@ button{-webkit-touch-callout:none}
 .edpiece.wired{pointer-events:auto;cursor:pointer}
 html.editing .edpiece{pointer-events:auto;outline:1px dashed rgba(255,255,255,.5);outline-offset:2px}
 html.editing .edpiece.sel{outline:2px solid #e0a44a;touch-action:none}
+
+.edbar.top{bottom:auto;top:calc(env(safe-area-inset-top) + 8px)}
+.edbar button.dng{border-color:#d9534f;color:#ff9c96}
+.edbar button{min-height:32px;padding:0 8px}
+html.editing,html.editing body,html.editing #app,html.editing #main,html.editing .page,html.editing #dbody,html.editing button,html.editing [data-a]{touch-action:pan-x pan-y}
+html.editing .edui,html.editing .edui *{touch-action:manipulation}
+html.editing #main{will-change:transform}
