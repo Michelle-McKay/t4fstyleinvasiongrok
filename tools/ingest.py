@@ -129,6 +129,34 @@ def fill_holes(keyed, orig):
 def has_alpha(im):
     return im.mode in ('RGBA', 'LA') and im.getchannel('A').getextrema()[0] < 250
 
+def drop_specks(im, keep=0.05):
+    """Remove stray bits: any connected piece under `keep` of the biggest piece's area is cleared."""
+    sm = im.copy(); sm.thumbnail((256, 256)); W, H = sm.size; A_ = sm.getchannel('A').load(); seen = set(); comps = []
+    for y in range(H):
+        for x in range(W):
+            if A_[x, y] > 10 and (x, y) not in seen:
+                st = [(x, y)]; seen.add((x, y)); c = []
+                while st:
+                    px, py = st.pop(); c.append((px, py))
+                    for q in ((px+1, py), (px-1, py), (px, py+1), (px, py-1)):
+                        if 0 <= q[0] < W and 0 <= q[1] < H and q not in seen and A_[q] > 10: seen.add(q); st.append(q)
+                comps.append(c)
+    if len(comps) < 2: return im
+    big = max(len(c) for c in comps); mask = Image.new('L', (W, H), 255); md = mask.load()
+    for c in comps:
+        if len(c) < big * keep:
+            for q in c: md[q] = 0
+    mask = mask.resize(im.size, Image.NEAREST).filter(ImageFilter.MaxFilter(9)) if False else mask.resize(im.size, Image.NEAREST)
+    # grow the cleared area a little so the speck's soft edge goes too
+    inv = ImageChops.invert(mask).filter(ImageFilter.MaxFilter(9)); out = im.copy(); out.putalpha(ImageChops.multiply(im.getchannel('A'), ImageChops.invert(inv)))
+    return out
+
+def despill_magenta(im):
+    """Pull magenta spill out of lit edges: wherever blue is above green, blue drops to green, and red is capped near green."""
+    r, g, b, a = im.split()
+    b2 = ImageChops.darker(b, g); r2 = ImageChops.darker(r, g.point(lambda v: min(255, v + 14)))
+    return Image.merge('RGBA', (r2, g, b2, a))
+
 def process(path):
     k = key_of(path)
     if not k: return ('skip', os.path.basename(path), 'name is not in assets/catalog.json')
@@ -146,7 +174,9 @@ def process(path):
         if it['size'].startswith('1:1') and im.width != im.height:  # not square: centre-crop so it does not stretch
             n = min(im.size); l, t = (im.width - n) // 2, (im.height - n) // 2; im = im.crop((l, t, l + n, t + n)); note = 'centre-cropped to square'
     if (k.startswith('city_deco_tree') or k == 'city_deco_bush') and im.mode == 'RGBA': im = drop_grey_shadow(im, False, True); note += ', floor shadow cut'
-    elif k in ('city_deco_barrel', 'city_deco_flag') or k.startswith('mapmarch_') or k.endswith('_dust') and im.mode == 'RGBA': im = drop_grey_shadow(im, True, k in ('city_deco_barrel', 'city_deco_flag') or k.endswith('_dust')); note += ', floor shadow cut'
+    elif k in ('city_deco_barrel', 'city_deco_flag') or (k.startswith('mapmarch_') and k != 'mapmarch_gather') or k.endswith('_dust') and im.mode == 'RGBA': im = drop_grey_shadow(im, True, k in ('city_deco_barrel', 'city_deco_flag') or k.endswith('_dust')); note += ', floor shadow cut'
+    if k.startswith('city_deco_') and im.mode == 'RGBA': im = drop_specks(im)
+    if k in ('city_deco_crates', 'city_deco_water') and im.mode == 'RGBA': im = despill_magenta(im); note += ', magenta spill removed'
     if k in SHADOW and im.mode == 'RGBA': im = drop_shadow(im, SHADOW[k]); note += ', floor shadow cut'
     if it['transparent'] and k.startswith('city_ground'): im = trim(im)   # ground blobs are wide: keep their own aspect, the game stretches them over the island
     elif it['transparent'] and it['size'].startswith('1:1'): im = square(im)
