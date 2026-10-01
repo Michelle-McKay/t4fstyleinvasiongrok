@@ -11,7 +11,7 @@ Needs Pillow (python3 -m pip install pillow). The originals are not kept in the 
 import json, os, re, sys
 from collections import deque
 try:
-    from PIL import Image, ImageChops, ImageFilter
+    from PIL import Image, ImageChops, ImageFilter, ImageDraw
 except ImportError:
     sys.exit('Pillow is missing: python3 -m pip install pillow')
 
@@ -96,6 +96,22 @@ def drop_shadow(im, thr):
     a = ImageChops.darker(im.getchannel('A'), lum.filter(ImageFilter.MaxFilter(3)))
     out = im.copy(); out.putalpha(a); return out
 
+def drop_grey_shadow(im, warm=False):
+    """Floor shadows are dull grey-brown (low saturation, not green-dominant, not bark). Only the part connected to the
+    background is cut, so dull pixels inside the art are kept."""
+    r, g, b = im.convert('RGB').split(); mx = ImageChops.lighter(ImageChops.lighter(r, g), b); mn = ImageChops.darker(ImageChops.darker(r, g), b)
+    m = ImageChops.subtract(mx, mn).point(lambda v: 255 if v < 48 else 0)
+    if warm:   # light bodies: the shadow is a dull warm brown (red above blue by a little), grey metal has red equal to blue
+        m = ImageChops.multiply(m, ImageChops.subtract(r, b).point(lambda v: 255 if 18 <= v <= 60 else 0))
+    else:
+        m = ImageChops.multiply(m, ImageChops.subtract(g, r).point(lambda v: 255 if v <= 6 else 0))
+        m = ImageChops.multiply(m, ImageChops.subtract(g, b).point(lambda v: 255 if v < 26 else 0))
+    m = ImageChops.multiply(m, im.convert('L').point(lambda v: 255 if v < (134 if warm else 165) else 0))
+    a = im.getchannel('A'); free = ImageChops.lighter(m, a.point(lambda v: 255 if v < 20 else 0))
+    ImageDraw.floodfill(free, (0, 0), 128, thresh=0)
+    sh = free.point(lambda v: 255 if v == 128 else 0).filter(ImageFilter.MaxFilter(5))
+    out = im.copy(); out.putalpha(ImageChops.subtract(a, sh)); return out
+
 def has_alpha(im):
     return im.mode in ('RGBA', 'LA') and im.getchannel('A').getextrema()[0] < 250
 
@@ -113,6 +129,8 @@ def process(path):
         im = im.convert('RGB')
         if it['size'].startswith('1:1') and im.width != im.height:  # not square: centre-crop so it does not stretch
             n = min(im.size); l, t = (im.width - n) // 2, (im.height - n) // 2; im = im.crop((l, t, l + n, t + n)); note = 'centre-cropped to square'
+    if (k.startswith('city_deco_tree') or k == 'city_deco_bush') and im.mode == 'RGBA': im = drop_grey_shadow(im); note += ', floor shadow cut'
+    elif k in ('city_deco_barrel', 'city_deco_flag') and im.mode == 'RGBA': im = drop_grey_shadow(im, True); note += ', floor shadow cut'
     if k in SHADOW and im.mode == 'RGBA': im = drop_shadow(im, SHADOW[k]); note += ', floor shadow cut'
     if it['transparent'] and k.startswith('city_ground'): im = trim(im)   # ground blobs are wide: keep their own aspect, the game stretches them over the island
     elif it['transparent'] and it['size'].startswith('1:1'): im = square(im)
