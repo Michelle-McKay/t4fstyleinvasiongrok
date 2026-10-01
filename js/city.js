@@ -54,9 +54,13 @@ function cityDrift(ar, i) { const r = cityRand(ar + i), row = Math.floor(i / 5),
 
 /* ---------- moving parts: construction site over a plot being built, working effects on finished buildings ---------- */
 /* Painted layers (city_build_scaffold, city_build_crane, city_build_load, city_build_beacon, city_build_sparks, city_build_dust) replace the drawn ones as soon as they are in the manifest. */
-function buildFX() {
+/* Animation phase that survives repaints: the base page is rebuilt often, and a CSS loop that restarts each time looks like stutter,
+   so every loop gets a negative delay taken from the clock (plus a per-plot offset) and carries on from where it was. */
+function fxPhase(sec, seed, k) { const r = cityRand((seed || '') + k)(); return `animation-delay:-${(((Date.now() / 1000) % sec) + r * sec).toFixed(2)}s`; }
+function buildFX(seed) {
   const sc = cityImg('city_build_scaffold'), cr = cityImg('city_build_crane'), ld = cityImg('city_build_load'), bc = cityImg('city_build_beacon'), sp = cityImg('city_build_sparks'), du = cityImg('city_build_dust');
-  const im = (u, cls, st) => `<img class="${cls}" style="${st}" src="${u}" alt="">`;
+  const PER = { 'cf-crane': 12, 'cf-load': 8, 'cf-beacon': 2.4, 'cf-spark': 7, 'cf-dust': 6 }, ph = cls => PER[cls] ? ';' + fxPhase(PER[cls], seed, cls) : '';
+  const im = (u, cls, st) => `<img class="${cls}" style="${st}${ph(cls)}" src="${u}" alt="">`;
   return `<span class="cfx" aria-hidden="true">
     ${sc ? im(sc, 'cf-scaf', 'left:8%;top:10%;width:84%') : `<svg class="cf-scaf" viewBox="0 0 100 100"><path d="M50 14 L90 44 L50 74 L10 44 Z" fill="none" stroke="#e8842a" stroke-width="2" stroke-dasharray="6 4"/><g stroke="#d9dde0" stroke-width="1.6" fill="none"><path d="M18 44 V20 M50 74 V50 M82 44 V20 M50 14 V-4"/><path d="M18 26 L50 50 L82 26 M18 38 L50 62 L82 38"/></g></svg>`}
     ${cr ? im(cr, 'cf-crane', 'right:-4%;top:-6%;width:40%') : `<svg class="cf-crane" viewBox="0 0 40 60"><g stroke="#e8a12a" stroke-width="2" fill="none"><path d="M30 58 V8 M26 58 V8 M26 20 H30 M26 34 H30 M26 46 H30"/></g><g class="cf-jib"><path d="M4 8 H38" stroke="#e8a12a" stroke-width="2.4"/><rect x="34" y="6" width="5" height="5" fill="#8b979d"/></g></svg>`}
