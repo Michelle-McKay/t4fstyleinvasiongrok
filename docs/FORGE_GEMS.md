@@ -66,7 +66,7 @@ Set pieces give every stat of their set at 1 to 8 percent per piece (placeholder
 ## 3. Gems
 - **Six tiers** (Raw Shard, Calibrated Core, Prism Matrix, Hyper-Lens, Singularity Crystal, Omega Diamond) and the **strict 4-to-1 rule**, exactly like materials: four gems of one kind and tier combine into one of the next tier (Forge 3 x tier gates it). Four of a kind is guaranteed and free.
 - **Mixed gem craft** (the casino): four different gems sorted lowest to highest tier give the gem in position 1 / 2 / 3 / 4 with 75 / 20 / 4.9 / 0.1 percent (`MIX_ODDS`, shared with gear). The UI prints the exact odds first.
-- **Basic gems (25)** drop anywhere (regular tiles, alliance store, gifts, quests, monster tiles) and boost one thing each. Range by tier, Grey to Gold:
+- **Basic gems (25)** drop anywhere (regular tiles, alliance store, gifts, quests, monster tiles) and boost one thing each. Range by tier, Grey to Gold (exact non-linear tier values from 19:04, e.g. 1 / 2.5 / 4.5 / 7 / 10 / 13, the curves in `BASIC_CURVES`; the table shows the Grey and Gold ends):
 
 | Gem | Boost | Range |
 |---|---|---|

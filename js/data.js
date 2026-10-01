@@ -462,7 +462,8 @@ const gemSplit = k => { const i = k.lastIndexOf(':'); return [k.slice(0, i), +k.
 const gemIsSet = kind => !!GEMS[kind].set;
 const gemName = kind => GEMS[kind].n;
 const gemCol = kind => GEMS[kind].col;
-const gemPct = (kind, tier) => (GEMS[kind].lo + (GEMS[kind].hi - GEMS[kind].lo) * (tier - 1) / 5) / 100;
+/* Basic gems use Michelle's exact non-linear tier values (BASIC_CURVES, 2026-10-01 19:04); set gems stay linear between their lo and hi */
+const gemPct = (kind, tier) => { const g = GEMS[kind], c = !g.set && BASIC_CURVES[g.lo + '-' + g.hi]; return (c ? c[tier - 1] : g.lo + (g.hi - g.lo) * (tier - 1) / 5) / 100; };
 const starMul = p => 1 + STAR_PCT * (p.stars || 0);
 /* Names: materials, gems and gear quality share the six tiers but have their own names (spec 2026-10-01). */
 const MAT_NAMES = [null, 'Composite Alloy', 'Carbon Fiber', 'Ballistic Polymer', 'Quantum Circuitry', 'Nano-Titanium', 'Aether-Core'];
