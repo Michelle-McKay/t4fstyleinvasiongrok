@@ -437,6 +437,19 @@ button{-webkit-touch-callout:none}
 .cityscape{position:relative;margin:0 -10px;padding:0 0 8px;background:var(--bd,none)}
 .chz{display:block;width:calc(100% + 20px);margin:-2px -10px -22px;height:96px;object-fit:cover}
 .chz img{width:100%;height:100%;object-fit:cover;display:block}
+.cpan{container-type:inline-size;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;overscroll-behavior-x:contain}
+.cpan::-webkit-scrollbar{display:none}
+.cworld{position:relative;display:flex;width:max-content;background-size:cover;background-position:center}
+.cworld.pano{background-size:100% 100%}
+.cworld .isle{flex:0 0 auto;width:100cqw}
+.cworld .isle.side{width:60cqw}
+.zbar{display:flex;align-items:center;gap:6px;margin:6px 10px}
+.zbar button{min-height:32px;padding:0 12px;background:rgba(20,26,29,.82);color:var(--mute);border:1px solid rgba(224,164,74,.35);border-radius:16px;font:600 11px/1 var(--head);letter-spacing:.1em;text-transform:uppercase}
+.zbar button.on{background:var(--brass);color:#1a1408;border-color:var(--brass)}
+.zbar span{flex:1;text-align:right;font-size:11px;color:var(--mute);text-shadow:0 1px 2px rgba(0,0,0,.5)}
+.cclouds{position:absolute;inset:0;pointer-events:none;z-index:4;background:radial-gradient(ellipse 220px 70px at 12% 30%,rgba(30,36,24,.13),transparent 70%),radial-gradient(ellipse 280px 90px at 46% 62%,rgba(30,36,24,.1),transparent 70%),radial-gradient(ellipse 200px 60px at 80% 22%,rgba(30,36,24,.12),transparent 70%);background-size:50% 100%;animation:ccloud 90s linear infinite}
+@keyframes ccloud{from{background-position:0 0}to{background-position:-50% 0}}
+@media (prefers-reduced-motion:reduce){.cclouds{animation:none}}
 .isle{position:relative;margin:0;filter:drop-shadow(0 6px 8px rgba(30,38,20,.25))}
 .isle .ground{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}
 .cd{position:absolute;display:block;pointer-events:none;transform:translate(-50%,-70%);z-index:1}
@@ -532,3 +545,5 @@ html.editing .edpiece.sel{outline:2px solid #e0a44a;touch-action:none}
 html.editing,html.editing body,html.editing #app,html.editing #main,html.editing .page,html.editing #dbody,html.editing button,html.editing [data-a]{touch-action:pan-x pan-y}
 html.editing .edui,html.editing .edui *{touch-action:manipulation}
 html.editing #main{will-change:transform}
+
+.cworld .ground{-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 5%,#000 93%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 5%,#000 93%,transparent 100%)}

@@ -319,7 +319,7 @@ function plotHTML(ar, i, firsts) {
   return `<button class="plot ${outer ? 'fld' : 'cnc'} ${bj ? 'busy' : ''} ${p.l >= 25 ? 'max' : ''}" style="${citySlot(ar, i)}" ${LAY.on ? '' : 'data-a="plot"'} data-ar="${ar}" data-i="${i}" title="${BLD[p.b].n}">${bldSVG(p.b, p.l)}${bj ? buildFX(ar + i) : workFX(p.b, p.l)}<span class="lv num">${p.l}</span><span class="nm">${BLD[p.b].n}</span>${bj ? ringHTML(bj, 'tr', 'base') : ''}${q ? ringHTML(q, 'tl', QUEUE_OF[p.b][1]) : ''}${rdy ? `<span class="bub">${rdy}</span>` : ''}</button>`;
 }
 function renderBase() {
-  if (LAY.drag || (LAY.on && document.activeElement && document.activeElement.closest && document.activeElement.closest('.laybar'))) return;
+  if (LAY.drag || UI.panTouch || (UI.panAt && Date.now() - UI.panAt < 500) || (LAY.on && document.activeElement && document.activeElement.closest && document.activeElement.closest('.laybar'))) { UI.dirty = true; return; }
   const hr = hourly(), firsts = {}; for (const ar of ['in', 'out']) S.plots[ar].forEach((p, i) => { if (p && p.l > 0 && !firsts[p.b]) firsts[p.b] = ar + i; });
   const grid = ar => S.plots[ar].map((_, i) => plotHTML(ar, i, firsts)).join(''), f = shieldOn(), fs = inForest();
   $('#pg-base').innerHTML = `
@@ -332,6 +332,7 @@ function renderBase() {
     <div class="flex wrap mt"><button class="btn ${f ? 'on' : 'line'}" data-a="shield">Peace shield ${S.shield.until > Date.now() ? (fs ? 'up (dead in forest)' : 'up') : 'off'}</button><button class="btn line" data-a="builder2" ${S.builders >= 2 ? 'disabled' : ''}>${S.builders >= 2 ? 'Two builders' : 'Second builder · 220◆'}</button><button class="btn line" data-a="tpr" ${heroLocked() ? 'disabled' : ''}>Random teleport</button></div>
     ${heroLocked() ? '<div class="sub mt sg">A hero is out. The base cannot teleport.</div>' : ''}
   </div></div>`;
+  cityPanRestore();
 }
 function spawnFly() {
   if (UI.page !== 'base' || UI.drawer || UI.sheet) return;
