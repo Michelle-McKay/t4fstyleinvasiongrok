@@ -27,6 +27,7 @@ const spriteKey = name => {
   let m;
   if ((m = /^nd_([a-z]+)(\d)$/.exec(name))) return 'node_' + m[1];   // one picture per resource, the level is a number drawn in code
   if ((m = /^mn_(\d)$/.exec(name))) return 'mon_' + m[1];
+  if ((m = /^mnx_(.+)_\d$/.exec(name))) return m[1].indexOf('h_') === 0 ? 'mon_hol_' + m[1].slice(2) : 'mon_set_' + m[1];   // one picture per monster, the level is a number drawn in code
   if ((m = /^hq_(\d+)$/.exec(name))) { const t = Math.max(1, tierOf(+m[1])); return ART.file('base_' + t) ? 'base_' + t : 'bld_cc_t' + t; }
   return { camp2: 'camp', cit2: 'citadel' }[name] || null;
 };
@@ -87,3 +88,6 @@ function loadArt() {
   }).catch(() => { });
 }
 window.addEventListener('load', () => { try { hookStore(); if (location.protocol.startsWith('http')) loadArt(); } catch (e) { } });
+
+/* ---- the loot tile a defeated monster leaves behind: one painted image per monster, used instead of the plain resource tile once it is in assets ---- */
+FEAT.loot = id => { const k = id.indexOf('h_') === 0 ? 'monloot_hol_' + id.slice(2) : 'monloot_set_' + id, f = ART.file(k); return f ? canvasFrom(k, f, 128) : null; };

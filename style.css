@@ -578,3 +578,4 @@ html.editing #main{will-change:transform}
 @keyframes hstrike{0%{transform:translateX(0) rotate(0)}35%{transform:translateX(10px) rotate(4deg)}100%{transform:translateX(0) rotate(0)}}
 @keyframes harmup{0%{transform:rotate(0)}40%{transform:rotate(-70deg)}100%{transform:rotate(0)}}
 @media (prefers-reduced-motion:reduce){.hs-fig svg,.hs-fig img{animation:none!important}}
+.mimg{flex:none;width:44px;height:44px;object-fit:contain;background:radial-gradient(circle at 50% 40%,#5a2018,#150808);border:1px solid var(--line);margin-right:8px}

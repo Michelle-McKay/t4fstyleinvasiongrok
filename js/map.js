@@ -113,8 +113,8 @@ function chunkFeats(cxk, cyk) { // feature tiles (nodes, monsters, camps, bases)
   const list = [];
   for (let y = cyk * CN; y < cyk * CN + CN; y++) for (let x = cxk * CN; x < cxk * CN + CN; x++) {
     if (x >= W || y >= H) continue; const t = tileInfo(x, y); let f = null, s = 1;
-    if (t.kind === 'node') f = FEAT[t.nk === 'food' ? 'food' : t.nk === 'oil' ? 'oil' : t.nk === 'energy' ? 'energy' : 'steel'](t.node.grade);
-    else if (t.kind === 'monster') f = FEAT.monster(t.grade); else if (t.kind === 'camp') f = FEAT.camp();
+    if (t.kind === 'node') f = (t.node.from && FEAT.loot && FEAT.loot(t.node.from)) || FEAT[t.nk === 'food' ? 'food' : t.nk === 'oil' ? 'oil' : t.nk === 'energy' ? 'energy' : 'steel'](t.node.grade);
+    else if (t.kind === 'monster') f = FEAT.monster(t.grade, t.mon); else if (t.kind === 'camp') f = FEAT.camp();
     else if (t.kind === 'base') { f = FEAT.base(t.bot.p); s = 1.6; } else if (t.kind === 'pbase') { f = FEAT.pbase(ccLevel()); s = 1.6; }
     if (f) list.push({ x, y, k: x + y, f, s, t });
   }

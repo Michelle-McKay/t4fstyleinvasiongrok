@@ -75,6 +75,7 @@ const RS = {
   atk_siege: { n: 'Siege attack', tree: 'combat', max: 10, a: 2, b: 30, req: [], what: 'siege attack', c: 'alloy' },
   plating: { n: 'Troop plating', tree: 'field', max: 10, a: 2, b: 30, req: [], what: 'troop health', c: 'alloy' },
   logi: { n: 'Logistics', tree: 'field', max: 10, a: 1.5, b: 15, req: [], what: 'train time cut', c: 'fuel' },
+  hunt: { n: 'Hunter\'s instinct', tree: 'field', max: 10, a: 0, b: 0, req: [], what: 'better monster drops (max research moves a level 6 spread to 50 / 35 / 14.3 / 0.7)', c: 'power' },
   recon: { n: 'Recon', tree: 'field', max: 10, a: 0, b: 0, req: [], what: 'scan depth (max: Radar Station level)', c: 'power' },
   bulk: { n: 'Bulkheads', tree: 'defense', max: 10, a: 3, b: 50, req: [], what: 'wall HP', c: 'alloy' },
   perim: { n: 'Perimeter lethality', tree: 'defense', max: 10, a: 3, b: 40, req: [['bulk', 1]], what: 'wall attack', c: 'power' },
@@ -134,10 +135,98 @@ const SLOT_CURVE = { weapon: [1, 12], chest: [1, 12], helmet: [1.5, 15], gauntle
 const SLOT_WHAT = { weapon: 'troop attack', chest: 'troop health', helmet: 'wall attack and wall HP', gauntlets: 'troop attack', greaves: 'troop health', boots: 'march speed and gathering speed', accessory: '' };
 /* Set bonuses at 3, 5 and 7 worn pieces of one set. OPEN ITEM: values and rarity tiers are placeholders. */
 const SETS = {
-  vanguard: { n: 'Vanguard', d: '+5% / +10% / +15% troop attack', aura: '#e0a44a', b: { 3: { atk: 0.05 }, 5: { atk: 0.10 }, 7: { atk: 0.15 } } },
-  outrider: { n: 'Outrider', d: '+5% march speed, +8% / +15% troop attack', aura: '#5ec4d4', b: { 3: { march: 0.05 }, 5: { atk: 0.08 }, 7: { atk: 0.15 } } },
-  battery: { n: 'Battery', d: '+5% / +10% / +15% yield', aura: '#8ea36a', b: { 3: { yld: 0.05 }, 5: { yld: 0.10 }, 7: { yld: 0.15 } } }
+  vanguard: { n: 'Vanguard', cat: 'Infantry', mon: 'Vanguard Warden', d: '+5% / +10% / +15% troop attack', aura: '#e0a44a', b: { 3: { atk: 0.05 }, 5: { atk: 0.10 }, 7: { atk: 0.15 } } },
+  outrider: { n: 'Outrider', cat: 'Cavalry', mon: 'Outrider Stalker', d: '+5% march speed, +8% / +15% troop attack', aura: '#5ec4d4', b: { 3: { march: 0.05 }, 5: { atk: 0.08 }, 7: { atk: 0.15 } } },
+  marksman: { n: 'Marksman', cat: 'Ranged', mon: 'Marksman Shrike', d: '+4% / +8% / +12% troop attack (placeholder)', aura: '#d4654a', b: { 3: { atk: 0.04 }, 5: { atk: 0.08 }, 7: { atk: 0.12 } } },
+  battery: { n: 'Battery', cat: 'Gathering', mon: 'Battery Beetle', d: '+5% / +10% / +15% yield', aura: '#8ea36a', b: { 3: { yld: 0.05 }, 5: { yld: 0.10 }, 7: { yld: 0.15 } } },
+  prospector: { n: 'Prospector', cat: 'Gathering speed', mon: 'Prospector Mole', d: '+5% / +10% / +15% gather speed (placeholder)', aura: '#b98a52', b: { 3: { gather: 0.05 }, 5: { gather: 0.10 }, 7: { gather: 0.15 } } },
+  caravan: { n: 'Caravan', cat: 'Logistics', mon: 'Caravan Behemoth', d: '+4% / +8% / +12% march speed (placeholder)', aura: '#7ab0e0', b: { 3: { march: 0.04 }, 5: { march: 0.08 }, 7: { march: 0.12 } } },
+  foundry: { n: 'Foundry', cat: 'Construction', mon: 'Foundry Golem', d: '+5% / +10% / +15% build speed (placeholder)', aura: '#e07a3a', b: { 3: { build: 0.05 }, 5: { build: 0.10 }, 7: { build: 0.15 } } },
+  academy: { n: 'Academy', cat: 'Training', mon: 'Academy Mantis', d: '+5% / +10% / +15% training speed (placeholder)', aura: '#a07ad6', b: { 3: { train: 0.05 }, 5: { train: 0.10 }, 7: { train: 0.15 } } },
+  medic: { n: 'Medic', cat: 'Healing', mon: 'Medic Moth', d: '+5% / +10% / +15% heal speed (placeholder)', aura: '#6fd0a0', b: { 3: { heal: 0.05 }, 5: { heal: 0.10 }, 7: { heal: 0.15 } } },
+  bulwark: { n: 'Bulwark', cat: 'Defense', mon: 'Bulwark Tortoise', d: '+5% / +10% / +15% wall HP (placeholder)', aura: '#8a98a8', b: { 3: { wallHp: 0.05 }, 5: { wallHp: 0.10 }, 7: { wallHp: 0.15 } } },
+  breaker: { n: 'Breaker', cat: 'Siege', mon: 'Breaker Ram', d: '+4% / +8% / +12% troop attack (placeholder)', aura: '#c84a4a', b: { 3: { atk: 0.04 }, 5: { atk: 0.08 }, 7: { atk: 0.12 } } },
+  tracker: { n: 'Tracker', cat: 'Hunting', mon: 'Tracker Lynx', d: 'Refunds 15% / 25% / 40% of hunt stamina on a win', aura: '#e0c84a', b: { 3: { refund: 0.15 }, 5: { refund: 0.25 }, 7: { refund: 0.40 } } }
 };
+/* Weekly rotation: 12 regular monsters in four cycles of three. Each week exactly one cycle is on the map, every week, all week. */
+const SET_ORDER = ['vanguard', 'outrider', 'marksman', 'battery', 'prospector', 'caravan', 'foundry', 'academy', 'medic', 'bulwark', 'breaker', 'tracker'];
+const CYCLE_NAMES = ['Troop week', 'Economy week', 'Builder week', 'Fortress week'];
+const WEEK_MS = 7 * 86400000, CYCLE_EPOCH = Date.UTC(2026, 0, 5);   // a Monday, UTC
+function huntCycle(now) { return ((Math.floor(((now == null ? Date.now() : now) - CYCLE_EPOCH) / WEEK_MS) % 4) + 4) % 4; }
+function activeSets(now) { const c = huntCycle(now); return SET_ORDER.slice(c * 3, c * 3 + 3); }
+function weekEnds(now) { now = now == null ? Date.now() : now; return CYCLE_EPOCH + (Math.floor((now - CYCLE_EPOCH) / WEEK_MS) + 1) * WEEK_MS; }
+
+/* Holiday monsters: one full week from the holiday date, every year. Each holiday has one monster and one limited gear set
+   (id 'h_' + holiday id). Event shards persist, so an unfinished set can be finished when the event returns.
+   Fixed and rule-based dates are computed; lunar and Hindu dates are tabled per year (HOL_TABLE, 2026-2035, from the standard
+   lunar calendars; Eid dates can move a day with moon sighting). OPEN ITEM: extend the table each year after 2035. */
+const HOL_TABLE = {
+  cny: {2026: '02-17', 2027: '02-06', 2028: '01-26', 2029: '02-13', 2030: '02-03', 2031: '01-23', 2032: '02-11', 2033: '01-31', 2034: '02-19', 2035: '02-08'},
+  mid: {2026: '09-25', 2027: '09-15', 2028: '10-03', 2029: '09-22', 2030: '09-12', 2031: '10-01', 2032: '09-19', 2033: '09-08', 2034: '09-27', 2035: '09-16'},
+  eid: {2026: '03-20|05-27', 2027: '03-09|05-16', 2028: '02-26|05-05', 2029: '02-14|04-24', 2030: '02-04|04-13', 2031: '01-24|04-02', 2032: '01-14|03-22', 2033: '01-02|03-11|12-23', 2034: '03-01|12-12', 2035: '02-18|12-01'},
+  holi: {2026: '03-04', 2027: '03-22', 2028: '03-11', 2029: '03-01', 2030: '03-20', 2031: '03-09', 2032: '03-27', 2033: '03-16', 2034: '03-05', 2035: '03-24'},
+  diwali: {2026: '11-08', 2027: '10-29', 2028: '10-17', 2029: '11-05', 2030: '10-26', 2031: '11-14', 2032: '11-02', 2033: '10-22', 2034: '11-10', 2035: '10-30'}
+};
+const nthWd = (y, m, wd, n) => { const f = new Date(y, m, 1).getDay(); return new Date(y, m, 1 + ((wd - f + 7) % 7) + (n - 1) * 7); };
+const lastWd = (y, m, wd) => { const l = new Date(y, m + 1, 0); return new Date(y, m, l.getDate() - ((l.getDay() - wd + 7) % 7)); };
+const tabDates = (k, y) => { const v = HOL_TABLE[k][y]; return v ? v.split('|').map(md => new Date(y, +md.slice(0, 2) - 1, +md.slice(3))) : []; };
+const HOLIDAYS = [
+  { id: 'newyear', n: "New Year's Day", reg: 'North America', mon: 'Countdown Colossus', set: 'Countdown', aura: '#f0d878', d: y => [new Date(y, 0, 1)] },
+  { id: 'valentine', n: "Valentine's Day", reg: 'North America', mon: 'Heartforge Hound', set: 'Heartstring', aura: '#e0607a', d: y => [new Date(y, 1, 14)] },
+  { id: 'stpat', n: "St. Patrick's Day", reg: 'North America', mon: 'Clover Golem', set: 'Clover', aura: '#4fb868', d: y => [new Date(y, 2, 17)] },
+  { id: 'memorial', n: 'Memorial / Victoria Day', reg: 'Canada, US', mon: 'Poppy Sentinel', set: 'Poppy', aura: '#d04040', d: y => [new Date(y, 4, 24 - ((new Date(y, 4, 24).getDay() + 6) % 7)), lastWd(y, 4, 1)] },
+  { id: 'canada', n: 'Canada Day', reg: 'Canada', mon: 'Maple Moose', set: 'Maple', aura: '#e04a3a', d: y => [new Date(y, 6, 1)] },
+  { id: 'july4', n: 'Independence Day', reg: 'US', mon: 'Sparkler Bison', set: 'Sparkler', aura: '#5a8ae0', d: y => [new Date(y, 6, 4)] },
+  { id: 'thanks', n: 'Thanksgiving', reg: 'Canada (Oct), US (Nov)', mon: 'Harvest Gobbler', set: 'Harvest', aura: '#d49a3a', d: y => [nthWd(y, 9, 1, 2), nthWd(y, 10, 4, 4)] },
+  { id: 'halloween', n: 'Halloween', reg: 'North America', mon: 'Lantern Wraith', set: 'Hollow', aura: '#e0802a', d: y => [new Date(y, 9, 31)] },
+  { id: 'xmas', n: 'Christmas / Winter Holidays', reg: 'International', mon: 'Frostback Yeti', set: 'Evergreen', aura: '#6fb8d8', d: y => [new Date(y, 11, 25)] },
+  { id: 'cny', n: 'Chinese New Year / Spring Festival', reg: 'East Asia', mon: 'Festival Lion', set: 'Festival', aura: '#e0382a', d: y => tabDates('cny', y) },
+  { id: 'diwali', n: 'Diwali', reg: 'South Asia', mon: 'Lamp Phoenix', set: 'Diya', aura: '#f0a830', d: y => tabDates('diwali', y) },
+  { id: 'eid', n: 'Eid al-Fitr / Eid al-Adha', reg: 'International', mon: 'Crescent Oryx', set: 'Crescent', aura: '#3ab8a0', d: y => tabDates('eid', y) },
+  { id: 'holi', n: 'Holi', reg: 'South Asia', mon: 'Pigment Chameleon', set: 'Gulal', aura: '#d84aa8', d: y => tabDates('holi', y) },
+  { id: 'muertos', n: 'Día de los Muertos', reg: 'Mexico, Latin America', mon: 'Marigold Spirit-Hound', set: 'Marigold', aura: '#f0a020', d: y => [new Date(y, 10, 1)] },
+  { id: 'midautumn', n: 'Mid-Autumn / Moon Festival', reg: 'East Asia', mon: 'Moonlit Hare', set: 'Moonlight', aura: '#c8d8f0', d: y => tabDates('mid', y) }
+];
+/* Holiday gear sets are ordinary entries in SETS under 'h_' + id, so shards, crafting and bonuses need no special case. */
+const HOL_BONUS = [{ atk: 1 }, { yld: 1 }, { march: 1 }, { gather: 1 }, { build: 1 }, { train: 1 }, { heal: 1 }];
+HOLIDAYS.forEach((h, i) => {
+  const k = Object.keys(HOL_BONUS[i % 7])[0], lab = { atk: 'troop attack', yld: 'yield', march: 'march speed', gather: 'gather speed', build: 'build speed', train: 'training speed', heal: 'heal speed' }[k];
+  SETS['h_' + h.id] = { n: h.set, cat: 'Event · ' + h.n, mon: h.mon, hol: h.id, d: '+5% / +10% / +15% ' + lab + ' (placeholder)', aura: h.aura, b: { 3: { [k]: 0.05 }, 5: { [k]: 0.10 }, 7: { [k]: 0.15 } } };
+});
+const HOL_DAYS = 7;
+function holidayStarts(h, y) { return h.d(y).map(d => d.getTime()); }
+/* every window (start ms) of one holiday that could touch `now`: this year and last (a week can cross New Year) */
+function holidayWindows(h, now) { const y = new Date(now).getFullYear(), r = []; for (const yy of [y - 1, y]) for (const t of holidayStarts(h, yy)) r.push(t); return r; }
+const HUNT_PREVIEW = { holiday: (typeof location !== 'undefined' && (/[?&]holiday=(\w+)/.exec(location.search) || [])[1]) || null };   // demo only: forces one holiday monster on (URL ?holiday=halloween or the Hunt tab)
+function activeHolidays(now) {
+  now = now == null ? Date.now() : now; const out = [];
+  for (const h of HOLIDAYS) if (holidayWindows(h, now).some(t => now >= t && now < t + HOL_DAYS * 86400000)) out.push(h.id);
+  if (HUNT_PREVIEW.holiday && !out.includes(HUNT_PREVIEW.holiday)) out.push(HUNT_PREVIEW.holiday);
+  return out;
+}
+function nextHolidayStart(h, now) { const y = new Date(now).getFullYear(); let best = null; for (const yy of [y, y + 1]) for (const t of holidayStarts(h, yy)) if (t > now && (best == null || t < best)) best = t; return best; }
+/* Holiday monsters appear in place of this share of the map's monster packs during the event week. */
+const HOL_SHARE = 0.3;
+/* Monster id at a tile: a holiday monster ('h_..' set id) or one of this week's three regular monsters. */
+function monsterIdAt(x, y, now) {
+  const hol = activeHolidays(now);
+  if (hol.length && hx(x, y, 11) < HOL_SHARE) return 'h_' + hol[Math.floor(hx(x, y, 12) * hol.length)];
+  const act = activeSets(now); return act[Math.floor(hx(x, y, 13) * 3)];
+}
+
+/* Monster drop table. A monster of level L drops only materials of tier L or lower (strict ceiling).
+   DROP_MAX is the Level 6 spread with the hunting research maxed: Basic/Common/Uncommon 50% together, Rare 35, Epic 14.3, Legendary 0.7.
+   DROP_BASE is the same shape with no research. Lower-level monsters use the same weights cut off at their level and rescaled. */
+const DROP_MAX = [25, 15, 10, 35, 14.3, 0.7], DROP_BASE = [32, 20, 13, 29, 5.5, 0.5];
+function dropWeights(L, research) { const t = Math.max(0, Math.min(1, (research || 0) / 10)), w = []; for (let i = 0; i < L; i++) w.push(DROP_BASE[i] + (DROP_MAX[i] - DROP_BASE[i]) * t); return w; }
+function dropOdds(L, research) { const w = dropWeights(L, research), s = w.reduce((a, b) => a + b, 0); return w.map(x => x / s); }
+/* Hunt stamina: higher-level monsters cost more. Regenerates 1 per 20 drill seconds (5 sheet minutes). */
+const STAM_MAX = 120, STAM_REGEN_MS = 20000;
+const stamCost = L => 10 + 4 * (L - 1);
+/* Hunt streak: a win within STREAK_MS of the last keeps the streak. Every 3 in a row adds one extra material roll (max +3). */
+const STREAK_MS = 600000;
+/* Alliance gift chests from monster kills: level 1-6, larger chests at higher levels. Shared with the whole alliance. */
+const CHEST_LIFE_MS = 24 * 3600000, CHEST_MAX = 40;
 function piecePct(slot, grade) { const [a, b] = SLOT_CURVE[slot]; return (a + (b - a) * (grade - 1) / 5) / 100; }
 
 const RALLY_WAITS = [['5 minutes', 300], ['15 minutes', 900], ['30 minutes', 1800], ['1 hour', 3600], ['8 hours', 28800]];
