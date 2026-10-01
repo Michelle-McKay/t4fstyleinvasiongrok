@@ -1,6 +1,6 @@
 {
  "v": 2,
- "count": 660,
+ "count": 639,
  "groups": [
   {
    "id": "bld",
@@ -35,7 +35,7 @@
   {
    "id": "holiday",
    "title": "Holiday monsters, event sets and alliance chests",
-   "note": "One monster, one loot tile and one event shard for each of the 15 holidays, plus the alliance gift chest. Holiday monsters use the same pale grey and slate body style, size and camera as the regular monsters with ONE clear festive accent each (colour and prop), so they read as the same creature family. Nothing may show text, numbers, real flags or real logos. Every one must be built so it can be animated later: separate head, body and limbs, and the glowing parts kept as clean separate shapes."
+   "note": "One monster and one loot tile for each of the 15 holidays, one shard for each of the 6 holiday gear sets, plus the alliance gift chest. Holiday monsters use the same pale grey and slate body style, size and camera as the regular monsters with ONE clear festive accent each (colour and prop), so they read as the same creature family. Nothing may show text, numbers, real flags or real logos. Every one must be built so it can be animated later: separate head, body and limbs, and the glowing parts kept as clean separate shapes."
   },
   {
    "id": "tile",
@@ -64,8 +64,8 @@
   },
   {
    "id": "gear",
-   "title": "Gear icons (42)",
-   "note": "Seven slots (helm, chest armor, gauntlets, greaves, boots, weapon, amulet) in six grades, transparent, front view. Higher grades look grander, and every piece shows FOUR round sockets in the same four places: the number of OPEN sockets follows the quality rule (Basic 1, Common 1, Uncommon 2, Rare 2, Epic 3, Legendary 3) and the rest are closed, and the fourth socket is ALWAYS drawn closed with a small brass research cap (it opens with Gemology research, drawn in code as a glowing ring). Do a whole slot (six grades) together."
+   "title": "Gear icons (30)",
+   "note": "Five slots (helmet, armor, footwear, weapon, accessory) in six grades, transparent, front view. Higher grades look grander, and every piece shows FOUR round sockets in the same four places: the number of OPEN sockets follows the quality rule (Basic 1, Common 1, Uncommon 2, Rare 2, Epic 3, Legendary 3) and the rest are closed, and the fourth socket is ALWAYS drawn closed with a small brass research cap (it opens with Gemology research, drawn in code as a glowing ring). Do a whole slot (six grades) together."
   },
   {
    "id": "xpi",
@@ -1483,96 +1483,96 @@
   },
   {
    "group": "map",
-   "key": "mon_set_vanguard",
-   "name": "Vanguard Warden (Vanguard set monster)",
+   "key": "mon_set_rock",
+   "name": "Armored Juggernaut (\"Rock\" Troop Set set monster)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 384
   },
   {
    "group": "map",
-   "key": "mon_set_outrider",
-   "name": "Outrider Stalker (Outrider set monster)",
+   "key": "mon_set_paper",
+   "name": "Cyber-Raptor (\"Paper\" Troop Set set monster)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 384
   },
   {
    "group": "map",
-   "key": "mon_set_battery",
-   "name": "Battery Beetle (Battery set monster)",
+   "key": "mon_set_scissors",
+   "name": "Venom Spitter (\"Scissors\" Troop Set set monster)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 384
   },
   {
    "group": "map",
-   "key": "mon_set_marksman",
-   "name": "Marksman Shrike (Marksman set monster)",
+   "key": "mon_set_training",
+   "name": "Rogue Supply Drone (Higher Quality Training Set set monster)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 384
   },
   {
    "group": "map",
-   "key": "mon_set_prospector",
-   "name": "Prospector Mole (Prospector set monster)",
+   "key": "mon_set_construction",
+   "name": "Data-Golems (Higher Quality Construction Set set monster)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 384
   },
   {
    "group": "map",
-   "key": "mon_set_caravan",
-   "name": "Caravan Behemoth (Caravan set monster)",
+   "key": "mon_set_research",
+   "name": "Crystal-Eater Worm (Higher Quality Research Set set monster)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 384
   },
   {
    "group": "map",
-   "key": "mon_set_foundry",
-   "name": "Foundry Golem (Foundry set monster)",
+   "key": "mon_set_siege",
+   "name": "Scrap-Scraper Mech (Siege (Trap-Killer) Set set monster)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 384
   },
   {
    "group": "map",
-   "key": "mon_set_academy",
-   "name": "Academy Mantis (Academy set monster)",
+   "key": "mon_set_tilehit",
+   "name": "Pack-Hunter Drone (Tile Hit Attack Set set monster)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 384
   },
   {
    "group": "map",
-   "key": "mon_set_medic",
-   "name": "Medic Moth (Medic set monster)",
+   "key": "mon_set_rally",
+   "name": "War-Boss Behemoth (General Rallying Set set monster)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 384
   },
   {
    "group": "map",
-   "key": "mon_set_bulwark",
-   "name": "Bulwark Tortoise (Bulwark set monster)",
+   "key": "mon_set_wrally",
+   "name": "Dreadnought Overlord (Wonder Rally Set set monster)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 384
   },
   {
    "group": "map",
-   "key": "mon_set_breaker",
-   "name": "Breaker Ram (Breaker set monster)",
+   "key": "mon_set_wsolo",
+   "name": "Bio-Hazard Pest (Wonder Solo Set set monster)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 384
   },
   {
    "group": "map",
-   "key": "mon_set_tracker",
-   "name": "Tracker Lynx (Tracker set monster)",
+   "key": "mon_set_wdef",
+   "name": "Fortress Automaton (Wonder Defense Set set monster)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 384
@@ -1627,96 +1627,96 @@
   },
   {
    "group": "map",
-   "key": "monloot_set_vanguard",
-   "name": "Vanguard Warden loot tile",
+   "key": "monloot_set_rock",
+   "name": "Armored Juggernaut loot tile",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
   },
   {
    "group": "map",
-   "key": "monloot_set_outrider",
-   "name": "Outrider Stalker loot tile",
+   "key": "monloot_set_paper",
+   "name": "Cyber-Raptor loot tile",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
   },
   {
    "group": "map",
-   "key": "monloot_set_battery",
-   "name": "Battery Beetle loot tile",
+   "key": "monloot_set_scissors",
+   "name": "Venom Spitter loot tile",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
   },
   {
    "group": "map",
-   "key": "monloot_set_marksman",
-   "name": "Marksman Shrike loot tile",
+   "key": "monloot_set_training",
+   "name": "Rogue Supply Drone loot tile",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
   },
   {
    "group": "map",
-   "key": "monloot_set_prospector",
-   "name": "Prospector Mole loot tile",
+   "key": "monloot_set_construction",
+   "name": "Data-Golems loot tile",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
   },
   {
    "group": "map",
-   "key": "monloot_set_caravan",
-   "name": "Caravan Behemoth loot tile",
+   "key": "monloot_set_research",
+   "name": "Crystal-Eater Worm loot tile",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
   },
   {
    "group": "map",
-   "key": "monloot_set_foundry",
-   "name": "Foundry Golem loot tile",
+   "key": "monloot_set_siege",
+   "name": "Scrap-Scraper Mech loot tile",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
   },
   {
    "group": "map",
-   "key": "monloot_set_academy",
-   "name": "Academy Mantis loot tile",
+   "key": "monloot_set_tilehit",
+   "name": "Pack-Hunter Drone loot tile",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
   },
   {
    "group": "map",
-   "key": "monloot_set_medic",
-   "name": "Medic Moth loot tile",
+   "key": "monloot_set_rally",
+   "name": "War-Boss Behemoth loot tile",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
   },
   {
    "group": "map",
-   "key": "monloot_set_bulwark",
-   "name": "Bulwark Tortoise loot tile",
+   "key": "monloot_set_wrally",
+   "name": "Dreadnought Overlord loot tile",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
   },
   {
    "group": "map",
-   "key": "monloot_set_breaker",
-   "name": "Breaker Ram loot tile",
+   "key": "monloot_set_wsolo",
+   "name": "Bio-Hazard Pest loot tile",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
   },
   {
    "group": "map",
-   "key": "monloot_set_tracker",
-   "name": "Tracker Lynx loot tile",
+   "key": "monloot_set_wdef",
+   "name": "Fortress Automaton loot tile",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -1963,120 +1963,48 @@
   },
   {
    "group": "holiday",
-   "key": "shard_hol_newyear",
-   "name": "Countdown event shard",
+   "key": "shard_hs_rpd",
+   "name": "Rock + Paper Defense Set shard",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128
   },
   {
    "group": "holiday",
-   "key": "shard_hol_valentine",
-   "name": "Heartstring event shard",
+   "key": "shard_hs_rsd",
+   "name": "Rock + Scissors Defense Set shard",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128
   },
   {
    "group": "holiday",
-   "key": "shard_hol_stpat",
-   "name": "Clover event shard",
+   "key": "shard_hs_psd",
+   "name": "Paper + Scissors Defense Set shard",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128
   },
   {
    "group": "holiday",
-   "key": "shard_hol_memorial",
-   "name": "Poppy event shard",
+   "key": "shard_hs_rpa",
+   "name": "Rock + Paper Attack Set shard",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128
   },
   {
    "group": "holiday",
-   "key": "shard_hol_canada",
-   "name": "Maple event shard",
+   "key": "shard_hs_rsa",
+   "name": "Rock + Scissors Attack Set shard",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128
   },
   {
    "group": "holiday",
-   "key": "shard_hol_july4",
-   "name": "Sparkler event shard",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 128
-  },
-  {
-   "group": "holiday",
-   "key": "shard_hol_thanks",
-   "name": "Harvest event shard",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 128
-  },
-  {
-   "group": "holiday",
-   "key": "shard_hol_halloween",
-   "name": "Hollow event shard",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 128
-  },
-  {
-   "group": "holiday",
-   "key": "shard_hol_xmas",
-   "name": "Evergreen event shard",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 128
-  },
-  {
-   "group": "holiday",
-   "key": "shard_hol_cny",
-   "name": "Festival event shard",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 128
-  },
-  {
-   "group": "holiday",
-   "key": "shard_hol_diwali",
-   "name": "Diya event shard",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 128
-  },
-  {
-   "group": "holiday",
-   "key": "shard_hol_eid",
-   "name": "Crescent event shard",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 128
-  },
-  {
-   "group": "holiday",
-   "key": "shard_hol_holi",
-   "name": "Gulal event shard",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 128
-  },
-  {
-   "group": "holiday",
-   "key": "shard_hol_muertos",
-   "name": "Marigold event shard",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 128
-  },
-  {
-   "group": "holiday",
-   "key": "shard_hol_midautumn",
-   "name": "Moonlight event shard",
+   "key": "shard_hs_psa",
+   "name": "Paper + Scissors Attack Set shard",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128
@@ -2244,7 +2172,7 @@
   {
    "group": "pack",
    "key": "pack_vanguard",
-   "name": "Vanguard Armoury",
+   "name": "Rock Troop Armoury",
    "size": "4:3, 1600 x 1200",
    "transparent": false,
    "out": 800
@@ -2252,7 +2180,7 @@
   {
    "group": "pack",
    "key": "pack_outrider",
-   "name": "Outrider Kit",
+   "name": "Paper Troop Kit",
    "size": "4:3, 1600 x 1200",
    "transparent": false,
    "out": 800
@@ -2821,102 +2749,6 @@
    "group": "gear",
    "key": "gear_boots_g6",
    "name": "Gear: boots, grade 6",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 256
-  },
-  {
-   "group": "gear",
-   "key": "gear_gauntlets_g1",
-   "name": "Gear: gauntlets, grade 1",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 256
-  },
-  {
-   "group": "gear",
-   "key": "gear_gauntlets_g2",
-   "name": "Gear: gauntlets, grade 2",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 256
-  },
-  {
-   "group": "gear",
-   "key": "gear_gauntlets_g3",
-   "name": "Gear: gauntlets, grade 3",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 256
-  },
-  {
-   "group": "gear",
-   "key": "gear_gauntlets_g4",
-   "name": "Gear: gauntlets, grade 4",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 256
-  },
-  {
-   "group": "gear",
-   "key": "gear_gauntlets_g5",
-   "name": "Gear: gauntlets, grade 5",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 256
-  },
-  {
-   "group": "gear",
-   "key": "gear_gauntlets_g6",
-   "name": "Gear: gauntlets, grade 6",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 256
-  },
-  {
-   "group": "gear",
-   "key": "gear_greaves_g1",
-   "name": "Gear: greaves, grade 1",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 256
-  },
-  {
-   "group": "gear",
-   "key": "gear_greaves_g2",
-   "name": "Gear: greaves, grade 2",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 256
-  },
-  {
-   "group": "gear",
-   "key": "gear_greaves_g3",
-   "name": "Gear: greaves, grade 3",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 256
-  },
-  {
-   "group": "gear",
-   "key": "gear_greaves_g4",
-   "name": "Gear: greaves, grade 4",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 256
-  },
-  {
-   "group": "gear",
-   "key": "gear_greaves_g5",
-   "name": "Gear: greaves, grade 5",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 256
-  },
-  {
-   "group": "gear",
-   "key": "gear_greaves_g6",
-   "name": "Gear: greaves, grade 6",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 256
@@ -4583,96 +4415,96 @@
   },
   {
    "group": "mgem",
-   "key": "mgem_vanguard",
-   "name": "Monster Gem: Vanguard (Vanguard Warden)",
+   "key": "mgem_rock",
+   "name": "Monster Gem: \"Rock\" Troop Set (Armored Juggernaut)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128
   },
   {
    "group": "mgem",
-   "key": "mgem_outrider",
-   "name": "Monster Gem: Outrider (Outrider Stalker)",
+   "key": "mgem_paper",
+   "name": "Monster Gem: \"Paper\" Troop Set (Cyber-Raptor)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128
   },
   {
    "group": "mgem",
-   "key": "mgem_marksman",
-   "name": "Monster Gem: Marksman (Marksman Shrike)",
+   "key": "mgem_scissors",
+   "name": "Monster Gem: \"Scissors\" Troop Set (Venom Spitter)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128
   },
   {
    "group": "mgem",
-   "key": "mgem_battery",
-   "name": "Monster Gem: Battery (Battery Beetle)",
+   "key": "mgem_training",
+   "name": "Monster Gem: Higher Quality Training Set (Rogue Supply Drone)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128
   },
   {
    "group": "mgem",
-   "key": "mgem_prospector",
-   "name": "Monster Gem: Prospector (Prospector Mole)",
+   "key": "mgem_construction",
+   "name": "Monster Gem: Higher Quality Construction Set (Data-Golems)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128
   },
   {
    "group": "mgem",
-   "key": "mgem_caravan",
-   "name": "Monster Gem: Caravan (Caravan Behemoth)",
+   "key": "mgem_research",
+   "name": "Monster Gem: Higher Quality Research Set (Crystal-Eater Worm)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128
   },
   {
    "group": "mgem",
-   "key": "mgem_foundry",
-   "name": "Monster Gem: Foundry (Foundry Golem)",
+   "key": "mgem_siege",
+   "name": "Monster Gem: Siege (Trap-Killer) Set (Scrap-Scraper Mech)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128
   },
   {
    "group": "mgem",
-   "key": "mgem_academy",
-   "name": "Monster Gem: Academy (Academy Mantis)",
+   "key": "mgem_tilehit",
+   "name": "Monster Gem: Tile Hit Attack Set (Pack-Hunter Drone)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128
   },
   {
    "group": "mgem",
-   "key": "mgem_medic",
-   "name": "Monster Gem: Medic (Medic Moth)",
+   "key": "mgem_rally",
+   "name": "Monster Gem: General Rallying Set (War-Boss Behemoth)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128
   },
   {
    "group": "mgem",
-   "key": "mgem_bulwark",
-   "name": "Monster Gem: Bulwark (Bulwark Tortoise)",
+   "key": "mgem_wrally",
+   "name": "Monster Gem: Wonder Rally Set (Dreadnought Overlord)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128
   },
   {
    "group": "mgem",
-   "key": "mgem_breaker",
-   "name": "Monster Gem: Breaker (Breaker Ram)",
+   "key": "mgem_wsolo",
+   "name": "Monster Gem: Wonder Solo Set (Bio-Hazard Pest)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128
   },
   {
    "group": "mgem",
-   "key": "mgem_tracker",
-   "name": "Monster Gem: Tracker (Tracker Lynx)",
+   "key": "mgem_wdef",
+   "name": "Monster Gem: Wonder Defense Set (Fortress Automaton)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128

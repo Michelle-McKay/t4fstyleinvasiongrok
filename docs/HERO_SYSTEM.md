@@ -137,7 +137,7 @@ Cost by stretch at $2.00 per 100k: levels 1-30 about $235, 30-45 about $1,855, 4
 - XP items: 6 sizes (10k to 1M XP), packs of 5 sold at the prices in section 5 (sandbox purchases only). Inventory tab has Use and Use max. No single-item sales exist. `xpPackRate()` returns $ per 100k XP; every pack is at or above $2.00.
 - Free XP: hunts (3,000 x monster grade), building and research completion (400 x level), and the daily exercise (2 Tiny + 1 Small items). No catch-up scaling. The game's drill clock runs faster than the real game, so the free-XP numbers are placeholders to tune.
 
-- **Hero level 30 gate (2026-10-01):** set gear (weekly and holiday sets) can only be worn at hero level 30 or higher; Basic gear has no gate. See [FORGE_GEMS.md](FORGE_GEMS.md).
+- **Gear gates and slots (2026-10-01, supersedes the 7-slot and 3/5/7 text above):** five slots (Helmet, Armor, Footwear, Weapon, Accessory); set bonuses at 2, 3 and 5 pieces; every Basic gear category and every set has its own hero unlock level (Lv 1 to 50). See [FORGE_GEMS.md](FORGE_GEMS.md).
 
 ## 11. Open items still placeholders
 - Level cap: flat 50 (`HERO_MAX`), not tied to player or base level.

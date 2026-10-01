@@ -18,9 +18,9 @@ IAP_CATALOG.push(
   { id: 'com.ironmarch.pack.warpath', group: 'pack', cat: 'cmd', tier: 2, n: 'Warpath Pack', usd: 7.99, dia: 400, give: { s480: 2, s60: 4, tokens: 3 }, art: 'warpath', blurb: 'Armour column supplies for rallies and long marches.' },
   { id: 'com.ironmarch.pack.marshal', group: 'pack', cat: 'cmd', tier: 3, n: "Marshal's Orders", usd: 9.99, dia: 200, give: { orders: 15, seals: 10, tokens: 4 }, art: 'marshal', blurb: 'Orders to rally, seals to ransom, tokens for extra columns.' },
   { id: 'com.ironmarch.pack.siege', group: 'pack', cat: 'cmd', tier: 4, n: 'Siege Train', usd: 19.99, dia: 300, give: { bars: { 3: 6, 4: 2 }, orders: 10, tokens: 5, alloy: 80000 }, art: 'siege', blurb: 'Heavy bars and orders to break a fortress.' },
-  { id: 'com.ironmarch.pack.foundry', group: 'pack', cat: 'gear', tier: 3, n: 'Foundry Pack', usd: 14.99, dia: 800, give: { bars: { 2: 6, 3: 3, 4: 1 }, shards: { battery: 1 }, rations: 60000, fuel: 50000, power: 50000, alloy: 40000 }, art: 'foundry', blurb: 'Bars, a Battery shard and a full lot for the forge.' },
-  { id: 'com.ironmarch.pack.vanguard', group: 'pack', cat: 'gear', tier: 3, n: 'Vanguard Armoury', usd: 14.99, dia: 300, give: { shards: { vanguard: 3 }, bars: { 2: 8, 3: 4 }, gear: [{ slot: 'weapon', grade: 3, set: 'vanguard' }] }, art: 'vanguard', blurb: 'A forged grade-3 weapon, Vanguard shards and bars.' },
-  { id: 'com.ironmarch.pack.outrider', group: 'pack', cat: 'gear', tier: 3, n: 'Outrider Kit', usd: 14.99, dia: 300, give: { shards: { outrider: 3 }, bars: { 2: 8, 3: 4 }, gear: [{ slot: 'boots', grade: 3, set: 'outrider' }] }, art: 'outrider', blurb: 'A forged grade-3 pair of boots, Outrider shards and bars.' },
+  { id: 'com.ironmarch.pack.foundry', group: 'pack', cat: 'gear', tier: 3, n: 'Foundry Pack', usd: 14.99, dia: 800, give: { bars: { 2: 6, 3: 3, 4: 1 }, shards: { training: 1 }, rations: 60000, fuel: 50000, power: 50000, alloy: 40000 }, art: 'foundry', blurb: 'Bars, a Training Set shard and a full lot for the forge.' },
+  { id: 'com.ironmarch.pack.vanguard', group: 'pack', cat: 'gear', tier: 3, n: 'Rock Troop Armoury', usd: 14.99, dia: 300, give: { shards: { rock: 3 }, bars: { 2: 8, 3: 4 }, gear: [{ slot: 'weapon', grade: 3, set: 'rock' }] }, art: 'vanguard', blurb: 'A forged grade-3 weapon, Rock Troop shards and bars.' },
+  { id: 'com.ironmarch.pack.outrider', group: 'pack', cat: 'gear', tier: 3, n: 'Paper Troop Kit', usd: 14.99, dia: 300, give: { shards: { paper: 3 }, bars: { 2: 8, 3: 4 }, gear: [{ slot: 'boots', grade: 3, set: 'paper' }] }, art: 'outrider', blurb: 'A forged grade-3 pair of boots, Paper Troop shards and bars.' },
   { id: 'com.ironmarch.pack.warlord', group: 'pack', cat: 'epic', tier: 4, n: "Warlord's Chest", usd: 49.99, dia: 2000, give: { rations: 200000, fuel: 180000, power: 180000, alloy: 120000, cash: 100000, s480: 4, s60: 8, tokens: 6, orders: 10, bars: { 3: 6, 4: 3 }, shards: { vanguard: 2, outrider: 2, battery: 2 } }, tag: 'Best value', art: 'warlord', blurb: 'A chest of everything a campaign needs.' },
   { id: 'com.ironmarch.pack.sovereign', group: 'pack', cat: 'epic', tier: 5, n: "Sovereign's Vault", usd: 99.99, dia: 5000, give: { rations: 500000, fuel: 450000, power: 450000, alloy: 300000, cash: 250000, s480: 10, s60: 20, tokens: 12, orders: 25, seals: 15, bars: { 3: 10, 4: 6, 5: 2 }, shards: { vanguard: 4, outrider: 4, battery: 4 }, gear: [{ slot: 'chest', grade: 4, set: 'vanguard' }, { slot: 'helmet', grade: 4, set: 'outrider' }] }, art: 'sovereign', blurb: 'The whole vault: supplies, slips, gear and diamonds.' },
   { id: 'com.ironmarch.pack.xptiny', group: 'pack', cat: 'xp', tier: 1, n: 'Tiny XP Pack', usd: 1.49, dia: 0, give: { xpi: { tiny: 5 } }, art: 'xptiny', blurb: 'Five Tiny XP items, a small boost for the hero.' },
@@ -46,7 +46,7 @@ function packGrant(g) {
     else if (k === 'bars') for (const gg in v) S.bars[gg] = (S.bars[gg] || 0) + v[gg];
     else if (k === 'shards') for (const sh in v) shardAdd(sh, v[sh]);
     else if (k === 'gems') for (const gk in v) gemAdd(gk, v[gk]);
-    else if (k === 'gear') v.forEach(p => S.gear.pieces.push({ id: S.nid++, slot: p.slot, grade: p.grade, set: p.set || null, stat: p.slot === 'accessory' ? 'training' : null }));
+    else if (k === 'gear') v.forEach(p => S.gear.pieces.push({ id: S.nid++, slot: p.slot, grade: p.grade, set: p.set || null, cat: p.set ? null : (p.cat || 'attack'), gems: [], stars: 0 }));
   }
 }
 
@@ -64,9 +64,9 @@ function packRows(p) {
   if (g.seals) r.push({ ico: 'seals', q: '×' + g.seals, t: 'Restraint seals', n: 'Ransom captured heroes' });
   if (g.xpi) for (const id in g.xpi) { const it = XPI.find(x => x.id === id); r.push({ ico: 'xpi:' + id, q: '×' + g.xpi[id], t: it.n + (g.xpi[id] > 1 ? 's' : ''), n: fmtN(it.xp) + ' hero XP each' }); }
   if (g.builder) r.push({ ico: 'builder', q: '+1', t: 'Second builder', n: 'Permanent' });
-  if (g.bars) for (const gg in g.bars) r.push({ ico: 'bars', q: '×' + g.bars[gg], t: `${qName(gg)} materials`, n: 'Forge material' });
-  if (g.shards) for (const sh in g.shards) r.push({ ico: 'shard:' + sh, q: '×' + g.shards[sh], t: SETS[sh].n + ' shards', n: SETS[sh].d });
-  if (g.gear) g.gear.forEach(x => r.push({ ico: 'gear', q: '×1', t: `${SETS[x.set].n} ${x.slot}`, n: `${qName(x.grade)}, ready to wear` }));
+  if (g.bars) for (const gg in g.bars) r.push({ ico: 'bars', q: '×' + g.bars[gg], t: `${matName(gg)}`, n: 'Forge material' });
+  if (g.shards) for (const sh in g.shards) r.push({ ico: 'shard:' + sh, q: '×' + g.shards[sh], t: SETS[sh].n + ' shards', n: setDesc(sh) });
+  if (g.gear) g.gear.forEach(x => r.push({ ico: 'gear', q: '×1', t: `${SETS[x.set].n} ${SLOT_NAME[x.slot]}`, n: `${qName(x.grade)}, ready to wear` }));
   return r;
 }
 /* Every single item in the pack as its own line, for the "Full contents" dropdown. Same totals as packRows, just unbundled:
@@ -84,9 +84,9 @@ function packItems(p) {
   for (let i = 0; i < (g.seals || 0); i++) r.push({ ico: 'seals', q: '×1', t: 'Restraint seal', n: 'Ransom a captured hero' });
   if (g.xpi) for (const id in g.xpi) for (let i = 0; i < g.xpi[id]; i++) { const it = XPI.find(x => x.id === id); r.push({ ico: 'xpi:' + id, q: '×1', t: it.n, n: fmtN(it.xp) + ' hero XP' }); }
   if (g.builder) r.push({ ico: 'builder', q: '+1', t: 'Second builder', n: 'Permanent' });
-  if (g.bars) for (const gg in g.bars) for (let i = 0; i < g.bars[gg]; i++) r.push({ ico: 'bars', q: '×1', t: `${qName(gg)} material`, n: 'Forge material' });
-  if (g.shards) for (const sh in g.shards) for (let i = 0; i < g.shards[sh]; i++) r.push({ ico: 'shard:' + sh, q: '×1', t: SETS[sh].n + ' shard', n: SETS[sh].d });
-  if (g.gear) g.gear.forEach(x => r.push({ ico: 'gear', q: '×1', t: `${SETS[x.set].n} ${x.slot}`, n: `${qName(x.grade)}, ready to wear` }));
+  if (g.bars) for (const gg in g.bars) for (let i = 0; i < g.bars[gg]; i++) r.push({ ico: 'bars', q: '×1', t: `${matName(gg)}`, n: 'Forge material' });
+  if (g.shards) for (const sh in g.shards) for (let i = 0; i < g.shards[sh]; i++) r.push({ ico: 'shard:' + sh, q: '×1', t: SETS[sh].n + ' shard', n: setDesc(sh) });
+  if (g.gear) g.gear.forEach(x => r.push({ ico: 'gear', q: '×1', t: `${SETS[x.set].n} ${SLOT_NAME[x.slot]}`, n: `${qName(x.grade)}, ready to wear` }));
   return r;
 }
 /* Value at this game's own diamond-store rates, so the figure is checkable in the Store tab. */
