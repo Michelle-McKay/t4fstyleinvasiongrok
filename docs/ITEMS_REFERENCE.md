@@ -67,7 +67,7 @@ Same five sub-tabs as the store (Special, Resources, Speed Up, War, Chests). Eac
 
 | Reference idea | Our version | Status |
 |---|---|---|
-| Bag split into the same five tabs | Our bag is one list today | Maybe |
-| Icon grid with count in the corner | List rows today | Maybe |
+| Bag split into the same five tabs | My Items tab with five sub-tabs | Built |
+| Icon grid with count in the corner | Four-column grid, count in the corner, tap for details and Use; items with none left are hidden | Built |
 | Job-specific speed-ups (building only) | Slips work on any job | Maybe |
 | Expired timed items | Our items do not expire | No |

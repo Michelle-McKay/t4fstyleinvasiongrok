@@ -2,7 +2,7 @@
 
 Opened from the Item dock tab (Bag, Special, Resources, Speed Up, War, Chests). Catalog: `ITEMS` in `js/data.js`. Logic and screen: `js/items.js`. Ideas taken from a reference game's Special store tab; names, prices and effects are our own.
 
-- **Bag.** Diamond items are bought into the bag (`S.itm`) and used from there. A new save starts with 2 Random Teleports, 1 Advanced Teleport and 1 Skill Reset.
+- **My Items.** Diamond items are bought into the bag (`S.itm`) and used from the My Items tab: a four-column icon grid with the count in the corner and the same five sub-tabs as the store. Tap an item for its text and a Use button. Slips are listed under Speed Up and are used from the Slip button on a job. A new save starts with 2 Random Teleports, 1 Advanced Teleport and 1 Skill Reset.
 - **VIP points.** 100, 300 and 1,000 points for $1, $3 and $10, real money only (sandbox in the demo, see `docs/IAP.md`). They are never sold for diamonds and there are no timed VIP passes, so VIP stays permanent (`docs/VIP.md`).
 - **Boosts** (`S.buf`): +25% hero XP (not applied to XP items), +50% gathering for 24 hours or 7 days, +25% and +50% march speed. Durations are sheet time divided by the drill clock; buying the same boost again extends it.
 - **Teleports.** Every base move now spends one: a random landing uses a Random Teleport, a chosen spot an Advanced Teleport. The novice-kingdom hop keeps its own limit.
