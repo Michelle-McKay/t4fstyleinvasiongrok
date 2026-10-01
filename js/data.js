@@ -125,31 +125,6 @@ const XPI = [
   { id: 'medium', n: 'Medium XP Item', xp: 100000, usd: 12.99 }, { id: 'large', n: 'Large XP Item', xp: 250000, usd: 29.99 },
   { id: 'huge', n: 'Huge XP Item', xp: 500000, usd: 54.99 }, { id: 'grand', n: 'Grand XP Item', xp: 1000000, usd: 99.99 }
 ];
-/* Store items (Items drawer > Special and Speed Up). Spec: docs/ITEMS.md. cost = diamonds, usd = real money through js/iap.js (sandbox until server validation exists).
-   VIP points are sold ONLY for real money, never for diamonds, and there are no timed VIP passes: VIP stays permanent (docs/VIP.md).
-   buf items are timed boosts; sheet is the sheet time in seconds, the drill clock divides it by DRILL. art is the prompt subject for tools/artcatalog.js; g is the short label on the placeholder icon. */
-const ITEMS = [
-  { id: 'vip100', n: '100 VIP Points', cat: 'special', usd: 1, vip: 100, g: 'VIP', d: 'Adds 100 VIP points. Real money only, never diamonds.', art: 'a brass shield-shaped VIP badge with a laurel wreath and a small cut cyan gem, the smallest size' },
-  { id: 'vip300', n: '300 VIP Points', cat: 'special', usd: 3, vip: 300, g: 'VIP', d: 'Adds 300 VIP points. Real money only, never diamonds.', art: 'the same VIP shield badge and laurel wreath, a little larger, with two small cut cyan gems' },
-  { id: 'vip1000', n: '1,000 VIP Points', cat: 'special', usd: 10, vip: 1000, g: 'VIP', d: 'Adds 1,000 VIP points. Real money only, never diamonds.', art: 'the same VIP shield badge and laurel wreath, the largest, with three cut cyan gems and a faint golden glow' },
-  { id: 'xp25', n: '25% Hero XP Bonus', cat: 'special', cost: 1200, buf: 'xp', pct: 0.25, sheet: 86400, g: 'XP+', d: '+25% hero XP from hunts, battles and building for 24 sheet hours. XP items are not boosted.', art: 'a faceted round XP medal with a white star on a short ribbon, with a small green up arrow beside it' },
-  { id: 'gath24', n: '24-Hour +50% Gathering', cat: 'special', cost: 600, buf: 'gather', pct: 0.5, sheet: 86400, g: '+50%', d: 'Columns gather 50% faster for 24 sheet hours.', art: 'a loaded supply cart with crates and a pickaxe, with a small green up arrow beside it' },
-  { id: 'gath7', n: '7-Day +50% Gathering', cat: 'special', cost: 5000, buf: 'gather', pct: 0.5, sheet: 604800, g: '+50%', d: 'Columns gather 50% faster for 7 sheet days.', art: 'the same loaded supply cart as the 24-hour gathering boost, with a small brass 7 plate fixed to the cart and a green up arrow' },
-  { id: 'tp_rand', n: 'Random Teleport', cat: 'special', cost: 500, g: 'TP?', d: 'Moves your base to a random open spot in your kingdom. Every teleport needs one.', art: 'a folded map of a small base with a cyan swirl and a question-mark pin on it' },
-  { id: 'tp_adv', n: 'Advanced Teleport', cat: 'special', cost: 1500, g: 'TP', d: 'Moves your base to any open spot you pick, including alliance and rival territory.', art: 'the same folded map as the random teleport, with a cyan swirl and a bold target-ring pin instead of the question mark' },
-  { id: 'rn_cmd', n: 'Commander Rename', cat: 'special', cost: 400, g: 'ABC', d: 'Gives your commander a new name.', art: 'a rolled parchment scroll with a quill pen and a brass seal, no writing on it' },
-  { id: 'rn_ally', n: 'Alliance Rename', cat: 'special', cost: 200, g: 'ABC', d: 'Renames your alliance.', art: 'a steel alliance shield banner with a quill pen crossing it, no writing' },
-  { id: 'tag_card', n: 'Alliance Tag Card', cat: 'special', cost: 100, g: 'TAG', d: 'Changes the three letters of your alliance tag.', art: 'a small brass-edged identity card with an empty name plate and a cyan shield emblem, no writing' },
-  { id: 'sk_reset', n: 'Skill Reset', cat: 'special', cost: 1000, g: '↺', d: 'Refunds every learned skill so the points can be spent again.', art: 'an open skill-tree book with a curved blue refund arrow around it' },
-  { id: 'sk_hunt', n: 'Hunting Skill Reset', cat: 'special', cost: 1000, g: '↺', d: 'Refunds only the hunting skills.', art: 'a coiled steel hunting snare with a curved orange refund arrow around it' },
-  { id: 'rescue', n: 'Hero Rescue', cat: 'special', cost: 3000, g: '✚', d: 'Frees a captured hero at once. No seal or ransom needed.', art: 'a golden winged cross-shaped medal with a soft warm glow' },
-  { id: 'daily_chance', n: 'Daily Exercise Chance', cat: 'special', cost: 800, g: '+1', d: 'Lets you run the daily exercise one more time today.', art: 'a rolled orders scroll with a blue circular refresh arrow and a small brass 1 plate' },
-  { id: 'bookmarks', n: 'Bookmarks', cat: 'special', cost: 1000, g: '+5', d: 'Five more map bookmark slots, up to 30.', art: 'a folded map with a red location pin stuck in it' },
-  { id: 'bmove', n: 'Building Move', cat: 'special', cost: 500, g: '⇄', d: 'Moves one building to an empty plot of the same kind. Not while it is being built.', art: 'a small modular base building on a square pad with a brass four-way arrow beneath it' },
-  { id: 'march25', n: '25% March Speed Up', cat: 'speed', cost: 500, buf: 'march', pct: 0.25, sheet: 86400, g: '+25%', d: 'Marches move 25% faster for 24 sheet hours.', art: 'a pair of sturdy steel-toed boots with small wings, light green trim' },
-  { id: 'march50', n: '50% March Speed Up', cat: 'speed', cost: 900, buf: 'march', pct: 0.5, sheet: 86400, g: '+50%', d: 'Marches move 50% faster for 24 sheet hours.', art: 'the same pair of winged boots, with violet trim and brighter wings' }
-];
-const ITEM_BK = { base: 6, per: 5, max: 30 };   // bookmark slots
 const XPI_PACK = 5, XP_MIN_RATE = 2.0;         // items per pack, minimum dollars per 100k XP
 /* Free XP, kept roughly flat (about 100k a day in the real game; the drill clock here is faster). No catch-up bonus at higher levels. */
 const XP_FREE = { daily: [['tiny', 2], ['small', 1]], hunt: 3000, battle: 1500, buildPerLevel: 400 };
