@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Art Sandbox</title>
+<style>
+:root{--bg:#10151c;--panel:#1a222d;--line:#2b3746;--ink:#e8eef5;--mute:#8fa0b3;--acc:#f2b632}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font:14px/1.3 "Source Sans 3",system-ui,sans-serif;overflow:hidden;touch-action:none}
+#app{display:flex;flex-direction:column;height:100%}
+#bar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:6px 8px;background:var(--panel);border-bottom:1px solid var(--line)}
+#bar h1{font:600 16px "Barlow Condensed",system-ui,sans-serif;margin:0 8px 0 0;letter-spacing:.05em;text-transform:uppercase;color:var(--acc)}
+button,select,input[type=search]{background:#243040;color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:6px 10px;font:inherit}
+button:active{background:#2f4157}
+button.on{background:var(--acc);color:#111;border-color:var(--acc)}
+#count{color:var(--mute);margin-left:auto}
+#main{flex:1;display:flex;min-height:0}
+#pal{width:230px;background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column;min-height:0}
+#pal .tools{padding:6px;display:flex;flex-direction:column;gap:6px}
+#grid{flex:1;overflow:auto;padding:6px;touch-action:pan-y}
+#grid h3{margin:10px 0 4px;font:600 12px "Barlow Condensed",sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+.items{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.item{aspect-ratio:1;background:#0d1219;border:1px solid var(--line);border-radius:6px;display:flex;align-items:center;justify-content:center;padding:3px;cursor:grab;touch-action:none}
+.item img{max-width:100%;max-height:100%;object-fit:contain;pointer-events:none;-webkit-user-drag:none}
+.item:hover{border-color:var(--acc)}
+#view{flex:1;overflow:auto;position:relative;touch-action:none}
+#stage{position:relative;width:3200px;height:2400px;
+background-color:#0b0f15;
+background-image:linear-gradient(30deg,rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(150deg,rgba(255,255,255,.05) 1px,transparent 1px);
+background-size:128px 74px}
+#stage.nogrid{background-image:none}
+.spr{position:absolute;transform-origin:center;touch-action:none;user-select:none;-webkit-user-drag:none;cursor:move}
+.spr.sel{outline:2px dashed var(--acc);outline-offset:2px}
+#ghost{position:fixed;pointer-events:none;opacity:.8;z-index:99;display:none;max-width:120px;max-height:120px}
+#hint{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--mute);pointer-events:none;text-align:center;padding:20px}
+@media(max-width:700px){#main{flex-direction:column-reverse}#pal{width:100%;height:38%;border-right:0;border-top:1px solid var(--line)}.items{grid-template-columns:repeat(5,1fr)}}
+</style>
+</head>
+<body>
+<div id="app">
+ <div id="bar">
+  <h1>Art Sandbox</h1>
+  <button id="bDel">Delete</button>
+  <button id="bDup">Duplicate</button>
+  <button id="bFlip">Flip</button>
+  <button id="bFront">Front</button>
+  <button id="bBack">Back</button>
+  <button id="bSm">−</button><button id="bBig">+</button>
+  <button id="bGrid" class="on">Grid</button>
+  <button id="bSnap">Snap</button>
+  <button id="bClear">Clear</button>
+  <span id="count"></span>
+ </div>
+ <div id="main">
+  <div id="pal">
+   <div class="tools"><input id="q" type="search" placeholder="Search art…"><select id="cat"></select></div>
+   <div id="grid"></div>
+  </div>
+  <div id="view"><div id="stage"></div><div id="hint">Blank screen.<br>Drag art from the palette (or tap it) onto the canvas.</div></div>
+ </div>
+</div>
+<img id="ghost" alt="">
+<script>
+(function(){
+var KEY='artSandbox.v1',stage=document.getElementById('stage'),view=document.getElementById('view');
+var ghost=document.getElementById('ghost'),hint=document.getElementById('hint');
+var items=[],sel=null,snap=false,nextId=1,assets={};
+var GRID_W=128,GRID_H=74;
+
+function load(){try{var s=JSON.parse(localStorage.getItem(KEY)||'null');if(s&&s.items){items=s.items;nextId=s.nextId||items.length+1;snap=!!s.snap}}catch(e){}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify({items:items,nextId:nextId,snap:snap}))}catch(e){}}
+
+function groupOf(p){return p.split('/')[1]}
+function render(){
+ stage.innerHTML='';
+ items.forEach(function(it,i){
+  var im=document.createElement('img');im.className='spr'+(it===sel?' sel':'');im.src=assets[it.key]||it.src;im.draggable=false;
+  im.style.left=it.x+'px';im.style.top=it.y+'px';im.style.zIndex=i+1;
+  im.style.width=it.w+'px';im.style.transform='translate(-50%,-50%) scaleX('+(it.flip?-1:1)+')';
+  im.dataset.id=it.id;stage.appendChild(im);
+ });
+ hint.style.display=items.length?'none':'flex';
+ document.getElementById('count').textContent=items.length+' placed';
+}
+function byId(id){for(var i=0;i<items.length;i++)if(items[i].id==id)return items[i]}
+
+// stage interactions
+var drag=null;
+stage.addEventListener('pointerdown',function(e){
+ var t=e.target.closest('.spr');
+ if(!t){sel=null;render();return}
+ var it=byId(t.dataset.id);sel=it;
+ items.splice(items.indexOf(it),1);items.push(it);
+ var r=stage.getBoundingClientRect();
+ drag={it:it,dx:e.clientX-r.left-it.x,dy:e.clientY-r.top-it.y};
+ render();stage.setPointerCapture&&stage.setPointerCapture(e.pointerId);e.preventDefault();
+});
+stage.addEventListener('pointermove',function(e){
+ if(!drag)return;var r=stage.getBoundingClientRect();
+ var x=e.clientX-r.left-drag.dx,y=e.clientY-r.top-drag.dy;
+ if(snap){x=Math.round(x/(GRID_W/2))*(GRID_W/2);y=Math.round(y/(GRID_H/2))*(GRID_H/2)}
+ drag.it.x=x;drag.it.y=y;
+ var el=stage.querySelector('[data-id="'+drag.it.id+'"]');if(el){el.style.left=x+'px';el.style.top=y+'px'}
+});
+function end(){if(drag){drag=null;save()}}
+stage.addEventListener('pointerup',end);stage.addEventListener('pointercancel',end);
+view.addEventListener('wheel',function(e){if(sel&&e.shiftKey){e.preventDefault();resize(e.deltaY<0?1.1:0.9)}},{passive:false});
+// pan empty canvas by dragging with middle/right is skipped; the view scrolls natively with scrollbars/two-finger
+
+function place(key,cx,cy){
+ var r=stage.getBoundingClientRect();
+ var x=cx-r.left,y=cy-r.top;
+ var im=new Image();im.onload=function(){
+  var w=Math.min(im.naturalWidth,220);
+  if(snap){x=Math.round(x/(GRID_W/2))*(GRID_W/2);y=Math.round(y/(GRID_H/2))*(GRID_H/2)}
+  var it={id:nextId++,key:key,x:x,y:y,w:w,flip:false};items.push(it);sel=it;render();save();
+ };im.src=assets[key];
+}
+function centre(){var r=view.getBoundingClientRect(),s=stage.getBoundingClientRect();return[r.left+r.width/2+(Math.random()*60-30),r.top+r.height/2+(Math.random()*60-30)]}
+
+// palette
+function buildPalette(){
+ var q=document.getElementById('q').value.toLowerCase(),cat=document.getElementById('cat').value;
+ var g=document.getElementById('grid');g.innerHTML='';
+ var groups={};
+ Object.keys(assets).sort().forEach(function(k){
+  var gname=groupOf(assets[k]);
+  if(cat&&gname!==cat)return;if(q&&k.toLowerCase().indexOf(q)<0)return;
+  (groups[gname]=groups[gname]||[]).push(k);
+ });
+ Object.keys(groups).forEach(function(gn){
+  var h=document.createElement('h3');h.textContent=gn+' ('+groups[gn].length+')';g.appendChild(h);
+  var w=document.createElement('div');w.className='items';
+  groups[gn].forEach(function(k){
+   var d=document.createElement('div');d.className='item';d.title=k;
+   var im=document.createElement('img');im.src=assets[k];im.loading='lazy';d.appendChild(im);
+   var moved=false,sx=0,sy=0,active=false;
+   d.addEventListener('pointerdown',function(e){active=true;moved=false;sx=e.clientX;sy=e.clientY;d.setPointerCapture(e.pointerId);
+    ghost.src=assets[k];});
+   d.addEventListener('pointermove',function(e){
+    if(!active)return;
+    if(!moved&&Math.hypot(e.clientX-sx,e.clientY-sy)>8){moved=true;ghost.style.display='block'}
+    if(moved){ghost.style.left=(e.clientX-40)+'px';ghost.style.top=(e.clientY-40)+'px'}
+   });
+   d.addEventListener('pointerup',function(e){
+    if(!active)return;active=false;ghost.style.display='none';
+    if(!moved){var c=centre();place(k,c[0],c[1]);return}
+    var v=view.getBoundingClientRect();
+    if(e.clientX>=v.left&&e.clientX<=v.right&&e.clientY>=v.top&&e.clientY<=v.bottom)place(k,e.clientX,e.clientY);
+   });
+   d.addEventListener('pointercancel',function(){active=false;ghost.style.display='none'});
+   w.appendChild(d);
+  });
+  g.appendChild(w);
+ });
+}
+
+// toolbar
+function resize(f){if(!sel)return;sel.w=Math.max(16,Math.min(1200,Math.round(sel.w*f)));render();save()}
+function $(id){return document.getElementById(id)}
+$('bDel').onclick=function(){if(sel){items.splice(items.indexOf(sel),1);sel=null;render();save()}};
+$('bDup').onclick=function(){if(sel){var c=JSON.parse(JSON.stringify(sel));c.id=nextId++;c.x+=30;c.y+=30;items.push(c);sel=c;render();save()}};
+$('bFlip').onclick=function(){if(sel){sel.flip=!sel.flip;render();save()}};
+$('bFront').onclick=function(){if(sel){items.splice(items.indexOf(sel),1);items.push(sel);render();save()}};
+$('bBack').onclick=function(){if(sel){items.splice(items.indexOf(sel),1);items.unshift(sel);render();save()}};
+$('bSm').onclick=function(){resize(.9)};$('bBig').onclick=function(){resize(1.1)};
+$('bGrid').onclick=function(){stage.classList.toggle('nogrid');this.classList.toggle('on')};
+$('bSnap').onclick=function(){snap=!snap;this.classList.toggle('on',snap);save()};
+$('bClear').onclick=function(){if(items.length&&confirm('Clear the whole canvas?')){items=[];sel=null;render();save()}};
+document.addEventListener('keydown',function(e){if(e.target.tagName==='INPUT')return;if((e.key==='Delete'||e.key==='Backspace')&&sel){$('bDel').onclick();e.preventDefault()}});
+$('q').oninput=buildPalette;$('cat').onchange=buildPalette;
+
+load();
+fetch('assets/manifest.json').then(function(r){return r.json()}).then(function(m){
+ assets=m.files||{};
+ // keep placed items whose asset was removed
+ var cats={};Object.keys(assets).forEach(function(k){cats[groupOf(assets[k])]=1});
+ var s=$('cat');s.innerHTML='<option value="">All art</option>'+Object.keys(cats).sort().map(function(c){return '<option>'+c+'</option>'}).join('');
+ $('bSnap').classList.toggle('on',snap);
+ buildPalette();render();
+ var first=items[0];if(first)view.scrollTo(Math.max(0,first.x-300),Math.max(0,first.y-200));
+ else view.scrollTo(1100,800);
+}).catch(function(){document.getElementById('grid').textContent='Could not load assets/manifest.json. Serve this folder over http (e.g. python3 -m http.server).'});
+})();
+</script>
+</body>
+</html>
