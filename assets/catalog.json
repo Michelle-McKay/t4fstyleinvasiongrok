@@ -1,6 +1,6 @@
 {
  "v": 2,
- "count": 639,
+ "count": 702,
  "groups": [
   {
    "id": "bld",
@@ -65,7 +65,7 @@
   {
    "id": "gear",
    "title": "Gear icons (30)",
-   "note": "Five slots (helmet, armor, footwear, weapon, accessory) in six grades, transparent, front view. Higher grades look grander, and every piece shows FOUR round sockets in the same four places: the number of OPEN sockets follows the quality rule (Basic 1, Common 1, Uncommon 2, Rare 2, Epic 3, Legendary 3) and the rest are closed, and the fourth socket is ALWAYS drawn closed with a small brass research cap (it opens with Gemology research, drawn in code as a glowing ring). Do a whole slot (six grades) together."
+   "note": "Five slots (helmet, armor, footwear, weapon, accessory) in six grades, transparent, front view. Higher grades look grander. Every piece shows exactly ONE round socket position, the same size and a clearly visible spot on every piece (spec of 2026-10-01 18:19: a fully upgraded piece has a single gem socket); it is always drawn as a closed flat brass cap, and the game draws the open ring, the gem and the star glow over it in code. Do a whole slot (six grades) together."
   },
   {
    "id": "xpi",
@@ -84,8 +84,8 @@
   },
   {
    "id": "core",
-   "title": "Cores, the socket gems (6)",
-   "note": "The six socket gem types, transparent. The tier (1 to 6) is shown by a glow the game draws in code, so draw one clean cut stone each."
+   "title": "Basic gems (25)",
+   "note": "The 25 Basic gems that drop from any tile, chest or quest. ALL 25 share the identical stone shape, size, facet layout, camera and lighting (a brilliant-cut stone with a flat octagonal table on a tiny brass setting); only the colour and ONE tiny etched pictogram on the table change, so they read as one family and a glint can sweep across the same facets later. Transparent, centred. The tier 1 to 6 glow ring and pips are drawn in code, so draw one clean stone each."
   },
   {
    "id": "vip",
@@ -124,13 +124,13 @@
   },
   {
    "id": "forge",
-   "title": "Forge rooms, sockets and chests (17)",
+   "title": "Forge rooms, sockets and chests (16)",
    "note": "The six Forge room interiors, the socket and star pieces, the blueprint cards and the alliance store and gift chests. Rooms are one building seen from one fixed camera so they read as one set; keep the central third of every room calm for the title. Pieces are transparent and built to be animated later (sockets glow and pulse, stars flare, chests open)."
   },
   {
    "id": "mgem",
-   "title": "Monster Gems (27)",
-   "note": "One cut gemstone per monster set: the 12 weekly sets and the 15 holiday sets. ALL 27 share the identical stone shape, size, facet layout, camera and lighting (a brilliant-cut stone with a flat table on a tiny brass setting); only the colour and ONE small etched motif on the table change, so they read as one family and a glint can sweep across the same facets later. Transparent, centred. The tier 1 to 6 glow ring and pips are drawn in code, so draw one clean stone each. The six regular cores are in the Cores section."
+   "title": "Set gems (72)",
+   "note": "Four gems for each of the 12 weekly monster sets and the 6 holiday sets. ALL 72 share the identical stone shape, size, facet layout, camera and lighting as the Basic gems (a brilliant-cut stone with a flat octagonal table on a tiny brass setting); within a set the four stones share the set colour, and only ONE tiny etched pictogram on the table changes. The fourth gem of every set is its synergy gem: the same stone with a tiny etched four-pointed star. Transparent, centred. The tier 1 to 6 glow ring and pips are drawn in code, so draw one clean stone each."
   },
   {
    "id": "quest",
@@ -2923,51 +2923,203 @@
   },
   {
    "group": "core",
-   "key": "core_strike",
-   "name": "Core: strike",
+   "key": "gem_ironplate",
+   "name": "Basic gem: Iron-Plate Gem (General troop defense)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
-   "out": 256
+   "out": 128
   },
   {
    "group": "core",
-   "key": "core_guard",
-   "name": "Core: guard",
+   "key": "gem_vitality",
+   "name": "Basic gem: Vitality Gem (General troop health)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
-   "out": 256
+   "out": 128
   },
   {
    "group": "core",
-   "key": "core_bulwark",
-   "name": "Core: bulwark",
+   "key": "gem_vanguard",
+   "name": "Basic gem: Vanguard Gem (General troop attack)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
-   "out": 256
+   "out": 128
   },
   {
    "group": "core",
-   "key": "core_haste",
-   "name": "Core: haste",
+   "key": "gem_rockstrike",
+   "name": "Basic gem: \"Rock\" Strike Gem (\"Rock\" troop attack)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
-   "out": 256
+   "out": 128
   },
   {
    "group": "core",
-   "key": "core_yield",
-   "name": "Core: yield",
+   "key": "gem_rockguard",
+   "name": "Basic gem: \"Rock\" Guard Gem (\"Rock\" troop defense)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
-   "out": 256
+   "out": 128
   },
   {
    "group": "core",
-   "key": "core_mend",
-   "name": "Core: mend",
+   "key": "gem_paperstrike",
+   "name": "Basic gem: \"Paper\" Strike Gem (\"Paper\" troop attack)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
-   "out": 256
+   "out": 128
+  },
+  {
+   "group": "core",
+   "key": "gem_paperguard",
+   "name": "Basic gem: \"Paper\" Guard Gem (\"Paper\" troop defense)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "core",
+   "key": "gem_scissorsstrike",
+   "name": "Basic gem: \"Scissors\" Strike Gem (\"Scissors\" troop attack)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "core",
+   "key": "gem_scissorsguard",
+   "name": "Basic gem: \"Scissors\" Guard Gem (\"Scissors\" troop defense)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "core",
+   "key": "gem_siegebreaker",
+   "name": "Basic gem: Siege Breaker Gem (Siege attack (wall traps))",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "core",
+   "key": "gem_builder",
+   "name": "Basic gem: Builder's Gem (Construction speed)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "core",
+   "key": "gem_scribe",
+   "name": "Basic gem: Scribe's Gem (Research speed)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "core",
+   "key": "gem_drillmaster",
+   "name": "Basic gem: Drillmaster's Gem (Troop training speed)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "core",
+   "key": "gem_ordnance",
+   "name": "Basic gem: Ordnance Gem (Trap training speed)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "core",
+   "key": "gem_hauler",
+   "name": "Basic gem: Hauler's Gem (Gathering speed and troop load)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "core",
+   "key": "gem_agri",
+   "name": "Basic gem: Agri Gem (Food production speed)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "core",
+   "key": "gem_petro",
+   "name": "Basic gem: Petro Gem (Oil production speed)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "core",
+   "key": "gem_grid",
+   "name": "Basic gem: Grid Gem (Energy production speed)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "core",
+   "key": "gem_foundry",
+   "name": "Basic gem: Foundry Gem (Steel production speed)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "core",
+   "key": "gem_ledger",
+   "name": "Basic gem: Ledger Gem (Cash production speed)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "core",
+   "key": "gem_trackers",
+   "name": "Basic gem: Tracker's Gem (Monster energy cost reduction)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "core",
+   "key": "gem_hunters",
+   "name": "Basic gem: Hunter's Gem (Hero attack and monster damage)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "core",
+   "key": "gem_marchgem",
+   "name": "Basic gem: March Gem (Hero march speed)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "core",
+   "key": "gem_tilestrike",
+   "name": "Basic gem: Tile Strike Gem (Tile hit attack)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "core",
+   "key": "gem_rallybanner",
+   "name": "Basic gem: Rally Banner Gem (General rally attack)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
   },
   {
    "group": "vip",
@@ -4336,23 +4488,15 @@
   {
    "group": "forge",
    "key": "socket_locked_quality",
-   "name": "Socket: closed by gear quality",
+   "name": "Socket: closed, needs a Vault star",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128
   },
   {
    "group": "forge",
-   "key": "socket_locked_research",
-   "name": "Socket 4: closed, needs research",
-   "size": "1:1, 1024 x 1024",
-   "transparent": true,
-   "out": 128
-  },
-  {
-   "group": "forge",
-   "key": "socket_set_ring",
-   "name": "Gem Set complete ring",
+   "key": "socket_synergy",
+   "name": "Set synergy glow ring",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128
@@ -4415,216 +4559,576 @@
   },
   {
    "group": "mgem",
-   "key": "mgem_rock",
-   "name": "Monster Gem: \"Rock\" Troop Set (Armored Juggernaut)",
+   "key": "gem_rock_1",
+   "name": "Set gem: Titan Core Gem (\"Rock\" Troop Set, Attack)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128
   },
   {
    "group": "mgem",
-   "key": "mgem_paper",
-   "name": "Monster Gem: \"Paper\" Troop Set (Cyber-Raptor)",
+   "key": "gem_rock_2",
+   "name": "Set gem: Titan Shell Gem (\"Rock\" Troop Set, Health)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128
   },
   {
    "group": "mgem",
-   "key": "mgem_scissors",
-   "name": "Monster Gem: \"Scissors\" Troop Set (Venom Spitter)",
+   "key": "gem_rock_3",
+   "name": "Set gem: Titan Impact Gem (\"Rock\" Troop Set, Charge speed)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128
   },
   {
    "group": "mgem",
-   "key": "mgem_training",
-   "name": "Monster Gem: Higher Quality Training Set (Rogue Supply Drone)",
+   "key": "gem_rock_4",
+   "name": "Set gem: Titan Crest Gem (\"Rock\" Troop Set, Set synergy)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128
   },
   {
    "group": "mgem",
-   "key": "mgem_construction",
-   "name": "Monster Gem: Higher Quality Construction Set (Data-Golems)",
+   "key": "gem_paper_1",
+   "name": "Set gem: Gale Quill Gem (\"Paper\" Troop Set, Attack)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128
   },
   {
    "group": "mgem",
-   "key": "mgem_research",
-   "name": "Monster Gem: Higher Quality Research Set (Crystal-Eater Worm)",
+   "key": "gem_paper_2",
+   "name": "Set gem: Gale Plume Gem (\"Paper\" Troop Set, Health)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128
   },
   {
    "group": "mgem",
-   "key": "mgem_siege",
-   "name": "Monster Gem: Siege (Trap-Killer) Set (Scrap-Scraper Mech)",
+   "key": "gem_paper_3",
+   "name": "Set gem: Gale Wind Gem (\"Paper\" Troop Set, Movement speed)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128
   },
   {
    "group": "mgem",
-   "key": "mgem_tilehit",
-   "name": "Monster Gem: Tile Hit Attack Set (Pack-Hunter Drone)",
+   "key": "gem_paper_4",
+   "name": "Set gem: Gale Crest Gem (\"Paper\" Troop Set, Set synergy)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128
   },
   {
    "group": "mgem",
-   "key": "mgem_rally",
-   "name": "Monster Gem: General Rallying Set (War-Boss Behemoth)",
+   "key": "gem_scissors_1",
+   "name": "Set gem: Stalker Fang Gem (\"Scissors\" Troop Set, Attack)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128
   },
   {
    "group": "mgem",
-   "key": "mgem_wrally",
-   "name": "Monster Gem: Wonder Rally Set (Dreadnought Overlord)",
+   "key": "gem_scissors_2",
+   "name": "Set gem: Stalker Chitin Gem (\"Scissors\" Troop Set, Health)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128
   },
   {
    "group": "mgem",
-   "key": "mgem_wsolo",
-   "name": "Monster Gem: Wonder Solo Set (Bio-Hazard Pest)",
+   "key": "gem_scissors_3",
+   "name": "Set gem: Stalker Venom Gem (\"Scissors\" Troop Set, Lethality)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128
   },
   {
    "group": "mgem",
-   "key": "mgem_wdef",
-   "name": "Monster Gem: Wonder Defense Set (Fortress Automaton)",
+   "key": "gem_scissors_4",
+   "name": "Set gem: Stalker Crest Gem (\"Scissors\" Troop Set, Set synergy)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128
   },
   {
    "group": "mgem",
-   "key": "mgem_h_newyear",
-   "name": "Monster Gem: Countdown (Countdown Colossus)",
+   "key": "gem_siege_1",
+   "name": "Set gem: Breaker Hammer Gem (Siege (Trap-Killer) Set, Siege attack)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128
   },
   {
    "group": "mgem",
-   "key": "mgem_h_valentine",
-   "name": "Monster Gem: Heartstring (Heartforge Hound)",
+   "key": "gem_siege_2",
+   "name": "Set gem: Breaker Plating Gem (Siege (Trap-Killer) Set, Defense)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128
   },
   {
    "group": "mgem",
-   "key": "mgem_h_stpat",
-   "name": "Monster Gem: Clover (Clover Golem)",
+   "key": "gem_siege_3",
+   "name": "Set gem: Breaker Piston Gem (Siege (Trap-Killer) Set, Destruction speed)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128
   },
   {
    "group": "mgem",
-   "key": "mgem_h_memorial",
-   "name": "Monster Gem: Poppy (Poppy Sentinel)",
+   "key": "gem_siege_4",
+   "name": "Set gem: Breaker Core Gem (Siege (Trap-Killer) Set, Set synergy)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128
   },
   {
    "group": "mgem",
-   "key": "mgem_h_canada",
-   "name": "Monster Gem: Maple (Maple Moose)",
+   "key": "gem_training_1",
+   "name": "Set gem: Alpha Sinew Gem (Higher Quality Training Set, Training speed)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128
   },
   {
    "group": "mgem",
-   "key": "mgem_h_july4",
-   "name": "Monster Gem: Sparkler (Sparkler Bison)",
+   "key": "gem_training_2",
+   "name": "Set gem: Alpha Whistle Gem (Higher Quality Training Set, Capacity)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128
   },
   {
    "group": "mgem",
-   "key": "mgem_h_thanks",
-   "name": "Monster Gem: Harvest (Harvest Gobbler)",
+   "key": "gem_training_3",
+   "name": "Set gem: Alpha Drum Gem (Higher Quality Training Set, Cost reduction)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128
   },
   {
    "group": "mgem",
-   "key": "mgem_h_halloween",
-   "name": "Monster Gem: Hollow (Lantern Wraith)",
+   "key": "gem_training_4",
+   "name": "Set gem: Alpha Core Gem (Higher Quality Training Set, Set synergy)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128
   },
   {
    "group": "mgem",
-   "key": "mgem_h_xmas",
-   "name": "Monster Gem: Evergreen (Frostback Yeti)",
+   "key": "gem_construction_1",
+   "name": "Set gem: Mason Granite Gem (Higher Quality Construction Set, Construction speed)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128
   },
   {
    "group": "mgem",
-   "key": "mgem_h_cny",
-   "name": "Monster Gem: Festival (Festival Lion)",
+   "key": "gem_construction_2",
+   "name": "Set gem: Mason Rivet Gem (Higher Quality Construction Set, Upkeep efficiency)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128
   },
   {
    "group": "mgem",
-   "key": "mgem_h_diwali",
-   "name": "Monster Gem: Diya (Lamp Phoenix)",
+   "key": "gem_construction_3",
+   "name": "Set gem: Mason Mallet Gem (Higher Quality Construction Set, Worker efficiency)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128
   },
   {
    "group": "mgem",
-   "key": "mgem_h_eid",
-   "name": "Monster Gem: Crescent (Crescent Oryx)",
+   "key": "gem_construction_4",
+   "name": "Set gem: Mason Core Gem (Higher Quality Construction Set, Set synergy)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128
   },
   {
    "group": "mgem",
-   "key": "mgem_h_holi",
-   "name": "Monster Gem: Gulal (Pigment Chameleon)",
+   "key": "gem_research_1",
+   "name": "Set gem: Sage Crystal Gem (Higher Quality Research Set, Research speed)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128
   },
   {
    "group": "mgem",
-   "key": "mgem_h_muertos",
-   "name": "Monster Gem: Marigold (Marigold Spirit-Hound)",
+   "key": "gem_research_2",
+   "name": "Set gem: Sage Brain Gem (Higher Quality Research Set, Cost reduction)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128
   },
   {
    "group": "mgem",
-   "key": "mgem_h_midautumn",
-   "name": "Monster Gem: Moonlight (Moonlit Hare)",
+   "key": "gem_research_3",
+   "name": "Set gem: Sage Quill Gem (Higher Quality Research Set, Output boost)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "gem_research_4",
+   "name": "Set gem: Sage Core Gem (Higher Quality Research Set, Set synergy)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "gem_tilehit_1",
+   "name": "Set gem: Nomad Spear Gem (Tile Hit Attack Set, Tile attack)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "gem_tilehit_2",
+   "name": "Set gem: Nomad Hide Gem (Tile Hit Attack Set, Tile health)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "gem_tilehit_3",
+   "name": "Set gem: Nomad Trail Gem (Tile Hit Attack Set, Tile march speed)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "gem_tilehit_4",
+   "name": "Set gem: Nomad Core Gem (Tile Hit Attack Set, Set synergy)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "gem_rally_1",
+   "name": "Set gem: Warlord Banner Gem (General Rallying Set, Rally attack)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "gem_rally_2",
+   "name": "Set gem: Warlord Horn Gem (General Rallying Set, Rally capacity)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "gem_rally_3",
+   "name": "Set gem: Warlord Armor Gem (General Rallying Set, Rally health)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "gem_rally_4",
+   "name": "Set gem: Warlord Core Gem (General Rallying Set, Set synergy)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "gem_wrally_1",
+   "name": "Set gem: Sovereign Crown Gem (Wonder Rally Set, Wonder rally attack)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "gem_wrally_2",
+   "name": "Set gem: Sovereign Ember Gem (Wonder Rally Set, Wonder rally health)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "gem_wrally_3",
+   "name": "Set gem: Sovereign Gold Gem (Wonder Rally Set, Wonder march speed)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "gem_wrally_4",
+   "name": "Set gem: Sovereign Core Gem (Wonder Rally Set, Set synergy)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "gem_wsolo_1",
+   "name": "Set gem: Phantom Hood Gem (Wonder Solo Set, Wonder solo attack)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "gem_wsolo_2",
+   "name": "Set gem: Phantom Void Gem (Wonder Solo Set, Wonder solo health)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "gem_wsolo_3",
+   "name": "Set gem: Phantom Stride Gem (Wonder Solo Set, Wonder solo march speed)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "gem_wsolo_4",
+   "name": "Set gem: Phantom Core Gem (Wonder Solo Set, Set synergy)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "gem_wdef_1",
+   "name": "Set gem: Bastion Wall Gem (Wonder Defense Set, Wonder defense)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "gem_wdef_2",
+   "name": "Set gem: Bastion Stone Gem (Wonder Defense Set, Wonder health)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "gem_wdef_3",
+   "name": "Set gem: Bastion Anchor Gem (Wonder Defense Set, Reinforcement speed)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "gem_wdef_4",
+   "name": "Set gem: Bastion Core Gem (Wonder Defense Set, Set synergy)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "gem_hs_rpd_1",
+   "name": "Set gem: Frost Shield Gem (Rock + Paper Defense Set, Rock and Paper defense)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "gem_hs_rpd_2",
+   "name": "Set gem: Frost Ribbon Gem (Rock + Paper Defense Set, Base defense health)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "gem_hs_rpd_3",
+   "name": "Set gem: Frost Tinsel Gem (Rock + Paper Defense Set, Garrison capacity)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "gem_hs_rpd_4",
+   "name": "Set gem: Yule Core Gem (Rock + Paper Defense Set, Full-set synergy: wall defense and trap survival)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "gem_hs_rsd_1",
+   "name": "Set gem: Solstice Wall Gem (Rock + Scissors Defense Set, Rock and Scissors defense)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "gem_hs_rsd_2",
+   "name": "Set gem: Solstice Bell Gem (Rock + Scissors Defense Set, Base defense health)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "gem_hs_rsd_3",
+   "name": "Set gem: Solstice Resin Gem (Rock + Scissors Defense Set, Reinforcement travel speed)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "gem_hs_rsd_4",
+   "name": "Set gem: Solstice Core Gem (Rock + Scissors Defense Set, Full-set synergy: rally damage mitigation)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "gem_hs_psd_1",
+   "name": "Set gem: Harvest Ward Gem (Paper + Scissors Defense Set, Paper and Scissors defense)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "gem_hs_psd_2",
+   "name": "Set gem: Harvest Silk Gem (Paper + Scissors Defense Set, Base defense health)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "gem_hs_psd_3",
+   "name": "Set gem: Harvest Leaf Gem (Paper + Scissors Defense Set, Base shield duration)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "gem_hs_psd_4",
+   "name": "Set gem: Harvest Core Gem (Paper + Scissors Defense Set, Full-set synergy: enemy attack reduction)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "gem_hs_rpa_1",
+   "name": "Set gem: Spring Strike Gem (Rock + Paper Attack Set, Rock and Paper attack)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "gem_hs_rpa_2",
+   "name": "Set gem: Spring Ash Gem (Rock + Paper Attack Set, Combat health)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "gem_hs_rpa_3",
+   "name": "Set gem: Spring Thread Gem (Rock + Paper Attack Set, Hero world map march speed)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "gem_hs_rpa_4",
+   "name": "Set gem: Spring Core Gem (Rock + Paper Attack Set, Full-set synergy: critical damage for Rock and Paper)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "gem_hs_rsa_1",
+   "name": "Set gem: Summer Assault Gem (Rock + Scissors Attack Set, Rock and Scissors attack)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "gem_hs_rsa_2",
+   "name": "Set gem: Summer Spark Gem (Rock + Scissors Attack Set, Combat health)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "gem_hs_rsa_3",
+   "name": "Set gem: Summer Glass Gem (Rock + Scissors Attack Set, Rally assembly speed)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "gem_hs_rsa_4",
+   "name": "Set gem: Summer Core Gem (Rock + Scissors Attack Set, Full-set synergy: PvP troop lethality)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "gem_hs_psa_1",
+   "name": "Set gem: Equinox Blitz Gem (Paper + Scissors Attack Set, Paper and Scissors attack)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "gem_hs_psa_2",
+   "name": "Set gem: Equinox Paper Gem (Paper + Scissors Attack Set, Combat health)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "gem_hs_psa_3",
+   "name": "Set gem: Equinox Seal Gem (Paper + Scissors Attack Set, Troop lethality)",
+   "size": "1:1, 1024 x 1024",
+   "transparent": true,
+   "out": 128
+  },
+  {
+   "group": "mgem",
+   "key": "gem_hs_psa_4",
+   "name": "Set gem: Equinox Core Gem (Paper + Scissors Attack Set, Full-set synergy: stacking damage aura)",
    "size": "1:1, 1024 x 1024",
    "transparent": true,
    "out": 128

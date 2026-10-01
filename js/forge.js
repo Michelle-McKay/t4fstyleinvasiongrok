@@ -10,22 +10,21 @@ const pieceName = p => qName(p.grade) + ' ' + pieceKind(p) + ' ' + SLOT_NAME[p.s
 const noForge = () => `<div class="panel" style="border-color:var(--signal)"><div class="bd"><div class="h1">No Forge</div><div class="sub mt">Build a Forge on an empty inner plot to use this room.</div></div></div>`;
 const gemKeys = () => Object.keys(S.gems).filter(k => S.gems[k] > 0).sort((a, b) => { const x = gemSplit(a), y = gemSplit(b); return (gemIsSet(x[0]) - gemIsSet(y[0])) || x[0].localeCompare(y[0]) || x[1] - y[1]; });
 const gemLabel = k => { const [kd, t] = gemSplit(k); return `<span style="color:${QUALITY[t].col}">${gemTierName(t)}</span> · ${gemName(kd)}`; };
-const gemLine = k => { const [kd, t] = gemSplit(k); return `${pctT(gemPower(kd, t))} ${STAT_LAB[gemStatKey(kd)]}`; };
+const gemLine = k => { const [kd, t] = gemSplit(k), g = GEMS[kd]; return `${pctT(gemPower(kd, t))} ${g.lab}${g.syn ? ' (' + (SETS[g.set].hgear ? 'all 5 pieces worn' : '2+ pieces worn') + ')' : ''}`; };
 const stoneBtn = k => { const [kd, t] = gemSplit(k); return `<i class="ui">${stoneSVG(kd, t)}</i>`; };
-/* a row of the four sockets of one piece: filled (tap to remove when bench=true), open, or locked */
+/* the one socket of a piece: filled (tap to remove when bench=true), open, or locked until its first Vault star */
 function socketStrip(p, bench) {
-  let h = '<div class="flex" style="gap:4px;margin-top:3px">';
-  for (let i = 0; i < SOCKETS; i++) {
-    const g = (p.gems || [])[i], open = socketOpen(p, i), why = i === 3 ? 'research' : 'quality';
-    if (g && open) { const [kd, t] = gemSplit(g); h += bench ? `<button class="sock on" data-a="unsock" data-id="${p.id}" data-i="${i}" title="Remove ${gemName(kd)}"><i class="ui">${stoneSVG(kd, t)}</i></button>` : `<span class="sock on"><i class="ui">${stoneSVG(kd, t)}</i></span>`; }
-    else if (open) h += `<span class="sock"><i class="ui">${emptySocket()}</i></span>`;
-    else h += `<span class="sock lk" title="Socket ${i + 1} opens with ${why === 'research' ? 'Gemology research' : 'higher gear quality'}"><i class="ui">${lockedSocket()}</i></span>`;
-  }
+  const g = p.gem, open = socketOpen(p); let h = '<div class="flex" style="gap:4px;margin-top:3px">';
+  if (g && open) { const [kd, t] = gemSplit(g); h += bench ? `<button class="sock on" data-a="unsock" data-id="${p.id}" title="Remove ${gemName(kd)}"><i class="ui">${stoneSVG(kd, t)}</i></button>` : `<span class="sock on"><i class="ui">${stoneSVG(kd, t)}</i></span>`; }
+  else if (open) h += `<span class="sock"><i class="ui">${emptySocket()}</i></span>`;
+  else h += `<span class="sock lk" title="The socket opens at ${GEM_SOCKET_STARS} star in the Vault"><i class="ui">${lockedSocket()}</i></span>`;
   return h + '</div>';
 }
 function gemBonusText(p) {
-  const r = pieceGems(p), parts = Object.keys(r).filter(k => r[k] > 0).map(k => `${pctT(r[k])} ${STAT_LAB[k]}`), d = gemSetDone(p);
-  return (parts.join(' · ') || 'No gems socketed.') + (d ? ` · <span class="ox">${SETS[d.kind].n} Gem Set complete</span>` : '');
+  if (!socketOpen(p)) return `Socket opens at ${GEM_SOCKET_STARS} star in the Vault.`;
+  if (!p.gem) return 'No gem socketed.';
+  const [kd, t] = gemSplit(p.gem), g = GEMS[kd], r = pieceGems(p), live = Object.keys(r).some(k => r[k] > 0);
+  return `${gemLabel(p.gem)}: ${gemLine(p.gem)}` + (g.syn && !live ? ' · <span class="mut">waiting for more of the set</span>' : '');
 }
 function pieceRow(p, opt) {
   opt = opt || {}; const w = S.gear.worn[p.slot] === p.id, lk = setLocked(p);
@@ -46,8 +45,8 @@ function roomSets() {
     const sp = SETS[id], n = cnt[id] || 0, open = UI.setOpen[id], live = !sp.hgear && act.includes(id), ok = heroLv() >= sp.lv;
     const mons = sp.hgear ? HOLIDAYS.filter(h => SETS['h_' + h.id].gear === id).map(h => h.mon).join(', ') : sp.mon;
     let h = `<div class="rwrow"><div class="grow"><button class="linkish" data-a="setopen" data-id="${id}"><b>${sp.n}</b></button> <span class="tag ${ok ? 'br' : ''}">Hero Lv ${sp.lv}</span> ${live ? '<span class="tag br">monster live</span>' : ''}<div class="sub">${sp.st.map(k => STAT_LAB[k]).join(', ')}</div><div class="sub">${SET_PCS.map(k => `<span class="${n >= k ? 'up' : 'mut'}">${k}pc</span>`).join(' ')} · worn ${n}/5 · owned ${slotsOwned(id)}/5 · ${S.shards[id] || 0} shards</div></div><span class="num br">${n}/5</span></div>`;
-    if (open) h += `<div class="bd"><div class="sub">${sp.hgear ? 'Dropped by' : 'Monster'}: <b>${mons}</b>. Their loot tiles drop ${sp.n} shards and Monster Gems.</div><div class="sub">Core materials: ${sp.mats}</div><div class="flex wrap mt">${SLOTS.map(sl => { const own = S.gear.pieces.filter(p => p.set === id && p.slot === sl).sort((a, b) => b.grade - a.grade)[0]; return `<span class="tag ${own ? 'br' : ''}">${SLOT_NAME[sl]}${own ? ' · ' + qName(own.grade) : ''}</span>`; }).join('')}</div>
-      <div class="sub mt">${setDesc(id)}</div><div class="sub">Gem Set: four Monster Gems of one monster in the four sockets of one piece add ${GEMSET_PCT.map(v => (v * 100).toFixed(1).replace(/\.0$/, '')).join(' / ')}% of that set's first stat by their lowest tier (placeholder).</div>
+    if (open) h += `<div class="bd"><div class="sub">${sp.hgear ? 'Dropped by' : 'Monster'}: <b>${mons}</b>. Their loot tiles drop ${sp.n} shards and set gems.</div><div class="sub">Core materials: ${sp.mats}</div><div class="flex wrap mt">${SLOTS.map(sl => { const own = S.gear.pieces.filter(p => p.set === id && p.slot === sl).sort((a, b) => b.grade - a.grade)[0]; return `<span class="tag ${own ? 'br' : ''}">${SLOT_NAME[sl]}${own ? ' · ' + qName(own.grade) : ''}</span>`; }).join('')}</div>
+      <div class="sub mt">${setDesc(id)}</div><div class="sub mt"><b>${sp.n} gems</b> (monster tiles only; one gem per piece):</div>${GEM_SETS[id].map(gid => `<div class="sub">${GEMS[gid].n}: ${GEMS[gid].lab}, ${GEMS[gid].lo}% to ${GEMS[gid].hi}%</div>`).join('')}
       <div class="flex mt"><button class="btn sm" data-a="forgego" data-id="${id}">Craft with shard</button></div></div>`;
     return h;
   };
@@ -72,11 +71,11 @@ function roomBench() {
   const bars = [1, 2, 3, 4, 5, 6].map(g => `<div class="flex sp" style="margin:4px 0"><i class="ui">${barSVG(g)}</i><span class="lbl" style="width:130px;white-space:normal;line-height:1.1;color:${QUALITY[g].col}">${matName(g)}</span><b class="num grow">${S.bars[g] || 0}</b><div class="step"><button data-a="crsel" data-g="${g}" data-d="-1">−</button><b class="num">${sel[g] || 0}</b><button data-a="crsel" data-g="${g}" data-d="1">+</button></div><button class="btn sm" data-a="refine" data-g="${g}" ${g < 6 && (S.bars[g] || 0) >= 4 && fl >= forgeGate(g) ? '' : 'disabled'}>${g < 6 && fl < forgeGate(g) ? 'Forge ' + forgeGate(g) : 'Combine 4'}</button></div>`).join('');
   const sorted = []; for (const k in gs) for (let i = 0; i < gs[k]; i++) sorted.push(k); sorted.sort((a, b) => gemSplit(a)[1] - gemSplit(b)[1]);
   const mixOk = gN === 4 && !sorted.every(k => k === sorted[0]);
-  const gemRows = keys.map(k => { const [kd, t] = gemSplit(k), n = S.gems[k]; return `<div class="flex sp" style="margin:4px 0">${stoneBtn(k)}<div class="grow"><b>${gemLabel(k)}</b> <span class="num br">×${n}</span><div class="sub">${gemLine(k)}${gemMon(kd) ? ' · ' + gemMon(kd) : ''}</div></div><div class="step"><button data-a="gsel" data-k="${k}" data-d="-1">−</button><b class="num">${gs[k] || 0}</b><button data-a="gsel" data-k="${k}" data-d="1">+</button></div><button class="btn sm" data-a="gemcomb" data-k="${k}" ${t < 6 && n >= 4 && fl >= forgeGate(t) ? '' : 'disabled'}>${t < 6 && fl < forgeGate(t) ? 'Forge ' + forgeGate(t) : 'Combine 4'}</button></div>`; }).join('') || '<div class="sub">No gems yet. Gather tiles, hunt monsters, open alliance chests and finish quests.</div>';
+  const gemRows = keys.map(k => { const [kd, t] = gemSplit(k), n = S.gems[k]; return `<div class="flex sp" style="margin:4px 0">${stoneBtn(k)}<div class="grow"><b>${gemLabel(k)}</b> <span class="num br">×${n}</span><div class="sub">${gemLine(k)}${gemIsSet(kd) ? ' · ' + SETS[GEMS[kd].set].n : ''}</div></div><div class="step"><button data-a="gsel" data-k="${k}" data-d="-1">−</button><b class="num">${gs[k] || 0}</b><button data-a="gsel" data-k="${k}" data-d="1">+</button></div><button class="btn sm" data-a="gemcomb" data-k="${k}" ${t < 6 && n >= 4 && fl >= forgeGate(t) ? '' : 'disabled'}>${t < 6 && fl < forgeGate(t) ? 'Forge ' + forgeGate(t) : 'Combine 4'}</button></div>`; }).join('') || '<div class="sub">No gems yet. Gather tiles, hunt monsters, open alliance chests and finish quests.</div>';
   const sp = S.gear.pieces.find(p => p.id === UI.sk), picks = S.gear.pieces.slice().sort((a, b) => b.grade - a.grade);
-  const bench = `<div class="panel"><div class="hd"><h3>Socket bench</h3><span class="tag ${R('gemology') ? 'br' : ''}">${R('gemology') ? 'Socket 4 open' : 'Socket 4: research Gemology'}</span></div><div class="bd"><div class="sub">Every piece has 4 sockets. Quality opens 1 to 3 of them (Grey and White 1, Green and Blue 2, Purple and Gold 3). Socket 4 opens with the Gemology research in the Crafting tree. Four Monster Gems of one set in all four sockets of one piece complete its Gem Set bonus, so only Epic or Legendary gear with Gemology can finish one.</div>
+  const bench = `<div class="panel"><div class="hd"><h3>Socket bench</h3><span class="tag">1 gem per piece</span></div><div class="bd"><div class="sub">A fully upgraded piece (${GEM_SOCKET_STARS} star in the Vault) has one socket and holds one gem at a time. Socketing a second gem swaps the first back into your stock, and gems come out freely. Synergy gems add to every stat of their set once enough of it is worn.</div>
     <div class="flex wrap mt">${picks.map(p => `<button class="btn sm ${UI.sk === p.id ? 'on' : 'line'}" data-a="skpick" data-id="${p.id}"><i class="tic">${gearSVG(p.slot, p.grade, p.set)}</i>${pieceName(p)}</button>`).join('') || '<span class="sub">Craft a piece first.</span>'}</div>
-    ${sp ? `<div class="mt"><b>${pieceName(sp)}</b>${socketStrip(sp, true)}<div class="sub">${gemBonusText(sp)}. Tap a socketed gem to take it out.</div><div class="list mt">${keys.map(k => `<div class="it">${stoneBtn(k)}<div class="grow"><b>${gemLabel(k)}</b> <span class="num br">×${S.gems[k]}</span><div class="sub">${gemLine(k)}</div></div><button class="btn sm pri" data-a="sockgem" data-id="${sp.id}" data-k="${k}">Socket</button></div>`).join('') || '<div class="sub">No gems to socket.</div>'}</div></div>` : ''}</div></div>`;
+    ${sp ? `<div class="mt"><b>${pieceName(sp)}</b>${socketStrip(sp, true)}<div class="sub">${gemBonusText(sp)}. Tap the socketed gem to take it out.</div><div class="list mt">${keys.map(k => `<div class="it">${stoneBtn(k)}<div class="grow"><b>${gemLabel(k)}</b> <span class="num br">×${S.gems[k]}</span><div class="sub">${gemLine(k)}</div></div><button class="btn sm pri" data-a="sockgem" data-id="${sp.id}" data-k="${k}">Socket</button></div>`).join('') || '<div class="sub">No gems to socket.</div>'}</div></div>` : ''}</div></div>`;
   return `<div class="panel"><div class="hd"><h3>Workshop · Forge ${fl}</h3><span class="tag br">up to ${matName(Math.min(6, Math.floor(fl / 3) + 1))}</span></div><div class="bd"><div class="sub">Four of one tier combine into one of the next tier up, for materials and gems alike, and the next tier needs Forge 3 × the tier below. Four of a kind craft gear of that exact tier, guaranteed. Mixing tiers is a gamble that lands on your lowest input most of the time.</div></div></div>
   <div class="panel"><div class="hd"><h3>Materials</h3><span class="tag">${u}/1024</span></div><div class="bd"><div class="bar"><i style="width:${Math.min(100, u / 1024 * 100)}%"></i><u style="left:50%"></u></div><div class="flex sp sub"><span>0</span><span>512</span><span>1024 = Legendary</span></div><div class="mt">${bars}</div></div></div>
   <div class="panel"><div class="hd"><h3>Craft gear</h3><span class="tag ${selN === 4 ? 'br' : ''}">${selN}/4 materials</span></div><div class="bd"><div class="tabs2">${SLOTS.map(s => `<button class="${C.slot === s ? 'on' : ''}" data-a="crslot" data-s="${s}"><i class="tic">${gearSVG(s, 3)}</i>${s}</button>`).join('')}</div>
@@ -84,7 +83,7 @@ function roomBench() {
   ${C.shard ? '' : `<div class="flex mb"><span class="lbl">Category</span><select data-a="crcat" style="flex:1">${BASIC_ORDER.map(id => `<option value="${id}" ${C.cat === id ? 'selected' : ''}>Lv ${BASIC[id].lv} · ${BASIC[id].n} (+${BASIC[id].lo}% to +${BASIC[id].hi}%)</option>`).join('')}</select></div>`}
   <div class="sub">${odds}</div><div class="sub">${C.shard ? SETS[C.shard].n + ': ' + SETS[C.shard].st.map(k => STAT_LAB[k]).join(', ') + ' +' + SET_RANGE[0] + '% to +' + SET_RANGE[1] + '% per piece; wear from hero Lv ' + SETS[C.shard].lv : BASIC[C.cat].n + ': ' + BASIC[C.cat].st.map(k => STAT_LAB[k]).join(', ') + '; wear from hero Lv ' + BASIC[C.cat].lv}. Needs four materials of the quality you want.</div>
   <div class="flex mt"><button class="btn pri" data-a="craft" ${selN === 4 ? '' : 'disabled'}>Refine into gear</button><button class="btn line" data-a="crclear">Clear</button></div></div></div>
-  <div class="panel"><div class="hd"><h3>Gems</h3><span class="tag">${gemTotal()} in stock</span></div><div class="bd"><div class="sub">Regular cores give one generic stat. Monster Gems belong to one monster's set and give that set's stat; they only come from the loot tiles monsters leave behind. Same six tiers, same 4-to-1.</div><div class="mt">${gemRows}</div>
+  <div class="panel"><div class="hd"><h3>Gems</h3><span class="tag">${gemTotal()} in stock</span></div><div class="bd"><div class="sub">Basic gems (25 kinds) drop anywhere and each boosts one thing. Set gems (4 per monster set) only come from the loot tiles monsters leave behind, and the fourth is a synergy gem. A piece holds one gem at a time. Same six tiers, same 4-to-1.</div><div class="mt">${gemRows}</div>
   <div class="sub mt">${gN === 4 ? (mixOk ? mixOdds(sorted) : 'Four of a kind: use Combine, it is free and guaranteed.') : 'Pick four gems with the steppers to gamble a mix (' + gN + '/4).'}</div>
   <div class="flex mt"><button class="btn pri" data-a="gemmix" ${mixOk ? '' : 'disabled'}>Gamble the mix</button><button class="btn line" data-a="gclear">Clear</button></div></div></div>${bench}`;
 }
@@ -106,11 +105,11 @@ function roomArch() {
     return `<div class="rwrow"><div class="grow"><b>${ok ? sp.n : '??? ' + (sp.hgear ? 'holiday set' : 'set')}</b> <span class="tag ${ok ? 'br' : ''}">${ok ? 'discovered' : 'unknown'}</span>${live ? ' <span class="tag br">on the map now</span>' : ''}<div class="sub">Source: ${src}. Gather the loot tile it leaves.</div>${ok ? `<div class="sub">${sp.st.map(k => STAT_LAB[k]).join(', ')} · Hero Lv ${sp.lv} · ${slotsOwned(id)}/5 pieces crafted</div><div class="sub">Core materials: ${sp.mats}</div>` : ''}</div></div>`; };
   return `<div class="panel"><div class="hd"><h3>Blueprint Archive</h3><span class="tag br">${found}/${ids.length}</span></div><div class="bd"><div class="sub">Every set blueprint (12 regular, 6 holiday) with where it drops and your completion. A blueprint is discovered the first time you hold one of its shards. Basic Gear (13 categories) is always known: see Gear Sets.</div></div></div>
   <div class="panel"><div class="hd"><h3>Where gems and materials come from</h3></div><div class="bd">
-    ${[['Regular world tiles', 'Generic materials and cores. Mostly Levels 1 to 3, sometimes 4. Level 5 and 6 tiles hide a once-a-week Purple jackpot, and Level 6 tiles a very rare 6-pack of Gold.'],
-       ['Monster loot tiles', 'Left behind when a monster is killed, the same level as the monster. The only source of set shards and Monster Gems, plus regular finds.'],
-       ['Alliance store', 'Mystery chests for alliance points: reliable Level 1 and 2 materials and cores.'],
+    ${[['Regular world tiles', 'Generic materials and Basic gems. Mostly Levels 1 to 3, sometimes 4. Level 5 and 6 tiles hide a once-a-week Purple jackpot, and Level 6 tiles a very rare 6-pack of Gold.'],
+       ['Monster loot tiles', 'Left behind when a monster is killed, the same level as the monster. The only source of set shards and set gems, plus regular finds.'],
+       ['Alliance store', 'Mystery chests for alliance points: reliable Level 1 and 2 materials and Basic gems.'],
        ['Alliance gifts', 'Shared mid-tier (Level 3 and 4) chests that drop when an ally buys a pack.'],
-       ['Quests and dailies', 'Steady material pouches and bags of basic cores.']].map(([a, b]) => `<div class="rr"><span><b>${a}</b><div class="sub">${b}</div></span></div>`).join('')}</div></div>
+       ['Quests and dailies', 'Steady material pouches and bags of Basic gems.']].map(([a, b]) => `<div class="rr"><span><b>${a}</b><div class="sub">${b}</div></span></div>`).join('')}</div></div>
   <div class="panel"><div class="hd"><h3>Regular sets</h3></div><div class="bd">${SET_ORDER.map(row).join('')}</div></div>
   <div class="panel"><div class="hd"><h3>Holiday sets</h3></div><div class="bd">${HSET_ORDER.map(row).join('')}</div></div>`;
 }
@@ -134,7 +133,7 @@ function forgeHTML() {
 /* ---------- Guild › Store ---------- */
 function allianceStoreHTML() {
   const ap = S.ap || 0;
-  return `<div class="panel"><div class="hd"><h3>Alliance Store</h3><span class="tag br">${ap} points</span></div><div class="bd"><div class="sub">Alliance points come from opening alliance chests and gifts. Spend them here on mystery chests of reliable Level 1 and Level 2 materials and cores. Monster Gems are never sold: they only drop from monster loot tiles.</div>
+  return `<div class="panel"><div class="hd"><h3>Alliance Store</h3><span class="tag br">${ap} points</span></div><div class="bd"><div class="sub">Alliance points come from opening alliance chests and gifts. Spend them here on mystery chests of reliable Level 1 and Level 2 materials and Basic gems. set gems are never sold: they only drop from monster loot tiles.</div>
   <div class="rwrow"><div class="grow"><b>Mystery chest</b><div class="sub">${STORE_ROLLS} finds: each is a material or a core, Level 1 (${Math.round((1 - STORE_TIER2) * 100)}%) or Level 2 (${Math.round(STORE_TIER2 * 100)}%)</div></div><button class="btn sm pri" data-a="astore" ${ap >= STORE_COST ? '' : 'disabled'}>${STORE_COST} pts</button></div></div></div>`;
 }
 
@@ -145,7 +144,7 @@ Object.assign(A, {
   gclear() { UI.gsel = {}; D(); },
   gemcomb(d) { run(gemCombine(d.k), 'Combined into one gem of the next tier.'); },
   gemmix() { if (run(gemMix(UI.gsel))) UI.gsel = {}; },
-  skpick(d) { UI.sk = +d.id; D(); }, sockgem(d) { run(socketGem(+d.id, d.k)); }, unsock(d) { run(unsocketGem(+d.id, +d.i)); },
+  skpick(d) { UI.sk = +d.id; D(); }, sockgem(d) { run(socketGem(+d.id, d.k)); }, unsock(d) { run(unsocketGem(+d.id)); },
   smelt(d) { run(smelt(+d.id)); }, starup(d) { run(starUp(+d.id)); },
   astore() { run(storeChestBuy()); }
 });

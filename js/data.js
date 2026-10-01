@@ -95,8 +95,7 @@ const RS = {
   beds: { n: 'Depot beds', tree: 'ops', max: 10, a: 3, b: 40, req: [], what: 'hospital beds', c: 'alloy' },
   restore: { n: 'Restoration', tree: 'ops', max: 10, a: 2, b: 30, req: [['beds', 1]], what: 'tier 2+ heal speed', c: 'power' },
   wh: { n: 'Warehousing', tree: 'ops', max: 10, a: 3, b: 40, req: [], what: 'StoreHouse cap', c: 'alloy' },
-  gemology: { n: 'Gemology', tree: 'craft', max: 1, a: 0, b: 0, req: [], what: 'opens socket 4 on every gear piece, needed to finish a Gem Set bonus', c: 'power', big: 8 },
-  lapidary: { n: 'Lapidary', tree: 'craft', max: 5, a: 4, b: 20, req: [['gemology', 1]], what: 'gem power', c: 'alloy', big: 2 }
+  lapidary: { n: 'Lapidary', tree: 'craft', max: 5, a: 4, b: 20, req: [], what: 'gem power', c: 'alloy', big: 2 }
 };
 const TREES = [['combat', 'Combat'], ['field', 'Field'], ['defense', 'Defense'], ['troops', 'Troops'], ['econ', 'Economy'], ['ops', 'Operations'], ['craft', 'Crafting']];
 function researchCost(id, lv) { const d = RS[id]; const base = 900 * (d.big || 1) * Math.pow(1.5, lv - 1); const c = {}; c[d.c] = Math.round(base); c.cash = Math.round(base * 0.25); if (d.c === 'cash') { delete c.rations; c.cash = Math.round(base * 0.7); } return c; }
@@ -347,26 +346,60 @@ const REQ_COOLDOWN_SHEET = 1800;   // 30 sheet minutes between requisitions
 function reqAmounts(L) { return { rations: L * 500, fuel: L * 500, power: L * 400, alloy: L * 300, cash: L * 150 }; }
 
 /* ---------------- Gems, sockets and the Forge (docs/FORGE_GEMS.md) ----------------
-   Every piece has 4 sockets. Quality opens 1 to 3 (socketsNative); socket 4 opens with the Gemology research.
+   Gem spec of 2026-10-01 18:19. A fully upgraded piece (GEM_SOCKET_STARS) has ONE gem socket and holds ONE gem at a time; gems come out freely.
    Gems use the same six tiers and the same 4-to-1 and mixed-craft rules as materials.
-   Regular gems (the six cores) give one generic stat. Monster gems are tied to one of the 27 gear sets (12 weekly + 15 holiday)
-   and give that set's stat; four gems of one monster set in the four sockets of ONE piece complete its Gem Set bonus.
-   OPEN ITEM: every value below is a placeholder. */
-const SOCKETS = 4, STAR_MAX = 5, STAR_PCT = 0.08;
-const CORES = {
-  strike: { n: 'Strike core', stat: 'atk', col: '#e0603a' }, guard: { n: 'Guard core', stat: 'hp', col: '#3a64c8' }, bulwark: { n: 'Bulwark core', stat: 'wallHp', col: '#8a98a8' },
-  haste: { n: 'Haste core', stat: 'march', col: '#e0c030' }, yield: { n: 'Yield core', stat: 'yld', col: '#4fb868' }, mend: { n: 'Mend core', stat: 'heal', col: '#4fc8b8' }
+   Catalog: 25 Basic gems (drop anywhere), 12 regular sets x 4 gems (monster loot tiles only), 6 holiday sets x 4 gems = 97 gem types.
+   Each gem has a label (what the spec calls the boost) and `as`, the mechanical stat(s) it feeds in this build; effects with no stat in the game
+   yet (capacity, cost reduction, lethality, reinforcement speed...) use the nearest existing stat. OPEN ITEM: the mapping and `GEM_SOCKET_STARS`. */
+const STAR_MAX = 5, STAR_PCT = 0.08, GEM_SOCKET_STARS = 1;
+const BASIC_GEMS = [   // id, name, boost label, mechanical stat(s), lo, hi (percent, Grey to Gold)
+  ['ironplate', 'Iron-Plate Gem', 'General troop defense', 'hp', 1, 13], ['vitality', 'Vitality Gem', 'General troop health', 'hp', 1, 13], ['vanguard', 'Vanguard Gem', 'General troop attack', 'atk', 1, 13],
+  ['rockstrike', '"Rock" Strike Gem', '"Rock" troop attack', 'atk_inf', 1.5, 18], ['rockguard', '"Rock" Guard Gem', '"Rock" troop defense', 'hp_inf', 1.5, 18],
+  ['paperstrike', '"Paper" Strike Gem', '"Paper" troop attack', 'atk_arm', 1.5, 18], ['paperguard', '"Paper" Guard Gem', '"Paper" troop defense', 'hp_arm', 1.5, 18],
+  ['scissorsstrike', '"Scissors" Strike Gem', '"Scissors" troop attack', 'atk_air', 1.5, 18], ['scissorsguard', '"Scissors" Guard Gem', '"Scissors" troop defense', 'hp_air', 1.5, 18],
+  ['siegebreaker', 'Siege Breaker Gem', 'Siege attack (wall traps)', 'atk_siege', 1.5, 18], ['builder', "Builder's Gem", 'Construction speed', 'build', 1.5, 18], ['scribe', "Scribe's Gem", 'Research speed', 'research', 1.5, 18],
+  ['drillmaster', "Drillmaster's Gem", 'Troop training speed', 'train', 1.5, 18], ['ordnance', 'Ordnance Gem', 'Trap training speed', 'trap', 1.5, 18], ['hauler', "Hauler's Gem", 'Gathering speed and troop load', ['gather', 'load'], 2, 24],
+  ['agri', 'Agri Gem', 'Food production speed', 'prod_rations', 2, 26], ['petro', 'Petro Gem', 'Oil production speed', 'prod_fuel', 2, 26], ['grid', 'Grid Gem', 'Energy production speed', 'prod_power', 2, 26],
+  ['foundry', 'Foundry Gem', 'Steel production speed', 'prod_alloy', 2, 26], ['ledger', 'Ledger Gem', 'Cash production speed', 'prod_cash', 2, 26], ['trackers', "Tracker's Gem", 'Monster energy cost reduction', 'huntCost', 1, 13],
+  ['hunters', "Hunter's Gem", 'Hero attack and monster damage', 'heroAtk', 1.5, 18], ['marchgem', 'March Gem', 'Hero march speed', 'march', 2, 24], ['tilestrike', 'Tile Strike Gem', 'Tile hit attack', 'atk', 1.5, 18], ['rallybanner', 'Rally Banner Gem', 'General rally attack', 'atk', 1.5, 18]
+];
+/* Set gems: 4 per set, the 4th is always the Set Synergy ('syn'). [name, label, stat(s)] */
+const SET_GEMS = {
+  rock: [['Titan Core Gem', 'Attack', 'atk_inf'], ['Titan Shell Gem', 'Health', 'hp_inf'], ['Titan Impact Gem', 'Charge speed', 'march'], ['Titan Crest Gem', 'Set synergy', 'syn']],
+  paper: [['Gale Quill Gem', 'Attack', 'atk_arm'], ['Gale Plume Gem', 'Health', 'hp_arm'], ['Gale Wind Gem', 'Movement speed', 'march'], ['Gale Crest Gem', 'Set synergy', 'syn']],
+  scissors: [['Stalker Fang Gem', 'Attack', 'atk_air'], ['Stalker Chitin Gem', 'Health', 'hp_air'], ['Stalker Venom Gem', 'Lethality', 'atk'], ['Stalker Crest Gem', 'Set synergy', 'syn']],
+  siege: [['Breaker Hammer Gem', 'Siege attack', 'atk_siege'], ['Breaker Plating Gem', 'Defense', 'hp_siege'], ['Breaker Piston Gem', 'Destruction speed', 'wallAtk'], ['Breaker Core Gem', 'Set synergy', 'syn']],
+  training: [['Alpha Sinew Gem', 'Training speed', 'train'], ['Alpha Whistle Gem', 'Capacity', 'load'], ['Alpha Drum Gem', 'Cost reduction', 'train'], ['Alpha Core Gem', 'Set synergy', 'syn']],
+  construction: [['Mason Granite Gem', 'Construction speed', 'build'], ['Mason Rivet Gem', 'Upkeep efficiency', 'yld'], ['Mason Mallet Gem', 'Worker efficiency', 'build'], ['Mason Core Gem', 'Set synergy', 'syn']],
+  research: [['Sage Crystal Gem', 'Research speed', 'research'], ['Sage Brain Gem', 'Cost reduction', 'research'], ['Sage Quill Gem', 'Output boost', 'research'], ['Sage Core Gem', 'Set synergy', 'syn']],
+  tilehit: [['Nomad Spear Gem', 'Tile attack', 'atk'], ['Nomad Hide Gem', 'Tile health', 'hp'], ['Nomad Trail Gem', 'Tile march speed', 'march'], ['Nomad Core Gem', 'Set synergy', 'syn']],
+  rally: [['Warlord Banner Gem', 'Rally attack', 'atk'], ['Warlord Horn Gem', 'Rally capacity', 'load'], ['Warlord Armor Gem', 'Rally health', 'hp'], ['Warlord Core Gem', 'Set synergy', 'syn']],
+  wrally: [['Sovereign Crown Gem', 'Wonder rally attack', 'atk'], ['Sovereign Ember Gem', 'Wonder rally health', 'hp'], ['Sovereign Gold Gem', 'Wonder march speed', 'march'], ['Sovereign Core Gem', 'Set synergy', 'syn']],
+  wsolo: [['Phantom Hood Gem', 'Wonder solo attack', 'atk'], ['Phantom Void Gem', 'Wonder solo health', 'hp'], ['Phantom Stride Gem', 'Wonder solo march speed', 'march'], ['Phantom Core Gem', 'Set synergy', 'syn']],
+  wdef: [['Bastion Wall Gem', 'Wonder defense', 'wallHp'], ['Bastion Stone Gem', 'Wonder health', 'hp'], ['Bastion Anchor Gem', 'Reinforcement speed', 'march'], ['Bastion Core Gem', 'Set synergy', 'syn']],
+  hs_rpd: [['Frost Shield Gem', 'Rock and Paper defense', ['hp_inf', 'hp_arm']], ['Frost Ribbon Gem', 'Base defense health', 'wallHp'], ['Frost Tinsel Gem', 'Garrison capacity', 'hp'], ['Yule Core Gem', 'Full-set synergy: wall defense and trap survival', 'syn']],
+  hs_rsd: [['Solstice Wall Gem', 'Rock and Scissors defense', ['hp_inf', 'hp_air']], ['Solstice Bell Gem', 'Base defense health', 'wallHp'], ['Solstice Resin Gem', 'Reinforcement travel speed', 'march'], ['Solstice Core Gem', 'Full-set synergy: rally damage mitigation', 'syn']],
+  hs_psd: [['Harvest Ward Gem', 'Paper and Scissors defense', ['hp_arm', 'hp_air']], ['Harvest Silk Gem', 'Base defense health', 'wallHp'], ['Harvest Leaf Gem', 'Base shield duration', 'hp'], ['Harvest Core Gem', 'Full-set synergy: enemy attack reduction', 'syn']],
+  hs_rpa: [['Spring Strike Gem', 'Rock and Paper attack', ['atk_inf', 'atk_arm']], ['Spring Ash Gem', 'Combat health', 'hp'], ['Spring Thread Gem', 'Hero world map march speed', 'march'], ['Spring Core Gem', 'Full-set synergy: critical damage for Rock and Paper', 'syn']],
+  hs_rsa: [['Summer Assault Gem', 'Rock and Scissors attack', ['atk_inf', 'atk_air']], ['Summer Spark Gem', 'Combat health', 'hp'], ['Summer Glass Gem', 'Rally assembly speed', 'march'], ['Summer Core Gem', 'Full-set synergy: PvP troop lethality', 'syn']],
+  hs_psa: [['Equinox Blitz Gem', 'Paper and Scissors attack', ['atk_arm', 'atk_air']], ['Equinox Paper Gem', 'Combat health', 'hp'], ['Equinox Seal Gem', 'Troop lethality', 'atk'], ['Equinox Core Gem', 'Full-set synergy: stacking damage aura', 'syn']]
 };
-const GEM_PCT = [0.004, 0.007, 0.011, 0.016, 0.022, 0.030];          // one gem, by tier
-const GEMSET_PCT = [0.01, 0.02, 0.03, 0.045, 0.065, 0.09];           // Gem Set bonus (4 monster gems in one piece), by the LOWEST tier of the four
-const socketsNative = grade => Math.min(3, Math.ceil(grade / 2));    // Basic 1, Common 1, Uncommon 2, Rare 2, Epic 3, Legendary 3
+/* scale (percent, Grey to Gold): standard sets 2-25, high-tier sets (hero Lv 47+, the Wonder sets and Tile Hit / Rally) 2.5-30, holiday 3-35 */
+const GEMS = {};
+const BASIC_GEM_IDS = BASIC_GEMS.map(g => g[0]);
+const GEM_STAT_COL = { atk: '#e0603a', hp: '#3a64c8', wallHp: '#8a98a8', wallAtk: '#c84a4a', march: '#e0c030', load: '#b98a52', build: '#e07a3a', research: '#a07ad6', train: '#8ea36a', trap: '#c8a04a', huntCost: '#e0c84a', heroAtk: '#d4654a', yld: '#4fb868' };
+BASIC_GEMS.forEach(([id, n, lab, as, lo, hi]) => { const a = [].concat(as)[0]; GEMS[id] = { id, n, lab, as: [].concat(as), lo, hi, set: null, col: GEM_STAT_COL[a.replace(/^(atk|hp)_.*/, '$1').replace(/^prod_.*/, 'yld')] || '#9aa4a8' }; });
+const GEM_SETS = {};   // gear set id -> its 4 gem ids
+Object.keys(SET_GEMS).forEach(sid => {
+  const hol = !!SETS[sid].hgear, hi = !hol && SETS[sid].lv >= 47, [lo, up] = hol ? [3, 35] : hi ? [2.5, 30] : [2, 25];
+  GEM_SETS[sid] = SET_GEMS[sid].map(([n, lab, as], i) => { const id = sid + '_' + (i + 1); GEMS[id] = { id, n, lab, as: as === 'syn' ? [] : [].concat(as), syn: as === 'syn', lo, hi: up, set: sid, col: SETS[sid].aura }; return id; });
+});
 const gemKey = (kind, tier) => kind + ':' + tier;
 const gemSplit = k => { const i = k.lastIndexOf(':'); return [k.slice(0, i), +k.slice(i + 1)]; };
-const gemIsSet = kind => !CORES[kind];
-const gemStatKey = kind => CORES[kind] ? CORES[kind].stat : SETS[gearOf(kind)].st[0];
-const gemName = kind => CORES[kind] ? CORES[kind].n : SETS[kind].mon;
-const gemCol = kind => CORES[kind] ? CORES[kind].col : SETS[kind].aura;
-const gemMon = kind => gemIsSet(kind) ? SETS[kind].mon : null;
+const gemIsSet = kind => !!GEMS[kind].set;
+const gemName = kind => GEMS[kind].n;
+const gemCol = kind => GEMS[kind].col;
+const gemPct = (kind, tier) => (GEMS[kind].lo + (GEMS[kind].hi - GEMS[kind].lo) * (tier - 1) / 5) / 100;
 const starMul = p => 1 + STAR_PCT * (p.stars || 0);
 /* Names: materials, gems and gear quality share the six tiers but have their own names (spec 2026-10-01). */
 const MAT_NAMES = [null, 'Composite Alloy', 'Carbon Fiber', 'Ballistic Polymer', 'Quantum Circuitry', 'Nano-Titanium', 'Aether-Core'];
