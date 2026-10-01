@@ -3834,10 +3834,10 @@
   {
    "group": "city",
    "key": "map_slab",
-   "name": "World map slab (one image)",
-   "size": "2:1, 4096 x 2048",
+   "name": "World map ground (ONE image)",
+   "size": "1:1, 4096 x 4096",
    "transparent": false,
-   "out": 3000
+   "out": 4000
   },
   {
    "group": "city",
