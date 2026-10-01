@@ -180,3 +180,21 @@ Notes: the first three chests are given with the same three figures, so it is no
 
 ## Notes for the later build (things her list needs that the game lacks)
 Upkeep (no upkeep system today), Hero Resurrection and Captured Hero Rename (heroes are captured, not killed, and enemy heroes are not captured), Torch, Iron fetters and Code of War, Gear Bag (no gear storage limit), Gem tools, March presets, Fake Army, and Default Hero Energy (the game has stamina, shown as Chips in her mapping). Per-hero XP items from the reference are already dropped from her list.
+
+### Gem Chests (drop tables received 2026-10-01)
+Per-item chances as Michelle sent them. Troop names map to ours: Infantry = Rock, Cavalry = Paper, Ranged = Scissors. "Level" is the gem quality tier (1 Raw Shard to 6 Omega Diamond in our forge). The Normal Gem Chest's per-level lists were given with kinds: Level 1 has 7 gem kinds (Rock, Paper, Scissors, Siege, Traps, Defense, Health), Level 2 has 5 (Scissors, Siege, Traps, Defense, Health), Level 3 has 7 (same kinds as Level 1). The other three chests are given per level only.
+
+| Chest | Tier 1 | Tier 2 | Tier 3 | Tier 4 | Tier 5 | Tier 6 |
+|---|---|---|---|---|---|---|
+| Normal Gem Chest | Level 1 gems, 8.571% each | Level 2 gems, 5.0% each | Level 3 gems, 0.714% each | n/a | n/a | n/a |
+| Uncommon Gem Chest | Level 2 gems, 8.571% each | Level 3 gems, 5.0% each | Level 4 gems, 0.714% each | n/a | n/a | n/a |
+| Rare Gem Chest | Level 3 gems, 8.571% each | Level 4 gems, 5.0% each | Level 5 gems, 0.714% each | n/a | n/a | n/a |
+| Epic Gem Chest | Level 1, 7.143% each | Level 2, 3.571% each | Level 3, 2.143% each | Level 4, 1.000% each | Level 5, 0.357% each | Level 6, 0.071% each |
+
+Check: Normal Gem Chest as listed adds up to 7 x 8.571 + 5 x 5.0 + 7 x 0.714 = 60.0 + 25.0 + 5.0 = 90.0%, not 100%, so one list or count is probably missing something (for example a Level 2 kind or an extra block); to confirm with Michelle.
+
+Mismatches with our gem system (`docs/FORGE_GEMS.md`, `BASIC_GEMS` in `js/data.js`):
+- Her chests mix gem kinds per level (Level 2 has 5 kinds, Levels 1 and 3 have 7). Ours has 25 Basic gem kinds, all available at every one of the six quality levels, so a chest would roll a kind and a level separately.
+- Her kinds are 7 (Rock, Paper, Scissors, Siege, Traps, Defense, Health). Ours has Rock, Paper and Scissors Strike and Guard gems, Siege Breaker, Iron-Plate (defense), Vitality (health) and 18 more (production, build, research, training, hunting, march). Traps has no single match (closest is Ordnance, trap training speed).
+- Set gems (72, one family per set) never come from store or quest chests in our rules; her tables only list Basic-type kinds, so that fits.
+- Our alliance-store chest today rolls Level 1 (65%) or Level 2 (35%) only; her Epic Gem Chest reaches Level 6.
