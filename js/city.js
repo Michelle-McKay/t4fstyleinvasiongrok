@@ -34,6 +34,15 @@ const CITY = {
   f.roads = [[[53, -5], [50, 20], [58, 40], [52, 56]], [[52, 56], [46, 72], [58, 86], [53, 100]], [[53, 100], [49, 114], [58, 128], [53, 156]]];
   [28.5, 57.5, 86.5, 115.5].forEach((y, i) => { const d = i % 2 ? -1 : 1; f.roads.push([[53, y], [38, y - 3 * d], [20, y + 2 * d], [-5, y + d]]); f.roads.push([[56, y + 1], [72, y + 3], [88, y - 2], [105, y + 1]]); });
 })();
+/* Hand-made layout (Layout button on the base page): dragged positions are kept on the device and laid over the defaults. */
+const LAY = { on: false, drag: null, data: (() => { try { const d = JSON.parse(localStorage.getItem('im_layout1')); if (d && d.slots && d.decor) return Object.assign({ extra: { cnc: [], fld: [] }, hide: { cnc: {}, fld: {} } }, d); } catch (e) { } return { slots: { cnc: {}, fld: {} }, decor: { cnc: {}, fld: {} }, extra: { cnc: [], fld: [] }, hide: { cnc: {}, fld: {} } }; })() };
+/* what a wired piece can do: label -> the data-* attributes of the game button it stands in for */
+const LAY_ACTS = { 'Open Train': { a: 'drawer', id: 'desk', tab: 'train' }, 'Open Lab': { a: 'drawer', id: 'desk', tab: 'lab' }, 'Open Medical': { a: 'wing', w: 'med' }, 'Open Wall': { a: 'wing', w: 'wall' }, 'Open Rally': { a: 'wing', w: 'rally' }, 'Open Items': { a: 'drawer', id: 'item', tab: 'bag' }, 'Open Missions': { a: 'drawer', id: 'mission', tab: 'mis' }, 'Open Mail': { a: 'drawer', id: 'mail', tab: 'rep' }, 'Open Alliance': { a: 'drawer', id: 'alliance', tab: 'throne' }, 'Open Heroes': { a: 'drawer', id: 'hero', tab: 'heroes' }, 'Open Settings': { a: 'drawer', id: 'more', tab: 'menu' }, 'Open Rewards': { a: 'drawer', id: 'more', tab: 'rw' }, 'Supply drop': { a: 'supply' }, 'Free diamonds': { a: 'freedia' }, 'World map': { a: 'dock', k: 'map' }, 'Peace shield': { a: 'shield' } };
+const layAttrs = a => { const o = LAY_ACTS[a]; return o ? Object.keys(o).map(k => `data-${k === 'a' ? 'a' : k}="${o[k]}"`).join(' ') : ''; };
+const CITY_BASE = { cnc: CITY.cnc.slots.map(p => p.slice()), fld: CITY.fld.slots.map(p => p.slice()) };
+const laySave = () => { try { localStorage.setItem('im_layout1', JSON.stringify(LAY.data)); } catch (e) { } };
+const layApply = () => ['cnc', 'fld'].forEach(k => { CITY[k].slots = CITY_BASE[k].map(p => p.slice()); const o = LAY.data.slots[k] || {}; for (const i in o) if (CITY[k].slots[i]) CITY[k].slots[i] = o[i].slice(); });
+layApply();
 const bz = (s, t) => { const u = 1 - t; return [0, 1].map(k => u * u * u * s[0][k] + 3 * u * u * t * s[1][k] + 3 * u * t * t * s[2][k] + t * t * t * s[3][k]); };
 const roadD = s => `M${s[0][0]} ${s[0][1]}C${s[1][0]} ${s[1][1]} ${s[2][0]} ${s[2][1]} ${s[3][0]} ${s[3][1]}`;
 function cityRoadPts(L) { const o = []; L.roads.forEach(s => { for (let i = 0; i <= 12; i++) o.push(bz(s, i / 12)); }); if (L.ring) { const [cx, cy, rx, ry] = L.ring; for (let i = 0; i < 24; i++) o.push([cx + rx * Math.cos(i / 24 * 6.283), cy + ry * Math.sin(i / 24 * 6.283)]); } return o; }
@@ -74,13 +83,14 @@ function cityDecor(kind) {
   const L = CITY[kind], r = cityRand('deco' + kind), out = [], placed = [], rp = cityRoadPts(L), cnc = kind === 'cnc';
   const free = (x, y, m) => !L.slots.some(([sx, sy]) => Math.abs(x - sx) < 11 + m && Math.abs(y - (sy + 2)) < 10 + m) && !rp.some(([rx, ry]) => Math.hypot(x - rx, y - ry) < 5.5 + m) && !placed.some(([px, py]) => Math.hypot(x - px, y - py) < 4.2);
   const groups = cnc ? [['tree_1', 'tree_3', 'bush'], ['rock_1', 'rock_2', 'bush'], ['lamp', 'flag', 'sandbag', 'crates']] : [['tree_1', 'tree_2', 'tree_3', 'bush'], ['rock_1', 'rock_2', 'bush'], ['barrel', 'crates', 'fence', 'water']];
-  const add = (k, x, y) => { placed.push([x, y]); const img = cityImg('city_deco_' + k), s = Math.round((24 + Math.round(r() * 10)) * (DECOR_SCALE[k] || 1)); out.push(`<span class="cd ${img ? '' : 'v ' + k.replace(/_\d/, '')}" style="left:${x.toFixed(1)}%;top:${(y / L.vh * 100).toFixed(2)}%;width:${s}px;height:${s}px;z-index:${Math.round(y)}">${img ? `<img src="${img}" alt="">` : ''}</span>`); };
+  const add = (k, x, y) => { placed.push([x, y]); const did = 'd' + placed.length, ov = (LAY.data.decor[kind] || {})[did]; if (ov) { x = ov[0]; y = ov[1]; } if ((LAY.data.hide[kind] || {})[did]) return; const img = cityImg('city_deco_' + k), s = Math.round((24 + Math.round(r() * 10)) * (DECOR_SCALE[k] || 1)); out.push(`<span class="cd ${img ? '' : 'v ' + k.replace(/_\d/, '')} ${LAY.sel && LAY.sel.id === did && LAY.sel.kind === kind ? 'sel' : ''}" data-did="${did}" data-dk="${kind}" style="left:${x.toFixed(1)}%;top:${(y / L.vh * 100).toFixed(2)}%;width:${s}px;height:${s}px;z-index:${Math.round(y)}">${img ? `<img src="${img}" alt="">` : ''}</span>`); };
   for (let c = 0, tries = 0; c < (cnc ? 9 : 11) && tries < 400; tries++) {
     const x = 2 + r() * 96, y = 4 + r() * (L.vh - 8); if (!free(x, y, 1)) continue;
     const grp = groups[Math.floor(r() * groups.length)], n = grp === groups[2] ? 1 : 2 + Math.floor(r() * 3); c++;
     add(grp[Math.floor(r() * grp.length)], x, y);
     for (let k = 1, t = 0; k < n && t < 20; t++) { const a = r() * 6.28, d = 3 + r() * 4, px = x + Math.cos(a) * d, py = y + Math.sin(a) * d * .8; if (px > 1 && px < 99 && free(px, py, 0)) { add(grp[Math.floor(r() * grp.length)], px, py); k++; } }
   }
+  (LAY.data.extra[kind] || []).forEach(e => { const f = cityImg(e.k) || (typeof ART !== 'undefined' && ART.file(e.k)); if (!f) return; out.push(`<span class="cd xtra ${e.a && !LAY.on ? 'wired' : ''} ${LAY.sel && LAY.sel.id === e.id ? 'sel' : ''}" data-did="${e.id}" data-dk="${kind}" ${LAY.on ? '' : layAttrs(e.a)} style="left:${e.x}%;top:${(e.y / L.vh * 100).toFixed(2)}%;width:${e.s}px;height:${e.s}px;z-index:${Math.round(e.y)}"><img src="${f}" alt=""></span>`); });
   return out.join('');
 }
 function cityHorizon() {

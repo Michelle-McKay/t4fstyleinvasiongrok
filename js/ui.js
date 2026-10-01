@@ -314,15 +314,17 @@ function ringHTML(j, pos, icon) {
 const QUEUE_OF = { mil: ['train', 'train'], tech: ['res', 'lab'], depot: ['heal', 'med'], defense: ['wall', 'med'] };
 function plotHTML(ar, i, firsts) {
   const p = S.plots[ar][i], outer = ar === 'out';
-  if (!p) return `<button class="plot empty ${outer ? 'fld' : 'cnc'}" style="${citySlot(ar, i)}" data-a="plot" data-ar="${ar}" data-i="${i}" aria-label="Empty building plot"></button>`;
+  if (!p) return `<button class="plot empty ${outer ? 'fld' : 'cnc'}" style="${citySlot(ar, i)}" ${LAY.on ? '' : 'data-a="plot"'} data-ar="${ar}" data-i="${i}" aria-label="Empty building plot"></button>`;
   const bj = S.jobs.find(j => j.kind === 'build' && j.area === ar && j.idx === i), q = QUEUE_OF[p.b] && firsts[p.b] === ar + i ? S.jobs.find(j => j.kind === QUEUE_OF[p.b][0]) : null, rdy = UI.ready[ar + i];
-  return `<button class="plot ${outer ? 'fld' : 'cnc'} ${bj ? 'busy' : ''} ${p.l >= 25 ? 'max' : ''}" style="${citySlot(ar, i)}" data-a="plot" data-ar="${ar}" data-i="${i}" title="${BLD[p.b].n}">${bldSVG(p.b, p.l)}${bj ? buildFX(ar + i) : workFX(p.b, p.l)}<span class="lv num">${p.l}</span><span class="nm">${BLD[p.b].n}</span>${bj ? ringHTML(bj, 'tr', 'base') : ''}${q ? ringHTML(q, 'tl', QUEUE_OF[p.b][1]) : ''}${rdy ? `<span class="bub">${rdy}</span>` : ''}</button>`;
+  return `<button class="plot ${outer ? 'fld' : 'cnc'} ${bj ? 'busy' : ''} ${p.l >= 25 ? 'max' : ''}" style="${citySlot(ar, i)}" ${LAY.on ? '' : 'data-a="plot"'} data-ar="${ar}" data-i="${i}" title="${BLD[p.b].n}">${bldSVG(p.b, p.l)}${bj ? buildFX(ar + i) : workFX(p.b, p.l)}<span class="lv num">${p.l}</span><span class="nm">${BLD[p.b].n}</span>${bj ? ringHTML(bj, 'tr', 'base') : ''}${q ? ringHTML(q, 'tl', QUEUE_OF[p.b][1]) : ''}${rdy ? `<span class="bub">${rdy}</span>` : ''}</button>`;
 }
 function renderBase() {
+  if (LAY.drag || (LAY.on && document.activeElement && document.activeElement.closest && document.activeElement.closest('.laybar'))) return;
   const hr = hourly(), firsts = {}; for (const ar of ['in', 'out']) S.plots[ar].forEach((p, i) => { if (p && p.l > 0 && !firsts[p.b]) firsts[p.b] = ar + i; });
   const grid = ar => S.plots[ar].map((_, i) => plotHTML(ar, i, firsts)).join(''), f = shieldOn(), fs = inForest();
   $('#pg-base').innerHTML = `
-  <div class="qs"><button class="btn sm" data-a="drawer" data-id="desk" data-tab="train">${icoStroke('train')}Train</button><button class="btn sm" data-a="drawer" data-id="desk" data-tab="lab">${icoStroke('lab')}Lab</button><button class="btn sm" data-a="wing" data-w="med">${icoStroke('med')}Med</button><button class="btn sm" data-a="wing" data-w="wall">Wall</button><button class="btn sm" data-a="wing" data-w="rally">Rally</button></div>
+  <div class="qs"><button class="btn sm" data-a="drawer" data-id="desk" data-tab="train">${icoStroke('train')}Train</button><button class="btn sm" data-a="drawer" data-id="desk" data-tab="lab">${icoStroke('lab')}Lab</button><button class="btn sm" data-a="wing" data-w="med">${icoStroke('med')}Med</button><button class="btn sm" data-a="wing" data-w="wall">Wall</button><button class="btn sm" data-a="wing" data-w="rally">Rally</button><button class="btn sm ${LAY.on ? 'on' : 'line'}" data-a="layout">Layout</button></div>
+  ${LAY.on ? layBarHTML() : ''}
   ${cityScene(grid)}
   <div class="panel"><div class="hd"><h3>Command Center ${ccLevel()}</h3><span class="tag br">${S.al[0].tag}</span></div><div class="bd">
     <div class="split"><div><div class="lbl">Headcount</div><div class="big num">${fmtN(headcount())}</div></div><div><div class="lbl">March queues</div><div class="big num">${marchQueues()}</div></div><div><div class="lbl">Help clicks</div><div class="big num">${helpCap()}</div></div><div><div class="lbl">StoreHouse</div><div class="big num">${fmtN(storeCap())}</div><div class="sub">protected ${fmtN(protectedFloor())}</div></div></div>
