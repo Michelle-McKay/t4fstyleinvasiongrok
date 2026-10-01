@@ -447,23 +447,25 @@ const SET_GEMS = {
   hs_rsa: [['Summer Assault Gem', 'Rock and Scissors attack', ['atk_inf', 'atk_air']], ['Summer Spark Gem', 'Combat health', 'hp'], ['Summer Glass Gem', 'Rally assembly speed', 'march'], ['Summer Core Gem', 'Full-set synergy: PvP troop lethality', 'syn']],
   hs_psa: [['Equinox Blitz Gem', 'Paper and Scissors attack', ['atk_arm', 'atk_air']], ['Equinox Paper Gem', 'Combat health', 'hp'], ['Equinox Seal Gem', 'Troop lethality', 'atk'], ['Equinox Core Gem', 'Full-set synergy: stacking damage aura', 'syn']]
 };
-/* scale (percent, Grey to Gold): standard sets 2-25, high-tier sets (hero Lv 47+, the Wonder sets and Tile Hit / Rally) 2.5-30, holiday 3-35 */
+/* scale (percent, Grey to Gold): see SET_GEM_CURVES */
+/* Exact Grey to Gold tier values per set gem family (Michelle, 2026-10-01 19:04); the four gems of a set share one curve */
+const SET_GEM_CURVES = { std: [2, 4.5, 8, 12.5, 18, 25], training: [2, 4.5, 8, 12.5, 18, 24], construction: [2, 4.5, 8, 12.5, 18, 24], research: [2, 4.5, 8, 12.5, 18, 24], wrally: [2.5, 5.5, 9.5, 15, 22, 30], wsolo: [2.5, 5.5, 9.5, 15, 22, 30], wdef: [2.5, 5.5, 9.5, 15, 22, 30], holiday: [3, 6.5, 11, 17, 25, 35] };
 const GEMS = {};
 const BASIC_GEM_IDS = BASIC_GEMS.map(g => g[0]);
 const GEM_STAT_COL = { atk: '#e0603a', hp: '#3a64c8', wallHp: '#8a98a8', wallAtk: '#c84a4a', march: '#e0c030', load: '#b98a52', build: '#e07a3a', research: '#a07ad6', train: '#8ea36a', trap: '#c8a04a', huntCost: '#e0c84a', heroAtk: '#d4654a', yld: '#4fb868' };
 BASIC_GEMS.forEach(([id, n, lab, as, lo, hi]) => { const a = [].concat(as)[0]; GEMS[id] = { id, n, lab, as: [].concat(as), lo, hi, set: null, col: GEM_STAT_COL[a.replace(/^(atk|hp)_.*/, '$1').replace(/^prod_.*/, 'yld')] || '#9aa4a8' }; });
 const GEM_SETS = {};   // gear set id -> its 4 gem ids
 Object.keys(SET_GEMS).forEach(sid => {
-  const hol = !!SETS[sid].hgear, hi = !hol && SETS[sid].lv >= 47, [lo, up] = hol ? [3, 35] : hi ? [2.5, 30] : [2, 25];
-  GEM_SETS[sid] = SET_GEMS[sid].map(([n, lab, as], i) => { const id = sid + '_' + (i + 1); GEMS[id] = { id, n, lab, as: as === 'syn' ? [] : [].concat(as), syn: as === 'syn', lo, hi: up, set: sid, col: SETS[sid].aura }; return id; });
+  const vals = SET_GEM_CURVES[sid] || SET_GEM_CURVES[SETS[sid].hgear ? 'holiday' : 'std'], [lo, up] = [vals[0], vals[5]];
+  GEM_SETS[sid] = SET_GEMS[sid].map(([n, lab, as], i) => { const id = sid + '_' + (i + 1); GEMS[id] = { id, n, lab, as: as === 'syn' ? [] : [].concat(as), syn: as === 'syn', lo, hi: up, vals, set: sid, col: SETS[sid].aura }; return id; });
 });
 const gemKey = (kind, tier) => kind + ':' + tier;
 const gemSplit = k => { const i = k.lastIndexOf(':'); return [k.slice(0, i), +k.slice(i + 1)]; };
 const gemIsSet = kind => !!GEMS[kind].set;
 const gemName = kind => GEMS[kind].n;
 const gemCol = kind => GEMS[kind].col;
-/* Basic gems use Michelle's exact non-linear tier values (BASIC_CURVES, 2026-10-01 19:04); set gems stay linear between their lo and hi */
-const gemPct = (kind, tier) => { const g = GEMS[kind], c = !g.set && BASIC_CURVES[g.lo + '-' + g.hi]; return (c ? c[tier - 1] : g.lo + (g.hi - g.lo) * (tier - 1) / 5) / 100; };
+/* Basic gems use Michelle's exact non-linear tier values (BASIC_CURVES, 2026-10-01 19:04); set gems use SET_GEM_CURVES */
+const gemPct = (kind, tier) => { const g = GEMS[kind], c = g.vals || BASIC_CURVES[g.lo + '-' + g.hi]; return (c ? c[tier - 1] : g.lo + (g.hi - g.lo) * (tier - 1) / 5) / 100; };
 const starMul = p => 1 + STAR_PCT * (p.stars || 0);
 /* Names: materials, gems and gear quality share the six tiers but have their own names (spec 2026-10-01). */
 const MAT_NAMES = [null, 'Composite Alloy', 'Carbon Fiber', 'Ballistic Polymer', 'Quantum Circuitry', 'Nano-Titanium', 'Aether-Core'];
