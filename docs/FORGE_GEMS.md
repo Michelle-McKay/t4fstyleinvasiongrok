@@ -4,7 +4,7 @@ Spec: Michelle's gear, gem, monster hunting and Forge messages of 2026-10-01 (16
 
 ## 0. What the 18:08 finalized spec changed (against PR #165 and earlier)
 - **5 gear slots, not 7**: Helmet, Armor, Footwear, Weapon, Accessory. Gauntlets and Greaves are gone; old pieces in those slots are smelted to one material of their tier on load. What a piece does now comes from its category or set, not its slot.
-- **Set bonuses at 2 / 3 / 5 worn pieces** (was 3 / 5 / 7), placeholder +3 / +6 / +10 percent on every stat of the set.
+- **Set bonuses are all-or-nothing** (Michelle, 2026-10-02; supersedes the earlier 2 / 3 / 5 piece steps): the set must be complete (all 5 slots worn from one set) and every piece must be level 6 (Legendary Gold). No partial bonuses. This covers regular sets, holiday sets and set gems. One full-set bonus of +19 percent on every stat of the set (`SET_FULL_BONUS`, the old 3 + 6 + 10 added up; placeholder).
 - **Per-set hero level unlocks, not a flat Lv 30**: regular sets Lv 32 to 50, holiday sets Lv 46 and 47, Basic gear categories Lv 1 to 25.
 - **12 regular sets replaced** (Vanguard, Outrider and the rest are gone): Rock / Paper / Scissors Troop (Rock = infantry, Paper = armor, Scissors = aircraft, which matches the existing beats chain), Siege, Training, Construction, Research, Tile Hit, General Rally, Wonder Rally, Wonder Solo, Wonder Defense. Old saves map by position (`OLD_SETS` in engine.js).
 - **Monsters renamed** to the 16:35 list, one per set: Armored Juggernaut (Rock), Cyber-Raptor (Paper), Venom Spitter (Scissors), Rogue Supply Drone (Training), Data-Golems (Construction), Crystal-Eater Worm (Research), Scrap-Scraper Mech (Siege), Pack-Hunter Drone (Tile Hit), War-Boss Behemoth (Rally), Dreadnought Overlord (Wonder Rally), Bio-Hazard Pest (Wonder Solo), Fortress Automaton (Wonder Defense). The 16:35 message names the themes differently from the 18:08 sets; I paired them by fit and the pairing is an open item. Weekly groups: Troop, Economy, Siege, Wonder week.
@@ -26,7 +26,7 @@ Tapping the Forge building opens Hero › Forge, a room bar with six rooms.
 
 | Room | What it does |
 |---|---|
-| **Gear Sets** | Set-organised view with three tabs: Basic Gear (13 categories), Regular Sets (12) and Holiday Sets (6). Each card shows hero level, stats, the 2 / 3 / 5 piece bonus, worn count, pieces owned and shards; tap a set for its five slots, core materials, source monsters, Set Synergy gem and a Craft with shard shortcut. |
+| **Gear Sets** | Set-organised view with three tabs: Basic Gear (13 categories), Regular Sets (12) and Holiday Sets (6). Each card shows hero level, stats, the full-set bonus, worn count, pieces owned and shards; tap a set for its five slots, core materials, source monsters, Set Synergy gem and a Craft with shard shortcut. |
 | **Equipment** | Type-organised view with a filter bar: Entire list, Helmets, Armor (chest, gauntlets, greaves), Boots, Weapons, Accessories. Each row shows tier, stat, socket strip, gem bonuses and Equip / Remove. |
 | **Workshop** | The crafting bench: 4-to-1 refine for materials, craft gear, 4-to-1 and mixed craft for gems, and the socket bench. |
 | **Smelter** | Dismantling bay. An unworn piece melts into **one material of its own tier** (a quarter of the four it cost) and gives back its gems. Set shards are lost. This is where unwanted gear and failed mixed crafts go. |
@@ -120,9 +120,9 @@ Set pieces give every stat of their set at 1 to 8 percent per piece (placeholder
 | Paper + Scissors Attack Set | Equinox Blitz Gem (Paper and Scissors attack); Equinox Paper Gem (Combat health); Equinox Seal Gem (Troop lethality); Equinox Core Gem (Full-set synergy: stacking damage aura) | 3% to 35% |
 
 - A gem's effect is its percent for its tier, times (1 + Lapidary research), added to the stats listed in `GEMS[id].as` (`js/data.js`). Effects the game has no stat for yet (capacity, cost reduction, lethality, reinforcement speed, shield duration, critical damage...) feed the **nearest existing stat** and the label shows the spec's wording. **OPEN ITEM:** build those stats for real.
-- **Set Synergy**: adds its percent to every stat of its set while 2 or more pieces of the set are worn (Full-Set Synergy of a holiday set: all 5 worn). **Placeholder** activation rule.
+- **Set Synergy**: adds its percent to every stat of its set only while the full set is worn and every piece is level 6 (`setMaxed`), for regular and holiday sets alike.
 
-- Holiday gems carry Michelle's fuller effect text (`GEM_DESC`, 19:05), shown in the Workshop and Gear Sets and used in the art prompts. Mechanics are unchanged (nearest stat). The synergy core currently needs all 5 pieces of the holiday set worn; her text says "with the matching gear", which may mean fewer. OPEN ITEM.
+- Holiday gems carry Michelle's fuller effect text (`GEM_DESC`, 19:05), shown in the Workshop and Gear Sets and used in the art prompts. Mechanics are unchanged (nearest stat). Synergy cores follow the all-or-nothing full-set rule.
 
 ## 4. The gem socket
 - A piece with **1 star** (`GEM_SOCKET_STARS`, placeholder for "fully upgraded") has **one socket** holding **one gem of one type**. Below that the socket is locked and shown capped.

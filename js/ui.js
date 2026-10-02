@@ -543,7 +543,7 @@ function heroScreenHTML() {
   const gb = heroGearBonus(), sp = skPoints(), bag = Object.values(S.xpi).reduce((a, b) => a + b, 0);
   const stat = (k, lab) => `<div class="hst"><span>${lab}</span><b class="num">+${(heroStat(k) * 100).toFixed(1).replace(/\.0$/, '')}%${gb[k] ? ` <i class="up">+${(gb[k] * 100).toFixed(1).replace(/\.0$/, '')}%</i>` : ''}</b></div>`;
   const tab = UI.ht || 'gear', T = (k, n_, dot) => `<button class="${tab === k ? 'on' : ''}" data-a="hstab" data-k="${k}">${n_}${dot ? dotEm : ''}</button>`;
-  const setLine = best ? `${SETS[best].n} ${n}/5 · ${SET_PCS.map(k => `<span class="${n >= k ? 'up' : 'mut'}">${k}pc</span>`).join(' ')}` : 'No set yet';
+  const lv6 = best ? wornPieces().filter(p => p.set === best && p.grade >= SET_MIN_GRADE).length : 0, setLine = best ? `${SETS[best].n} ${n}/5 worn · ${lv6}/5 level 6 · <span class="${setMaxed(best) ? 'up' : 'mut'}">${setMaxed(best) ? 'full set bonus on' : 'bonus off'}</span>` : 'No set yet';
   let body;
   if (tab === 'gear') body = UI.hs ? heroSlotPanel(UI.hs) : `<div class="panel"><div class="bd sub">Tap a gear slot to see it, compare owned pieces and upgrade.${best ? `<div class="mt">${SETS[best].n}: ${setDesc(best)}</div>` : ''}</div></div>`;
   else if (tab === 'skills') body = skillsHTML();

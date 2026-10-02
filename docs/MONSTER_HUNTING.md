@@ -6,7 +6,7 @@ Spec: Michelle's "Monster Hunting, Global Holidays, and Drop Mechanics" brief. C
 - 12 regular monsters, one per gear set (`SETS`, ordered by `SET_ORDER`; updated 2026-10-01, see [FORGE_GEMS.md](FORGE_GEMS.md) section 0). Each leaves its own loot tile on the map.
 - **3 are on the map all week, every week.** Four cycles of three (`huntCycle`): Troop week (Armored Juggernaut / Rock, Cyber-Raptor / Paper, Venom Spitter / Scissors), Economy week (Rogue Supply Drone / Training, Data-Golems / Construction, Crystal-Eater Worm / Research), Siege week (Scrap-Scraper Mech / Siege, Pack-Hunter Drone / Tile Hit, War-Boss Behemoth / Rally), Wonder week (Dreadnought Overlord / Wonder Rally, Bio-Hazard Pest / Wonder Solo, Fortress Automaton / Wonder Defense). The week turns over Monday 00:00 UTC.
 - A monster tile picks one of the week's three from its coordinates (`monsterIdAt`).
-- Set stats and bonuses: see FORGE_GEMS.md (bonus at 2, 3 and 5 pieces, all values placeholders).
+- Set stats and bonuses: see FORGE_GEMS.md (full set, all pieces level 6 only; values are placeholders).
 
 ## 2. Hunt stamina
 - Pool of 120, one point back per 20 drill seconds (5 sheet minutes). Cost to hunt a monster: `10 + 4 x (level - 1)`, so level 1 costs 10 and level 6 costs 30. Camps are free.
