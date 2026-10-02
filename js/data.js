@@ -224,8 +224,9 @@ function basicOf(cat, slot) {
   return { n: it ? it[0] : null, kind: b.n, lv: o.lv || b.lv, st: o.st || b.st, vals: o.vals || BASIC_CURVES[b.lo + '-' + b.hi] || [b.lo, b.hi, b.hi, b.hi, b.hi, b.hi], mats: it ? recipeText(it[1]) : b.mats, recipe: it ? it[1] : null };
 }
 
-/* Set gear: per-piece stat value scale (percent, Grey to Gold) and bonuses at 2, 3 and 5 worn pieces (five slots). OPEN ITEM: all placeholders. */
-const SET_RANGE = [1, 8], SET_PCS = [2, 3, 5], SET_BONUS = [0.03, 0.06, 0.10];
+/* Set gear: per-piece stat value scale (percent, Grey to Gold). Set bonuses (and set synergy gems) are all-or-nothing (Michelle, 2026-10-02): all five slots worn with pieces of one set, every piece level 6 (Legendary Gold). No partial 2 or 3 piece bonuses.
+   The one full-set bonus is the sum of the old 2 + 3 + 5 piece steps (3 + 6 + 10). OPEN ITEM: placeholder value. */
+const SET_RANGE = [1, 8], SET_FULL_BONUS = 0.19, SET_MIN_GRADE = 6;
 /* Regular sets: 12, one monster each (monster id = set id). `st` = the stats every piece of the set gives, `mats` = its core themed monster drops (flavour and codex for now). */
 const SETS = {
   rock: { n: '"Rock" Troop Set', cat: 'Troops', lv: 35, st: ['atk_inf', 'hp_inf'], mats: 'Apex Beast Hide, Chitin Scales', mon: 'Armored Juggernaut', aura: '#e0a44a' },
@@ -255,7 +256,7 @@ for (const k of HSET_ORDER) { HSETS[k].cat = 'Holiday'; HSETS[k].aura = '#e0a44a
 const gearSetIds = () => SET_ORDER.concat(HSET_ORDER);
 const gearOf = id => (SETS[id] && SETS[id].gear) || id;           // the gear set a monster's shards belong to
 const setLv = id => SETS[id].lv;
-const setDesc = id => { const st = SETS[id].st.map(k => STAT_LAB[k]).join(', '); return st + '. Bonus at ' + SET_PCS.map((n, i) => n + ' pieces +' + SET_BONUS[i] * 100 + '%').join(', ') + ' (placeholder)'; };
+const setDesc = id => { const st = SETS[id].st.map(k => STAT_LAB[k]).join(', '); return st + '. Full set bonus +' + Math.round(SET_FULL_BONUS * 100) + '%, only with all five pieces worn at level 6 (placeholder)'; };
 /* Weekly rotation: 12 regular monsters in four cycles of three. Each week exactly one cycle is on the map, every week, all week. */
 const SET_ORDER = ['rock', 'paper', 'scissors', 'training', 'construction', 'research', 'siege', 'tilehit', 'rally', 'wrally', 'wsolo', 'wdef'];
 const CYCLE_NAMES = ['Troop week', 'Economy week', 'Siege week', 'Wonder week'];

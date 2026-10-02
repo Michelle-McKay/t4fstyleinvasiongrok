@@ -177,19 +177,20 @@ function heroLocked() { return S.marches.some(m => m.hero); }
 function heroOn() { return !S.hero.captured; }
 
 function slotPiece(slot) { const id = S.gear.worn[slot]; return id ? S.gear.pieces.find(p => p.id === id) : null; }
-/* Worn pieces count only while the hero meets their level. Set bonuses stack at 2, 3 and 5 worn pieces of one set (five slots). */
+/* Worn pieces count only while the hero meets their level. Set bonuses are all-or-nothing: all five slots worn from one set and every one of them level 6 (Legendary). */
 function wornPieces() { return SLOTS.map(slotPiece).filter(p => p && heroLv() >= pieceLv(p)); }
 function setCounts() { const c = {}; for (const p of wornPieces()) if (p.set) c[p.set] = (c[p.set] || 0) + 1; return c; }
-function setBest() { const c = setCounts(); let best = null; for (const k in c) if (c[k] >= SET_PCS[0] && (!best || c[k] > c[best])) best = k; return best; }
+function setMaxed(set) { const w = wornPieces().filter(p => p.set === set); return w.length >= SLOTS.length && w.every(p => p.grade >= SET_MIN_GRADE); }
+function setBest() { for (const k in setCounts()) if (setMaxed(k)) return k; return null; }
 function setBonus() { return setBest(); }
-function setFull() { const b = setBest(); return b && setCounts()[b] >= SET_PCS[2] ? b : null; }
-function setStats(set, n) { const r = zeroStats(); if (!set) return r; let v = 0; SET_PCS.forEach((k, i) => { if (n >= k) v += SET_BONUS[i]; }); for (const k of SETS[set].st) r[k] += v; return r; }
-function setWorn() { const b = setBest(); return b ? setStats(b, setCounts()[b]) : setStats(null, 0); }
+function setFull() { return setBest(); }
+function setStats(set) { const r = zeroStats(); if (!set) return r; for (const k of SETS[set].st) r[k] += SET_FULL_BONUS; return r; }
+function setWorn() { return setStats(setBest()); }
 /* ---- gems: one socket per fully upgraded piece, one gem at a time (placeholders, see data.js) ---- */
 const socketOpen = p => (p.stars || 0) >= GEM_SOCKET_STARS;
 const gemPower = (kind, tier) => gemPct(kind, tier) * (1 + rv('lapidary'));
-/* synergy gems act on the worn set: 2+ pieces of a regular set, the full five of a holiday set */
-function synergyOn(set) { const n = setCounts()[set] || 0; return GEMS[set + '_4'] && n >= (SETS[set].hgear ? SLOTS.length : SET_PCS[0]); }
+/* synergy gems (regular and holiday sets) act only while that set is complete and every piece is level 6 */
+function synergyOn(set) { return !!GEMS[set + '_4'] && setMaxed(set); }
 function pieceGems(p) {
   const r = zeroStats(); if (!p.gem || !socketOpen(p)) return r; const [kd, t] = gemSplit(p.gem), g = GEMS[kd], v = gemPower(kd, t);
   if (g.syn) { if (synergyOn(g.set)) for (const k of SETS[g.set].st) r[k] += v; } else for (const k of g.as) r[k] += v; return r;
