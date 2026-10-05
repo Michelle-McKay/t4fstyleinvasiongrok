@@ -226,7 +226,10 @@ function basicOf(cat, slot) {
 
 /* Set gear: per-piece stat value scale (percent, Grey to Gold). Set bonuses (and set synergy gems) are all-or-nothing (Michelle, 2026-10-02): all five slots worn with pieces of one set, every piece level 6 (Legendary Gold). No partial 2 or 3 piece bonuses.
    The one full-set bonus is the sum of the old 2 + 3 + 5 piece steps (3 + 6 + 10). OPEN ITEM: placeholder value. */
-const SET_RANGE = [1, 8], SET_FULL_BONUS = 0.19, SET_MIN_GRADE = 6;
+/* Set piece boost: starts really small and grows with both quality and the set's hero unlock level (Michelle, 2026-10-02). Legendary top = 4% at Lv 32 up to 14% at Lv 50; the quality steps copy the Basic gear curve (about 8, 19, 35, 54, 77, 100 percent of the top), so a Lv 32 Basic-tier piece gives 0.3%. Placeholder numbers. */
+const SET_TOP = lv => 4 + 10 * Math.min(1, Math.max(0, (lv - 32) / 18)), SET_Q = [0.077, 0.192, 0.346, 0.538, 0.769, 1];
+const setPiecePct = (set, grade) => SET_TOP(SETS[set].lv) * SET_Q[grade - 1];
+const SET_FULL_BONUS = 0.19, SET_MIN_GRADE = 6;
 /* Regular sets: 12, one monster each (monster id = set id). `st` = the stats every piece of the set gives, `mats` = its core themed monster drops (flavour and codex for now). */
 const SETS = {
   rock: { n: '"Rock" Troop Set', cat: 'Troops', lv: 35, st: ['atk_inf', 'hp_inf'], mats: 'Apex Beast Hide, Chitin Scales', mon: 'Armored Juggernaut', aura: '#e0a44a' },
@@ -569,7 +572,7 @@ const recipeOf = p => p.set ? setItemOf(p.set, p.slot).recipe : basicOf(p.cat, p
 function pieceLv(p) { return p.set ? setItemOf(p.set, p.slot).lv : basicOf(p.cat, p.slot).lv; }
 function pieceStatMap(p) {
   const r = {}; let v, sts;
-  if (p.set) { v = (SET_RANGE[0] + (SET_RANGE[1] - SET_RANGE[0]) * (p.grade - 1) / 5) / 100 * starMul(p); sts = SETS[p.set].st; }
+  if (p.set) { v = setPiecePct(p.set, p.grade) / 100 * starMul(p); sts = SETS[p.set].st; }
   else { const b = basicOf(p.cat, p.slot); v = b.vals[p.grade - 1] / 100 * starMul(p); sts = b.st; }
   for (const k of sts) r[k] = v; return r;
 }

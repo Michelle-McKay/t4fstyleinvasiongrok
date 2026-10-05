@@ -16,3 +16,8 @@ Material icons `mat_1`..`mat_6` have prompts in the art checklist (same ingot, s
 
 ## Forge rooms, gems, sockets, hero level 30 gate
 See [FORGE_GEMS.md](FORGE_GEMS.md). The Forge now has six rooms; gems follow the same six tiers, 4-to-1 and casino rules; set gear is crafted at any level but worn from hero level 30; every piece has four sockets; unwanted gear melts in the Smelter.
+
+## Confirmed by Michelle (2026-10-02)
+- **Every material has six levels, holiday materials included.** Four of one level combine into one of the next, same 4-to-1 rule and the same 75 / 20 / 4.9 / 0.1 mixed odds. Basic and set materials share the six tier names.
+- **Chest percentages are independent per-item chances**, not a fixed number of items per 100 chests. Each listed item is rolled on its own at its own percent (`docs/ITEMS_REFERENCE.md` section 5).
+- **Boosts start very small**, most of all on low quality and low hero unlock level gear. Set gear now scales with both (`SET_TOP`, `SET_Q` in data.js, see `docs/FORGE_GEMS.md`). Basic gear keeps the percentage ranges from her spec table.
